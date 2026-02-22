@@ -1,12 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Start Online | Premium Marketplace</title>
+    <title>Start Online | ابدأ مشروعك الآن</title>
+    <!-- استدعاء خطوط جوجل الاحترافية -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+      /* خلفية سوداء فخمة للموقع من البداية */
+      body {
+        margin: 0;
+        background-color: #050505;
+        color: white;
+        font-family: 'Inter', 'Cairo', sans-serif;
+        overflow-x: hidden;
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>
+    <!-- ده الملف اللي هيربط الـ React بالـ HTML -->
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

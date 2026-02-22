@@ -1,23 +1,31 @@
 import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/layout/Navbar';
+import Home from './pages/Home';
 import Products from './pages/Products';
+import ProductDetails from './pages/ProductDetails';
+import Auth from './pages/Auth';
 
 function App() {
   return (
-    <div className="min-h-screen bg-black text-white">
-      <Navbar />
-      
-      {/* Hero Section */}
-      <header className="pt-40 pb-20 text-center">
-        <h1 className="text-7xl font-black mb-6 animate-pulse bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
-          START ONLINE
-        </h1>
-        <p className="text-gray-400 text-xl max-w-xl mx-auto">سوقك الرقمي المتكامل للبيع والشراء باحترافية.</p>
-      </header>
+    <Router>
+      <div className="min-h-screen bg-black text-white">
+        <Navbar />
+        
+        {/* هنا بنحدد كل رابط هيودي فين */}
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/shop" element={<Products />} />
+          <Route path="/product/:id" element={<ProductDetails />} />
+          <Route path="/login" element={<Auth />} />
+        </Routes>
 
-      {/* المنتجات */}
-      <Products />
-    </div>
+        {/* Footer بسيط */}
+        <footer className="py-10 text-center text-gray-600 border-t border-white/5 mt-20">
+          © 2026 Start Online - جميع الحقوق محفوظة
+        </footer>
+      </div>
+    </Router>
   );
 }
 

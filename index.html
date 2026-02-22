@@ -4,18 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Start Online | ابدأ مشروعك الآن</title>
-    
-    <!-- استدعاء Tailwind CSS (المحرك اللي هيشغل الألوان والأزرار) -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- إعدادات Tailwind عشان يدعم الألوان والأنيميشن اللي صممناها -->
     <script>
       tailwind.config = {
+        content: ['./src/**/*.{jsx,js}', './index.html'], // هذا السطر هو الأهم
         theme: {
           extend: {
             colors: {
               primary: '#3b82f6',
-              secondary: '#8b5cf6',
             },
             animation: {
               'shimmer': 'shimmer 2s linear infinite',
@@ -30,26 +26,12 @@
         }
       }
     </script>
-
-    <!-- استدعاء خطوط جوجل -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Cairo:wght@400;700&display=swap" rel="stylesheet">
-    
-    <style>
-      body {
-        margin: 0;
-        background-color: #050505;
-        color: white;
-        font-family: 'Inter', 'Cairo', sans-serif;
-        overflow-x: hidden;
-      }
-      /* تأثير الزجاج */
-      .glass {
-        background: rgba(255, 255, 255, 0.03);
-        backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-      }
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;900&family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <style type="text/css">
+      /* لإخفاء النقاط القبيحة من القائمة العلوية يدوياً للتأكيد */
+      ul { list-style: none; padding: 0; margin: 0; }
+      body { background-color: #050505; color: white; font-family: 'Cairo', sans-serif; }
+      .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); }
     </style>
   </head>
   <body>

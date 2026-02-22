@@ -4,12 +4,39 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Start Online | ابدأ مشروعك الآن</title>
-    <!-- استدعاء خطوط جوجل الاحترافية -->
+    
+    <!-- استدعاء Tailwind CSS (المحرك اللي هيشغل الألوان والأزرار) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- إعدادات Tailwind عشان يدعم الألوان والأنيميشن اللي صممناها -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: '#3b82f6',
+              secondary: '#8b5cf6',
+            },
+            animation: {
+              'shimmer': 'shimmer 2s linear infinite',
+            },
+            keyframes: {
+              shimmer: {
+                '0%': { transform: 'translateX(-100%)' },
+                '100%': { transform: 'translateX(100%)' },
+              }
+            }
+          }
+        }
+      }
+    </script>
+
+    <!-- استدعاء خطوط جوجل -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    
     <style>
-      /* خلفية سوداء فخمة للموقع من البداية */
       body {
         margin: 0;
         background-color: #050505;
@@ -17,12 +44,16 @@
         font-family: 'Inter', 'Cairo', sans-serif;
         overflow-x: hidden;
       }
+      /* تأثير الزجاج */
+      .glass {
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
     </style>
   </head>
   <body>
     <div id="root"></div>
-    <!-- ده الملف اللي هيربط الـ React بالـ HTML -->
     <script type="module" src="/src/main.jsx"></script>
-    
   </body>
 </html>

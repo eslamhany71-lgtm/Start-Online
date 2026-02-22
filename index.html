@@ -3,35 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Start Online | ابدأ مشروعك الآن</title>
+    <title>Start Online</title>
+    <!-- استدعاء Tailwind مباشر للتأكيد -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        content: ['./src/**/*.{jsx,js}', './index.html'], // هذا السطر هو الأهم
-        theme: {
-          extend: {
-            colors: {
-              primary: '#3b82f6',
-            },
-            animation: {
-              'shimmer': 'shimmer 2s linear infinite',
-            },
-            keyframes: {
-              shimmer: {
-                '0%': { transform: 'translateX(-100%)' },
-                '100%': { transform: 'translateX(100%)' },
-              }
-            }
-          }
-        }
-      }
-    </script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;900&family=Cairo:wght@400;700&display=swap" rel="stylesheet">
-    <style type="text/css">
-      /* لإخفاء النقاط القبيحة من القائمة العلوية يدوياً للتأكيد */
-      ul { list-style: none; padding: 0; margin: 0; }
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;900&display=swap" rel="stylesheet">
+    <style>
       body { background-color: #050505; color: white; font-family: 'Cairo', sans-serif; }
-      .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); }
+      .glass { background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); }
     </style>
   </head>
   <body>

@@ -4,40 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Start Online | ابدأ عالمك الرقمي</title>
-    <!-- محرك التنسيق السريع -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- الخطوط -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     
     <style>
         body {
-            background-color: #050505;
-            color: white;
+            /* لون هادي (رمادي عميق) بدلاً من الأسود القاتم */
+            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+            color: #f1f5f9;
             font-family: 'Cairo', sans-serif;
-            scroll-behavior: smooth;
+            margin: 0;
+            min-height: 100vh;
         }
         .glass {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         .btn-glow {
-            transition: 0.5s;
-            box-shadow: 0 0 0px #3b82f6;
+            transition: 0.4s;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
         }
         .btn-glow:hover {
-            box-shadow: 0 0 20px #3b82f6;
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
             transform: translateY(-2px);
-        }
-        /* أنيميشن لظهور العناصر */
-        .reveal {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: 1s all ease;
-        }
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
         }
     </style>
 </head>
@@ -45,47 +35,34 @@
 
     <!-- Navbar -->
     <nav class="fixed top-0 left-0 right-0 z-50 p-6">
-        <div class="max-w-7xl mx-auto glass rounded-full px-8 py-4 flex justify-between items-center">
-            <div class="text-2xl font-black tracking-tighter">
-                START<span class="text-blue-500">ONLINE</span>
+        <div class="max-w-7xl mx-auto glass rounded-2xl px-8 py-4 flex justify-between items-center">
+            <div class="text-2xl font-black tracking-tighter text-white">
+                START<span class="text-blue-400">ONLINE</span>
             </div>
-            <ul class="hidden md:flex gap-10 font-bold text-sm">
-                <li><a href="index.html" class="text-blue-500">الرئيسية</a></li>
-                <li><a href="products.html" class="hover:text-blue-500 transition">المتجر</a></li>
-                <li><a href="#" class="hover:text-blue-500 transition">المسوقين</a></li>
+            <ul class="hidden md:flex gap-10 font-bold text-sm text-gray-300">
+                <li><a href="index.html" class="text-blue-400">الرئيسية</a></li>
+                <li><a href="products.html" class="hover:text-white transition">المتجر</a></li>
+                <li><a href="#" class="hover:text-white transition">المسوقين</a></li>
             </ul>
             <div class="flex gap-4">
-                <button class="text-sm font-bold">دخول</button>
-                <button class="bg-white text-black px-6 py-2 rounded-full text-sm font-black btn-glow">ابدأ الآن</button>
+                <button class="bg-blue-600 text-white px-8 py-2 rounded-xl text-sm font-bold btn-glow">ابدأ الآن</button>
             </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
     <section class="h-screen flex flex-col justify-center items-center text-center px-6">
-        <h1 class="text-6xl md:text-8xl font-black mb-6 leading-tight">
-            ابدأ مشروعك <br> <span class="text-blue-600">بلمسة واحدة</span>
+        <h1 class="text-5xl md:text-7xl font-black mb-6 leading-tight text-white">
+            مستقبلك الرقمي <br> <span class="text-blue-400 italic">يبدأ هنا</span>
         </h1>
-        <p class="text-gray-400 text-xl max-w-2xl mb-10">
-            المنصة الأحدث في الوطن العربي لتمكين المسوقين وبيع المنتجات الرقمية باحترافية كاملة.
+        <p class="text-gray-400 text-lg md:text-xl max-w-2xl mb-10 leading-relaxed">
+            انضم لأكبر منصة عربية لعرض وبيع المنتجات الرقمية. نحن نوفر لك الأدوات، وأنت تبدع.
         </p>
-        <div class="flex gap-6">
-            <button class="bg-blue-600 text-white px-10 py-4 rounded-full font-bold btn-glow text-lg">تصفح المتجر</button>
-            <button class="glass px-10 py-4 rounded-full font-bold text-lg">كن مسوقاً</button>
+        <div class="flex flex-wrap justify-center gap-6">
+            <a href="products.html" class="bg-white text-slate-900 px-10 py-4 rounded-2xl font-bold btn-glow text-lg transition-all">تصفح المتجر</a>
+            <button class="glass text-white px-10 py-4 rounded-2xl font-bold text-lg hover:bg-white/10 transition-all">لوحة المسوقين</button>
         </div>
     </section>
 
-    <!-- Script للحركات -->
-    <script>
-        // أنيميشن بسيط عند التمرير
-        window.addEventListener('scroll', () => {
-            const reveals = document.querySelectorAll('.reveal');
-            reveals.forEach(el => {
-                if (el.getBoundingClientRect().top < window.innerHeight - 100) {
-                    el.classList.add('active');
-                }
-            });
-        });
-    </script>
 </body>
 </html>

@@ -1,79 +1,38 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Start Online | ابدأ عالمك الرقمي</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+<!-- استبدل قسم الـ Nav في index.html بهذا الكود -->
+<nav class="fixed top-0 left-0 right-0 z-50 p-6">
+    <div class="max-w-7xl mx-auto glass rounded-2xl px-8 py-4 flex justify-between items-center">
+        <div class="text-2xl font-black text-white">
+            <a href="index.html">START<span class="text-blue-400">ONLINE</span></a>
+        </div>
+        <ul class="hidden md:flex gap-10 font-bold text-sm text-gray-300">
+            <li><a href="index.html" class="text-blue-400">الرئيسية</a></li>
+            <li><a href="products.html" class="hover:text-white transition">المتجر</a></li>
+        </ul>
+        <div class="flex gap-4 items-center">
+            <!-- الزرار ده هيتغير برمجياً لو مسجل دخول -->
+            <a href="login.html" id="navBtn" class="bg-blue-600 text-white px-8 py-2 rounded-xl text-sm font-bold btn-glow">دخول / انضم إلينا</a>
+        </div>
+    </div>
+</nav>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
     
-    <style>
-        body {
-            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
-            color: #f1f5f9;
-            font-family: 'Cairo', sans-serif;
-            margin: 0;
-            min-height: 100vh;
+    // إعدادات Firebase الخاصة بك
+    const firebaseConfig = {
+        apiKey: "AIzaSyCyypXt8LnHiVBR2Ka0Mb8ntXu6dJH9N-w",
+        authDomain: "start-online-6f460.firebaseapp.com",
+        projectId: "start-online-6f460",
+        databaseURL: "https://start-online-6f460-default-rtdb.firebaseio.com/"
+    };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            document.getElementById('navBtn').innerText = "انتقل للمتجر";
+            document.getElementById('navBtn').href = "products.html";
         }
-        .glass {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .btn-glow {
-            transition: 0.4s;
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
-        }
-        .btn-glow:hover {
-            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
-            transform: translateY(-2px);
-        }
-    </style>
-</head>
-<body>
-
-    <!-- Navbar -->
-    <nav class="fixed top-0 left-0 right-0 z-50 p-6">
-        <div class="max-w-7xl mx-auto glass rounded-2xl px-8 py-4 flex justify-between items-center">
-            
-            <!-- Logo -->
-            <div class="text-2xl font-black tracking-tighter text-white">
-                <a href="index.html">START<span class="text-blue-400">ONLINE</span></a>
-            </div>
-
-            <!-- Links -->
-            <ul class="hidden md:flex gap-10 font-bold text-sm text-gray-300">
-                <li><a href="index.html" class="text-blue-400">الرئيسية</a></li>
-                <li><a href="products.html" class="hover:text-white transition">المتجر</a></li>
-                <li><a href="#" class="hover:text-white transition">المسوقين</a></li>
-            </ul>
-
-            <!-- Auth Button -->
-            <div class="flex gap-4">
-                <a href="login.html" class="bg-blue-600 text-white px-8 py-2 rounded-xl text-sm font-bold btn-glow flex items-center justify-center">
-                    ابدأ الآن
-                </a>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <section class="h-screen flex flex-col justify-center items-center text-center px-6">
-        <h1 class="text-5xl md:text-7xl font-black mb-6 leading-tight text-white">
-            مستقبلك الرقمي <br> <span class="text-blue-400 italic">يبدأ هنا</span>
-        </h1>
-        <p class="text-gray-400 text-lg md:text-xl max-w-2xl mb-10 leading-relaxed">
-            انضم لأكبر منصة عربية لعرض وبيع المنتجات الرقمية. نحن نوفر لك الأدوات، وأنت تبدع.
-        </p>
-        <div class="flex flex-wrap justify-center gap-6">
-            <a href="products.html" class="bg-white text-slate-900 px-10 py-4 rounded-2xl font-bold btn-glow text-lg transition-all">
-                تصفح المتجر
-            </a>
-            <a href="login.html" class="glass text-white px-10 py-4 rounded-2xl font-bold text-lg hover:bg-white/10 transition-all flex items-center">
-                لوحة المسوقين
-            </a>
-        </div>
-    </section>
-
-</body>
-</html>
+    });
+</script>

@@ -1,55 +1,39 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تسجيل الدخول | Start Online</title>
+    <meta charset="UTF-8"><title>تسجيل الدخول | Start Online</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
-    <style>
-        body { background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%); color: #f1f5f9; font-family: 'Cairo', sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
-    </style>
+    <style>body { background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%); color: #f1f5f9; font-family: 'Cairo', sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; }</style>
 </head>
 <body>
-
-    <div class="w-full max-w-md p-8 glass rounded-[40px] shadow-2xl mx-4">
+    <div class="w-full max-w-md p-8 bg-white/5 backdrop-blur-xl rounded-[40px] border border-white/10 shadow-2xl mx-4">
         <h1 class="text-3xl font-black text-center mb-10 text-white">START<span class="text-blue-400">ONLINE</span></h1>
-
         <form id="authForm" class="space-y-4">
             <div id="registerFields" class="hidden space-y-4">
-                <input type="text" id="userName" placeholder="الاسم الكامل" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl focus:border-blue-500 outline-none text-sm">
+                <input type="text" id="userName" placeholder="الاسم الكامل" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl focus:border-blue-500 outline-none text-sm text-white">
                 <select id="userRole" class="w-full bg-slate-800 border border-white/10 p-4 rounded-2xl focus:border-blue-500 outline-none text-sm text-white">
                     <option value="customer">عميل / زائر</option>
-                    <option value="marketer">مسوق محترف</option>
+                    <option value="marketer">مسوق (Marketer)</option>
                     <option value="admin">مدير (Admin)</option>
                 </select>
             </div>
-            
-            <input type="email" id="userEmail" required placeholder="البريد الإلكتروني" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl focus:border-blue-500 outline-none text-sm">
-            <input type="password" id="userPass" required placeholder="كلمة المرور" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl focus:border-blue-500 outline-none text-sm">
-
-            <button type="submit" id="mainBtn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-2xl transition-all shadow-lg shadow-blue-500/20">دخول</button>
+            <input type="email" id="userEmail" required placeholder="البريد الإلكتروني" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl focus:border-blue-500 outline-none text-sm text-white">
+            <input type="password" id="userPass" required placeholder="كلمة المرور" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl focus:border-blue-500 outline-none text-sm text-white">
+            <button type="submit" id="mainBtn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-2xl transition-all shadow-lg">دخول</button>
         </form>
-
-        <p class="mt-6 text-center text-sm text-gray-400">
-            <span id="toggleText">ليس لديك حساب؟</span>
-            <button onclick="toggleAuth()" class="text-blue-400 font-bold underline mr-1">تبديل</button>
-        </p>
+        <p class="mt-6 text-center text-sm text-gray-400"><span id="toggleText">ليس لديك حساب؟</span> <button onclick="toggleAuth()" class="text-blue-400 font-bold underline mr-1">تبديل</button></p>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCyypXt8LnHiVBR2Ka0Mb8ntXu6dJH9N-w",
             authDomain: "start-online-6f460.firebaseapp.com",
             projectId: "start-online-6f460",
-            storageBucket: "start-online-6f460.firebasestorage.app",
-            messagingSenderId: "343437561451",
-            appId: "1:343437561451:web:2318fb3b90eb48fd0a6b2e",
             databaseURL: "https://start-online-6f460-default-rtdb.firebaseio.com/"
         };
 
@@ -68,13 +52,11 @@
             e.preventDefault();
             const email = document.getElementById('userEmail').value;
             const pass = document.getElementById('userPass').value;
-
             try {
                 if (!isLogin) {
                     const res = await createUserWithEmailAndPassword(auth, email, pass);
                     const role = document.getElementById('userRole').value;
                     const name = document.getElementById('userName').value;
-                    // حفظ بيانات المستخدم في القاعدة
                     await set(ref(db, 'users/' + res.user.uid), { name, email, role });
                 } else {
                     await signInWithEmailAndPassword(auth, email, pass);

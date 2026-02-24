@@ -30,7 +30,7 @@
     <nav class="p-6">
         <div class="max-w-7xl mx-auto glass rounded-2xl px-8 py-4 flex justify-between items-center">
             <div class="text-xl font-black tracking-tighter text-white">
-                START<span class="text-blue-400">ONLINE</span>
+                <a href="index.html">START<span class="text-blue-400">ONLINE</span></a>
             </div>
             <ul class="flex gap-8 font-bold text-sm">
                 <li><a href="index.html" class="hover:text-blue-400 transition">الرئيسية</a></li>
@@ -42,93 +42,95 @@
         </div>
     </nav>
 
-    <!-- Admin Panel (مخفي افتراضياً) -->
-    <section id="adminPanel" class="max-w-4xl mx-auto mt-10 p-8 glass rounded-3xl hidden animate-fade-in">
-        <h2 class="text-2xl font-black mb-6 flex items-center gap-2">
-            <span class="w-3 h-3 bg-blue-500 rounded-full"></span>
-            إضافة منتج جديد
-        </h2>
+    <!-- Admin Panel -->
+    <section id="adminPanel" class="max-w-4xl mx-auto mt-10 p-8 glass rounded-3xl hidden">
+        <h2 class="text-2xl font-black mb-6 flex items-center gap-2">إضافة منتج للسحابة</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <input type="text" id="pName" placeholder="اسم المنتج" class="bg-white/5 border border-white/10 p-3 rounded-xl focus:outline-none focus:border-blue-500">
-            <input type="number" id="pPrice" placeholder="السعر ($)" class="bg-white/5 border border-white/10 p-3 rounded-xl focus:outline-none focus:border-blue-500">
-            <input type="text" id="pImage" placeholder="رابط الصورة" class="bg-white/5 border border-white/10 p-3 rounded-xl focus:outline-none focus:border-blue-500">
+            <input type="text" id="pName" placeholder="اسم المنتج" class="bg-white/5 border border-white/10 p-3 rounded-xl focus:outline-none">
+            <input type="number" id="pPrice" placeholder="السعر ($)" class="bg-white/5 border border-white/10 p-3 rounded-xl focus:outline-none">
+            <input type="text" id="pImage" placeholder="رابط الصورة" class="bg-white/5 border border-white/10 p-3 rounded-xl focus:outline-none">
         </div>
-        <button onclick="addProduct()" class="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition">حفظ وعرض المنتج</button>
+        <button id="btnSave" class="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition">إرسال لجميع المستخدمين</button>
     </section>
 
     <!-- Products Grid -->
     <main class="max-w-7xl mx-auto px-6 mt-16">
-        <div class="flex justify-between items-end mb-10">
-            <div>
-                <h1 class="text-4xl font-black mb-2">المعرض الرقمي</h1>
-                <p class="text-gray-400">استكشف أفضل المنتجات المتاحة الآن</p>
-            </div>
-        </div>
-
+        <h1 class="text-4xl font-black mb-10">المعرض السحابي المباشر</h1>
         <div id="productsGrid" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
-            <!-- المنتجات ستظهر هنا برمجياً -->
+            <!-- المنتجات ستظهر هنا من Firebase -->
         </div>
     </main>
 
-    <script>
-        // مصفوفة المنتجات (تبدأ ببيانات تجريبية لو المتصفح فاضي)
-        let products = JSON.parse(localStorage.getItem('myProducts')) || [
-            { id: 1, name: "حزمة التصميم الاحترافي", price: 45, image: "https://images.unsplash.com/photo-1626785774573-4b799315345d?w=500" },
-            { id: 2, name: "كورس التسويق الحديث", price: 89, image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500" }
-        ];
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, set, push, onValue, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        // وظيفة لإظهار/إخفاء لوحة التحكم
-        function toggleAdmin() {
-            const panel = document.getElementById('adminPanel');
-            panel.classList.toggle('hidden');
-        }
+        // إعداداتك الخاصة
+        const firebaseConfig = {
+            apiKey: "AIzaSyCyypXt8LnHiVBR2Ka0Mb8ntXu6dJH9N-w",
+            authDomain: "start-online-6f460.firebaseapp.com",
+            projectId: "start-online-6f460",
+            storageBucket: "start-online-6f460.firebasestorage.app",
+            messagingSenderId: "343437561451",
+            appId: "1:343437561451:web:2318fb3b90eb48fd0a6b2e",
+            databaseURL: "https://start-online-6f460-default-rtdb.firebaseio.com/"
+        };
 
-        // وظيفة لإضافة منتج
-        function addProduct() {
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // وظيفة الإضافة للسحابة
+        window.addProduct = function() {
             const name = document.getElementById('pName').value;
             const price = document.getElementById('pPrice').value;
             const image = document.getElementById('pImage').value || 'https://via.placeholder.com/300';
 
             if(name && price) {
-                products.push({ id: Date.now(), name, price, image });
-                saveAndRender();
-                // مسح الخانات بعد الإضافة
+                const productsRef = ref(db, 'products');
+                const newProductRef = push(productsRef);
+                set(newProductRef, { name, price, image });
+                
                 document.getElementById('pName').value = '';
                 document.getElementById('pPrice').value = '';
-                document.getElementById('pImage').value = '';
-            } else {
-                alert("برجاء ملء البيانات الأساسية");
             }
-        }
+        };
 
-        // وظيفة لتغيير السعر
-        function updatePrice(id) {
+        // وظيفة تحديث السعر في السحابة
+        window.updatePrice = function(id) {
             const newPrice = prompt("أدخل السعر الجديد:");
             if (newPrice) {
-                products = products.map(p => p.id === id ? {...p, price: newPrice} : p);
-                saveAndRender();
+                const updates = {};
+                updates['/products/' + id + '/price'] = newPrice;
+                update(ref(db), updates);
             }
-        }
+        };
 
-        // وظيفة لحفظ البيانات ورسم المنتجات
-        function saveAndRender() {
-            localStorage.setItem('myProducts', JSON.stringify(products));
-            const grid = document.getElementById('productsGrid');
-            grid.innerHTML = products.map(p => `
-                <div class="product-card glass p-4 rounded-3xl border border-white/5 transition-all duration-300">
-                    <img src="${p.image}" class="w-full h-48 object-cover rounded-2xl mb-4 shadow-lg">
-                    <h3 class="text-xl font-bold mb-2">${p.name}</h3>
-                    <div class="flex justify-between items-center mb-4">
-                        <span class="text-blue-400 font-black text-2xl">$${p.price}</span>
-                        <button onclick="updatePrice(${p.id})" class="text-[10px] text-gray-500 hover:text-white underline">تعديل السعر</button>
-                    </div>
-                    <button class="w-full bg-white/10 hover:bg-white text-white hover:text-black py-2 rounded-xl font-bold transition">شراء الآن</button>
-                </div>
-            `).join('');
-        }
+        // الاستماع للتغييرات (Real-time)
+        const productsGrid = document.getElementById('productsGrid');
+        onValue(ref(db, 'products'), (snapshot) => {
+            const data = snapshot.val();
+            productsGrid.innerHTML = '';
+            if (data) {
+                Object.keys(data).forEach(key => {
+                    const p = data[key];
+                    productsGrid.innerHTML += `
+                        <div class="product-card glass p-4 rounded-3xl border border-white/5 transition-all">
+                            <img src="${p.image}" class="w-full h-48 object-cover rounded-2xl mb-4">
+                            <h3 class="text-xl font-bold mb-2">${p.name}</h3>
+                            <div class="flex justify-between items-center mb-4">
+                                <span class="text-blue-400 font-black text-2xl">$${p.price}</span>
+                                <button onclick="updatePrice('${key}')" class="text-[10px] text-gray-500 underline">تعديل السعر</button>
+                            </div>
+                            <button class="w-full bg-white/10 hover:bg-white hover:text-black py-2 rounded-xl font-bold transition">شراء الآن</button>
+                        </div>
+                    `;
+                });
+            }
+        });
 
-        // تشغيل العرض عند فتح الصفحة
-        saveAndRender();
+        document.getElementById('btnSave').onclick = addProduct;
+        window.toggleAdmin = () => document.getElementById('adminPanel').classList.toggle('hidden');
     </script>
 </body>
 </html>

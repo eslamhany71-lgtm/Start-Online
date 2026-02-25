@@ -92,29 +92,40 @@
 
     <!-- Firebase Logic for Dynamic Button -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyCyypXt8LnHiVBR2Ka0Mb8ntXu6dJH9N-w",
-            authDomain: "start-online-6f460.firebaseapp.com",
-            projectId: "start-online-6f460",
-            databaseURL: "https://start-online-6f460-default-rtdb.firebaseio.com/"
-        };
+    const firebaseConfig = {
+        apiKey: "AIzaSyCyypXt8LnHiVBR2Ka0Mb8ntXu6dJH9N-w",
+        authDomain: "start-online-6f460.firebaseapp.com",
+        projectId: "start-online-6f460",
+        databaseURL: "https://start-online-6f460-default-rtdb.firebaseio.com/"
+    };
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
 
-        // التحقق من حالة المستخدم لتغيير شكل الزرار
-        const navBtn = document.getElementById('navBtn');
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                navBtn.innerText = "لوحة التحكم";
+    const navBtn = document.getElementById('navBtn');
+
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            // جلب بيانات المستخدم لمعرفة رتبته
+            const snapshot = await get(ref(db, 'users/' + user.uid));
+            if (snapshot.exists()) {
+                const userData = snapshot.val();
+                if (userData.role === 'admin' || userData.role === 'marketer') {
+                    navBtn.innerText = "لوحة التحكم";
+                } else {
+                    navBtn.innerText = "تصفح المتجر";
+                }
                 navBtn.href = "products.html";
-                navBtn.classList.replace('bg-blue-600', 'bg-white/10');
-                navBtn.classList.add('border', 'border-white/10', 'backdrop-blur-md');
+                // إضافة كلمة ترحيب بسيطة
+                console.log("Welcome back " + userData.name);
             }
-        });
-    </script>
+        }
+    });
+</script>
 </body>
 </html>

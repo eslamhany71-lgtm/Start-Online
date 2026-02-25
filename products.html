@@ -115,21 +115,31 @@
             } else { window.location.href = "login.html"; }
         });
 
-        // إدارة المستخدمين (للأدمن)
+  // إدارة المستخدمين (للأدمن) - النسخة الكاملة
         function loadUsers() {
             onValue(ref(db, 'users'), (snapshot) => {
                 const users = snapshot.val();
-                const list = document.getElementById('usersList'); list.innerHTML = '';
+                const list = document.getElementById('usersList'); 
+                list.innerHTML = ''; // مسح القائمة قبل إعادة الرسم
                 if(users) {
                     Object.keys(users).forEach(uid => {
                         const u = users[uid];
                         list.innerHTML += `
                             <div class="bg-white/5 p-4 rounded-2xl border border-white/5 flex flex-col gap-2">
-                                <p class="font-bold text-sm">${u.name} <span class="text-[10px] text-blue-400">(${u.role})</span></p>
+                                <div class="flex justify-between items-start">
+                                    <p class="font-bold text-sm text-white">${u.name}</p>
+                                    <span class="text-[9px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 font-black uppercase">${u.role}</span>
+                                </div>
+                                <p class="text-[10px] text-gray-500 mb-2">${u.email}</p>
                                 <div class="flex gap-1">
-                                    <button onclick="changeRole('${uid}', 'marketer')" class="text-[8px] bg-blue-500/20 p-2 rounded-lg">ترقية لمسوق</button>
-                                    <button onclick="changeRole('${uid}', 'admin')" class="text-[8px] bg-yellow-500/20 p-2 rounded-lg text-yellow-500">أدمن</button>
-                                    <button onclick="changeRole('${uid}', 'customer')" class="text-[8px] bg-gray-500/20 p-2 rounded-lg">عميل</button>
+                                    <!-- زر ترقية لمسوق -->
+                                    <button onclick="changeRole('${uid}', 'marketer')" class="flex-1 text-[8px] bg-blue-600/20 hover:bg-blue-600 text-blue-400 hover:text-white p-2 rounded-lg transition-all">مسوق</button>
+                                    
+                                    <!-- زر ترقية لأدمن -->
+                                    <button onclick="changeRole('${uid}', 'admin')" class="flex-1 text-[8px] bg-yellow-600/20 hover:bg-yellow-600 text-yellow-500 hover:text-white p-2 rounded-lg transition-all">أدمن</button>
+                                    
+                                    <!-- زر إرجاع لعميل -->
+                                    <button onclick="changeRole('${uid}', 'customer')" class="flex-1 text-[8px] bg-gray-600/20 hover:bg-gray-400 text-gray-400 hover:text-white p-2 rounded-lg transition-all">عميل</button>
                                 </div>
                             </div>
                         `;

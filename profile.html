@@ -12,8 +12,7 @@
     </style>
 </head>
 <body class="pb-20">
-code
-Code
+
 <!-- Navbar -->
 <nav class="fixed top-0 left-0 right-0 z-50 p-6">
     <div class="max-w-7xl mx-auto glass rounded-2xl px-8 py-4 flex justify-between items-center shadow-2xl">
@@ -61,6 +60,21 @@ Code
 
         <!-- Main Content -->
         <div class="lg:col-span-2 space-y-12">
+            
+            <!-- اللمسة الجديدة: بانر طلب الانضمام كمسوق (يظهر للعميل فقط) -->
+            <section id="requestMarketerSection" class="hidden animate-slide">
+                <div class="glass p-8 rounded-[40px] border border-blue-500/30 bg-blue-500/5 relative overflow-hidden shadow-[0_0_20px_rgba(59,130,246,0.1)]">
+                    <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                        <div class="text-right">
+                            <h3 class="text-xl font-black text-white mb-2 italic tracking-tighter">هل تريد البدء في البيع معنا؟</h3>
+                            <p class="text-gray-400 text-sm">قدم طلب الآن لتصبح مسوقاً محترفاً وتبدأ في رفع منتجاتك الرقمية والربح منها.</p>
+                        </div>
+                        <button id="sendReqBtn" onclick="sendMarketerRequest()" class="bg-blue-600 text-white px-8 py-4 rounded-2xl font-black text-xs hover:bg-blue-500 transition-all shadow-xl shadow-blue-500/20 whitespace-nowrap">إرسال طلب انضمام</button>
+                    </div>
+                    <!-- زينة خلفية -->
+                    <div class="absolute -bottom-4 -left-4 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl"></div>
+                </div>
+            </section>
             
             <div id="settingsPanel" class="glass p-8 rounded-[40px] border border-blue-500/20 hidden animate-slide">
                 <h3 class="text-xl font-black mb-6 flex items-center gap-2 italic text-blue-400">تحديث الحساب</h3>
@@ -119,7 +133,7 @@ Code
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getDatabase, ref, get, update, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    import { getDatabase, ref, get, set, update, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyCyypXt8LnHiVBR2Ka0Mb8ntXu6dJH9N-w",
@@ -149,17 +163,55 @@ Code
                 
                 if(u.payNumber) document.getElementById('payNumber').value = u.payNumber;
 
+                // إظهار اللوحات بناء على الرتبة
                 if(role === 'marketer' || role === 'admin') {
                     document.getElementById('marketerStats').classList.remove('hidden');
                     document.getElementById('myProductsSection').classList.remove('hidden');
                     document.getElementById('marketerSettings').classList.remove('hidden');
                     document.getElementById('ordersSection').classList.remove('hidden');
                     loadOrders();
+                } else {
+                    // إذا كان عميل عادي، نظهر له بانر طلب الانضمام
+                    document.getElementById('requestMarketerSection').classList.remove('hidden');
+                    checkIfRequestSent();
                 }
                 loadContent(uid, u.wishlist || []);
             }
         } else { window.location.href = "login.html"; }
     });
+
+    // دالة إرسال طلب الانضمام كمسوق
+    window.sendMarketerRequest = async () => {
+        const btn = document.getElementById('sendReqBtn');
+        btn.innerText = "جاري الإرسال...";
+        btn.disabled = true;
+
+        const userSnap = await get(ref(db, 'users/' + uid));
+        const u = userSnap.val();
+
+        await set(ref(db, 'marketer_requests/' + uid), {
+            uid: uid,
+            name: u.name,
+            email: u.email,
+            date: new Date().toLocaleString('ar-EG')
+        });
+
+        showToast("تم إرسال طلبك بنجاح! سيراجعه الأدمن قريباً.");
+        btn.innerText = "تم إرسال الطلب بنجاح";
+        btn.classList.replace('bg-blue-600', 'bg-green-600/20');
+        btn.classList.add('text-green-500', 'border', 'border-green-500/30');
+    };
+
+    // التحقق لو العميل باعت طلب قبل كدة عشان نغير شكل الزرار
+    async function checkIfRequestSent() {
+        const reqSnap = await get(ref(db, 'marketer_requests/' + uid));
+        if(reqSnap.exists()) {
+            const btn = document.getElementById('sendReqBtn');
+            btn.innerText = "تم إرسال الطلب مسبقاً";
+            btn.disabled = true;
+            btn.classList.replace('bg-blue-600', 'bg-white/5');
+        }
+    }
 
     window.updateProfile = async () => {
         const updates = {};
@@ -194,7 +246,6 @@ Code
                                 </div>
                                 <div class="md:text-left flex flex-col items-end gap-2">
                                     <span class="text-[9px] bg-green-500/20 text-green-400 p-2 rounded-lg font-black uppercase tracking-widest">جدية الحجز: $${o.deposit}</span>
-                                    <!-- الزرار المحدث لحل مشكلة 404 -->
                                     <button onclick="viewReceipt('${o.receipt}')" class="text-[9px] text-blue-400 underline font-bold italic hover:text-white transition-all">عرض إثبات الدفع</button>
                                     <p class="text-[8px] text-gray-600 mt-2">${o.date}</p>
                                 </div>
@@ -206,18 +257,10 @@ Code
         });
     }
 
-    // دالة عرض الإيصال الجديدة والذكية
     window.viewReceipt = (val) => {
         if(!val) return showToast("لا يوجد إثبات دفع مسجل!");
-        
-        // إذا كان المدخل رابطاً حقيقياً يبدأ بـ http، يفتحه في صفحة جديدة
-        if(val.trim().startsWith('http')) {
-            window.open(val, '_blank');
-        } else {
-            // إذا كان مجرد نص أو رقم، يظهره في المودال
-            document.getElementById('receiptContent').innerText = val;
-            document.getElementById('receiptModal').classList.remove('hidden');
-        }
+        if(val.trim().startsWith('http')) { window.open(val, '_blank'); } 
+        else { document.getElementById('receiptContent').innerText = val; document.getElementById('receiptModal').classList.remove('hidden'); }
     };
 
     window.closeReceipt = () => document.getElementById('receiptModal').classList.add('hidden');

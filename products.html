@@ -7,27 +7,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        body {
-            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
-            color: #f1f5f9;
-            font-family: 'Cairo', sans-serif;
-            min-height: 100vh;
-            margin: 0;
-        }
-        .glass {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-        .product-card {
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        .product-card:hover {
-            transform: translateY(-10px);
-            background: rgba(255, 255, 255, 0.06);
-            border-color: rgba(59, 130, 246, 0.3);
-        }
-        /* إخفاء شريط التمرير */
+        body { background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%); color: #f1f5f9; font-family: 'Cairo', sans-serif; min-height: 100vh; margin: 0; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .product-card { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .product-card:hover { transform: translateY(-10px); background: rgba(255, 255, 255, 0.06); border-color: rgba(59, 130, 246, 0.3); }
         ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
     </style>
@@ -48,51 +31,43 @@
             </div>
             
             <div class="flex items-center gap-4">
-                <div id="userInfo" class="hidden md:block text-[10px] font-bold text-gray-300 bg-white/5 px-4 py-2 rounded-full border border-white/5 tracking-widest">
-                    جاري التحميل...
-                </div>
-                <button onclick="logout()" class="flex items-center gap-2 bg-red-500/10 hover:bg-red-500 border border-red-500/20 px-4 py-2 rounded-xl text-[10px] font-bold text-red-500 hover:text-white transition-all duration-300">
-                    <span>خروج</span>
-                </button>
+                <div id="userInfo" class="hidden md:block text-[10px] font-bold text-gray-300 bg-white/5 px-4 py-2 rounded-full border border-white/5">جاري التحميل...</div>
+                <button onclick="logout()" class="flex items-center gap-2 bg-red-500/10 hover:bg-red-500 border border-red-500/20 px-4 py-2 rounded-xl text-[10px] font-bold text-red-500 hover:text-white transition-all">خروج</button>
             </div>
         </div>
     </nav>
 
     <div class="pt-32"></div>
 
-    <!-- Search & Filters -->
+    <!-- البحث والمفضلة -->
     <section class="max-w-7xl mx-auto px-6 mb-12">
-        <div class="flex flex-col md:flex-row gap-4 items-center justify-between glass p-4 rounded-3xl border border-white/5">
+        <div class="flex flex-col md:flex-row gap-4 items-center justify-between glass p-4 rounded-3xl">
             <div class="relative w-full md:w-1/2">
-                <input type="text" id="searchInput" oninput="filterProducts()" placeholder="ابحث عن إبداع جديد..." class="w-full bg-white/5 border border-white/10 p-4 pr-12 rounded-2xl outline-none focus:border-blue-500 text-sm text-white">
-                <svg class="absolute right-4 top-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                <input type="text" id="searchInput" oninput="filterProducts()" placeholder="ابحث عن منتج..." class="w-full bg-white/5 border border-white/10 p-4 pr-12 rounded-2xl outline-none focus:border-blue-500 text-sm text-white">
+                <svg class="absolute right-4 top-4 text-gray-500" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
             </div>
-            <div class="flex gap-2">
-                <button onclick="loadWishlistOnly()" class="flex items-center gap-2 bg-pink-500/10 text-pink-500 px-6 py-4 rounded-2xl text-xs font-bold border border-pink-500/20 hover:bg-pink-500 hover:text-white transition-all">
-                    <span>المفضلة</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
-                </button>
-            </div>
+            <button onclick="loadWishlistOnly()" class="bg-pink-500/10 text-pink-500 px-6 py-4 rounded-2xl text-xs font-bold border border-pink-500/20 hover:bg-pink-500 hover:text-white transition-all">عرض المفضلة ❤</button>
         </div>
     </section>
 
-    <!-- Admin Panels (Hidden by default) -->
+    <!-- لوحة إدارة المستخدمين (أدمن فقط) -->
     <section id="adminUsersPanel" class="max-w-7xl mx-auto mb-10 p-8 glass rounded-[35px] hidden border-yellow-500/20 border">
-        <h2 class="text-xl font-black mb-6 text-yellow-500">إدارة صلاحيات المستخدمين</h2>
-        <div id="usersList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+        <h2 class="text-xl font-black mb-6 text-yellow-500 italic uppercase tracking-tighter">إدارة صلاحيات المستخدمين</h2>
+        <div id="usersList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
     </section>
 
+    <!-- لوحة إدارة المنتجات (مسوق وأدمن) -->
     <section id="controlPanel" class="max-w-4xl mx-auto p-8 glass rounded-[35px] hidden mb-12 border-blue-500/10 border shadow-2xl">
-        <h2 id="panelTitle" class="text-2xl font-black mb-6 italic text-blue-400">إدارة المنتجات</h2>
+        <h2 id="panelTitle" class="text-2xl font-black mb-6 text-blue-400">إدارة المنتجات</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <input type="text" id="pName" placeholder="اسم المنتج" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-sm text-white">
-            <input type="number" id="pPrice" placeholder="السعر ($)" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-sm text-white">
-            <input type="text" id="pImage" placeholder="رابط الصورة" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-sm text-white">
+            <input type="text" id="pName" placeholder="اسم المنتج" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-sm">
+            <input type="number" id="pPrice" placeholder="السعر ($)" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-sm">
+            <input type="text" id="pImage" placeholder="رابط الصورة" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-sm">
         </div>
-        <button onclick="saveProduct()" class="w-full mt-6 bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-2xl shadow-xl shadow-blue-500/20 transition-all">نشر المنتج</button>
+        <button onclick="saveProduct()" class="w-full mt-6 bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-2xl transition-all">نشر المنتج</button>
     </section>
 
-    <!-- Products Display -->
+    <!-- عرض المنتجات -->
     <main class="max-w-7xl mx-auto px-6">
         <div id="productsGrid" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8"></div>
     </main>
@@ -121,12 +96,12 @@
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
-                // جلب بيانات المستخدم
                 const userSnap = await get(ref(db, 'users/' + user.uid));
                 if (userSnap.exists()) {
-                    userRole = userSnap.val().role;
-                    userWishlist = userSnap.val().wishlist || [];
-                    document.getElementById('userInfo').innerText = `${userSnap.val().name} | ${userRole.toUpperCase()}`;
+                    const userData = userSnap.val();
+                    userRole = userData.role;
+                    userWishlist = userData.wishlist || [];
+                    document.getElementById('userInfo').innerText = `${userData.name} | ${userRole.toUpperCase()}`;
                     
                     if (userRole === 'admin' || userRole === 'marketer') {
                         document.getElementById('controlPanel').classList.remove('hidden');
@@ -140,29 +115,31 @@
             } else { window.location.href = "login.html"; }
         });
 
-        // إدارة المستخدمين (أدمن)
+        // إدارة المستخدمين (للأدمن)
         function loadUsers() {
             onValue(ref(db, 'users'), (snapshot) => {
                 const users = snapshot.val();
-                const list = document.getElementById('usersList');
-                list.innerHTML = '';
-                Object.keys(users).forEach(uid => {
-                    const u = users[uid];
-                    list.innerHTML += `
-                        <div class="flex justify-between items-center bg-white/5 p-4 rounded-2xl border border-white/5">
-                            <div><p class="font-bold text-sm">${u.name}</p><p class="text-[10px] text-blue-400 uppercase">${u.role}</p></div>
-                            <div class="flex gap-1">
-                                <button onclick="changeRole('${uid}', 'marketer')" class="text-[9px] bg-blue-500/20 p-2 rounded-lg">مسوق</button>
-                                <button onclick="changeRole('${uid}', 'admin')" class="text-[9px] bg-yellow-500/20 p-2 rounded-lg">أدمن</button>
+                const list = document.getElementById('usersList'); list.innerHTML = '';
+                if(users) {
+                    Object.keys(users).forEach(uid => {
+                        const u = users[uid];
+                        list.innerHTML += `
+                            <div class="bg-white/5 p-4 rounded-2xl border border-white/5 flex flex-col gap-2">
+                                <p class="font-bold text-sm">${u.name} <span class="text-[10px] text-blue-400">(${u.role})</span></p>
+                                <div class="flex gap-1">
+                                    <button onclick="changeRole('${uid}', 'marketer')" class="text-[8px] bg-blue-500/20 p-2 rounded-lg">ترقية لمسوق</button>
+                                    <button onclick="changeRole('${uid}', 'admin')" class="text-[8px] bg-yellow-500/20 p-2 rounded-lg text-yellow-500">أدمن</button>
+                                    <button onclick="changeRole('${uid}', 'customer')" class="text-[8px] bg-gray-500/20 p-2 rounded-lg">عميل</button>
+                                </div>
                             </div>
-                        </div>
-                    `;
-                });
+                        `;
+                    });
+                }
             });
         }
         window.changeRole = (uid, r) => update(ref(db, 'users/' + uid), { role: r });
 
-        // إدارة المنتجات
+        // إضافة منتج
         window.saveProduct = () => {
             const name = document.getElementById('pName').value;
             const price = document.getElementById('pPrice').value;
@@ -173,25 +150,29 @@
             }
         };
 
-        window.deleteProduct = (id) => confirm("حذف؟") && remove(ref(db, 'products/' + id));
-        window.editProduct = (id, n, p) => {
-            const nn = prompt("الاسم:", n); const np = prompt("السعر:", p);
-            if(nn && np) update(ref(db, 'products/' + id), { name: nn, price: np });
+        // حذف وتعديل المنتجات
+        window.deleteProduct = (id) => confirm("حذف المنتج؟") && remove(ref(db, 'products/' + id));
+        
+        window.editProduct = (id, oldName, oldPrice) => {
+            const newName = prompt("الاسم الجديد:", oldName);
+            const newPrice = prompt("السعر الجديد:", oldPrice);
+            if(newName && newPrice) update(ref(db, 'products/' + id), { name: newName, price: newPrice });
         };
 
-        // --- ميزة المفضلة ---
+        // الانتقال للتفاصيل
+        window.viewDetails = (id, name, price, image) => {
+            window.location.href = `details.html?id=${id}&name=${encodeURIComponent(name)}&price=${price}&image=${encodeURIComponent(image)}`;
+        };
+
+        // نظام المفضلة
         window.toggleWishlist = async (id) => {
             const index = userWishlist.indexOf(id);
-            if (index > -1) {
-                userWishlist.splice(index, 1); // إزالة
-            } else {
-                userWishlist.push(id); // إضافة
-            }
+            if (index > -1) userWishlist.splice(index, 1); else userWishlist.push(id);
             await update(ref(db, 'users/' + currentUser.uid), { wishlist: userWishlist });
             renderGrid(allProducts);
         };
 
-        // --- محرك البحث اللحظي ---
+        // محرك البحث
         window.filterProducts = () => {
             const term = document.getElementById('searchInput').value.toLowerCase();
             const filtered = {};
@@ -217,30 +198,26 @@
         }
 
         function renderGrid(products) {
-            const grid = document.getElementById('productsGrid');
-            grid.innerHTML = '';
+            const grid = document.getElementById('productsGrid'); grid.innerHTML = '';
             Object.keys(products).forEach(key => {
                 const p = products[key];
                 const isSaved = userWishlist.includes(key);
                 const canManage = (userRole === 'admin') || (userRole === 'marketer' && p.owner === currentUser.uid);
-                
                 grid.innerHTML += `
-                    <div class="product-card glass p-5 rounded-[30px] border border-white/5 relative group animate-fade-in">
-                        <button onclick="toggleWishlist('${key}')" class="absolute top-4 left-4 z-10 p-2 rounded-full backdrop-blur-md ${isSaved ? 'text-pink-500 bg-pink-500/10' : 'text-gray-400 bg-black/20'} transition-all hover:scale-110">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="${isSaved ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
-                        </button>
+                    <div class="product-card glass p-5 rounded-[30px] border border-white/5 relative group">
+                        <button onclick="toggleWishlist('${key}')" class="absolute top-4 left-4 z-10 p-2 rounded-full backdrop-blur-md ${isSaved ? 'text-pink-500 bg-pink-500/10' : 'text-gray-400 bg-black/20'} transition-all">❤</button>
                         <img src="${p.image}" class="w-full h-44 object-cover rounded-2xl mb-4 shadow-xl">
                         <h3 class="font-bold text-lg mb-1">${p.name}</h3>
                         <div class="flex justify-between items-center">
                             <span class="text-blue-400 font-black text-2xl">$${p.price}</span>
                             ${canManage ? `
                                 <div class="flex gap-2">
-                                    <button onclick="editProduct('${key}', '${p.name}', '${p.price}')" class="p-2 bg-yellow-500/10 text-yellow-500 rounded-lg text-[10px]">تعديل</button>
-                                    <button onclick="deleteProduct('${key}')" class="p-2 bg-red-500/10 text-red-500 rounded-lg text-[10px]">حذف</button>
+                                    <button onclick="editProduct('${key}', '${p.name}', '${p.price}')" class="p-2 bg-yellow-500/10 text-yellow-500 rounded-lg text-[10px]">✎</button>
+                                    <button onclick="deleteProduct('${key}')" class="p-2 bg-red-500/10 text-red-500 rounded-lg text-[10px]">✕</button>
                                 </div>
                             ` : ''}
                         </div>
-                        <button onclick="window.location.href='details.html?name=${encodeURIComponent(p.name)}&price=${p.price}&image=${encodeURIComponent(p.image)}'" class="w-full mt-5 bg-white/5 hover:bg-white hover:text-black py-3 rounded-2xl text-[11px] font-black transition-all">تفاصيل / شراء</button>
+                        <button onclick="viewDetails('${key}', '${p.name}', '${p.price}', '${p.image}')" class="w-full mt-5 bg-white/5 hover:bg-white hover:text-black py-3 rounded-2xl text-[11px] font-black transition-all">التفاصيل / التقييم</button>
                     </div>
                 `;
             });

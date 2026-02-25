@@ -30,31 +30,29 @@
             
             <!-- Sidebar: User Info -->
             <div class="lg:col-span-1 space-y-6">
-                <div class="glass p-8 rounded-[40px] text-center border border-white/5 relative overflow-hidden">
+                <div class="glass p-8 rounded-[40px] text-center border border-white/5 relative overflow-hidden shadow-2xl">
                     <div id="userRoleBadge" class="absolute top-4 left-4 text-[8px] font-black bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full uppercase tracking-widest">Customer</div>
                     <img id="userImg" src="https://via.placeholder.com/150" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover border-4 border-blue-500/20 shadow-xl">
                     <h1 id="userName" class="text-2xl font-black mb-1 italic">جاري التحميل...</h1>
                     <p id="userEmail" class="text-gray-500 text-xs mb-6 tracking-wide">email@example.com</p>
                     
-                    <!-- إعدادات دفع المسوق (تظهر للمسوق والأدمن) -->
                     <div id="marketerSettings" class="hidden border-t border-white/5 pt-6 mt-4 mb-6">
-                        <p class="text-[10px] text-blue-400 font-bold mb-3 uppercase tracking-tighter">إعدادات الدفع (رقم الحجز)</p>
-                        <input type="text" id="payNumber" placeholder="رقم كاش / إنستا باي" class="w-full bg-white/5 border border-white/10 p-3 rounded-xl text-xs outline-none focus:border-blue-500 mb-2">
-                        <button onclick="updatePaymentInfo()" class="w-full bg-blue-600/20 text-blue-400 py-2 rounded-xl text-[10px] font-bold hover:bg-blue-600 hover:text-white transition-all">تحديث رقم الدفع</button>
+                        <p class="text-[10px] text-blue-400 font-bold mb-3 uppercase tracking-tighter italic">إعدادات الدفع (فودافون كاش / إنستا باي)</p>
+                        <input type="text" id="payNumber" placeholder="رقم التحويل الخاص بك" class="w-full bg-white/5 border border-white/10 p-3 rounded-xl text-xs outline-none focus:border-blue-500 mb-2 text-white">
+                        <button onclick="updatePaymentInfo()" class="w-full bg-blue-600/20 text-blue-400 py-2 rounded-xl text-[10px] font-bold hover:bg-blue-600 hover:text-white transition-all border border-blue-600/30">حفظ رقم الدفع</button>
                     </div>
 
-                    <button onclick="toggleSettings()" class="w-full py-3 glass rounded-2xl text-xs font-bold hover:bg-white/10 transition-all mb-3">تعديل البيانات الشخصية</button>
-                    <button onclick="logout()" class="w-full py-3 bg-red-500/10 text-red-500 rounded-2xl text-xs font-bold hover:bg-red-500 hover:text-white transition-all">تسجيل الخروج</button>
+                    <button onclick="toggleSettings()" class="w-full py-3 glass rounded-2xl text-xs font-bold hover:bg-white/10 transition-all mb-3 border border-white/5">تعديل البيانات</button>
+                    <button onclick="logout()" class="w-full py-3 bg-red-500/10 text-red-500 rounded-2xl text-xs font-bold hover:bg-red-500 hover:text-white transition-all border border-red-500/20">خروج</button>
                 </div>
 
-                <!-- إحصائيات سريعة -->
                 <div class="grid grid-cols-2 gap-4">
-                    <div class="glass p-6 rounded-3xl text-center shadow-lg">
-                        <p class="text-[10px] text-gray-500 mb-1 font-bold">المفضلة</p>
+                    <div class="glass p-6 rounded-3xl text-center shadow-lg border border-white/5">
+                        <p class="text-[10px] text-gray-500 mb-1 font-bold uppercase">المفضلة</p>
                         <p id="wishCount" class="text-2xl font-black text-pink-500">0</p>
                     </div>
-                    <div id="marketerStats" class="glass p-6 rounded-3xl text-center hidden shadow-lg">
-                        <p class="text-[10px] text-gray-500 mb-1 font-bold">منتجاتي</p>
+                    <div id="marketerStats" class="glass p-6 rounded-3xl text-center hidden shadow-lg border border-white/5">
+                        <p class="text-[10px] text-gray-500 mb-1 font-bold uppercase">منتجاتي</p>
                         <p id="prodCount" class="text-2xl font-black text-blue-500">0</p>
                     </div>
                 </div>
@@ -63,53 +61,58 @@
             <!-- Main Content -->
             <div class="lg:col-span-2 space-y-12">
                 
-                <!-- لوحة الإعدادات (مخفية) -->
                 <div id="settingsPanel" class="glass p-8 rounded-[40px] border border-blue-500/20 hidden animate-slide">
-                    <h3 class="text-xl font-black mb-6 flex items-center gap-2 italic text-blue-400">تحديث الملف الشخصي</h3>
+                    <h3 class="text-xl font-black mb-6 flex items-center gap-2 italic text-blue-400">تحديث الحساب</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                        <input type="text" id="newName" placeholder="الاسم الجديد" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-sm">
-                        <input type="text" id="newImg" placeholder="رابط صورة البروفايل" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-sm">
+                        <input type="text" id="newName" placeholder="الاسم الجديد" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-sm text-white">
+                        <input type="text" id="newImg" placeholder="رابط الصورة الشخصية" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-sm text-white">
                     </div>
-                    <button onclick="updateProfile()" class="bg-blue-600 text-white px-8 py-3 rounded-2xl font-black text-sm hover:bg-blue-500 transition-all shadow-lg shadow-blue-600/20">حفظ التغييرات</button>
+                    <button onclick="updateProfile()" class="bg-blue-600 text-white px-8 py-3 rounded-2xl font-black text-sm hover:bg-blue-500 transition-all shadow-lg">حفظ التغييرات</button>
                 </div>
 
-                <!-- قسم الطلبات المستلمة (للمسوق والأدمن) -->
+                <!-- لوحة الطلبات المستلمة -->
                 <section id="ordersSection" class="hidden">
-                    <h2 class="text-2xl font-black mb-6 flex items-center gap-3">
-                        <span class="w-2 h-6 bg-yellow-500 rounded-full"></span>
-                        طلبات الشراء المستلمة
+                    <h2 class="text-2xl font-black mb-6 flex items-center gap-3 italic">
+                        <span class="w-2 h-6 bg-yellow-500 rounded-full shadow-[0_0_10px_#eab308]"></span>
+                        الطلبات الواردة (Orders)
                     </h2>
                     <div id="ordersList" class="space-y-4">
                         <!-- الطلبات تظهر هنا -->
                     </div>
                 </section>
 
-                <!-- قسم المنتجات المفضلة -->
                 <section>
                     <h2 class="text-2xl font-black mb-6 flex items-center gap-3">
-                        <span class="w-2 h-6 bg-pink-500 rounded-full"></span>
-                        قائمة المفضلات ❤
+                        <span class="w-2 h-6 bg-pink-500 rounded-full shadow-[0_0_10px_#ec4899]"></span>
+                        المفضلة الشخصية
                     </h2>
-                    <div id="wishlistGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- المفضلة تظهر هنا -->
-                    </div>
+                    <div id="wishlistGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
                 </section>
 
-                <!-- قسم منتجاتي (للمسوقين) -->
                 <section id="myProductsSection" class="hidden">
                     <h2 class="text-2xl font-black mb-6 flex items-center gap-3">
-                        <span class="w-2 h-6 bg-blue-500 rounded-full"></span>
+                        <span class="w-2 h-6 bg-blue-500 rounded-full shadow-[0_0_10px_#3b82f6]"></span>
                         إدارة منتجاتي
                     </h2>
-                    <div id="myProductsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- المنتجات تظهر هنا -->
-                    </div>
+                    <div id="myProductsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
                 </section>
             </div>
         </div>
     </div>
 
-    <!-- Toast Notification -->
+    <!-- Modal لعرض إيصال الدفع -->
+    <div id="receiptModal" class="fixed inset-0 bg-black/90 z-[200] flex items-center justify-center hidden p-6">
+        <div class="glass max-w-lg w-full p-8 rounded-[40px] text-center border border-white/10 shadow-2xl relative">
+            <button onclick="closeReceipt()" class="absolute top-6 left-6 text-gray-500 hover:text-white font-bold">✕</button>
+            <h3 class="text-xl font-black mb-6 text-blue-400">إثبات عملية الدفع</h3>
+            <div id="receiptContent" class="text-white text-sm break-words bg-white/5 p-6 rounded-2xl border border-white/5 mb-6">
+                <!-- المحتوى يظهر هنا -->
+            </div>
+            <button onclick="closeReceipt()" class="bg-white text-black px-10 py-3 rounded-2xl font-bold transition hover:bg-blue-600 hover:text-white">إغلاق</button>
+        </div>
+    </div>
+
+    <!-- Toast -->
     <div id="toast" class="fixed bottom-10 right-10 glass px-8 py-4 rounded-2xl text-white font-bold opacity-0 transition-all pointer-events-none z-[100] border-blue-500/50 border shadow-2xl"></div>
 
     <script type="module">
@@ -157,27 +160,20 @@
             } else { window.location.href = "login.html"; }
         });
 
-        // تحديث البيانات الشخصية
         window.updateProfile = async () => {
-            const name = document.getElementById('newName').value;
-            const img = document.getElementById('newImg').value;
             const updates = {};
-            if(name) updates['name'] = name;
-            if(img) updates['photo'] = img;
-            
+            if(document.getElementById('newName').value) updates['name'] = document.getElementById('newName').value;
+            if(document.getElementById('newImg').value) updates['photo'] = document.getElementById('newImg').value;
             await update(ref(db, 'users/' + uid), updates);
             showToast("تم تحديث الملف الشخصي!");
-            setTimeout(() => location.reload(), 1500);
+            setTimeout(() => location.reload(), 1000);
         };
 
-        // تحديث رقم الدفع
         window.updatePaymentInfo = async () => {
-            const num = document.getElementById('payNumber').value;
-            await update(ref(db, 'users/' + uid), { payNumber: num });
-            showToast("تم حفظ رقم الدفع بنجاح!");
+            await update(ref(db, 'users/' + uid), { payNumber: document.getElementById('payNumber').value });
+            showToast("تم حفظ رقم الدفع!");
         };
 
-        // تحميل الطلبات
         function loadOrders() {
             onValue(ref(db, 'orders'), (snap) => {
                 const list = document.getElementById('ordersList');
@@ -189,15 +185,17 @@
                         if(role === 'admin' || o.marketerId === uid) {
                             list.innerHTML += `
                                 <div class="glass p-6 rounded-3xl border border-white/10 flex flex-col md:flex-row justify-between items-start gap-4 animate-slide">
-                                    <div class="space-y-1">
-                                        <p class="text-blue-400 font-bold text-sm underline">${o.productName}</p>
+                                    <div class="space-y-1 text-right">
+                                        <p class="text-blue-400 font-black text-sm underline tracking-tighter">${o.productName}</p>
                                         <p class="text-xs text-white">العميل: ${o.customerName}</p>
                                         <p class="text-[10px] text-gray-500">العنوان: ${o.address}</p>
                                         <p class="text-[10px] text-gray-500">موبايل: ${o.phone1} / ${o.phone2}</p>
                                     </div>
-                                    <div class="md:text-left">
-                                        <span class="text-[9px] bg-green-500/20 text-green-400 p-2 rounded-lg font-black block mb-2 uppercase">جدية الحجز: $${o.deposit}</span>
-                                        <a href="${o.receipt}" target="_blank" class="text-[9px] text-blue-400 underline italic">عرض إيصال الدفع</a>
+                                    <div class="md:text-left flex flex-col items-end gap-2">
+                                        <span class="text-[9px] bg-green-500/20 text-green-400 p-2 rounded-lg font-black uppercase tracking-widest">جدية الحجز: $${o.deposit}</span>
+                                        <!-- الزرار المحدث لحل مشكلة 404 -->
+                                        <button onclick="viewReceipt('${o.receipt}')" class="text-[9px] text-blue-400 underline font-bold italic hover:text-white transition-all">عرض إثبات الدفع</button>
+                                        <p class="text-[8px] text-gray-600 mt-2">${o.date}</p>
                                     </div>
                                 </div>
                             `;
@@ -206,6 +204,22 @@
                 } else { list.innerHTML = '<p class="text-gray-600 text-xs">لا توجد طلبات واردة حالياً.</p>'; }
             });
         }
+
+        // دالة عرض الإيصال الجديدة والذكية
+        window.viewReceipt = (val) => {
+            if(!val) return showToast("لا يوجد إثبات دفع مسجل!");
+            
+            // إذا كان المدخل رابطاً حقيقياً يبدأ بـ http، يفتحه في صفحة جديدة
+            if(val.trim().startsWith('http')) {
+                window.open(val, '_blank');
+            } else {
+                // إذا كان مجرد نص أو رقم، يظهره في المودال
+                document.getElementById('receiptContent').innerText = val;
+                document.getElementById('receiptModal').classList.remove('hidden');
+            }
+        };
+
+        window.closeReceipt = () => document.getElementById('receiptModal').classList.add('hidden');
 
         function loadContent(userId, wishlist) {
             onValue(ref(db, 'products'), (snap) => {
@@ -217,16 +231,11 @@
                 let myCount = 0;
                 Object.keys(prods).forEach(key => {
                     const p = prods[key];
-                    const card = `
-                        <div class="glass p-4 rounded-3xl border border-white/5 flex gap-4 items-center transition hover:bg-white/5">
-                            <img src="${p.image}" class="w-16 h-16 object-cover rounded-xl shadow-lg">
-                            <div class="flex-1">
-                                <h4 class="font-bold text-xs">${p.name}</h4>
-                                <p class="text-blue-400 font-black text-sm">$${p.price}</p>
-                            </div>
-                            <a href="details.html?id=${key}&name=${encodeURIComponent(p.name)}&price=${p.price}&image=${encodeURIComponent(p.image)}" class="text-xs bg-white/5 p-2 rounded-lg">→</a>
-                        </div>
-                    `;
+                    const card = `<div class="glass p-4 rounded-3xl border border-white/5 flex gap-4 items-center">
+                        <img src="${p.image}" class="w-16 h-16 object-cover rounded-xl">
+                        <div class="flex-1"><h4 class="font-bold text-xs">${p.name}</h4><p class="text-blue-400 font-black text-sm">$${p.price}</p></div>
+                        <a href="details.html?id=${key}&name=${encodeURIComponent(p.name)}&price=${p.price}&image=${encodeURIComponent(p.image)}" class="text-xs">→</a>
+                    </div>`;
                     if(wishlist.includes(key)) wishGrid.innerHTML += card;
                     if(p.owner === userId) { myGrid.innerHTML += card; myCount++; }
                 });
@@ -236,12 +245,7 @@
         }
 
         window.toggleSettings = () => document.getElementById('settingsPanel').classList.toggle('hidden');
-        
-        window.showToast = (msg) => {
-            const t = document.getElementById('toast'); t.innerText = msg; t.style.opacity = '1';
-            setTimeout(() => t.style.opacity = '0', 3000);
-        };
-
+        window.showToast = (msg) => { const t = document.getElementById('toast'); t.innerText = msg; t.style.opacity = '1'; setTimeout(() => t.style.opacity = '0', 3000); };
         window.logout = () => signOut(auth).then(() => window.location.href = "login.html");
     </script>
 </body>

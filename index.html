@@ -9,7 +9,6 @@
     
     <style>
         body {
-            /* التدرج اللوني الهادئ (Charcoal Blue) */
             background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
             color: #f1f5f9;
             font-family: 'Cairo', sans-serif;
@@ -30,7 +29,6 @@
             box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
             transform: translateY(-2px);
         }
-        /* أنيميشن بسيط للنصوص */
         .fade-in {
             animation: fadeIn 1.5s ease-out forwards;
         }
@@ -39,26 +37,23 @@
             to { opacity: 1; transform: translateY(0); }
         }
     </style>
-</head>
+ head>
 <body>
 
     <!-- Navbar -->
     <nav class="fixed top-0 left-0 right-0 z-50 p-6">
         <div class="max-w-7xl mx-auto glass rounded-2xl px-8 py-4 flex justify-between items-center shadow-2xl shadow-black/50">
             
-            <!-- Logo -->
             <div class="text-2xl font-black tracking-tighter text-white">
-                <a href="index.html" class="hover:opacity-80 transition">START<span class="text-blue-400">ONLINE</span></a>
+                <a href="index.html">START<span class="text-blue-400">ONLINE</span></a>
             </div>
 
-            <!-- Navigation Links -->
             <ul class="hidden md:flex gap-10 font-bold text-sm text-gray-300">
-                <li><a href="index.html" class="text-blue-400">الرئيسية</a></li>
+                <li><a href="index.html" class="text-blue-400 font-black italic">الرئيسية</a></li>
                 <li><a href="products.html" class="hover:text-white transition">المتجر</a></li>
                 <li><a href="profile.html" class="hover:text-white transition">حسابي</a></li>
             </ul>
 
-            <!-- Dynamic Auth Button -->
             <div class="flex gap-4">
                 <a href="login.html" id="navBtn" class="bg-blue-600 text-white px-8 py-2 rounded-xl text-sm font-bold btn-glow flex items-center justify-center transition-all">
                     ابدأ الآن
@@ -73,59 +68,67 @@
             مستقبلك الرقمي <br> 
             <span class="text-blue-400 italic bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">يبدأ بلمسة</span>
         </h1>
-        <p class="text-gray-400 text-lg md:text-xl max-w-2xl mb-12 leading-relaxed">
+        <p class="text-gray-400 text-lg md:text-xl max-w-2xl mb-12 leading-relaxed italic">
             انضم لأكبر منصة عربية لعرض وبيع المنتجات الرقمية. نحن نوفر لك لوحة تحكم ذكية، وأنت تبدع في التسويق.
         </p>
         
         <div class="flex flex-wrap justify-center gap-6">
-            <!-- Main CTA -->
-            <a href="products.html" class="bg-white text-slate-900 px-12 py-4 rounded-2xl font-black btn-glow text-lg transition-all transform hover:scale-105">
+            <a href="products.html" class="bg-white text-slate-900 px-12 py-4 rounded-2xl font-black btn-glow text-lg transition-all transform hover:scale-105 shadow-xl">
                 تصفح المتجر
             </a>
-            <!-- Secondary CTA -->
-            <a href="login.html" class="glass text-white px-12 py-4 rounded-2xl font-bold text-lg hover:bg-white/10 transition-all flex items-center gap-2">
+            
+            <!-- الزرار اللي كان عامل مشكلة - أضفت له id="marketerBtn" -->
+            <a href="login.html" id="marketerBtn" class="glass text-white px-12 py-4 rounded-2xl font-bold text-lg hover:bg-white/10 transition-all flex items-center gap-2 border border-white/10 shadow-xl">
                 لوحة المسوقين
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
             </a>
         </div>
     </section>
 
-    <!-- Firebase Logic for Dynamic Button -->
+    <!-- Firebase Logic -->
     <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyCyypXt8LnHiVBR2Ka0Mb8ntXu6dJH9N-w",
-        authDomain: "start-online-6f460.firebaseapp.com",
-        projectId: "start-online-6f460",
-        databaseURL: "https://start-online-6f460-default-rtdb.firebaseio.com/"
-    };
+        const firebaseConfig = {
+            apiKey: "AIzaSyCyypXt8LnHiVBR2Ka0Mb8ntXu6dJH9N-w",
+            authDomain: "start-online-6f460.firebaseapp.com",
+            projectId: "start-online-6f460",
+            databaseURL: "https://start-online-6f460-default-rtdb.firebaseio.com/"
+        };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getDatabase(app);
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
 
-    const navBtn = document.getElementById('navBtn');
+        const navBtn = document.getElementById('navBtn');
+        const marketerBtn = document.getElementById('marketerBtn');
 
-    onAuthStateChanged(auth, async (user) => {
-        if (user) {
-            // جلب بيانات المستخدم لمعرفة رتبته
-            const snapshot = await get(ref(db, 'users/' + user.uid));
-            if (snapshot.exists()) {
-                const userData = snapshot.val();
-                if (userData.role === 'admin' || userData.role === 'marketer') {
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const snapshot = await get(ref(db, 'users/' + user.uid));
+                if (snapshot.exists()) {
+                    const userData = snapshot.val();
+                    
+                    // تحديث زرار النافبار (العلوي)
                     navBtn.innerText = "لوحة التحكم";
-                } else {
-                    navBtn.innerText = "تصفح المتجر";
+                    navBtn.href = "products.html";
+                    navBtn.classList.replace('bg-blue-600', 'bg-white/10');
+                    navBtn.classList.add('border', 'border-white/10');
+
+                    // تحديث الزرار الكبير (اللي في نص الشاشة)
+                    if (marketerBtn) {
+                        marketerBtn.innerText = "انتقل للوحة التحكم";
+                        marketerBtn.href = "products.html";
+                        // لو هو عميل عادي ممكن نغير الكلمة لـ "لوحة المسوق" بس نوديه للمتجر برضه
+                        if(userData.role === 'customer') {
+                            marketerBtn.innerText = "كن مسوقاً معنا";
+                        }
+                    }
                 }
-                navBtn.href = "products.html";
-                // إضافة كلمة ترحيب بسيطة
-                console.log("Welcome back " + userData.name);
             }
-        }
-    });
-</script>
+        });
+    </script>
 </body>
 </html>

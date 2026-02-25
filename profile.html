@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الملف الشخصي | Start Online</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+            color: #f1f5f9;
+            font-family: 'Cairo', sans-serif;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+    </style>
+</head>
+<body class="pb-20">
+
+    <!-- Navbar -->
+    <nav class="fixed top-0 left-0 right-0 z-50 p-6">
+        <div class="max-w-7xl mx-auto glass rounded-2xl px-8 py-4 flex justify-between items-center">
+            <div class="text-xl font-black text-white">
+                <a href="index.html">START<span class="text-blue-400">ONLINE</span></a>
+            </div>
+            <ul class="flex gap-8 font-bold text-sm text-gray-400">
+                <li><a href="index.html" class="hover:text-white transition">الرئيسية</a></li>
+                <li><a href="products.html" class="hover:text-white transition">المتجر</a></li>
+                <li><a href="profile.html" class="text-blue-400 underline underline-offset-8">حسابي</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="pt-32 px-6">
+        <!-- Profile Header -->
+        <div class="max-w-4xl mx-auto glass p-8 rounded-[40px] text-center mb-12 shadow-2xl border border-white/5">
+            <div class="w-24 h-24 bg-blue-600 rounded-full mx-auto mb-4 flex items-center justify-center text-3xl font-black text-white shadow-lg shadow-blue-500/20">
+                <span id="userInitial">U</span>
+            </div>
+            <h1 id="userName" class="text-3xl font-black mb-1 italic text-white underline underline-offset-8 decoration-blue-500">جاري التحميل...</h1>
+            <p id="userEmail" class="text-gray-500 text-sm mb-4">example@mail.com</p>
+            <div id="userBadge" class="inline-block px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-white/5 text-blue-400 border border-blue-400/20">
+                CUSTOMER
+            </div>
+        </div>
+
+        <!-- Wishlist Section -->
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-center gap-4 mb-8">
+                <div class="w-1 h-8 bg-pink-500 rounded-full"></div>
+                <h2 class="text-2xl font-black">قائمة المفضلات</h2>
+            </div>
+            <div id="wishlistGrid" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <!-- المنتجات المفضلة ستظهر هنا -->
+            </div>
+        </div>
+
+        <!-- My Products Section (For Marketers/Admins only) -->
+        <div id="myProductsSection" class="max-w-7xl mx-auto mt-20 hidden">
+            <div class="flex items-center gap-4 mb-8">
+                <div class="w-1 h-8 bg-blue-500 rounded-full"></div>
+                <h2 class="text-2xl font-black">منتجاتي التي رفعتها</h2>
+            </div>
+            <div id="myProductsGrid" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <!-- المنتجات المرفوعة ستظهر هنا -->
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getDatabase, ref, get, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCyypXt8LnHiVBR2Ka0Mb8ntXu6dJH9N-w",
+            authDomain: "start-online-6f460.firebaseapp.com",
+            projectId: "start-online-6f460",
+            databaseURL: "https://start-online-6f460-default-rtdb.firebaseio.com/"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const snapshot = await get(ref(db, 'users/' + user.uid));
+                if (snapshot.exists()) {
+                    const userData = snapshot.val();
+                    document.getElementById('userName').innerText = userData.name;
+                    document.getElementById('userEmail').innerText = userData.email;
+                    document.getElementById('userInitial').innerText = userData.name.charAt(0).toUpperCase();
+                    document.getElementById('userBadge').innerText = userData.role.toUpperCase();
+
+                    // عرض قسم منتجاتي لو هو مسوق أو أدمن
+                    if(userData.role === 'marketer' || userData.role === 'admin') {
+                        document.getElementById('myProductsSection').classList.remove('hidden');
+                    }
+
+                    loadProfileContent(user.uid, userData.wishlist || []);
+                }
+            } else {
+                window.location.href = "login.html";
+            }
+        });
+
+        function loadProfileContent(userId, wishlistIds) {
+            onValue(ref(db, 'products'), (snapshot) => {
+                const allProducts = snapshot.val() || {};
+                const wishlistGrid = document.getElementById('wishlistGrid');
+                const myProductsGrid = document.getElementById('myProductsGrid');
+                
+                wishlistGrid.innerHTML = '';
+                myProductsGrid.innerHTML = '';
+
+                let hasWishlist = false;
+
+                Object.keys(allProducts).forEach(key => {
+                    const p = allProducts[key];
+                    const cardHTML = `
+                        <div class="glass p-4 rounded-3xl border border-white/5 transition hover:scale-105">
+                            <img src="${p.image}" class="w-full h-32 object-cover rounded-2xl mb-3 shadow-lg">
+                            <h3 class="font-bold text-sm mb-1">${p.name}</h3>
+                            <div class="flex justify-between items-center">
+                                <span class="text-blue-400 font-black text-lg">$${p.price}</span>
+                                <a href="details.html?name=${encodeURIComponent(p.name)}&price=${p.price}&image=${encodeURIComponent(p.image)}" class="text-[9px] bg-white/10 px-3 py-1 rounded-lg">عرض</a>
+                            </div>
+                        </div>
+                    `;
+
+                    // إذا كان في المفضلة
+                    if (wishlistIds.includes(key)) {
+                        wishlistGrid.innerHTML += cardHTML;
+                        hasWishlist = true;
+                    }
+
+                    // إذا كان المستخدم هو المالك
+                    if (p.owner === userId) {
+                        myProductsGrid.innerHTML += cardHTML;
+                    }
+                });
+
+                if(!hasWishlist) wishlistGrid.innerHTML = '<p class="text-gray-500 text-sm">قائمة المفضلات فارغة حالياً.</p>';
+            });
+        }
+    </script>
+</body>
+</html>

@@ -39,83 +39,82 @@
                 <p id="userEmail" class="text-gray-500 text-[10px] mb-6 tracking-wide italic">email@example.com</p>
                 
                 <div id="marketerSettings" class="hidden border-t border-white/5 pt-6 mt-4 mb-6">
-                    <p class="text-[9px] text-blue-400 font-black mb-3 uppercase italic">محفظة الاستقبال</p>
+                    <p class="text-[9px] text-blue-400 font-black mb-3 uppercase italic underline decoration-blue-500/30">محفظة الاستقبال (Vodafone / InstaPay)</p>
                     <input type="text" id="payNumber" placeholder="رقم التحويل" class="w-full bg-white/5 border border-white/10 p-3 rounded-xl text-xs outline-none focus:border-blue-500 mb-2 text-white text-center font-bold">
-                    <button onclick="updatePaymentInfo()" class="w-full bg-blue-600/20 text-blue-400 py-2 rounded-xl text-[10px] font-black hover:bg-blue-600 hover:text-white transition-all">تحديث المحفظة</button>
+                    <button onclick="updatePaymentInfo()" class="w-full bg-blue-600/20 text-blue-400 py-2 rounded-xl text-[10px] font-black hover:bg-blue-600 hover:text-white transition-all border border-blue-500/20">تحديث المحفظة</button>
                 </div>
 
                 <div id="privateActions" class="space-y-3">
                     <button onclick="toggleSettings()" class="w-full py-3 glass rounded-2xl text-[10px] font-black hover:bg-white/10 transition-all border border-white/5 uppercase">إعدادات الحساب</button>
-                    <button onclick="logout()" class="w-full py-3 bg-red-500/10 text-red-500 rounded-2xl text-[10px] font-black hover:bg-red-500 hover:text-white transition-all">خروج</button>
+                    <button onclick="logout()" class="w-full py-3 bg-red-500/10 text-red-500 rounded-2xl text-[10px] font-black hover:bg-red-500 hover:text-white transition-all border border-red-500/20 uppercase tracking-widest">خروج</button>
                 </div>
             </div>
 
             <div class="grid grid-cols-2 gap-4">
-                <div class="glass p-6 rounded-3xl text-center shadow-lg border border-white/5"><p class="text-[9px] text-gray-500 uppercase font-black mb-1">المفضلة</p><p id="wishCount" class="text-2xl font-black text-pink-500">0</p></div>
-                <div id="marketerStatsBox" class="glass p-6 rounded-3xl text-center hidden shadow-lg border border-white/5"><p class="text-[9px] text-gray-500 uppercase font-black mb-1">منتجاتي</p><p id="prodCount" class="text-2xl font-black text-blue-500">0</p></div>
+                <div class="glass p-6 rounded-3xl text-center border border-pink-500/10"><p class="text-[9px] text-gray-500 uppercase font-black mb-1">المفضلة</p><p id="wishCount" class="text-2xl font-black text-pink-500">0</p></div>
+                <div id="marketerStatsBox" class="glass p-6 rounded-3xl text-center hidden border-blue-500/10"><p class="text-[9px] text-gray-500 uppercase font-black mb-1">منتجاتي</p><p id="prodCount" class="text-2xl font-black text-blue-500">0</p></div>
             </div>
         </div>
 
         <!-- Main Content -->
         <div class="lg:col-span-2 space-y-12">
             
-            <!-- داش بورد الإحصائيات (قابلة للضغط لعرض الأرشيف) -->
+            <!-- داش بورد الإحصائيات (قابلة للضغط) -->
             <section id="insightsDashboard" class="hidden animate-slide">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="stat-box p-6 rounded-[30px]">
                         <p class="text-[9px] text-gray-500 font-bold uppercase mb-2">أرباح مكتملة</p>
                         <h3 id="totalRevenue" class="text-2xl font-black text-green-400 tracking-tighter">$0.00</h3>
                     </div>
-                    <div onclick="openOrderArchive('completed')" class="stat-box p-6 rounded-[30px] border-blue-500/20">
-                        <p class="text-[9px] text-gray-500 font-bold uppercase mb-2 text-blue-400 italic">طلبات ناجحة (سجل)</p>
+                    <div onclick="showHistory('completed')" class="stat-box p-6 rounded-[30px] border-blue-500/20">
+                        <p class="text-[9px] text-gray-500 font-bold uppercase mb-2">طلبات ناجحة (سجل)</p>
                         <h3 id="successOrdersCount" class="text-2xl font-black text-blue-400">0</h3>
                     </div>
-                    <div onclick="openOrderArchive('failed')" class="stat-box p-6 rounded-[30px] border-red-500/20">
-                        <p class="text-[9px] text-gray-500 font-bold uppercase mb-2 text-red-400 italic">طلبات فاشلة (سجل)</p>
+                    <div onclick="showHistory('failed')" class="stat-box p-6 rounded-[30px] border-red-500/20">
+                        <p class="text-[9px] text-gray-500 font-bold uppercase mb-2">طلبات فاشلة (سجل)</p>
                         <h3 id="failedOrdersCount" class="text-2xl font-black text-red-400">0</h3>
                     </div>
                 </div>
             </section>
 
-            <!-- لوحة الأرشيف (تفتح عند الضغط على أرقام الداشبورد) -->
-            <section id="archivePanel" class="hidden glass p-8 rounded-[40px] border border-white/10 animate-slide">
+            <!-- لوحة سجل الطلبات (History) -->
+            <section id="historySection" class="hidden glass p-8 rounded-[40px] border border-white/10 animate-slide">
                 <div class="flex justify-between items-center mb-6">
-                    <h3 id="archiveTitle" class="text-xl font-black text-white italic tracking-tighter">سجل الطلبات</h3>
-                    <button onclick="document.getElementById('archivePanel').classList.add('hidden')" class="text-[10px] text-gray-500 underline uppercase">إغلاق السجل</button>
+                    <h3 id="historyTitle" class="text-xl font-black italic text-white">الأرشيف</h3>
+                    <button onclick="document.getElementById('historySection').classList.add('hidden')" class="text-xs text-gray-500 underline uppercase font-bold">إغلاق</button>
                 </div>
-                <div id="archiveList" class="space-y-4 max-h-[400px] overflow-y-auto pr-2"></div>
+                <div id="historyList" class="space-y-4 max-h-[500px] overflow-y-auto pr-2 font-bold"></div>
             </section>
 
-            <!-- بانر طلب الانضمام -->
             <section id="requestMarketerSection" class="hidden animate-slide">
-                <div class="glass p-8 rounded-[40px] border border-blue-500/30 bg-blue-500/5 relative overflow-hidden">
+                <div class="glass p-8 rounded-[40px] border border-blue-500/30 bg-blue-500/5 relative">
                     <div id="requestStatic">
-                        <h3 class="text-xl font-black mb-2 italic">ابدأ رحلة البيع معنا!</h3>
-                        <p class="text-gray-400 text-sm mb-6 leading-relaxed">قدم طلب انضمام كمسوق لتبدأ برفع منتجاتك وإدارة مبيعاتك من خلال لوحة تحكم خاصة.</p>
-                        <button onclick="showJoinForm()" class="bg-blue-600 text-white px-8 py-3 rounded-2xl font-black text-xs shadow-xl">ملئ استمارة الانضمام</button>
+                        <h3 class="text-xl font-black mb-2 italic">ابدأ رحلة الربح معنا!</h3>
+                        <p class="text-gray-400 text-sm mb-6">قدم طلب الآن لتتمكن من رفع منتجاتك وإدارتها عبر لوحة تحكم خاصة.</p>
+                        <button onclick="showJoinForm()" class="bg-blue-600 text-white px-8 py-3 rounded-2xl font-black text-xs shadow-lg shadow-blue-500/20">ملئ استمارة الانضمام</button>
                     </div>
                     <div id="joinForm" class="hidden space-y-4">
-                        <h3 class="text-lg font-black text-blue-400 italic">استمارة المسوقين</h3>
+                        <h3 class="text-lg font-black text-blue-400 mb-4 italic text-right">بيانات طلب الانضمام</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <input type="text" id="reqPhone" placeholder="رقم الموبايل" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-xs">
-                            <input type="text" id="reqAddress" placeholder="العنوان بالتفصيل" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-xs">
+                            <input type="text" id="reqPhone" placeholder="رقم الموبايل" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-xs text-white">
+                            <input type="text" id="reqAddress" placeholder="العنوان بالتفصيل" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-xs text-white">
                         </div>
-                        <textarea id="reqBio" placeholder="نبذة عنك وعن المنتجات التي ستعرضها" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl h-24 outline-none focus:border-blue-500 text-xs"></textarea>
-                        <button onclick="sendFullMarketerRequest()" class="bg-green-600 text-white px-10 py-3 rounded-2xl font-black text-xs shadow-xl">إرسال الطلب</button>
+                        <textarea id="reqBio" placeholder="لماذا تريد الانضمام إلينا؟ (نبذة قصيرة)" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl h-24 outline-none focus:border-blue-500 text-xs text-white"></textarea>
+                        <button onclick="sendFullMarketerRequest()" class="bg-green-600 text-white px-10 py-3 rounded-2xl font-black text-xs shadow-xl">إرسال الطلب للمراجعة</button>
                     </div>
                 </div>
             </section>
             
             <div id="settingsPanel" class="glass p-8 rounded-[40px] border border-blue-500/20 hidden animate-slide">
                 <h3 class="text-xl font-black mb-6 text-blue-400 italic">تحديث بيانات الحساب</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                    <input type="text" id="newName" placeholder="الاسم الجديد" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-sm text-white">
-                    <input type="text" id="newImg" placeholder="رابط صورة جديدة" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-sm text-white">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 text-white">
+                    <input type="text" id="newName" placeholder="الاسم الجديد" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-sm">
+                    <input type="text" id="newImg" placeholder="رابط صورة جديدة" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-sm">
                 </div>
                 <button onclick="updateProfile()" class="bg-blue-600 text-white px-10 py-3 rounded-2xl font-black text-xs shadow-lg">حفظ البيانات</button>
             </div>
 
-            <!-- لوحة الطلبات المستلمة (النشطة فقط) -->
+            <!-- لوحة الطلبات الواردة (تظهر فقط الأوردرات النشطة) -->
             <section id="ordersSection" class="hidden">
                 <h2 class="text-2xl font-black mb-6 flex items-center gap-3 italic">
                     <span class="w-2 h-6 bg-yellow-500 rounded-full shadow-[0_0_10px_#eab308]"></span>
@@ -124,28 +123,24 @@
                 <div id="ordersList" class="space-y-4"></div>
             </section>
 
-            <!-- المفضلات -->
             <section id="wishlistSection">
-                <h2 class="text-2xl font-black mb-6 flex items-center gap-3">
+                <h2 class="text-2xl font-black mb-6 flex items-center gap-3 italic">
                     <span class="w-2 h-6 bg-pink-500 rounded-full shadow-[0_0_10px_#ec4899]"></span>
-                    قائمة المفضلات الشخصية
+                    قائمة المفضلات
                 </h2>
                 <div id="wishlistGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
             </section>
 
-            <!-- منتجاتي المرفوعة -->
             <section id="myProductsSection" class="hidden">
-                <h2 class="text-2xl font-black mb-6 flex items-center gap-3">
-                    <span class="w-2 h-6 bg-blue-500 rounded-full shadow-[0_0_10px_#3b82f6]"></span>
-                    إدارة منتجاتي
-                </h2>
+                <h2 class="text-2xl font-black mb-6 flex items-center gap-3 italic text-blue-400 underline underline-offset-8">منتجاتي المعروضة</h2>
                 <div id="myProductsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
             </section>
         </div>
     </div>
 </div>
 
-<div id="receiptModal" class="fixed inset-0 bg-black/90 z-[200] flex items-center justify-center hidden p-6"><div class="glass max-w-lg w-full p-8 rounded-[40px] text-center border border-white/10 shadow-2xl relative"><button onclick="closeReceipt()" class="absolute top-6 left-6 text-gray-500 hover:text-white font-bold">✕</button><h3 class="text-xl font-black mb-6 text-blue-400 italic underline">بيانات إثبات الدفع</h3><div id="receiptContent" class="text-white text-sm break-words bg-white/5 p-6 rounded-2xl border border-white/5 mb-6 font-mono"></div><button onclick="closeReceipt()" class="bg-white text-black px-10 py-3 rounded-2xl font-bold uppercase text-[10px] tracking-widest transition hover:bg-blue-600 hover:text-white">إغلاق</button></div></div>
+<!-- Modal الإيصال -->
+<div id="receiptModal" class="fixed inset-0 bg-black/90 z-[200] flex items-center justify-center hidden p-6"><div class="glass max-w-lg w-full p-8 rounded-[40px] text-center border border-white/10 shadow-2xl relative"><button onclick="closeReceipt()" class="absolute top-6 left-6 text-gray-500 hover:text-white font-bold">✕</button><h3 class="text-xl font-black mb-6 text-blue-400 italic underline">بيانات إثبات الدفع</h3><div id="receiptContent" class="text-white text-sm break-words bg-white/5 p-6 rounded-2xl border border-white/5 mb-6 font-mono tracking-tighter"></div><button onclick="closeReceipt()" class="bg-white text-black px-10 py-3 rounded-2xl font-bold uppercase text-[10px] tracking-widest transition hover:bg-blue-600 hover:text-white">إغلاق</button></div></div>
 <div id="toast" class="fixed bottom-10 right-10 glass px-8 py-4 rounded-2xl text-white font-black opacity-0 transition-all pointer-events-none z-[100] border-blue-500/50 border shadow-2xl text-[10px] uppercase tracking-widest italic"></div>
 
 <script type="module">
@@ -169,7 +164,7 @@
 
     let myUid = null;
     let myRole = 'customer';
-    let allOrders = {}; // تخزين الأوردرات للأرشيف
+    let allOrdersData = {};
 
     onAuthStateChanged(auth, async (user) => {
         if (user) {
@@ -197,8 +192,8 @@
                 if(u.payNumber && !viewUid) document.getElementById('payNumber').value = u.payNumber;
 
                 if(u.role === 'marketer' || u.role === 'admin') {
-                    document.getElementById('marketerStatsBox').classList.remove('hidden');
-                    document.getElementById('myProductsSection').classList.remove('hidden');
+                    if(document.getElementById('marketerStatsBox')) document.getElementById('marketerStatsBox').classList.remove('hidden');
+                    if(document.getElementById('myProductsSection')) document.getElementById('myProductsSection').classList.remove('hidden');
                     if(!viewUid) {
                         document.getElementById('marketerSettings').classList.remove('hidden');
                         document.getElementById('ordersSection').classList.remove('hidden');
@@ -206,27 +201,25 @@
                         loadOrders(u.role);
                     }
                 } else if(!viewUid) {
-                    checkIfJoinRequestActive();
+                    checkIfMarketerReqSent();
                 }
                 loadContent(targetUid, u.wishlist || []);
             }
         } else if(!viewUid) { window.location.href = "login.html"; }
     });
 
-    // إرسال طلب انضمام
     window.showJoinForm = () => { document.getElementById('requestStatic').classList.add('hidden'); document.getElementById('joinForm').classList.remove('hidden'); };
     window.sendFullMarketerRequest = async () => {
         const phone = document.getElementById('reqPhone').value;
         const address = document.getElementById('reqAddress').value;
         const bio = document.getElementById('reqBio').value;
-        if(!phone || !address) return showToast("برجاء إكمال البيانات!");
+        if(!phone || !address) return showToast("أكمل بيانات الاستمارة!");
         const uSnap = await get(ref(db, 'users/' + myUid));
         await set(ref(db, 'marketer_requests/' + myUid), { uid: myUid, name: uSnap.val().name, email: uSnap.val().email, phone, address, bio, date: new Date().toLocaleString('ar-EG') });
         location.reload();
     };
 
-    // إخفاء البانر لو فيه طلب قيد المراجعة
-    async function checkIfJoinRequestActive() {
+    async function checkIfMarketerReqSent() {
         const reqSnap = await get(ref(db, 'marketer_requests/' + myUid));
         if(reqSnap.exists()) {
             document.getElementById('requestMarketerSection').classList.add('hidden');
@@ -235,117 +228,128 @@
         }
     }
 
-    // الأكشن على الأوردر (تم / فشل)
+    // الأكشن على الأوردر (تم / فشل) -> يختفي من القائمة فوراً
     window.updateOrderStatus = async (orderId, status) => {
         let updates = { status: status };
         if(status === 'failed') {
-            const reason = prompt("لماذا فشل الطلب؟ (تعليقك سيظهر في سجلات الإدارة)");
+            const reason = prompt("لماذا فشل هذا الطلب؟");
             if(!reason) return;
             updates.failReason = reason;
         }
         await update(ref(db, 'orders/' + orderId), updates);
-        showToast("تم تحديث الطلب وإرساله للأرشيف بنجاح.");
+        showToast("تم تحديث حالة الطلب وإرساله للسجل.");
     };
 
-    // تحميل الطلبات النشطة والأرقام
-    function loadOrders(role) {
+    function loadOrders(userRole) {
         onValue(ref(db, 'orders'), (snap) => {
-            allOrders = snap.val() || {};
+            allOrdersData = snap.val() || {};
             const list = document.getElementById('ordersList');
             list.innerHTML = '';
-            let revenue = 0, success = 0, failed = 0;
+            let rev = 0, ok = 0, fail = 0;
 
-            Object.keys(allOrders).reverse().forEach(key => {
-                const o = allOrders[key];
-                if(role === 'admin' || o.marketerId === myUid) {
-                    if(o.status === 'completed') { revenue += parseFloat(o.deposit); success++; }
-                    else if(o.status === 'failed') { failed++; }
+            Object.keys(allOrdersData).reverse().forEach(key => {
+                const o = allOrdersData[key];
+                const isOwner = (o.marketerId === myUid);
+                const isAdmin = (userRole === 'admin');
 
-                    // عرض الأوردر في القائمة "النشطة" فقط لو حالته مش completed ولا failed
+                if(isAdmin || isOwner) {
+                    if(o.status === 'completed') { rev += parseFloat(o.deposit); ok++; }
+                    else if(o.status === 'failed') { fail++; }
+
+                    // إظهار فقط الأوردرات النشطة (بدون حالة)
                     if(!o.status || o.status === 'pending') {
                         list.innerHTML += `
-                            <div class="glass p-6 rounded-[35px] border border-white/10 space-y-4 animate-slide shadow-2xl">
-                                <div class="flex flex-col md:flex-row justify-between gap-4 border-b border-white/5 pb-4">
-                                    <div>
-                                        <h4 class="font-black text-blue-400 underline decoration-blue-500/30 underline-offset-8 tracking-tighter">${o.productName}</h4>
-                                        <p class="text-[11px] text-white mt-1 font-bold">العميل: ${o.customerName}</p>
+                            <div class="glass p-6 rounded-3xl border border-white/10 space-y-4 animate-slide">
+                                <div class="flex flex-col md:flex-row justify-between gap-4">
+                                    <div class="text-right">
+                                        <h4 class="font-black text-blue-400 italic underline underline-offset-4">${o.productName}</h4>
+                                        <p class="text-[11px] text-white mt-2 font-bold tracking-tight">العميل: ${o.customerName}</p>
                                     </div>
                                     <div class="flex gap-2">
-                                        <button onclick="updateOrderStatus('${key}', 'completed')" class="bg-green-600/20 text-green-500 px-5 py-2 rounded-2xl text-[10px] font-black hover:bg-green-600 hover:text-white transition-all shadow-lg">تم التوصيل</button>
-                                        <button onclick="updateOrderStatus('${key}', 'failed')" class="bg-red-600/20 text-red-500 px-5 py-2 rounded-2xl text-[10px] font-black hover:bg-red-600 hover:text-white transition-all shadow-lg">فشل</button>
+                                        <button onclick="updateOrderStatus('${key}', 'completed')" class="bg-green-600/20 text-green-500 px-4 py-2 rounded-xl text-[10px] font-black hover:bg-green-600 hover:text-white transition">تم التوصيل</button>
+                                        <button onclick="updateOrderStatus('${key}', 'failed')" class="bg-red-600/20 text-red-500 px-4 py-2 rounded-xl text-[10px] font-black hover:bg-red-600 hover:text-white transition">فشل</button>
                                     </div>
                                 </div>
-                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-[10px] text-gray-500">
-                                    <p><span class="font-bold text-gray-400">العنوان:</span> ${o.address}</p>
-                                    <p><span class="font-bold text-gray-400">الموبايل:</span> ${o.phone1} / ${o.phone2}</p>
-                                    <button onclick="viewReceipt('${o.receipt}')" class="text-blue-400 underline text-right font-black italic">فتح إثبات الدفع</button>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-[10px] text-gray-500 bg-black/10 p-4 rounded-2xl border border-white/5">
+                                    <p><span class="text-gray-400">العنوان:</span> ${o.address}</p>
+                                    <p><span class="text-gray-400">الموبايل:</span> ${o.phone1} / ${o.phone2}</p>
+                                    <p><span class="text-gray-400">جدية الحجز:</span> $${o.deposit}</p>
+                                    <button onclick="viewReceipt('${o.receipt}')" class="text-blue-400 underline font-black">فتح إثبات الدفع</button>
                                 </div>
-                            </div>
-                        `;
+                            </div>`;
                     }
                 }
             });
-            document.getElementById('totalRevenue').innerText = "$" + revenue.toFixed(2);
-            document.getElementById('successOrdersCount').innerText = success;
-            document.getElementById('failedOrdersCount').innerText = failed;
+            document.getElementById('totalRevenue').innerText = "$" + rev.toFixed(2);
+            document.getElementById('successOrdersCount').innerText = ok;
+            document.getElementById('failedOrdersCount').innerText = fail;
         });
     }
 
-    // عرض أرشيف السجلات عند الضغط على أرقام الداشبورد
-    window.openOrderArchive = (status) => {
-        const panel = document.getElementById('archivePanel');
-        const list = document.getElementById('archiveList');
-        const title = document.getElementById('archiveTitle');
+    // أرشيف السجلات التفصيلي
+    window.showHistory = (status) => {
+        const panel = document.getElementById('historySection');
+        const list = document.getElementById('historyList');
+        const title = document.getElementById('historyTitle');
         panel.classList.remove('hidden');
-        title.innerText = status === 'completed' ? "سجل الطلبات الناجحة" : "سجل الطلبات الفاشلة";
+        title.innerText = status === 'completed' ? "سجل المبيعات الناجحة" : "سجل الطلبات الفاشلة";
         list.innerHTML = '';
 
-        Object.keys(allOrders).forEach(key => {
-            const o = allOrders[key];
+        Object.keys(allOrdersData).forEach(key => {
+            const o = allOrdersData[key];
             if(o.status === status && (myRole === 'admin' || o.marketerId === myUid)) {
                 list.innerHTML += `
-                    <div class="bg-white/5 p-5 rounded-[25px] border border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-[11px] animate-slide">
+                    <div class="bg-white/5 p-4 rounded-2xl border border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px]">
                         <div class="text-right">
-                            <p class="text-white font-black">${o.productName}</p>
-                            <p class="text-gray-500 italic mt-1">العميل: ${o.customerName} | المسوق ID: ${o.marketerId.substring(0,8)}</p>
+                            <p class="text-blue-400 font-black">${o.productName}</p>
+                            <p class="text-gray-500">العميل: ${o.customerName} | المسوق ID: ${o.marketerId.substring(0,8)}</p>
                         </div>
-                        <div class="text-left font-black">
-                            <span class="text-blue-400 bg-blue-400/5 px-3 py-1 rounded-full">$${o.deposit} (جدية حجز)</span>
-                            ${o.failReason ? `<p class="text-red-500 mt-2 italic font-normal">السبب: ${o.failReason}</p>` : ''}
+                        <div class="text-left font-bold">
+                            <span class="text-white bg-white/5 px-3 py-1 rounded-full">$${o.deposit}</span>
+                            ${o.failReason ? `<p class="text-red-500 mt-2 italic font-normal tracking-widest uppercase text-[8px]">السبب: ${o.failReason}</p>` : ''}
                         </div>
-                    </div>
-                `;
+                    </div>`;
             }
         });
-        if(!list.innerHTML) list.innerHTML = '<p class="text-center text-gray-600 p-10">لا توجد سجلات حالياً.</p>';
+        if(!list.innerHTML) list.innerHTML = '<p class="text-center text-gray-600 p-10">لا توجد سجلات بعد.</p>';
         panel.scrollIntoView({ behavior: 'smooth' });
     };
 
-    // الأساسيات
     window.updateProfile = async () => {
-        const u = {};
-        if(document.getElementById('newName').value) u['name'] = document.getElementById('newName').value;
-        if(document.getElementById('newImg').value) u['photo'] = document.getElementById('newImg').value;
-        await update(ref(db, 'users/' + myUid), u);
+        const updates = {};
+        if(document.getElementById('newName').value) updates['name'] = document.getElementById('newName').value;
+        if(document.getElementById('newImg').value) updates['photo'] = document.getElementById('newImg').value;
+        await update(ref(db, 'users/' + myUid), updates);
         location.reload();
     };
+
     window.updatePaymentInfo = async () => { await update(ref(db, 'users/' + myUid), { payNumber: document.getElementById('payNumber').value }); showToast("تم الحفظ!"); };
-    window.viewReceipt = (v) => { if(v.startsWith('http')) window.open(v, '_blank'); else { document.getElementById('receiptContent').innerText = v; document.getElementById('receiptModal').classList.remove('hidden'); } };
+    window.viewReceipt = (val) => { if(val.startsWith('http')) window.open(val, '_blank'); else { document.getElementById('receiptContent').innerText = val; document.getElementById('receiptModal').classList.remove('hidden'); } };
     window.closeReceipt = () => document.getElementById('receiptModal').classList.add('hidden');
     
-    function loadContent(u, w) {
-        onValue(ref(db, 'products'), (s) => {
-            const p = s.val() || {}; const wg = document.getElementById('wishlistGrid'); const mg = document.getElementById('myProductsGrid');
-            wg.innerHTML = ''; if(mg) mg.innerHTML = ''; let c = 0;
-            Object.keys(p).forEach(k => {
-                const i = p[k]; const h = `<div class="glass p-4 rounded-3xl border border-white/5 flex gap-4 items-center"><img src="${i.image}" class="w-12 h-12 rounded-xl object-cover"><div class="flex-1 font-bold text-xs"><h4>${i.name}</h4><p class="text-blue-400">$${i.price}</p></div></div>`;
-                if(w.includes(k)) wg.innerHTML += h; if(i.owner === u) { if(mg) mg.innerHTML += h; c++; }
+    function loadContent(userId, wishlist) {
+        onValue(ref(db, 'products'), (snap) => {
+            const prods = snap.val() || {};
+            const wishGrid = document.getElementById('wishlistGrid');
+            const myGrid = document.getElementById('myProductsGrid');
+            wishGrid.innerHTML = ''; if(myGrid) myGrid.innerHTML = '';
+            let mc = 0;
+            Object.keys(prods).forEach(key => {
+                const p = prods[key];
+                const card = `<div class="glass p-4 rounded-3xl border border-white/5 flex gap-4 items-center">
+                    <img src="${p.image}" class="w-12 h-12 rounded-xl object-cover">
+                    <div class="flex-1 font-bold text-xs"><h4>${p.name}</h4><p class="text-blue-400">$${p.price}</p></div>
+                </div>`;
+                if(wishlist.includes(key)) wishGrid.innerHTML += card;
+                if(p.owner === userId) { if(myGrid) myGrid.innerHTML += card; mc++; }
             });
-            document.getElementById('wishCount').innerText = w.length; if(document.getElementById('prodCount')) document.getElementById('prodCount').innerText = c;
+            document.getElementById('wishCount').innerText = wishlist.length;
+            if(document.getElementById('prodCount')) document.getElementById('prodCount').innerText = mc;
         });
     }
+
     window.toggleSettings = () => document.getElementById('settingsPanel').classList.toggle('hidden');
-    window.showToast = (m) => { const t = document.getElementById('toast'); t.innerText = m; t.style.opacity = '1'; setTimeout(() => t.style.opacity = '0', 3000); };
+    window.showToast = (msg) => { const t = document.getElementById('toast'); t.innerText = msg; t.style.opacity = '1'; setTimeout(() => t.style.opacity = '0', 3000); };
     window.logout = () => signOut(auth).then(() => window.location.href = "login.html");
 </script>
 </body>

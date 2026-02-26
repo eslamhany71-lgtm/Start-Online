@@ -160,31 +160,42 @@
             } else { window.location.href = "login.html"; }
         });
 
-        // لوحة طلبات المسوقين مع ميزة "زيارة الحساب"
-        function loadMarketerRequests() {
-            onValue(ref(db, 'marketer_requests'), (snap) => {
-                const list = document.getElementById('requestsList');
-                list.innerHTML = '';
-                const data = snap.val();
-                if(data) {
-                    Object.keys(data).forEach(uid => {
-                        const r = data[uid];
-                        list.innerHTML += `
-                            <div class="glass p-5 rounded-3xl border border-blue-500/20 flex flex-col gap-4 animate-fade-in shadow-lg">
-                                <div class="flex justify-between items-start">
-                                    <div><p class="font-bold text-sm text-white">${r.name}</p><p class="text-[10px] text-gray-500">${r.email}</p></div>
-                                    <button onclick="viewUserProfile('${uid}')" class="text-[9px] bg-white/5 px-3 py-1 rounded-lg border border-white/10 hover:bg-white hover:text-black transition">زيارة الحساب</button>
-                                </div>
-                                <div class="flex gap-2">
-                                    <button onclick="approveMarketer('${uid}')" class="flex-1 bg-blue-600 text-white py-2 rounded-xl text-[10px] font-bold shadow-lg shadow-blue-500/20">قبول</button>
-                                    <button onclick="rejectMarketer('${uid}')" class="flex-1 bg-red-500/10 text-red-500 py-2 rounded-xl text-[10px] font-bold border border-red-500/10">رفض</button>
-                                </div>
+// ابحث عن دالة loadMarketerRequests في ملف products.html واستبدلها بهذا الكود:
+function loadMarketerRequests() {
+    onValue(ref(db, 'marketer_requests'), (snap) => {
+        const list = document.getElementById('requestsList');
+        list.innerHTML = '';
+        const data = snap.val();
+        if(data) {
+            Object.keys(data).forEach(uid => {
+                const r = data[uid];
+                list.innerHTML += `
+                    <div class="glass p-6 rounded-[35px] border border-blue-500/20 space-y-4 animate-fade-in shadow-xl">
+                        <div class="flex justify-between items-start">
+                            <div class="text-right">
+                                <p class="font-black text-blue-400 italic underline underline-offset-4 tracking-tighter">${r.name}</p>
+                                <p class="text-[10px] text-gray-500 mt-1 uppercase font-bold">${r.email}</p>
                             </div>
-                        `;
-                    });
-                } else { list.innerHTML = '<p class="text-gray-600 text-xs italic">لا توجد طلبات معلقة.</p>'; }
+                            <button onclick="viewUserProfile('${uid}')" class="text-[8px] bg-white/5 px-4 py-2 rounded-xl border border-white/10 hover:bg-white hover:text-black transition-all">زيارة البروفايل</button>
+                        </div>
+                        
+                        <!-- بيانات الطلب الجديدة -->
+                        <div class="bg-black/20 p-4 rounded-2xl border border-white/5 space-y-2 text-[10px] text-gray-400">
+                            <p class="flex justify-between"><span>الموبايل:</span> <span class="text-white font-bold">${r.phone || 'غير مسجل'}</span></p>
+                            <p class="flex justify-between"><span>العنوان:</span> <span class="text-white font-bold">${r.address || 'غير مسجل'}</span></p>
+                            <p class="border-t border-white/5 pt-2 italic leading-relaxed text-gray-500 font-medium">"${r.bio || 'لا توجد نبذة.'}"</p>
+                        </div>
+
+                        <div class="flex gap-2">
+                            <button onclick="approveMarketer('${uid}')" class="flex-1 bg-blue-600 text-white py-3 rounded-2xl text-[10px] font-black shadow-lg shadow-blue-500/20 hover:bg-blue-500 transition-all">قبول كمسوق</button>
+                            <button onclick="rejectMarketer('${uid}')" class="flex-1 bg-red-600/10 text-red-500 py-3 rounded-2xl text-[10px] font-black border border-red-500/10 hover:bg-red-600 hover:text-white transition-all">رفض الطلب</button>
+                        </div>
+                    </div>
+                `;
             });
-        }
+        } else { list.innerHTML = '<p class="text-gray-600 text-xs italic p-10 text-center">لا توجد طلبات انضمام معلقة حالياً.</p>'; }
+    });
+}
 
         window.viewUserProfile = (uid) => window.location.href = `profile.html?viewUid=${uid}`;
 

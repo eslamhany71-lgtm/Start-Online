@@ -9,8 +9,8 @@
         .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.08); }
         .animate-slide { animation: slideIn 0.5s ease-out forwards; }
         @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
-        .stat-box { background: rgba(59, 130, 246, 0.05); border: 1px solid rgba(59, 130, 246, 0.1); transition: 0.3s; cursor: pointer; }
-        .stat-box:hover { background: rgba(59, 130, 246, 0.15); transform: translateY(-5px); }
+        .stat-box { background: rgba(59, 130, 246, 0.05); border: 1px solid rgba(59, 130, 246, 0.1); cursor: pointer; transition: 0.3s; }
+        .stat-box:hover { background: rgba(59, 130, 246, 0.15); transform: translateY(-5px); border-color: rgba(59, 130, 246, 0.4); }
     </style>
 </head>
 <body class="pb-20">
@@ -22,7 +22,7 @@
         <ul class="flex gap-8 font-bold text-sm text-gray-400">
             <li><a href="index.html" class="hover:text-white transition">الرئيسية</a></li>
             <li><a href="products.html" class="hover:text-white transition">المتجر</a></li>
-            <li><a href="profile.html" class="text-blue-400 underline underline-offset-8">حسابي</a></li>
+            <li><a href="profile.html" class="text-blue-400 underline underline-offset-8 font-black">حسابي</a></li>
         </ul>
     </div>
 </nav>
@@ -30,32 +30,32 @@
 <div class="pt-32 px-6 max-w-7xl mx-auto">
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
         
-        <!-- Sidebar: User Info -->
+        <!-- Sidebar -->
         <div class="lg:col-span-1 space-y-6">
             <div id="mainSidebar" class="glass p-8 rounded-[40px] text-center border border-white/5 relative overflow-hidden shadow-2xl">
                 <div id="userRoleBadge" class="absolute top-4 left-4 text-[8px] font-black bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full uppercase tracking-widest italic">Guest</div>
                 <img id="userImg" src="https://via.placeholder.com/150" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover border-4 border-blue-500/20 shadow-xl">
                 <h1 id="userName" class="text-2xl font-black mb-1 italic">تحميل...</h1>
-                <p id="userEmail" class="text-gray-500 text-[10px] mb-6 tracking-wide italic">email@example.com</p>
+                <p id="userEmail" class="text-gray-500 text-[10px] mb-6 tracking-wide">email@example.com</p>
                 
-                <div id="marketerSettings" class="hidden border-t border-white/5 pt-6 mt-4 mb-6 text-right">
-                    <p class="text-[9px] text-blue-400 font-black mb-3 uppercase italic">محفظة الاستقبال (Vodafone / InstaPay)</p>
+                <div id="marketerSettings" class="hidden border-t border-white/5 pt-6 mt-4 mb-6">
+                    <p class="text-[9px] text-blue-400 font-black mb-3 uppercase italic">محفظة الاستقبال</p>
                     <input type="text" id="payNumber" placeholder="رقم التحويل" class="w-full bg-white/5 border border-white/10 p-3 rounded-xl text-xs outline-none focus:border-blue-500 mb-2 text-white text-center font-bold">
-                    <button onclick="updatePaymentInfo()" class="w-full bg-blue-600/20 text-blue-400 py-2 rounded-xl text-[10px] font-black hover:bg-blue-600 hover:text-white transition-all border border-blue-500/20">تحديث المحفظة</button>
+                    <button onclick="updatePaymentInfo()" class="w-full bg-blue-600/20 text-blue-400 py-2 rounded-xl text-[10px] font-black hover:bg-blue-600 hover:text-white transition-all">حفظ المحفظة</button>
                 </div>
 
                 <div id="privateActions" class="space-y-3">
-                    <button onclick="toggleSettings()" class="w-full py-3 glass rounded-2xl text-[10px] font-black hover:bg-white/10 transition-all border border-white/5 uppercase">إعدادات الحساب</button>
-                    <button onclick="logout()" class="w-full py-3 bg-red-500/10 text-red-500 rounded-2xl text-[10px] font-black hover:bg-red-500 hover:text-white transition-all border border-red-500/20 uppercase tracking-widest">خروج</button>
+                    <button onclick="toggleSettings()" class="w-full py-3 glass rounded-2xl text-[10px] font-black hover:bg-white/10 transition-all border border-white/5">إعدادات الحساب</button>
+                    <button onclick="logout()" class="w-full py-3 bg-red-500/10 text-red-500 rounded-2xl text-[10px] font-black hover:bg-red-500 hover:text-white transition-all">خروج</button>
                 </div>
             </div>
 
-            <div id="statsContainer" class="grid grid-cols-2 gap-4">
-                <div class="glass p-6 rounded-3xl text-center border border-pink-500/10 shadow-lg">
+            <div class="grid grid-cols-2 gap-4">
+                <div class="glass p-6 rounded-3xl text-center shadow-lg border border-white/5">
                     <p class="text-[9px] text-gray-500 uppercase font-black mb-1">المفضلة</p>
                     <p id="wishCount" class="text-2xl font-black text-pink-500">0</p>
                 </div>
-                <div id="marketerStatsBox" class="glass p-6 rounded-3xl text-center hidden border-blue-500/10 shadow-lg">
+                <div id="marketerStatsBox" class="glass p-6 rounded-3xl text-center hidden shadow-lg border border-white/5">
                     <p class="text-[9px] text-gray-500 uppercase font-black mb-1">منتجاتي</p>
                     <p id="prodCount" class="text-2xl font-black text-blue-500">0</p>
                 </div>
@@ -65,86 +65,87 @@
         <!-- Main Content -->
         <div class="lg:col-span-2 space-y-12">
             
-            <!-- داش بورد الإحصائيات (معدل ليكون تفاعلي) -->
+            <!-- داش بورد الإحصائيات (معدل) -->
             <section id="insightsDashboard" class="hidden animate-slide">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="stat-box p-6 rounded-[30px] border-green-500/10">
-                        <p class="text-[9px] text-gray-500 font-bold uppercase mb-2 italic">أرباح مكتملة</p>
-                        <h3 id="totalRevenue" class="text-2xl font-black text-green-400 tracking-tighter">$0.00</h3>
+                        <p class="text-[9px] text-gray-500 font-bold uppercase mb-2">أرباح مكتملة</p>
+                        <h3 id="totalRevenue" class="text-2xl font-black text-green-400">$0.00</h3>
                     </div>
-                    <div onclick="toggleArchive('completed')" class="stat-box p-6 rounded-[30px] border-blue-500/20">
-                        <p class="text-[9px] text-gray-500 font-bold uppercase mb-2 italic text-blue-400">طلبات ناجحة (عرض السجل)</p>
+                    <!-- الأزرار التي تفتح الأرشيف -->
+                    <div onclick="openOrderArchive('completed')" class="stat-box p-6 rounded-[30px] border-blue-500/20">
+                        <p class="text-[9px] text-gray-500 font-bold uppercase mb-2 text-blue-400">طلبات ناجحة (عرض السجل)</p>
                         <h3 id="successOrdersCount" class="text-2xl font-black text-blue-400">0</h3>
                     </div>
-                    <div onclick="toggleArchive('failed')" class="stat-box p-6 rounded-[30px] border-red-500/20">
-                        <p class="text-[9px] text-gray-500 font-bold uppercase mb-2 italic text-red-400">طلبات فاشلة (عرض السجل)</p>
+                    <div onclick="openOrderArchive('failed')" class="stat-box p-6 rounded-[30px] border-red-500/20">
+                        <p class="text-[9px] text-gray-500 font-bold uppercase mb-2 text-red-400">طلبات فاشلة (عرض السجل)</p>
                         <h3 id="failedOrdersCount" class="text-2xl font-black text-red-400">0</h3>
                     </div>
                 </div>
             </section>
 
-            <!-- لوحة السجل والأرشيف (تظهر عند الضغط) -->
-            <section id="orderArchiveSection" class="hidden glass p-8 rounded-[40px] border border-white/10 animate-slide">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 id="archiveTitle" class="text-xl font-black italic text-white tracking-tighter">سجل مبيعاتك</h3>
-                    <button onclick="document.getElementById('orderArchiveSection').classList.add('hidden')" class="text-[10px] text-gray-500 underline">إغلاق</button>
+            <!-- لوحة الأرشيف (تم توحيد الـ ID) -->
+            <section id="orderArchiveSection" class="hidden glass p-8 rounded-[40px] border border-white/10 animate-slide shadow-2xl">
+                <div class="flex justify-between items-center mb-6 border-b border-white/5 pb-4">
+                    <h3 id="archiveTitle" class="text-xl font-black italic text-white tracking-tighter uppercase">سجل المبيعات</h3>
+                    <button onclick="document.getElementById('orderArchiveSection').classList.add('hidden')" class="text-[10px] text-gray-500 hover:text-white underline uppercase">إغلاق السجل</button>
                 </div>
-                <div id="archiveList" class="space-y-4 max-h-[500px] overflow-y-auto pr-2"></div>
+                <div id="archiveList" class="space-y-4 max-h-[500px] overflow-y-auto pr-2 custom-scroll"></div>
             </section>
 
             <!-- بانر طلب الانضمام -->
             <section id="requestMarketerSection" class="hidden animate-slide">
                 <div class="glass p-8 rounded-[40px] border border-blue-500/30 bg-blue-500/5 relative overflow-hidden">
                     <div id="requestStatic">
-                        <h3 class="text-xl font-black mb-2 italic text-white">ابدأ رحلة الربح معنا!</h3>
-                        <p class="text-gray-400 text-sm mb-6">قدم طلب انضمام كمسوق الآن لتبدأ برفع منتجاتك وإدارة مبيعاتك.</p>
+                        <h3 class="text-xl font-black mb-2 italic">ابدأ رحلة الربح معنا!</h3>
+                        <p class="text-gray-400 text-sm mb-6 leading-relaxed">قدم طلب انضمام كمسوق الآن لتبدأ برفع منتجاتك وإدارة مبيعاتك.</p>
                         <button onclick="showJoinForm()" class="bg-blue-600 text-white px-8 py-3 rounded-2xl font-black text-xs shadow-xl">ملئ استمارة الانضمام</button>
                     </div>
                     <div id="joinForm" class="hidden space-y-4">
-                        <h3 class="text-lg font-black text-blue-400 italic">بيانات طلب الانضمام</h3>
+                        <h3 class="text-lg font-black text-blue-400 mb-4 italic">استمارة المسوقين</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <input type="text" id="reqPhone" placeholder="رقم الموبايل" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-xs text-white">
                             <input type="text" id="reqAddress" placeholder="العنوان بالتفصيل" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-xs text-white">
                         </div>
                         <textarea id="reqBio" placeholder="نبذة قصيرة عن خبرتك" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl h-24 outline-none focus:border-blue-500 text-xs text-white"></textarea>
-                        <button onclick="sendFullMarketerRequest()" class="bg-green-600 text-white px-10 py-3 rounded-2xl font-black text-xs shadow-xl">إرسال الطلب للمراجعة</button>
+                        <button onclick="sendFullMarketerRequest()" class="bg-green-600 text-white px-10 py-3 rounded-2xl font-black text-xs shadow-xl">إرسال الطلب</button>
                     </div>
                 </div>
             </section>
             
             <!-- إعدادات الحساب -->
-            <div id="settingsPanel" class="glass p-8 rounded-[40px] border border-blue-500/20 hidden animate-slide shadow-2xl">
+            <div id="settingsPanel" class="glass p-8 rounded-[40px] border border-blue-500/20 hidden animate-slide">
                 <h3 class="text-xl font-black mb-6 text-blue-400 italic">تحديث بيانات الحساب</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                     <input type="text" id="newName" placeholder="الاسم الجديد" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-sm text-white">
                     <input type="text" id="newImg" placeholder="رابط صورة جديدة" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-sm text-white">
                 </div>
-                <button onclick="updateProfile()" class="bg-blue-600 text-white px-10 py-3 rounded-2xl font-black text-xs shadow-lg shadow-blue-600/20">حفظ التغييرات</button>
+                <button onclick="updateProfile()" class="bg-blue-600 text-white px-10 py-3 rounded-2xl font-black text-xs shadow-lg">حفظ البيانات</button>
             </div>
 
-            <!-- إدارة الطلبات الواردة (تختفي عند التنفيذ) -->
+            <!-- إدارة الطلبات الواردة الجديدة -->
             <section id="ordersSection" class="hidden">
                 <h2 class="text-2xl font-black mb-6 flex items-center gap-3 italic">
                     <span class="w-2 h-6 bg-yellow-500 rounded-full shadow-[0_0_10px_#eab308]"></span>
-                    الطلبات الواردة الجديدة (قيد الانتظار)
+                    الطلبات الواردة الجديدة
                 </h2>
                 <div id="ordersList" class="space-y-4"></div>
             </section>
 
             <!-- المفضلات -->
             <section id="wishlistSection">
-                <h2 class="text-2xl font-black mb-6 flex items-center gap-3">
+                <h2 class="text-2xl font-black mb-6 flex items-center gap-3 italic text-pink-500">
                     <span class="w-2 h-6 bg-pink-500 rounded-full shadow-[0_0_10px_#ec4899]"></span>
-                    المنتجات المفضلة ❤
+                    قائمة المفضلات ❤
                 </h2>
                 <div id="wishlistGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
             </section>
 
-            <!-- إدارة منتجاتي -->
+            <!-- إدارة منتجاتي (مصلح بزر العرض) -->
             <section id="myProductsSection" class="hidden">
-                <h2 class="text-2xl font-black mb-6 flex items-center gap-3">
+                <h2 class="text-2xl font-black mb-6 flex items-center gap-3 italic text-blue-400">
                     <span class="w-2 h-6 bg-blue-500 rounded-full shadow-[0_0_10px_#3b82f6]"></span>
-                    منتجاتي التي قمت برفعها
+                    إدارة منتجاتي المعروضة
                 </h2>
                 <div id="myProductsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
             </section>
@@ -153,8 +154,7 @@
 </div>
 
 <!-- Modal الإيصال -->
-<div id="receiptModal" class="fixed inset-0 bg-black/90 z-[200] flex items-center justify-center hidden p-6"><div class="glass max-w-lg w-full p-8 rounded-[40px] text-center border border-white/10 shadow-2xl relative"><button onclick="closeReceipt()" class="absolute top-6 left-6 text-gray-500 hover:text-white font-bold">✕</button><h3 class="text-xl font-black mb-6 text-blue-400 italic underline">بيانات إثبات الدفع</h3><div id="receiptContent" class="text-white text-sm break-words bg-white/5 p-6 rounded-2xl border border-white/5 mb-6 font-mono tracking-tighter"></div><button onclick="closeReceipt()" class="bg-white text-black px-10 py-3 rounded-2xl font-bold uppercase text-[10px] tracking-widest transition hover:bg-blue-600 hover:text-white">إغلاق</button></div></div>
-
+<div id="receiptModal" class="fixed inset-0 bg-black/90 z-[200] flex items-center justify-center hidden p-6"><div class="glass max-w-lg w-full p-8 rounded-[40px] text-center border border-white/10 shadow-2xl relative"><button onclick="closeReceipt()" class="absolute top-6 left-6 text-gray-500 hover:text-white font-bold">✕</button><h3 class="text-xl font-black mb-6 text-blue-400 italic underline">بيانات إثبات الدفع</h3><div id="receiptContent" class="text-white text-sm break-words bg-white/5 p-6 rounded-2xl border border-white/5 mb-6 font-mono tracking-tighter"></div><button onclick="closeReceipt()" class="bg-white text-black px-10 py-3 rounded-2xl font-bold uppercase text-[10px] tracking-widest">إغلاق</button></div></div>
 <!-- Toast -->
 <div id="toast" class="fixed bottom-10 right-10 glass px-8 py-4 rounded-2xl text-white font-black opacity-0 transition-all pointer-events-none z-[100] border-blue-500/50 border shadow-2xl text-[10px] tracking-widest italic uppercase"></div>
 
@@ -178,25 +178,18 @@
     const viewUid = urlParams.get('viewUid');
 
     let myUid = null;
-    let currentOrdersData = {}; // لحفظ كافة الأوردرات للأرشفة
+    let myRole = 'customer';
+    let currentOrdersData = {};
 
     onAuthStateChanged(auth, async (user) => {
         if (user) {
             myUid = user.uid;
             const targetUid = viewUid || myUid;
             
-            if(viewUid && viewUid !== myUid) {
-                document.getElementById('privateActions').classList.add('hidden');
-                document.getElementById('marketerSettings').classList.add('hidden');
-                if(document.getElementById('insightsDashboard')) document.getElementById('insightsDashboard').remove();
-                if(document.getElementById('ordersSection')) document.getElementById('ordersSection').remove();
-                if(document.getElementById('requestMarketerSection')) document.getElementById('requestMarketerSection').remove();
-                if(document.getElementById('settingsPanel')) document.getElementById('settingsPanel').remove();
-            }
-
             const snap = await get(ref(db, 'users/' + targetUid));
             if (snap.exists()) {
                 const u = snap.val();
+                myRole = u.role;
                 document.getElementById('userName').innerText = u.name;
                 document.getElementById('userEmail').innerText = u.email;
                 document.getElementById('userRoleBadge').innerText = u.role.toUpperCase();
@@ -204,24 +197,33 @@
                 
                 if(u.payNumber && !viewUid) document.getElementById('payNumber').value = u.payNumber;
 
-                if(u.role === 'marketer' || u.role === 'admin') {
-                    if(document.getElementById('marketerStatsBox')) document.getElementById('marketerStatsBox').classList.remove('hidden');
-                    if(document.getElementById('myProductsSection')) document.getElementById('myProductsSection').classList.remove('hidden');
-                    if(!viewUid) {
+                // لو داخل أشوف حسابي أنا
+                if(!viewUid || viewUid === myUid) {
+                    if(u.role === 'marketer' || u.role === 'admin') {
+                        document.getElementById('marketerStatsBox').classList.remove('hidden');
+                        document.getElementById('myProductsSection').classList.remove('hidden');
                         document.getElementById('marketerSettings').classList.remove('hidden');
                         document.getElementById('ordersSection').classList.remove('hidden');
                         document.getElementById('insightsDashboard').classList.remove('hidden');
                         loadOrders(u.role);
+                    } else {
+                        checkIfRequestActive();
                     }
-                } else if(!viewUid) {
-                    checkIfRequestActive();
+                } else {
+                    // لو داخل أشوف حساب شخص تاني (إخفاء الأزرار)
+                    document.getElementById('privateActions').classList.add('hidden');
+                    document.getElementById('marketerSettings').classList.add('hidden');
+                    if(document.getElementById('insightsDashboard')) document.getElementById('insightsDashboard').remove();
+                    if(document.getElementById('ordersSection')) document.getElementById('ordersSection').remove();
+                    if(document.getElementById('requestMarketerSection')) document.getElementById('requestMarketerSection').remove();
+                    if(document.getElementById('settingsPanel')) document.getElementById('settingsPanel').remove();
                 }
                 loadContent(targetUid, u.wishlist || []);
             }
         } else if(!viewUid) { window.location.href = "login.html"; }
     });
 
-    // تحديث الأوردر وإخفاؤه
+    // تحديث الأوردر (تم / فشل)
     window.updateOrderStatus = async (orderId, status) => {
         let updates = { status: status };
         if(status === 'failed') {
@@ -239,50 +241,44 @@
             currentOrdersData = snap.val() || {};
             const list = document.getElementById('ordersList');
             list.innerHTML = '';
-            
             let revenue = 0, success = 0, failed = 0;
 
             Object.keys(currentOrdersData).reverse().forEach(key => {
                 const o = currentOrdersData[key];
-                const isOwner = (o.marketerId === myUid);
-                const isAdmin = (role === 'admin');
-
-                if(isAdmin || isOwner) {
+                if(role === 'admin' || o.marketerId === myUid) {
                     if(o.status === 'completed') { revenue += parseFloat(o.deposit); success++; }
                     else if(o.status === 'failed') { failed++; }
 
-                    // عرض الطلب فقط لو حالته Pending أو فاضية
                     if(!o.status || o.status === 'pending') {
                         list.innerHTML += `
                             <div class="glass p-6 rounded-3xl border border-white/10 space-y-4 animate-slide shadow-xl">
-                                <div class="flex flex-col md:flex-row justify-between gap-4 border-b border-white/5 pb-4">
+                                <div class="flex flex-col md:flex-row justify-between gap-4 border-b border-white/5 pb-4 text-right">
                                     <div>
-                                        <h4 class="font-black text-blue-400 underline decoration-blue-500/20 underline-offset-4 tracking-tighter">${o.productName}</h4>
-                                        <p class="text-[10px] text-white mt-1 uppercase font-bold italic">العميل: ${o.customerName}</p>
+                                        <h4 class="font-black text-blue-400 underline decoration-blue-500/20 underline-offset-4 tracking-tighter uppercase">${o.productName}</h4>
+                                        <p class="text-[10px] text-white mt-1 font-bold italic">العميل: ${o.customerName}</p>
                                     </div>
                                     <div class="flex gap-2">
-                                        <button onclick="updateOrderStatus('${key}', 'completed')" class="bg-green-600/20 text-green-500 px-5 py-2 rounded-xl text-[9px] font-black hover:bg-green-600 hover:text-white transition-all">تم التوصيل</button>
-                                        <button onclick="updateOrderStatus('${key}', 'failed')" class="bg-red-600/20 text-red-500 px-5 py-2 rounded-xl text-[9px] font-black hover:bg-red-600 hover:text-white transition-all">فشل</button>
+                                        <button onclick="updateOrderStatus('${key}', 'completed')" class="bg-green-600/20 text-green-500 px-4 py-2 rounded-xl text-[9px] font-black hover:bg-green-600 hover:text-white transition-all shadow-lg">تم التوصيل</button>
+                                        <button onclick="updateOrderStatus('${key}', 'failed')" class="bg-red-600/20 text-red-500 px-4 py-2 rounded-xl text-[9px] font-black hover:bg-red-600 hover:text-white transition-all shadow-lg">فشل</button>
                                     </div>
                                 </div>
-                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-[10px] text-gray-500 font-bold uppercase italic">
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-[10px] text-gray-500 font-bold italic text-right">
                                     <p>العنوان: ${o.address}</p>
                                     <p>موبايل: ${o.phone1} / ${o.phone2}</p>
-                                    <button onclick="viewReceipt('${o.receipt}')" class="text-blue-400 underline text-right font-black">فتح إثبات الدفع</button>
+                                    <button onclick="viewReceipt('${o.receipt}')" class="text-blue-400 underline text-right font-black uppercase">فتح إثبات الدفع</button>
                                 </div>
                             </div>
                         `;
                     }
                 }
             });
-
             document.getElementById('totalRevenue').innerText = "$" + revenue.toFixed(2);
             document.getElementById('successOrdersCount').innerText = success;
             document.getElementById('failedOrdersCount').innerText = failed;
         });
     }
 
-    // عرض أرشيف المبيعات بالتفصيل
+    // فتح الأرشيف (تم إصلاح الـ ID)
     window.openOrderArchive = (status) => {
         const archiveSect = document.getElementById('orderArchiveSection');
         const list = document.getElementById('archiveList');
@@ -294,26 +290,26 @@
 
         Object.keys(currentOrdersData).forEach(key => {
             const o = currentOrdersData[key];
-            if(o.status === status) {
+            if(o.status === status && (myRole === 'admin' || o.marketerId === myUid)) {
                 list.innerHTML += `
                     <div class="bg-white/5 p-5 rounded-2xl border border-white/5 flex flex-col md:flex-row justify-between items-center text-[10px] gap-4">
-                        <div class="text-right">
-                            <p class="text-blue-400 font-black tracking-tighter">${o.productName}</p>
+                        <div class="text-right flex-1">
+                            <p class="text-blue-400 font-black tracking-tighter uppercase">${o.productName}</p>
                             <p class="text-gray-500 mt-1 italic font-bold">العميل: ${o.customerName} | المسوق ID: ${o.marketerId.substring(0,8)}</p>
                         </div>
                         <div class="text-left font-black">
-                            <span class="text-white bg-green-500/10 px-3 py-1 rounded-full">$${o.deposit}</span>
+                            <span class="text-white bg-green-500/10 px-3 py-1 rounded-full italic font-mono">$${o.deposit}</span>
                             ${o.failReason ? `<p class="text-red-500 mt-2 italic font-normal tracking-widest">السبب: ${o.failReason}</p>` : ''}
                         </div>
                     </div>
                 `;
             }
         });
-        if(!list.innerHTML) list.innerHTML = '<p class="text-center text-gray-600 text-xs py-10">السجل فارغ حالياً.</p>';
+        if(!list.innerHTML) list.innerHTML = '<p class="text-center text-gray-600 text-xs py-10 italic">لا توجد سجلات حالياً.</p>';
         archiveSect.scrollIntoView({ behavior: 'smooth' });
     };
 
-    // إرسال طلب الانضمام
+    // إرسال طلب انضمام
     window.showJoinForm = () => { document.getElementById('requestStatic').classList.add('hidden'); document.getElementById('joinForm').classList.remove('hidden'); };
     window.sendFullMarketerRequest = async () => {
         const phone = document.getElementById('reqPhone').value;
@@ -325,25 +321,13 @@
         location.reload();
     };
 
-    // إخفاء البانر لو فيه طلب
     async function checkIfRequestActive() {
         const reqSnap = await get(ref(db, 'marketer_requests/' + myUid));
         if(reqSnap.exists()) { document.getElementById('requestMarketerSection').classList.add('hidden'); }
         else { document.getElementById('requestMarketerSection').classList.remove('hidden'); }
     }
 
-    // الأساسيات
-    window.updateProfile = async () => {
-        const updates = {};
-        if(document.getElementById('newName').value) updates['name'] = document.getElementById('newName').value;
-        if(document.getElementById('newImg').value) updates['photo'] = document.getElementById('newImg').value;
-        await update(ref(db, 'users/' + myUid), updates);
-        location.reload();
-    };
-    window.updatePaymentInfo = async () => { await update(ref(db, 'users/' + myUid), { payNumber: document.getElementById('payNumber').value }); showToast("تم حفظ المحفظة!"); };
-    window.viewReceipt = (val) => { if(!val) return; if(val.startsWith('http')) window.open(val, '_blank'); else { document.getElementById('receiptContent').innerText = val; document.getElementById('receiptModal').classList.remove('hidden'); } };
-    window.closeReceipt = () => document.getElementById('receiptModal').classList.add('hidden');
-    
+    // تحميل المفضلات ومنتجاتي (إضافة زر العرض)
     function loadContent(userId, wishlist) {
         onValue(ref(db, 'products'), (snap) => {
             const prods = snap.val() || {};
@@ -351,9 +335,22 @@
             const myGrid = document.getElementById('myProductsGrid');
             wishGrid.innerHTML = ''; if(myGrid) myGrid.innerHTML = '';
             let myCount = 0;
+            
             Object.keys(prods).forEach(key => {
                 const p = prods[key];
-                const card = `<div class="glass p-4 rounded-3xl border border-white/5 flex gap-4 items-center animate-slide"><img src="${p.image}" class="w-12 h-12 rounded-xl object-cover shadow-lg"><div class="flex-1 font-bold text-xs"><h4>${p.name}</h4><p class="text-blue-400">$${p.price}</p></div></div>`;
+                const card = `
+                    <div class="glass p-4 rounded-3xl border border-white/5 flex gap-4 items-center animate-slide shadow-md transition-all hover:bg-white/5 group">
+                        <img src="${p.image}" class="w-14 h-14 rounded-xl object-cover shadow-lg group-hover:scale-110 transition-all">
+                        <div class="flex-1 font-bold text-[10px]">
+                            <h4 class="text-white">${p.name}</h4>
+                            <p class="text-blue-400 font-black mt-1">$${p.price}</p>
+                        </div>
+                        <a href="details.html?id=${key}&name=${encodeURIComponent(p.name)}&price=${p.price}&image=${encodeURIComponent(p.image)}"
+                           class="p-2 bg-blue-500/10 text-blue-400 rounded-xl hover:bg-blue-500 hover:text-white transition-all text-[9px] font-black uppercase tracking-tighter">
+                           عرض
+                        </a>
+                    </div>`;
+
                 if(wishlist.includes(key)) wishGrid.innerHTML += card;
                 if(p.owner === userId) { if(myGrid) myGrid.innerHTML += card; myCount++; }
             });
@@ -362,8 +359,18 @@
         });
     }
 
+    window.updateProfile = async () => {
+        const u = {};
+        if(document.getElementById('newName').value) u['name'] = document.getElementById('newName').value;
+        if(document.getElementById('newImg').value) u['photo'] = document.getElementById('newImg').value;
+        await update(ref(db, 'users/' + myUid), u);
+        location.reload();
+    };
+    window.updatePaymentInfo = async () => { await update(ref(db, 'users/' + myUid), { payNumber: document.getElementById('payNumber').value }); showToast("تم الحفظ!"); };
+    window.viewReceipt = (v) => { if(v.startsWith('http')) window.open(v, '_blank'); else { document.getElementById('receiptContent').innerText = v; document.getElementById('receiptModal').classList.remove('hidden'); } };
+    window.closeReceipt = () => document.getElementById('receiptModal').classList.add('hidden');
     window.toggleSettings = () => document.getElementById('settingsPanel').classList.toggle('hidden');
-    window.showToast = (msg) => { const t = document.getElementById('toast'); t.innerText = msg; t.style.opacity = '1'; setTimeout(() => t.style.opacity = '0', 3000); };
+    window.showToast = (m) => { const t = document.getElementById('toast'); t.innerText = m; t.style.opacity = '1'; setTimeout(() => t.style.opacity = '0', 3000); };
     window.logout = () => signOut(auth).then(() => window.location.href = "login.html");
 </script>
 </body>

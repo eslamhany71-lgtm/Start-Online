@@ -16,35 +16,17 @@
 </head>
 <body class="pb-20">
 
-<!-- Navbar Responsive -->
-<nav class="fixed top-0 left-0 right-0 z-50 p-2 md:p-6">
-    <div class="max-w-7xl mx-auto glass rounded-xl md:rounded-2xl px-3 md:px-8 py-3 flex justify-between items-center shadow-2xl">
-        
-        <!-- اللوجو: حجم أصغر في الموبايل -->
-        <div class="text-sm md:text-xl font-black text-white">
-            <a href="index.html">START<span class="text-blue-400">ONLINE</span></a>
-        </div>
-
-        <!-- الروابط: تظهر فقط في الشاشات المتوسطة وما فوق -->
-        <!-- إذا أردت ظهورها في الموبايل، احذف كلمة hidden و md:flex واستخدم flex gap-3 -->
-        <ul class="hidden md:flex gap-6 lg:gap-10 font-bold text-[10px] lg:text-sm text-gray-300">
+<!-- Navbar -->
+<nav class="fixed top-0 left-0 right-0 z-50 p-6">
+    <div class="max-w-7xl mx-auto glass rounded-2xl px-8 py-4 flex justify-between items-center shadow-2xl">
+        <div class="text-xl font-black text-white"><a href="index.html">START<span class="text-blue-400">ONLINE</span></a></div>
+        <ul class="flex gap-8 font-bold text-sm text-gray-400">
             <li><a href="index.html" class="hover:text-white transition">الرئيسية</a></li>
             <li><a href="products.html" class="hover:text-white transition">المتجر</a></li>
-            <li><a href="profile.html" class="hover:text-white transition">حسابي</a></li>
+            <li><a href="profile.html" class="text-blue-400 underline underline-offset-8 font-black">حسابي</a></li>
         </ul>
-
-        <!-- زرار الدفع/التحكم: حجمه يتناسب مع الموبايل -->
-        <div class="flex gap-2">
-            <a href="login.html" id="navBtn" class="bg-blue-600 text-white px-3 md:px-6 py-2 rounded-lg md:rounded-xl text-[9px] md:text-xs font-black btn-glow transition-all whitespace-nowrap">
-                ابدأ الآن
-            </a>
-        </div>
     </div>
 </nav>
-
-<!-- هام جداً: مسافة أمان تحت النافبار عشان الكلام ميتغطاش في الموبايل -->
-<div class="pt-20 md:pt-32"></div>
-
 <div class="pt-32 px-6 max-w-7xl mx-auto">
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
         

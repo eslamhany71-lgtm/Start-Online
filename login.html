@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+    <!-- ربط ملف الترجمة -->
     <script src="translations.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8"><title>دخول | Start Online</title>
@@ -10,16 +11,30 @@
 </head>
 <body>
     <div class="w-full max-w-md p-8 bg-white/5 backdrop-blur-xl rounded-[40px] border border-white/10 shadow-2xl mx-4">
-        <h1 class="text-3xl font-black text-center mb-10 text-white">START<span class="text-blue-400">ONLINE</span></h1>
+        
+        <!-- أزرار تغيير اللغة -->
+        <div class="flex justify-end gap-3 mb-4">
+            <button onclick="setLanguage('ar')" class="text-[10px] font-bold text-gray-500 hover:text-blue-400 transition">العربية</button>
+            <span class="text-gray-800">|</span>
+            <button onclick="setLanguage('en')" class="text-[10px] font-bold text-gray-500 hover:text-blue-400 transition">English</button>
+        </div>
+
+        <h1 data-key="title" class="text-3xl font-black text-center mb-10 text-white">START<span class="text-blue-400">ONLINE</span></h1>
+        
         <form id="authForm" class="space-y-4">
             <div id="registerFields" class="hidden space-y-4">
-                <input type="text" id="userName" placeholder="الاسم الكامل" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl focus:border-blue-500 outline-none text-sm text-white">
+                <input type="text" id="userName" data-key="name_placeholder" placeholder="الاسم الكامل" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl focus:border-blue-500 outline-none text-sm text-white">
             </div>
-            <input type="email" id="userEmail" required placeholder="البريد الإلكتروني" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl focus:border-blue-500 outline-none text-sm text-white">
-            <input type="password" id="userPass" required placeholder="كلمة المرور" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl focus:border-blue-500 outline-none text-sm text-white">
-            <button type="submit" id="mainBtn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-2xl transition-all shadow-lg">دخول</button>
+            <input type="email" id="userEmail" required data-key="email_placeholder" placeholder="البريد الإلكتروني" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl focus:border-blue-500 outline-none text-sm text-white">
+            <input type="password" id="userPass" required data-key="pass_placeholder" placeholder="كلمة المرور" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl focus:border-blue-500 outline-none text-sm text-white">
+            
+            <button type="submit" id="mainBtn" data-key="login_btn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-2xl transition-all shadow-lg">دخول</button>
         </form>
-        <p class="mt-6 text-center text-sm text-gray-400"><span id="toggleText">ليس لديك حساب؟</span> <button onclick="toggleAuth()" class="text-blue-400 font-bold underline mr-1">إنشاء حساب</button></p>
+
+        <p class="mt-6 text-center text-sm text-gray-400">
+            <span id="toggleText" data-key="no_account">ليس لديك حساب؟</span> 
+            <button onclick="toggleAuth()" id="toggleBtn" data-key="signup_btn" class="text-blue-400 font-bold underline mr-1">إنشاء حساب</button>
+        </p>
     </div>
 
     <script type="module">
@@ -41,8 +56,21 @@
         let isLogin = true;
         window.toggleAuth = () => {
             isLogin = !isLogin;
+            const lang = localStorage.getItem("lang") || "ar";
             document.getElementById('registerFields').classList.toggle('hidden');
-            document.getElementById('mainBtn').innerText = isLogin ? "دخول" : "إنشاء حساب";
+            
+            // تحديث النصوص عند التبديل بناءً على اللغة
+            if (isLogin) {
+                document.getElementById('mainBtn').setAttribute('data-key', 'login_btn');
+                document.getElementById('toggleText').setAttribute('data-key', 'no_account');
+                document.getElementById('toggleBtn').setAttribute('data-key', 'signup_btn');
+            } else {
+                document.getElementById('mainBtn').setAttribute('data-key', 'signup_btn');
+                document.getElementById('toggleText').setAttribute('data-key', 'have_account');
+                document.getElementById('toggleBtn').setAttribute('data-key', 'login_btn');
+            }
+            // إعادة تشغيل الترجمة لتحديث النصوص فوراً
+            window.applyLanguage(); 
         };
 
         document.getElementById('authForm').onsubmit = async (e) => {
@@ -53,7 +81,6 @@
                 if (!isLogin) {
                     const res = await createUserWithEmailAndPassword(auth, email, pass);
                     const name = document.getElementById('userName').value;
-                    // الرتبة دايمًا بتبدأ بـ customer
                     await set(ref(db, 'users/' + res.user.uid), { name, email, role: 'customer' });
                 } else {
                     await signInWithEmailAndPassword(auth, email, pass);

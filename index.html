@@ -22,74 +22,95 @@
             position: relative;
         }
 
-        /* طبقة الشبكة الرقمية الخلفية */
+        /* طبقة الصورة الخلفية (AI Theme) */
+        .bg-image-layer {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            /* رابط صورة AI احترافية */
+            background-image: url('https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=2000');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.07; /* شفافية منخفضة جداً لتكون هادئة */
+            filter: grayscale(100%) brightness(0.5); /* جعلها رمادية لتتناسق مع الألوان */
+            z-index: -3;
+            animation: slowZoom 20s infinite alternate;
+            pointer-events: none;
+        }
+
+        /* طبقة الشبكة الرقمية */
         .bg-grid {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background-image: 
-                linear-gradient(rgba(59, 130, 246, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(59, 130, 246, 0.05) 1px, transparent 1px);
-            background-size: 40px 40px;
-            mask-image: radial-gradient(circle at center, black, transparent 80%);
-            -webkit-mask-image: radial-gradient(circle at center, black, transparent 80%);
+                linear-gradient(rgba(59, 130, 246, 0.08) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(59, 130, 246, 0.08) 1px, transparent 1px);
+            background-size: 50px 50px;
+            mask-image: radial-gradient(circle at center, black, transparent 90%);
+            -webkit-mask-image: radial-gradient(circle at center, black, transparent 90%);
             z-index: -1;
             pointer-events: none;
         }
 
-        /* طبقة التوهج الثابت (Mesh) */
+        /* طبقة التوهج الملون (Mesh) */
         .bg-mesh {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: 
-                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.2) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.15) 0px, transparent 50%);
+                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.25) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.2) 0px, transparent 50%);
             z-index: -2;
             pointer-events: none;
         }
 
-        /* التوهج المتحرك مع الماوس (فائق السرعة) */
+        /* التوهج المتحرك مع الماوس */
         #mouseGlow {
             position: fixed;
-            width: 500px;
-            height: 500px;
-            background: radial-gradient(circle, rgba(59, 130, 246, 0.12) 0%, transparent 70%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
             border-radius: 50%;
             pointer-events: none;
             z-index: -1;
             transform: translate(-50%, -50%);
-            will-change: transform;
+            will-change: left, top;
+        }
+
+        @keyframes slowZoom {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); }
         }
 
         .glass {
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .btn-glow {
             transition: 0.4s;
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
         }
         .btn-glow:hover {
-            box-shadow: 0 0 35px rgba(59, 130, 246, 0.6);
-            transform: translateY(-3px);
+            box-shadow: 0 0 40px rgba(59, 130, 246, 0.7);
+            transform: translateY(-3px) scale(1.02);
         }
 
-        .animate-fade { animation: fadeIn 1.2s ease-out forwards; }
+        .animate-fade { animation: fadeIn 1.5s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <!-- عناصر الخلفية -->
+    <!-- طبقات الخلفية المتعددة -->
+    <div class="bg-image-layer"></div>
     <div class="bg-mesh"></div>
     <div class="bg-grid"></div>
     <div id="mouseGlow"></div>
 
     <!-- 1. شريط التنقل العلوي -->
     <nav class="fixed top-0 left-0 right-0 z-50 p-3 md:p-6">
-        <div class="max-w-7xl mx-auto glass rounded-xl md:rounded-3xl px-5 md:px-8 py-3 md:py-4 flex justify-between items-center shadow-2xl shadow-black/50">
+        <div class="max-w-7xl mx-auto glass rounded-xl md:rounded-3xl px-5 md:px-8 py-3 md:py-4 flex justify-between items-center shadow-2xl">
             
             <div class="text-xl md:text-2xl font-black text-white tracking-tighter">
                 <a href="index.html">START<span class="text-blue-500">ONLINE</span></a>
@@ -127,17 +148,16 @@
         </div>
     </nav>
 
-    <!-- مساحة أمان -->
     <div class="pt-24 md:pt-32"></div>
 
     <!-- Hero Section -->
     <section class="h-[80vh] flex flex-col justify-center items-center text-center px-6 animate-fade">
-        <h1 class="text-5xl md:text-8xl font-black mb-8 leading-tight text-white tracking-tighter shadow-blue-500/10">
+        <h1 class="text-5xl md:text-8xl font-black mb-8 leading-tight text-white tracking-tighter">
             مستقبلك الرقمي <br> 
             <span class="text-blue-500 italic bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">يبدأ بلمسة</span>
         </h1>
         <p class="text-gray-400 text-sm md:text-xl max-w-2xl mb-12 leading-relaxed italic opacity-90">
-            انضم لأكبر منصة عربية لعرض وبيع المنتجات الرقمية. نحن نوفر لك لوحة تحكم ذكية، وأنت تبدع في التسويق والربح.
+            انضم لأكبر منصة عربية لعرض وبيع المنتجات الرقمية. نحن نوفر لك لوحة تحكم ذكية مدعومة بتقنيات السحاب، لتُبدع في عالمك الخاص.
         </p>
         
         <div class="flex flex-col md:flex-row justify-center gap-6 w-full md:w-auto">
@@ -150,7 +170,7 @@
         </div>
     </section>
 
-    <!-- Firebase & Logic -->
+    <!-- Firebase & Mouse Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
@@ -174,16 +194,11 @@
                     const navBtn = document.getElementById('navBtn');
                     const marketerBtn = document.getElementById('marketerBtn');
                     
-                    // تحديث الأزرار بناء على حالة تسجيل الدخول
                     navBtn.innerText = "لوحة التحكم";
                     navBtn.href = "products.html";
                     
                     if(marketerBtn) {
-                        if(u.role === 'customer') {
-                            marketerBtn.innerText = "كن مسوقاً معنا";
-                        } else {
-                            marketerBtn.innerText = "انتقل للوحة التحكم";
-                        }
+                        marketerBtn.innerText = (u.role === 'customer') ? "كن مسوقاً معنا" : "انتقل للوحة التحكم";
                         marketerBtn.href = "products.html";
                     }
                 }

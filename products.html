@@ -11,50 +11,34 @@
         body { background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%); color: #f1f5f9; font-family: 'Cairo', sans-serif; min-height: 100vh; margin: 0; overflow-x: hidden; }
         .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.08); }
         
-        /* أنيميشن الماوس المتطور - تأثير التوهج المذهل */
-        .product-card { 
-            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); 
-            position: relative;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        .product-card:hover { 
-            transform: translateY(-15px) scale(1.03); 
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(59, 130, 246, 0.6);
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), 0 0 30px rgba(59, 130, 246, 0.2);
-        }
+        .product-card { transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); position: relative; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.05); }
+        .product-card:hover { transform: translateY(-15px) scale(1.03); background: rgba(255, 255, 255, 0.08); border-color: rgba(59, 130, 246, 0.6); box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), 0 0 30px rgba(59, 130, 246, 0.2); }
         .product-card img { transition: all 0.8s ease; }
         .product-card:hover img { transform: scale(1.15); filter: brightness(1.1); }
 
-        /* تأثير اللمعان (Shimmer) عند مرور الماوس */
-        .product-card::before {
-            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent);
-            transform: skewX(-25deg); transition: 0.8s; z-index: 1;
-        }
-        .product-card:hover::before { left: 150%; }
+        /* شريط التصنيفات الدائري */
+        .category-item { flex: 0 0 auto; width: 80px; text-align: center; cursor: pointer; transition: 0.3s; }
+        .category-item img { width: 60px; height: 60px; border-radius: 50%; object-cover: cover; border: 2px solid transparent; transition: 0.3s; margin: 0 auto 8px; }
+        .category-item:hover img { border-color: #3b82f6; transform: scale(1.1); }
+        .category-item.active img { border-color: #3b82f6; box-shadow: 0 0 15px rgba(59, 130, 246, 0.5); }
+        .category-item span { font-size: 10px; font-weight: bold; color: #94a3b8; }
+        .category-item.active span { color: #fff; }
 
         .stat-card { background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(255, 255, 255, 0.02)); border: 1px solid rgba(255,255,255,0.05); transition: 0.4s; }
-        .stat-card:hover { border-color: rgba(59, 130, 246, 0.4); transform: translateY(-5px); }
-        
         .animate-fade-in { animation: fadeIn 0.8s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* إخفاء شريط التمرير */
-        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
         ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
     </style>
 </head>
 <body class="pb-24 md:pb-10">
 
-    <!-- 1. Navbar العلوي -->
+    <!-- Navbar العلوي -->
     <nav class="fixed top-0 left-0 right-0 z-50 p-2 md:p-6">
         <div class="max-w-7xl mx-auto glass rounded-xl md:rounded-2xl px-4 md:px-8 py-3 md:py-4 flex justify-between items-center shadow-2xl">
             <div class="text-lg md:text-2xl font-black text-white hover:scale-105 transition-transform">
                 <a href="index.html">START<span class="text-blue-400">ONLINE</span></a>
             </div>
-            <!-- الروابط تظهر في الكمبيوتر وتختفي في الموبايل لأننا وضعنا شريط سفلي -->
             <ul class="hidden md:flex gap-8 font-bold text-sm text-gray-400">
                 <li><a href="index.html" class="hover:text-white transition">الرئيسية</a></li>
                 <li><a href="products.html" class="text-blue-400 font-black underline underline-offset-8">المتجر</a></li>
@@ -67,82 +51,126 @@
         </div>
     </nav>
 
-    <!-- 2. Navbar السفلي (للموبايل فقط) -->
+    <!-- Navbar السفلي للموبايل -->
     <nav class="fixed bottom-4 left-4 right-4 z-50 md:hidden animate-fade-in">
         <div class="glass rounded-2xl p-2 flex justify-around items-center shadow-2xl border border-white/10 backdrop-blur-2xl">
-            <a href="index.html" class="flex flex-col items-center gap-1 text-[10px] text-gray-400 p-2 hover:text-blue-400 transition-all">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-                <span class="font-bold">الرئيسية</span>
+            <a href="index.html" class="flex flex-col items-center gap-1 text-[10px] text-gray-400 p-2">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+                <span>الرئيسية</span>
             </a>
-            <a href="products.html" class="flex flex-col items-center gap-1 text-[10px] text-blue-400 p-2 transition-all">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-                <span class="font-bold">المتجر</span>
+            <a href="products.html" class="flex flex-col items-center gap-1 text-[10px] text-blue-400 p-2">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/></svg>
+                <span>المتجر</span>
             </a>
-            <a href="profile.html" class="flex flex-col items-center gap-1 text-[10px] text-gray-400 p-2 hover:text-blue-400 transition-all">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                <span class="font-bold">حسابي</span>
+            <a href="profile.html" class="flex flex-col items-center gap-1 text-[10px] text-gray-400 p-2">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <span>حسابي</span>
             </a>
         </div>
     </nav>
 
     <div class="pt-24 md:pt-32"></div>
 
-    <!-- لوحة إحصائيات الإدارة -->
+    <!-- جديد: شريط الأقسام (Categories) كما في الصور -->
+    <section class="max-w-7xl mx-auto px-4 md:px-6 mb-10 overflow-x-auto">
+        <div class="flex gap-6 pb-4" id="categoriesBar">
+            <div class="category-item active" onclick="filterByCategory('الكل')">
+                <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=100" alt="الكل">
+                <span>الكل</span>
+            </div>
+            <div class="category-item" onclick="filterByCategory('ملابس')">
+                <img src="https://images.unsplash.com/photo-1525507119028-ed4c629a60a3?w=100" alt="ملابس">
+                <span>ملابس</span>
+            </div>
+            <div class="category-item" onclick="filterByCategory('إكسسوارات')">
+                <img src="https://images.unsplash.com/photo-1535633302703-b0703af2939a?w=100" alt="إكسسوارات">
+                <span>إكسسوارات</span>
+            </div>
+            <div class="category-item" onclick="filterByCategory('عطور')">
+                <img src="https://images.unsplash.com/photo-1541643600914-78b084683601?w=100" alt="عطور">
+                <span>عطور</span>
+            </div>
+            <div class="category-item" onclick="filterByCategory('صحة وجمال')">
+                <img src="https://images.unsplash.com/photo-1512496011212-62b2488cd702?w=100" alt="صحة">
+                <span>صحة وجمال</span>
+            </div>
+            <div class="category-item" onclick="filterByCategory('أكثر مبيعاً')">
+                <img src="https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?w=100" alt="مبيعات">
+                <span>أكثر مبيعاً</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- الإحصائيات (تظهر للأدمن فقط) -->
     <section id="adminStats" class="max-w-7xl mx-auto px-4 md:px-6 mb-10 hidden grid grid-cols-2 md:grid-cols-4 gap-4 animate-fade-in">
         <div class="stat-card p-4 md:p-6 rounded-3xl text-center">
-            <p class="text-[9px] md:text-[10px] text-gray-500 uppercase font-black mb-1">المستخدمين</p>
-            <h3 id="totalUsers" class="text-xl md:text-2xl font-black text-blue-400 font-mono">0</h3>
+            <p class="text-[9px] text-gray-500 uppercase font-black">المستخدمين</p>
+            <h3 id="totalUsers" class="text-xl font-black text-blue-400 font-mono">0</h3>
         </div>
         <div class="stat-card p-4 md:p-6 rounded-3xl text-center">
-            <p class="text-[9px] md:text-[10px] text-gray-500 uppercase font-black mb-1">المنتجات</p>
-            <h3 id="totalProducts" class="text-xl md:text-2xl font-black text-green-400 font-mono">0</h3>
+            <p class="text-[9px] text-gray-500 uppercase font-black">المنتجات</p>
+            <h3 id="totalProducts" class="text-xl font-black text-green-400 font-mono">0</h3>
         </div>
         <div class="stat-card p-4 md:p-6 rounded-3xl text-center">
-            <p class="text-[9px] md:text-[10px] text-gray-500 uppercase font-black mb-1">المسوقين</p>
-            <h3 id="totalMarketers" class="text-xl md:text-2xl font-black text-purple-400 font-mono">0</h3>
+            <p class="text-[9px] text-gray-500 uppercase font-black">المسوقين</p>
+            <h3 id="totalMarketers" class="text-xl font-black text-purple-400 font-mono">0</h3>
         </div>
         <div class="stat-card p-4 md:p-6 rounded-3xl text-center">
-            <p class="text-[9px] md:text-[10px] text-gray-500 uppercase font-black mb-1">التقييمات</p>
-            <h3 id="totalReviews" class="text-xl md:text-2xl font-black text-yellow-400 font-mono">0</h3>
+            <p class="text-[9px] text-gray-500 uppercase font-black">التقييمات</p>
+            <h3 id="totalReviews" class="text-xl font-black text-yellow-400 font-mono">0</h3>
         </div>
     </section>
 
     <!-- لوحة طلبات الانضمام -->
     <section id="marketerRequestsPanel" class="max-w-7xl mx-auto mb-10 px-4 hidden animate-fade-in">
-        <div class="glass p-6 md:p-8 rounded-[35px] border border-blue-500/30 shadow-[0_0_30px_rgba(59,130,246,0.1)]">
-            <h2 class="text-lg md:text-xl font-black mb-6 text-blue-400 italic">طلبات الانضمام الجديدة</h2>
+        <div class="glass p-6 rounded-[35px] border border-blue-500/30">
+            <h2 class="text-lg font-black mb-6 text-blue-400 italic">طلبات الانضمام الجديدة</h2>
             <div id="requestsList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
         </div>
     </section>
 
     <!-- البحث والفلاتر -->
     <section class="max-w-7xl mx-auto px-4 md:px-6 mb-12 flex flex-col md:flex-row gap-4 animate-fade-in">
-        <input type="text" id="searchInput" oninput="filterProducts()" placeholder="ابحث عن اسم المنتج..." class="flex-1 bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-sm transition-all focus:bg-white/10 text-white">
-        <button onclick="loadWishlistOnly()" class="bg-pink-500/10 text-pink-500 px-8 py-4 rounded-2xl text-xs font-bold border border-pink-500/20 hover:bg-pink-500 hover:text-white transition-all shadow-lg">مفضلاتي ❤</button>
+        <input type="text" id="searchInput" oninput="filterProducts()" placeholder="ابحث عن اسم المنتج..." class="flex-1 bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-sm text-white">
+        <button onclick="loadWishlistOnly()" class="bg-pink-500/10 text-pink-500 px-8 py-4 rounded-2xl text-xs font-bold border border-pink-500/20 hover:bg-pink-500 transition-all">مفضلاتي ❤</button>
     </section>
 
-    <!-- لوحة إدارة الأعضاء -->
-    <section id="adminUsersPanel" class="max-w-7xl mx-auto mb-10 px-4 hidden border-white/10 border glass rounded-[35px] p-6 md:p-8">
-        <h2 class="text-xl font-black mb-6 text-gray-400 italic">إدارة كافة الأعضاء</h2>
-        <div id="usersList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-    </section>
-
-    <!-- لوحة إضافة المنتجات -->
+    <!-- جديد: لوحة التحكم المتقدمة (إضافة منتج بكامل مواصفاته) -->
     <section id="controlPanel" class="max-w-4xl mx-auto px-4 mb-12 hidden animate-fade-in">
-        <div class="glass p-6 md:p-8 rounded-[35px] border border-blue-500/10 shadow-2xl">
-            <h2 id="panelTitle" class="text-2xl font-black mb-6 text-blue-400 italic underline decoration-blue-500/30 underline-offset-8">نشر إبداع جديد</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <input type="text" id="pName" placeholder="اسم المنتج" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-sm focus:border-blue-500 text-white">
-                <input type="number" id="pPrice" placeholder="السعر ($)" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-sm focus:border-blue-500 text-white">
-                <input type="text" id="pImage" placeholder="رابط صورة المنتج" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-sm focus:border-blue-500 text-white">
+        <div class="glass p-8 rounded-[35px] border border-blue-500/10 shadow-2xl">
+            <h2 class="text-2xl font-black mb-6 text-blue-400 italic underline decoration-blue-500/30">نشر إبداع جديد</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <input type="text" id="pName" placeholder="اسم المنتج" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
+                <select id="pCategory" class="bg-slate-800 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
+                    <option value="ملابس">ملابس</option>
+                    <option value="إكسسوارات">إكسسوارات</option>
+                    <option value="عطور">عطور</option>
+                    <option value="صحة وجمال">صحة وجمال</option>
+                    <option value="أخرى">أخرى</option>
+                </select>
             </div>
-            <button onclick="saveProduct()" class="w-full mt-6 bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-2xl shadow-xl transition-all transform hover:-translate-y-1">تأكيد النشر في المعرض</button>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <input type="number" id="pPrice" placeholder="السعر النهائي ($)" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
+                <input type="number" id="pOldPrice" placeholder="السعر قبل الخصم ($)" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
+                <input type="text" id="pImage" placeholder="رابط الصورة الأساسية" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <input type="text" id="pColors" placeholder="الألوان (مثال: أحمر، أزرق، أسود)" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
+                <input type="text" id="pSizes" placeholder="المقاسات (مثال: XL, L, M)" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
+            </div>
+
+            <textarea id="pDesc" placeholder="وصف تفصيلي للمنتج (الموديل، الماتريال، إلخ...)" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white h-24 mb-4"></textarea>
+
+            <button onclick="saveProduct()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-2xl shadow-xl transition-all">تأكيد النشر في المعرض</button>
         </div>
     </section>
 
     <!-- المعرض الرئيسي -->
     <main class="max-w-7xl mx-auto px-4 md:px-6">
-        <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-10"></div>
+        <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
     </main>
 
     <script type="module">
@@ -179,17 +207,25 @@
                         document.getElementById('controlPanel').classList.remove('hidden');
                         if (userRole === 'admin') {
                             document.getElementById('adminStats').classList.remove('hidden');
-                            document.getElementById('adminUsersPanel').classList.remove('hidden');
                             document.getElementById('marketerRequestsPanel').classList.remove('hidden');
                             loadAdminDashboard();
                             loadMarketerRequests();
-                            loadUsers();
                         }
                     }
                 }
                 loadProducts();
             } else { window.location.href = "login.html"; }
         });
+
+        // جلب الإحصائيات (نفس كودك القديم)
+        function loadAdminDashboard() {
+            onValue(ref(db, 'users'), (snap) => {
+                const users = snap.val() || {};
+                document.getElementById('totalUsers').innerText = Object.keys(users).length;
+                document.getElementById('totalMarketers').innerText = Object.values(users).filter(u => u.role === 'marketer').length;
+            });
+            onValue(ref(db, 'products'), (snap) => document.getElementById('totalProducts').innerText = Object.keys(snap.val() || {}).length);
+        }
 
         function loadMarketerRequests() {
             onValue(ref(db, 'marketer_requests'), (snap) => {
@@ -199,74 +235,104 @@
                 if(data) {
                     Object.keys(data).forEach(uid => {
                         const r = data[uid];
-                        list.innerHTML += `
-                            <div class="glass p-5 md:p-6 rounded-[30px] border border-blue-500/20 space-y-4 animate-fade-in shadow-xl">
-                                <div class="flex justify-between items-start">
-                                    <div class="text-right">
-                                        <p class="font-black text-blue-400 italic underline underline-offset-4 tracking-tighter">${r.name}</p>
-                                        <p class="text-[10px] text-gray-500 mt-1 uppercase font-bold">${r.email}</p>
-                                    </div>
-                                    <button onclick="viewUserProfile('${uid}')" class="text-[8px] bg-white/5 px-3 py-1.5 rounded-xl border border-white/10 hover:bg-white hover:text-black transition-all">زيارة الحساب</button>
-                                </div>
-                                <div class="bg-black/20 p-4 rounded-2xl border border-white/5 space-y-2 text-[10px] text-gray-400">
-                                    <p class="flex justify-between"><span>الموبايل:</span> <span class="text-white font-bold">${r.phone || 'غير مسجل'}</span></p>
-                                    <p class="flex justify-between"><span>العنوان:</span> <span class="text-white font-bold">${r.address || 'غير مسجل'}</span></p>
-                                    <p class="border-t border-white/5 pt-2 italic leading-relaxed text-gray-500 font-medium">"${r.bio || 'لا توجد نبذة.'}"</p>
-                                </div>
-                                <div class="flex gap-2">
-                                    <button onclick="approveMarketer('${uid}')" class="flex-1 bg-blue-600 text-white py-2.5 rounded-2xl text-[10px] font-black shadow-lg hover:bg-blue-500 transition-all">قبول</button>
-                                    <button onclick="rejectMarketer('${uid}')" class="flex-1 bg-red-600/10 text-red-500 py-2.5 rounded-2xl text-[10px] font-black border border-red-500/10 hover:bg-red-600 hover:text-white transition-all">رفض</button>
-                                </div>
-                            </div>
-                        `;
-                    });
-                } else { list.innerHTML = '<p class="text-gray-600 text-xs italic p-10 text-center">لا توجد طلبات انضمام معلقة حالياً.</p>'; }
-            });
-        }
-
-        window.viewUserProfile = (uid) => window.location.href = `profile.html?viewUid=${uid}`;
-
-        window.approveMarketer = async (uid) => {
-            await update(ref(db, 'users/' + uid), { role: 'marketer' });
-            await remove(ref(db, 'marketer_requests/' + uid));
-            alert("تمت ترقية المستخدم لمسوق بنجاح!");
-        };
-        window.rejectMarketer = (uid) => confirm("رفض الطلب؟") && remove(ref(db, 'marketer_requests/' + uid));
-
-        function loadAdminDashboard() {
-            onValue(ref(db, 'users'), (snap) => {
-                const users = snap.val() || {};
-                document.getElementById('totalUsers').innerText = Object.keys(users).length;
-                document.getElementById('totalMarketers').innerText = Object.values(users).filter(u => u.role === 'marketer').length;
-            });
-            onValue(ref(db, 'products'), (snap) => document.getElementById('totalProducts').innerText = Object.keys(snap.val() || {}).length);
-            onValue(ref(db, 'reviews'), (snap) => {
-                let count = 0;
-                Object.values(snap.val() || {}).forEach(r => count += Object.keys(r).length);
-                document.getElementById('totalReviews').innerText = count;
-            });
-        }
-
-        function loadUsers() {
-            onValue(ref(db, 'users'), (snapshot) => {
-                const users = snapshot.val();
-                const list = document.getElementById('usersList'); list.innerHTML = '';
-                if(users) {
-                    Object.keys(users).forEach(uid => {
-                        const u = users[uid];
-                        list.innerHTML += `<div class="bg-white/5 p-4 rounded-2xl border border-white/5 flex flex-col gap-2">
-                            <div class="flex justify-between items-start"><p class="font-bold text-sm text-white">${u.name}</p><span class="text-[8px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 font-black uppercase tracking-tighter">${u.role}</span></div>
-                            <div class="flex gap-1">
-                                <button onclick="changeRole('${uid}', 'marketer')" class="flex-1 text-[8px] bg-blue-600/10 text-blue-400 p-2 rounded-lg transition-all hover:bg-blue-600">مسوق</button>
-                                <button onclick="changeRole('${uid}', 'admin')" class="flex-1 text-[8px] bg-yellow-600/10 text-yellow-500 p-2 rounded-lg transition-all hover:bg-yellow-600">أدمن</button>
-                                <button onclick="changeRole('${uid}', 'customer')" class="flex-1 text-[8px] bg-gray-600/10 text-gray-400 p-2 rounded-lg transition-all hover:bg-gray-400 text-white">عميل</button>
-                            </div>
+                        list.innerHTML += `<div class="glass p-5 rounded-3xl border border-blue-500/20 text-right">
+                            <p class="font-black text-blue-400">${r.name}</p>
+                            <p class="text-[10px] text-gray-400 mb-4">${r.email}</p>
+                            <button onclick="approveMarketer('${uid}')" class="bg-blue-600 text-white px-4 py-2 rounded-xl text-[10px] font-black">قبول</button>
                         </div>`;
                     });
                 }
             });
         }
-        window.changeRole = (uid, r) => update(ref(db, 'users/' + uid), { role: r });
+        window.approveMarketer = async (uid) => { await update(ref(db, 'users/' + uid), { role: 'marketer' }); await remove(ref(db, 'marketer_requests/' + uid)); };
+
+        // تعديل: حفظ المنتج بالمواصفات الجديدة
+        window.saveProduct = () => {
+            const name = document.getElementById('pName').value;
+            const price = document.getElementById('pPrice').value;
+            const oldPrice = document.getElementById('pOldPrice').value;
+            const category = document.getElementById('pCategory').value;
+            const colors = document.getElementById('pColors').value;
+            const sizes = document.getElementById('pSizes').value;
+            const desc = document.getElementById('pDesc').value;
+            const image = document.getElementById('pImage').value || 'https://via.placeholder.com/400';
+
+            if(name && price) {
+                push(ref(db, 'products'), {
+                    name, 
+                    price, 
+                    oldPrice, 
+                    category, 
+                    colors, 
+                    sizes, 
+                    desc, 
+                    image, 
+                    owner: currentUser.uid, 
+                    likes: 0 
+                });
+                alert("تم نشر المنتج بنجاح!");
+                // تفريغ الحقول
+                ["pName", "pPrice", "pOldPrice", "pColors", "pSizes", "pDesc", "pImage"].forEach(id => document.getElementById(id).value = '');
+            } else { alert("يرجى إدخال الاسم والسعر!"); }
+        };
+
+        function loadProducts() { 
+            onValue(ref(db, 'products'), (snapshot) => { 
+                allProducts = snapshot.val() || {}; 
+                renderGrid(allProducts); 
+            }); 
+        }
+
+        function renderGrid(products) {
+            const grid = document.getElementById('productsGrid'); 
+            grid.innerHTML = '';
+            Object.keys(products).forEach(key => {
+                const p = products[key];
+                const isSaved = userWishlist.includes(key);
+                const canManage = (userRole === 'admin') || (userRole === 'marketer' && p.owner === currentUser.uid);
+                
+                grid.innerHTML += `
+                    <div class="product-card glass p-5 rounded-[35px] animate-fade-in shadow-xl">
+                        <div class="absolute top-5 left-5 z-10">
+                            <button onclick="toggleWishlist('${key}')" class="p-2.5 rounded-full backdrop-blur-md ${isSaved ? 'text-pink-500 bg-pink-500/10' : 'text-gray-400 bg-black/30'}">❤</button>
+                        </div>
+                        <div class="w-full h-48 rounded-[25px] overflow-hidden mb-6"><img src="${p.image}" class="w-full h-full object-cover"></div>
+                        <p class="text-[9px] text-blue-400 font-bold uppercase mb-1">${p.category || 'عام'}</p>
+                        <h3 class="font-black text-lg mb-2 text-white italic tracking-tighter">${p.name}</h3>
+                        <div class="flex justify-between items-center mb-6">
+                            <div>
+                                <span class="text-blue-400 font-black text-2xl">$${p.price}</span>
+                                ${p.oldPrice ? `<span class="text-gray-500 text-xs line-through ml-2">$${p.oldPrice}</span>` : ''}
+                            </div>
+                            ${canManage ? `
+                                <button onclick="deleteProduct('${key}')" class="text-red-500 text-[10px] font-bold">حذف</button>
+                            ` : ''}
+                        </div>
+                        <button onclick="viewDetails('${key}', '${p.name}', '${p.price}', '${p.image}')" class="w-full bg-white/5 hover:bg-blue-600 py-4 rounded-[20px] text-[10px] font-black uppercase transition-all border border-white/5">التفاصيل والتقييمات</button>
+                    </div>
+                `;
+            });
+        }
+
+        // جديد: فلترة حسب القسم
+        window.filterByCategory = (cat) => {
+            // تحديث شكل الأزرار
+            document.querySelectorAll('.category-item').forEach(el => el.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+
+            if(cat === 'الكل') { renderGrid(allProducts); return; }
+            const filtered = {};
+            Object.keys(allProducts).forEach(k => {
+                if(allProducts[k].category === cat) filtered[k] = allProducts[k];
+            });
+            renderGrid(filtered);
+        };
+
+        window.filterProducts = () => {
+            const t = document.getElementById('searchInput').value.toLowerCase();
+            const f = {}; Object.keys(allProducts).forEach(k => { if(allProducts[k].name.toLowerCase().includes(t)) f[k] = allProducts[k]; });
+            renderGrid(f);
+        };
 
         window.toggleWishlist = async (id) => {
             const index = userWishlist.indexOf(id);
@@ -276,59 +342,8 @@
             await update(ref(db, 'users/' + currentUser.uid), { wishlist: userWishlist });
         };
 
-        window.saveProduct = () => {
-            const name = document.getElementById('pName').value, price = document.getElementById('pPrice').value, image = document.getElementById('pImage').value || 'https://via.placeholder.com/400';
-            if(name && price) {
-                push(ref(db, 'products'), { name, price, image, owner: currentUser.uid, likes: 0 });
-                document.getElementById('pName').value = ''; document.getElementById('pPrice').value = ''; document.getElementById('pImage').value = '';
-            }
-        };
-
-        window.editProduct = async (id, oldName, oldPrice, oldImg) => {
-            const newName = prompt("الاسم الجديد:", oldName), newPrice = prompt("السعر الجديد:", oldPrice), newImg = prompt("رابط الصورة:", oldImg);
-            if(newName && newPrice && newImg) await update(ref(db, 'products/' + id), { name: newName, price: newPrice, image: newImg });
-        };
-
         window.deleteProduct = (id) => confirm("حذف نهائي؟") && remove(ref(db, 'products/' + id));
         window.viewDetails = (id, n, p, i) => window.location.href = `details.html?id=${id}&name=${encodeURIComponent(n)}&price=${p}&image=${encodeURIComponent(i)}`;
-
-        function loadProducts() { onValue(ref(db, 'products'), (snapshot) => { allProducts = snapshot.val() || {}; renderGrid(allProducts); }); }
-
-        function renderGrid(products) {
-            const grid = document.getElementById('productsGrid'); grid.innerHTML = '';
-            Object.keys(products).forEach(key => {
-                const p = products[key], isSaved = userWishlist.includes(key), canManage = (userRole === 'admin') || (userRole === 'marketer' && p.owner === currentUser.uid);
-                grid.innerHTML += `
-                    <div class="product-card glass p-5 rounded-[35px] border border-white/5 relative group animate-fade-in shadow-xl">
-                        <div class="absolute top-5 left-5 flex flex-col items-center gap-1 z-10">
-                            <button onclick="toggleWishlist('${key}')" class="p-2.5 rounded-full backdrop-blur-md ${isSaved ? 'text-pink-500 bg-pink-500/10' : 'text-gray-400 bg-black/30'} transition-all hover:scale-125">❤</button>
-                            <span class="text-[10px] font-black text-gray-400">${p.likes || 0}</span>
-                        </div>
-                        <div class="w-full h-48 md:h-52 rounded-[25px] overflow-hidden mb-6 shadow-2xl border border-white/5"><img src="${p.image}" class="w-full h-full object-cover"></div>
-                        <h3 class="font-black text-base md:text-lg mb-2 text-white italic underline decoration-blue-500/30 underline-offset-4 tracking-tighter">${p.name}</h3>
-                        <div class="flex justify-between items-center mb-6">
-                            <span class="text-blue-400 font-black text-xl md:text-2xl tracking-tighter">$${p.price}</span>
-                            ${canManage ? `
-                                <div class="flex gap-2">
-                                    <button onclick="editProduct('${key}', '${p.name}', '${p.price}', '${p.image}')" class="text-[9px] bg-yellow-500/10 text-yellow-500 px-3 py-1.5 rounded-xl border border-yellow-500/10 hover:bg-yellow-500 hover:text-white transition-all">تعديل</button>
-                                    <button onclick="deleteProduct('${key}')" class="text-[9px] bg-red-500/10 text-red-500 px-3 py-1.5 rounded-xl border border-red-500/10 hover:bg-red-500 hover:text-white transition-all">حذف</button>
-                                </div>
-                            ` : ''}
-                        </div>
-                        <button onclick="viewDetails('${key}', '${p.name}', '${p.price}', '${p.image}')" class="w-full bg-white/5 hover:bg-blue-600 py-4 rounded-[20px] text-[10px] font-black tracking-widest uppercase transition-all shadow-xl border border-white/5 hover:border-blue-400">التفاصيل والتقييمات</button>
-                    </div>
-                `;
-            });
-        }
-        window.filterProducts = () => {
-            const t = document.getElementById('searchInput').value.toLowerCase();
-            const f = {}; Object.keys(allProducts).forEach(k => { if(allProducts[k].name.toLowerCase().includes(t)) f[k] = allProducts[k]; });
-            renderGrid(f);
-        };
-        window.loadWishlistOnly = () => {
-            const f = {}; Object.keys(allProducts).forEach(k => { if(userWishlist.includes(k)) f[k] = allProducts[k]; });
-            renderGrid(f);
-        };
         window.logout = () => signOut(auth).then(() => window.location.href = "login.html");
     </script>
 </body>

@@ -49,16 +49,21 @@
                 </div>
             </div>
 
-            <!-- عداد الوقت والزوار للمظهر الاحترافي -->
+                       <!-- العداد التنازلي الحقيقي وعدد المشاهدين -->
             <div class="glass p-6 rounded-3xl border-blue-500/20">
-                <p class="text-[10px] text-blue-400 font-bold mb-4 italic uppercase tracking-widest">ينتهي العرض الخاص في:</p>
-                <div class="flex gap-3 mb-6">
-                    <div class="timer-unit"><span id="days" class="text-xl font-black">01</span><p class="text-[8px]">يوم</p></div>
-                    <div class="timer-unit"><span id="hours" class="text-xl font-black">12</span><p class="text-[8px]">ساعة</p></div>
-                    <div class="timer-unit"><span id="minutes" class="text-xl font-black">45</span><p class="text-[8px]">دقيقة</p></div>
-                    <div class="timer-unit"><span id="seconds" class="text-xl font-black">30</span><p class="text-[8px]">ثانية</p></div>
+                <p class="text-[10px] text-blue-400 font-bold mb-4 italic uppercase tracking-widest text-center">ينتهي العرض الخاص خلال:</p>
+                <div class="flex justify-center gap-3 mb-6 font-mono">
+                    <div class="timer-unit"><span id="days" class="text-xl font-black">00</span><p class="text-[8px]">يوم</p></div>
+                    <div class="timer-unit"><span id="hours" class="text-xl font-black">00</span><p class="text-[8px]">ساعة</p></div>
+                    <div class="timer-unit"><span id="minutes" class="text-xl font-black">00</span><p class="text-[8px]">دقيقة</p></div>
+                    <div class="timer-unit"><span id="seconds" class="text-xl font-black">00</span><p class="text-[8px]">ثانية</p></div>
+                </div>
+                <div class="flex justify-center items-center gap-2 text-xs text-gray-400 italic">
+                    <span class="w-2 h-2 bg-red-600 rounded-full badge-live"></span>
+                    يشاهد المنتج حالياً <span id="live-viewers" class="text-white font-black mx-1">74</span> عميل
                 </div>
             </div>
+
 
             <!-- زر الشراء (يرسل العميل لصفحة order.html كما في كودك الأصلي) -->
             <div class="space-y-4">

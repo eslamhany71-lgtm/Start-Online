@@ -3,7 +3,7 @@
 <head>
     <script src="translations.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta charset="UTF-8"><title>تفاصيل المنتج | Start Online</title>
+    <meta charset="UTF-8"><title>عرض المنتج الاحترافي | Start Online</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
@@ -11,21 +11,23 @@
         .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); }
         .spec-btn { border: 1px solid rgba(255,255,255,0.1); transition: 0.3s; cursor: pointer; padding: 8px 16px; border-radius: 12px; font-size: 12px; font-weight: bold; }
         .spec-btn.active { border-color: #3b82f6; background: rgba(59, 130, 246, 0.1); color: white; }
-        .timer-unit { background: #000; padding: 10px; border-radius: 12px; min-width: 55px; text-align: center; }
+        .timer-unit { background: #000; padding: 10px; border-radius: 12px; min-width: 55px; text-align: center; border: 1px solid rgba(59, 130, 246, 0.3); }
+        .badge-live { animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.2); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
     </style>
 </head>
 <body class="p-4 md:p-10">
 
     <div class="max-w-7xl mx-auto flex flex-col lg:flex-row gap-12">
         
-        <!-- الجانب الأيمن: معرض الصور -->
+        <!-- الجانب الأيمن: الصور -->
         <div class="lg:w-1/2 space-y-6">
             <div class="rounded-[40px] overflow-hidden shadow-2xl border border-white/5">
                 <img id="mainImg" src="" class="w-full h-[650px] object-cover">
             </div>
         </div>
 
-        <!-- الجانب الأيسر: المعلومات والربط بصفحة الأوردر -->
+        <!-- الجانب الأيسر: المعلومات والشراء -->
         <div class="lg:w-1/2 space-y-8">
             <a href="products.html" class="text-blue-400 font-bold hover:underline">← العودة للمتجر</a>
             
@@ -37,7 +39,7 @@
                 </div>
             </div>
 
-            <!-- عرض المواصفات (الألوان والمقاسات) -->
+            <!-- المواصفات -->
             <div id="specsContainer" class="space-y-6">
                 <div id="colorSection" class="hidden">
                     <p class="text-sm text-gray-400 mb-3 font-bold">الألوان المتوفرة:</p>
@@ -49,7 +51,7 @@
                 </div>
             </div>
 
-                       <!-- العداد التنازلي الحقيقي وعدد المشاهدين -->
+            <!-- العداد التنازلي الحقيقي وعدد المشاهدين -->
             <div class="glass p-6 rounded-3xl border-blue-500/20">
                 <p class="text-[10px] text-blue-400 font-bold mb-4 italic uppercase tracking-widest text-center">ينتهي العرض الخاص خلال:</p>
                 <div class="flex justify-center gap-3 mb-6 font-mono">
@@ -64,23 +66,63 @@
                 </div>
             </div>
 
-
-            <!-- زر الشراء (يرسل العميل لصفحة order.html كما في كودك الأصلي) -->
+            <!-- زر الشراء المربوط بصفحة order.html -->
             <div class="space-y-4">
-                <button onclick="goToOrder()" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-6 rounded-2xl font-black text-2xl transition-all transform hover:-translate-y-1 shadow-xl">
+                <button onclick="goToOrder()" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-6 rounded-2xl font-black text-2xl transition-all transform hover:-translate-y-1 shadow-xl shadow-blue-500/20">
                     شراء الآن (دفع جدية حجز)
                 </button>
-                <p class="text-center text-xs text-gray-500 italic">عند الضغط، سيتم تحويلك لصفحة الدفع وتأكيد الحجز.</p>
             </div>
 
-            <!-- الوصف التفصيلي (الذي يتم سحبه من داتابيز) -->
+            <!-- الوصف التفصيلي -->
             <div class="pt-8">
                 <h4 class="text-2xl font-black mb-4 border-b border-white/10 pb-4 italic">الوصف والموديل:</h4>
                 <p id="detDesc" class="text-gray-400 leading-relaxed italic whitespace-pre-wrap"></p>
             </div>
         </div>
     </div>
-    // --- كود العداد التنازلي الحقيقي (Countdown) ---
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        const firebaseConfig = { apiKey: "AIzaSyCyypXt8LnHiVBR2Ka0Mb8ntXu6dJH9N-w", authDomain: "start-online-6f460.firebaseapp.com", projectId: "start-online-6f460", databaseURL: "https://start-online-6f460-default-rtdb.firebaseio.com/" };
+        const app = initializeApp(firebaseConfig); const db = getDatabase(app);
+
+        const params = new URLSearchParams(window.location.search);
+        const prodId = params.get('id');
+        let productOwnerId = "";
+
+        async function init() {
+            const snap = await get(ref(db, 'products/' + prodId));
+            if(snap.exists()) {
+                const p = snap.val();
+                productOwnerId = p.owner;
+                document.getElementById('detName').innerText = p.name;
+                document.getElementById('detPrice').innerText = "$" + p.price;
+                if(p.oldPrice) document.getElementById('detOldPrice').innerText = "$" + p.oldPrice;
+                document.getElementById('mainImg').src = p.image;
+                document.getElementById('detDesc').innerText = p.desc || "لا يوجد وصف متوفر.";
+
+                if(p.colors) {
+                    document.getElementById('colorSection').classList.remove('hidden');
+                    p.colors.split('،').forEach(c => {
+                        const btn = document.createElement('div'); btn.className='spec-btn'; btn.innerText=c.trim();
+                        btn.onclick=() => { btn.parentElement.querySelectorAll('.spec-btn').forEach(x=>x.classList.remove('active')); btn.classList.add('active'); };
+                        document.getElementById('colorsList').appendChild(btn);
+                    });
+                }
+                if(p.sizes) {
+                    document.getElementById('sizeSection').classList.remove('hidden');
+                    p.sizes.split(',').forEach(s => {
+                        const btn = document.createElement('div'); btn.className='spec-btn'; btn.innerText=s.trim();
+                        btn.onclick=() => { btn.parentElement.querySelectorAll('.spec-btn').forEach(x=>x.classList.remove('active')); btn.classList.add('active'); };
+                        document.getElementById('sizesList').appendChild(btn);
+                    });
+                }
+            }
+        }
+
+        // --- كود العداد التنازلي الحقيقي (Countdown) ---
         function startCountdown() {
             const countdownDate = new Date();
             countdownDate.setHours(23, 59, 59, 999); // العداد ينتهي بنهاية اليوم
@@ -116,56 +158,15 @@
             }, 4000); // يتغير كل 4 ثواني
         }
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-
-        const firebaseConfig = { apiKey: "AIzaSyCyypXt8LnHiVBR2Ka0Mb8ntXu6dJH9N-w", authDomain: "start-online-6f460.firebaseapp.com", projectId: "start-online-6f460", databaseURL: "https://start-online-6f460-default-rtdb.firebaseio.com/" };
-        const app = initializeApp(firebaseConfig); const db = getDatabase(app);
-
-        const params = new URLSearchParams(window.location.search);
-        const prodId = params.get('id');
-        let productOwnerId = ""; // سنحتاجه لصفحة الأوردر كما في كودك الأصلي
-
-        async function init() {
-            const snap = await get(ref(db, 'products/' + prodId));
-            if(snap.exists()) {
-                const p = snap.val();
-                productOwnerId = p.owner; // تخزين المالك
-                document.getElementById('detName').innerText = p.name;
-                document.getElementById('detPrice').innerText = "$" + p.price;
-                if(p.oldPrice) document.getElementById('detOldPrice').innerText = "$" + p.oldPrice;
-                document.getElementById('mainImg').src = p.image;
-                document.getElementById('detDesc').innerText = p.desc || "لا يوجد وصف متوفر حالياً لهذا المنتج.";
-
-                // توزيع الألوان والمقاسات (بدون حذف)
-                if(p.colors) {
-                    document.getElementById('colorSection').classList.remove('hidden');
-                    p.colors.split('،').forEach(c => {
-                        const btn = document.createElement('div'); btn.className='spec-btn'; btn.innerText=c.trim();
-                        btn.onclick=() => { btn.parentElement.querySelectorAll('.spec-btn').forEach(x=>x.classList.remove('active')); btn.classList.add('active'); };
-                        document.getElementById('colorsList').appendChild(btn);
-                    });
-                }
-                if(p.sizes) {
-                    document.getElementById('sizeSection').classList.remove('hidden');
-                    p.sizes.split(',').forEach(s => {
-                        const btn = document.createElement('div'); btn.className='spec-btn'; btn.innerText=s.trim();
-                        btn.onclick=() => { btn.parentElement.querySelectorAll('.spec-btn').forEach(x=>x.classList.remove('active')); btn.classList.add('active'); };
-                        document.getElementById('sizesList').appendChild(btn);
-                    });
-                }
-            }
-        }
-
-        // دالة الذهاب لصفحة الأوردر (تم إرجاعها كما كانت تماماً)
         window.goToOrder = () => {
-            if(!productOwnerId) return alert("جاري تحميل البيانات...");
+            if(!productOwnerId) return alert("جاري التحميل...");
             const url = `order.html?id=${prodId}&name=${encodeURIComponent(document.getElementById('detName').innerText)}&price=${params.get('price')}&image=${encodeURIComponent(document.getElementById('mainImg').src)}&owner=${productOwnerId}`;
             window.location.href = url;
         };
 
         init();
+        startCountdown();
+        startLiveViewers();
     </script>
 </body>
 </html>

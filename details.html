@@ -80,6 +80,41 @@
             </div>
         </div>
     </div>
+    // --- كود العداد التنازلي الحقيقي (Countdown) ---
+        function startCountdown() {
+            const countdownDate = new Date();
+            countdownDate.setHours(23, 59, 59, 999); // العداد ينتهي بنهاية اليوم
+
+            const timer = setInterval(() => {
+                const now = new Date().getTime();
+                const distance = countdownDate - now;
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                document.getElementById("days").innerText = days.toString().padStart(2, '0');
+                document.getElementById("hours").innerText = hours.toString().padStart(2, '0');
+                document.getElementById("minutes").innerText = minutes.toString().padStart(2, '0');
+                document.getElementById("seconds").innerText = seconds.toString().padStart(2, '0');
+
+                if (distance < 0) {
+                    clearInterval(timer);
+                    document.getElementById("seconds").innerText = "00";
+                }
+            }, 1000);
+        }
+
+        // --- كود محاكاة عدد المشاهدين (Live Viewers) ---
+        function startLiveViewers() {
+            const viewerEl = document.getElementById('live-viewers');
+            setInterval(() => {
+                // توليد رقم عشوائي بين 60 و 120 ليعطي مصداقية
+                const randomViewers = Math.floor(Math.random() * (120 - 60 + 1)) + 60;
+                viewerEl.innerText = randomViewers;
+            }, 4000); // يتغير كل 4 ثواني
+        }
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";

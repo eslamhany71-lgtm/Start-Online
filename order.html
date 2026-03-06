@@ -12,8 +12,7 @@
     </style>
 </head>
 <body>
-code
-Code
+
 <div class="max-w-4xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-10">
     
     <!-- ملخص الفاتورة -->
@@ -39,18 +38,18 @@ Code
     <div class="glass p-8 rounded-[40px]">
         <h2 class="text-xl font-black mb-6">بيانات الشحن والدفع</h2>
         <form id="orderForm" class="space-y-4">
-            <input type="text" id="custName" required placeholder="الاسم الكامل" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-xs">
-            <input type="text" id="custAddress" required placeholder="عنوان الشحن بالتفصيل (مدينة/شارع/رقم)" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-xs">
+            <input type="text" id="custName" required placeholder="الاسم الكامل" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-xs text-white">
+            <input type="text" id="custAddress" required placeholder="عنوان الشحن بالتفصيل (مدينة/شارع/رقم)" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-xs text-white">
             <div class="grid grid-cols-2 gap-4">
-                <input type="tel" id="custPhone1" required placeholder="رقم موبايل 1" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-xs">
-                <input type="tel" id="custPhone2" required placeholder="رقم موبايل 2" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-xs">
+                <input type="tel" id="custPhone1" required placeholder="رقم موبايل 1" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-xs text-white">
+                <input type="tel" id="custPhone2" required placeholder="رقم موبايل 2" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-xs text-white">
             </div>
 
             <!-- تعليمات الدفع -->
             <div class="bg-yellow-500/10 p-4 rounded-2xl border border-yellow-500/20 mt-6">
                 <p class="text-yellow-500 text-[10px] font-bold mb-2 uppercase">قم بتحويل مبلغ الحجز إلى الرقم التالي:</p>
                 <div id="payNumDisplay" class="text-2xl font-black text-white mb-2">جاري جلب رقم المسوق...</div>
-                <input type="text" id="receiptLink" required placeholder="أدخل رابط صورة الإيصال أو رقم العملية" class="w-full bg-white/10 border border-white/20 p-3 rounded-xl outline-none text-[10px]">
+                <input type="text" id="receiptLink" required placeholder="أدخل رابط صورة الإيصال أو رقم العملية" class="w-full bg-white/10 border border-white/20 p-3 rounded-xl outline-none text-[10px] text-white">
             </div>
 
             <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-2xl shadow-xl transition-all">تأكيد الطلب نهائياً</button>
@@ -69,6 +68,7 @@ Code
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"; // إضافة Auth
     import { getDatabase, ref, get, push, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
     const firebaseConfig = {
@@ -79,13 +79,15 @@ Code
     };
 
     const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app); // تعريف Auth
     const db = getDatabase(app);
 
     const params = new URLSearchParams(window.location.search);
     const price = parseFloat(params.get('price'));
     const marketerId = params.get('owner');
+    const productImage = params.get('image'); // جلب رابط الصورة من الرابط
 
-    // حساب الحسبة
+    // عرض بيانات المنتج في الفاتورة
     document.getElementById('pName').innerText = params.get('name');
     document.getElementById('pPrice').innerText = "$" + price;
     document.getElementById('total').innerText = "$" + (price + 10);
@@ -102,22 +104,34 @@ Code
     }
     fetchMarketerPay();
 
-    // تنفيذ الأوردر
+    // تنفيذ الأوردر (المعدل ليشمل UID العميل وصورة المنتج)
     document.getElementById('orderForm').onsubmit = async (e) => {
         e.preventDefault();
+
+        // الحصول على المستخدم الحالي لربط الطلب بحسابه
+        const user = auth.currentUser;
+
         const orderData = {
             productName: params.get('name'),
+            productImage: productImage || "", // حفظ الصورة لعرضها في سجل الطلبات
             marketerId: marketerId,
+            customerUid: user ? user.uid : "guest", // ربط الطلب بالـ UID الخاص بالعميل
             customerName: document.getElementById('custName').value,
             address: document.getElementById('custAddress').value,
             phone1: document.getElementById('custPhone1').value,
             phone2: document.getElementById('custPhone2').value,
             deposit: (price * 0.05).toFixed(2),
             receipt: document.getElementById('receiptLink').value,
+            status: 'pending', // حالة الطلب الافتراضية
             date: new Date().toLocaleString()
         };
 
-        await set(push(ref(db, 'orders')), orderData);
+        // إرسال الطلب لقاعدة البيانات
+        const ordersRef = ref(db, 'orders');
+        const newOrderRef = push(ordersRef);
+        await set(newOrderRef, orderData);
+
+        // إظهار رسالة النجاح
         document.getElementById('successBox').classList.remove('hidden');
     };
 </script>

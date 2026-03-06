@@ -12,122 +12,114 @@
     </style>
 </head>
 <body>
-
-    <div class="max-w-4xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-10">
-        
-        <!-- ملخص الفاتورة -->
-        <div class="glass p-8 rounded-[40px] h-fit">
-            <h2 class="text-2xl font-black mb-6 text-blue-400 italic underline">ملخص الفاتورة</h2>
-            <div id="invoiceInfo" class="space-y-4 text-sm">
-                <div class="flex justify-between"><span class="text-gray-500 tracking-widest">المنتج</span><span id="pName" class="font-bold">...</span></div>
-                <div class="flex justify-between"><span class="text-gray-500 tracking-widest">السعر الأصلي</span><span id="pPrice" class="font-bold">$0</span></div>
-                <div class="flex justify-between"><span class="text-gray-500 tracking-widest">مصاريف الشحن</span><span class="font-bold text-green-500">$10</span></div>
-                <div class="border-t border-white/5 pt-4 flex justify-between text-xl font-black">
-                    <span>الإجمالي المستحق</span><span id="total" class="text-white">$0</span>
-                </div>
-                <!-- جدية الحجز -->
-                <div class="bg-blue-600/10 p-4 rounded-2xl border border-blue-600/20 mt-6">
-                    <p class="text-blue-400 font-bold mb-1">مبلغ جدية الحجز (5%)</p>
-                    <p id="deposit" class="text-3xl font-black">$0</p>
-                    <p class="text-[9px] text-gray-500 mt-2">يجب تحويل هذا المبلغ أولاً لتفعيل الطلب.</p>
-                </div>
+code
+Code
+<div class="max-w-4xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-10">
+    
+    <!-- ملخص الفاتورة -->
+    <div class="glass p-8 rounded-[40px] h-fit">
+        <h2 class="text-2xl font-black mb-6 text-blue-400 italic underline">ملخص الفاتورة</h2>
+        <div id="invoiceInfo" class="space-y-4 text-sm">
+            <div class="flex justify-between"><span class="text-gray-500 tracking-widest">المنتج</span><span id="pName" class="font-bold">...</span></div>
+            <div class="flex justify-between"><span class="text-gray-500 tracking-widest">السعر الأصلي</span><span id="pPrice" class="font-bold">$0</span></div>
+            <div class="flex justify-between"><span class="text-gray-500 tracking-widest">مصاريف الشحن</span><span class="font-bold text-green-500">$10</span></div>
+            <div class="border-t border-white/5 pt-4 flex justify-between text-xl font-black">
+                <span>الإجمالي المستحق</span><span id="total" class="text-white">$0</span>
+            </div>
+            <!-- جدية الحجز -->
+            <div class="bg-blue-600/10 p-4 rounded-2xl border border-blue-600/20 mt-6">
+                <p class="text-blue-400 font-bold mb-1">مبلغ جدية الحجز (5%)</p>
+                <p id="deposit" class="text-3xl font-black">$0</p>
+                <p class="text-[9px] text-gray-500 mt-2">يجب تحويل هذا المبلغ أولاً لتفعيل الطلب.</p>
             </div>
         </div>
-
-        <!-- استمارة البيانات والدفع -->
-        <div class="glass p-8 rounded-[40px]">
-            <h2 class="text-xl font-black mb-6">بيانات الشحن والدفع</h2>
-            <form id="orderForm" class="space-y-4">
-                <input type="text" id="custName" required placeholder="الاسم الكامل" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-xs">
-                <input type="text" id="custAddress" required placeholder="عنوان الشحن بالتفصيل (مدينة/شارع/رقم)" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-xs">
-                <div class="grid grid-cols-2 gap-4">
-                    <input type="tel" id="custPhone1" required placeholder="رقم موبايل 1" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-xs">
-                    <input type="tel" id="custPhone2" required placeholder="رقم موبايل 2" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-xs">
-                </div>
-
-                <!-- تعليمات الدفع -->
-                <div class="bg-yellow-500/10 p-4 rounded-2xl border border-yellow-500/20 mt-6">
-                    <p class="text-yellow-500 text-[10px] font-bold mb-2 uppercase">قم بتحويل مبلغ الحجز إلى الرقم التالي:</p>
-                    <div id="payNumDisplay" class="text-2xl font-black text-white mb-2">جاري جلب رقم المسوق...</div>
-                    <input type="text" id="receiptLink" required placeholder="أدخل رابط صورة الإيصال أو رقم العملية" class="w-full bg-white/10 border border-white/20 p-3 rounded-xl outline-none text-[10px]">
-                </div>
-
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-2xl shadow-xl transition-all">تأكيد الطلب نهائياً</button>
-            </form>
-        </div>
     </div>
 
-    <!-- مودال النجاح -->
-    <div id="successBox" class="fixed inset-0 bg-black/90 z-[100] flex items-center justify-center hidden">
-        <div class="text-center">
-            <h2 class="text-4xl font-black text-green-500 mb-4 tracking-tighter italic">تم تأكيد طلبك!</h2>
-            <p class="text-gray-400 mb-8">سيقوم المسوق بالتواصل معك خلال ساعات للمراجعة والشحن.</p>
-            <a href="products.html" class="bg-white text-black px-10 py-3 rounded-full font-bold">العودة للمتجر</a>
-        </div>
+    <!-- استمارة البيانات والدفع -->
+    <div class="glass p-8 rounded-[40px]">
+        <h2 class="text-xl font-black mb-6">بيانات الشحن والدفع</h2>
+        <form id="orderForm" class="space-y-4">
+            <input type="text" id="custName" required placeholder="الاسم الكامل" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-xs">
+            <input type="text" id="custAddress" required placeholder="عنوان الشحن بالتفصيل (مدينة/شارع/رقم)" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-xs">
+            <div class="grid grid-cols-2 gap-4">
+                <input type="tel" id="custPhone1" required placeholder="رقم موبايل 1" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-xs">
+                <input type="tel" id="custPhone2" required placeholder="رقم موبايل 2" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-xs">
+            </div>
+
+            <!-- تعليمات الدفع -->
+            <div class="bg-yellow-500/10 p-4 rounded-2xl border border-yellow-500/20 mt-6">
+                <p class="text-yellow-500 text-[10px] font-bold mb-2 uppercase">قم بتحويل مبلغ الحجز إلى الرقم التالي:</p>
+                <div id="payNumDisplay" class="text-2xl font-black text-white mb-2">جاري جلب رقم المسوق...</div>
+                <input type="text" id="receiptLink" required placeholder="أدخل رابط صورة الإيصال أو رقم العملية" class="w-full bg-white/10 border border-white/20 p-3 rounded-xl outline-none text-[10px]">
+            </div>
+
+            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-2xl shadow-xl transition-all">تأكيد الطلب نهائياً</button>
+        </form>
     </div>
+</div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, get, push, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+<!-- مودال النجاح -->
+<div id="successBox" class="fixed inset-0 bg-black/90 z-[100] flex items-center justify-center hidden">
+    <div class="text-center">
+        <h2 class="text-4xl font-black text-green-500 mb-4 tracking-tighter italic">تم تأكيد طلبك!</h2>
+        <p class="text-gray-400 mb-8">سيقوم المسوق بالتواصل معك خلال ساعات للمراجعة والشحن.</p>
+        <a href="products.html" class="bg-white text-black px-10 py-3 rounded-full font-bold">العودة للمتجر</a>
+    </div>
+</div>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyCyypXt8LnHiVBR2Ka0Mb8ntXu6dJH9N-w",
-            authDomain: "start-online-6f460.firebaseapp.com",
-            projectId: "start-online-6f460",
-            databaseURL: "https://start-online-6f460-default-rtdb.firebaseio.com/"
-        };
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, get, push, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-
-        const params = new URLSearchParams(window.location.search);
-        const price = parseFloat(params.get('price'));
-        const marketerId = params.get('owner');
-
-        // حساب الحسبة
-        document.getElementById('pName').innerText = params.get('name');
-        document.getElementById('pPrice').innerText = "$" + price;
-        document.getElementById('total').innerText = "$" + (price + 10);
-        document.getElementById('deposit').innerText = "$" + (price * 0.05).toFixed(2);
-
-        // جلب رقم المسوق من حسابه
-        async function fetchMarketerPay() {
-            const snap = await get(ref(db, 'users/' + marketerId));
-            if(snap.exists() && snap.val().payNumber) {
-                document.getElementById('payNumDisplay').innerText = snap.val().payNumber;
-            } else {
-                document.getElementById('payNumDisplay').innerText = "01xxxxxxxxx (تواصل معنا)";
-            }
-        }
-        fetchMarketerPay();
-
-    // تنفيذ الأوردر
-document.getElementById('orderForm').onsubmit = async (e) => {
-    e.preventDefault();
-    
-    // جلب بيانات المستخدم الحالي
-    const auth = getAuth();
-    const user = auth.currentUser;
-    
-    const orderData = {
-        productName: params.get('name'),
-        productImage: params.get('image'), // أضفنا الصورة للسجل
-        marketerId: marketerId,
-        customerUid: user ? user.uid : "guest", // ربط الطلب بالعميل
-        customerName: document.getElementById('custName').value,
-        address: document.getElementById('custAddress').value,
-        phone1: document.getElementById('custPhone1').value,
-        phone2: document.getElementById('custPhone2').value,
-        deposit: (price * 0.05).toFixed(2),
-        receipt: document.getElementById('receiptLink').value,
-        status: 'pending', // حالة مبدئية
-        date: new Date().toLocaleString()
+    const firebaseConfig = {
+        apiKey: "AIzaSyCyypXt8LnHiVBR2Ka0Mb8ntXu6dJH9N-w",
+        authDomain: "start-online-6f460.firebaseapp.com",
+        projectId: "start-online-6f460",
+        databaseURL: "https://start-online-6f460-default-rtdb.firebaseio.com/"
     };
 
-    await set(push(ref(db, 'orders')), orderData);
-    document.getElementById('successBox').classList.remove('hidden');
-}
-        
-    </script>
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const params = new URLSearchParams(window.location.search);
+    const price = parseFloat(params.get('price'));
+    const marketerId = params.get('owner');
+
+    // حساب الحسبة
+    document.getElementById('pName').innerText = params.get('name');
+    document.getElementById('pPrice').innerText = "$" + price;
+    document.getElementById('total').innerText = "$" + (price + 10);
+    document.getElementById('deposit').innerText = "$" + (price * 0.05).toFixed(2);
+
+    // جلب رقم المسوق من حسابه
+    async function fetchMarketerPay() {
+        const snap = await get(ref(db, 'users/' + marketerId));
+        if(snap.exists() && snap.val().payNumber) {
+            document.getElementById('payNumDisplay').innerText = snap.val().payNumber;
+        } else {
+            document.getElementById('payNumDisplay').innerText = "01xxxxxxxxx (تواصل معنا)";
+        }
+    }
+    fetchMarketerPay();
+
+    // تنفيذ الأوردر
+    document.getElementById('orderForm').onsubmit = async (e) => {
+        e.preventDefault();
+        const orderData = {
+            productName: params.get('name'),
+            marketerId: marketerId,
+            customerName: document.getElementById('custName').value,
+            address: document.getElementById('custAddress').value,
+            phone1: document.getElementById('custPhone1').value,
+            phone2: document.getElementById('custPhone2').value,
+            deposit: (price * 0.05).toFixed(2),
+            receipt: document.getElementById('receiptLink').value,
+            date: new Date().toLocaleString()
+        };
+
+        await set(push(ref(db, 'orders')), orderData);
+        document.getElementById('successBox').classList.remove('hidden');
+    };
+</script>
 </body>
 </html>

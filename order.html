@@ -101,24 +101,33 @@
         }
         fetchMarketerPay();
 
-        // تنفيذ الأوردر
-        document.getElementById('orderForm').onsubmit = async (e) => {
-            e.preventDefault();
-            const orderData = {
-                productName: params.get('name'),
-                marketerId: marketerId,
-                customerName: document.getElementById('custName').value,
-                address: document.getElementById('custAddress').value,
-                phone1: document.getElementById('custPhone1').value,
-                phone2: document.getElementById('custPhone2').value,
-                deposit: (price * 0.05).toFixed(2),
-                receipt: document.getElementById('receiptLink').value,
-                date: new Date().toLocaleString()
-            };
+    // تنفيذ الأوردر
+document.getElementById('orderForm').onsubmit = async (e) => {
+    e.preventDefault();
+    
+    // جلب بيانات المستخدم الحالي
+    const auth = getAuth();
+    const user = auth.currentUser;
+    
+    const orderData = {
+        productName: params.get('name'),
+        productImage: params.get('image'), // أضفنا الصورة للسجل
+        marketerId: marketerId,
+        customerUid: user ? user.uid : "guest", // ربط الطلب بالعميل
+        customerName: document.getElementById('custName').value,
+        address: document.getElementById('custAddress').value,
+        phone1: document.getElementById('custPhone1').value,
+        phone2: document.getElementById('custPhone2').value,
+        deposit: (price * 0.05).toFixed(2),
+        receipt: document.getElementById('receiptLink').value,
+        status: 'pending', // حالة مبدئية
+        date: new Date().toLocaleString()
+    };
 
-            await set(push(ref(db, 'orders')), orderData);
-            document.getElementById('successBox').classList.remove('hidden');
-        };
+    await set(push(ref(db, 'orders')), orderData);
+    document.getElementById('successBox').classList.remove('hidden');
+};
+        
     </script>
 </body>
 </html>

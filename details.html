@@ -3,167 +3,129 @@
 <head>
     <script src="translations.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta charset="UTF-8"><title>عرض المنتج | Start Online</title>
+    <meta charset="UTF-8"><title>تفاصيل المنتج | Start Online</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         body { background: #0f172a; color: #f1f5f9; font-family: 'Cairo', sans-serif; }
         .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); }
-        .spec-btn { border: 1px solid rgba(255,255,255,0.1); transition: 0.3s; cursor: pointer; }
-        .spec-btn:hover, .spec-btn.active { border-color: #3b82f6; background: rgba(59, 130, 246, 0.1); transform: scale(1.05); }
-        .badge-live { animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
-        .timer-box { background: #000; color: #fff; padding: 10px; border-radius: 10px; min-width: 50px; text-align: center; }
+        .spec-btn { border: 1px solid rgba(255,255,255,0.1); transition: 0.3s; cursor: pointer; padding: 8px 16px; border-radius: 12px; font-size: 12px; font-weight: bold; }
+        .spec-btn.active { border-color: #3b82f6; background: rgba(59, 130, 246, 0.1); color: white; }
+        .timer-unit { background: #000; padding: 10px; border-radius: 12px; min-width: 55px; text-align: center; }
     </style>
 </head>
 <body class="p-4 md:p-10">
 
-    <div class="max-w-7xl mx-auto">
-        <div class="flex flex-col lg:flex-row gap-10">
+    <div class="max-w-7xl mx-auto flex flex-col lg:flex-row gap-12">
+        
+        <!-- الجانب الأيمن: معرض الصور -->
+        <div class="lg:w-1/2 space-y-6">
+            <div class="rounded-[40px] overflow-hidden shadow-2xl border border-white/5">
+                <img id="mainImg" src="" class="w-full h-[650px] object-cover">
+            </div>
+        </div>
+
+        <!-- الجانب الأيسر: المعلومات والربط بصفحة الأوردر -->
+        <div class="lg:w-1/2 space-y-8">
+            <a href="products.html" class="text-blue-400 font-bold hover:underline">← العودة للمتجر</a>
             
-            <!-- القسم الأيمن: معرض الصور -->
-            <div class="lg:w-1/2 space-y-4">
-                <div class="rounded-[40px] overflow-hidden border border-white/5 shadow-2xl">
-                    <img id="mainImg" src="" class="w-full h-[600px] object-cover">
-                </div>
-                <!-- مصغرات الصور (تستخدم نفس الصورة حالياً لعدم وجود مصفوفة صور) -->
-                <div class="flex gap-4 overflow-x-auto pb-2" id="thumbGallery">
-                    <img src="" class="thumb-img w-20 h-24 rounded-2xl object-cover border-2 border-blue-500 opacity-100">
+            <div>
+                <h1 id="detName" class="text-4xl md:text-5xl font-black mb-4 tracking-tighter">اسم المنتج</h1>
+                <div class="flex items-center gap-4 mb-6">
+                    <span id="detPrice" class="text-blue-400 font-black text-4xl tracking-tighter">$0</span>
+                    <span id="detOldPrice" class="text-gray-500 line-through text-xl"></span>
                 </div>
             </div>
 
-            <!-- القسم الأيسر: التفاصيل والشراء -->
-            <div class="lg:w-1/2 space-y-8">
-                <div>
-                    <h1 id="detName" class="text-4xl md:text-5xl font-black mb-4 italic tracking-tighter">اسم المنتج</h1>
-                    <div class="flex items-center gap-4 text-2xl mb-6">
-                        <span id="detPrice" class="text-blue-400 font-black text-4xl">$0</span>
-                        <span id="detOldPrice" class="text-gray-500 line-through text-lg"></span>
-                    </div>
-                </div>
-
-                <!-- اختيار الألوان -->
+            <!-- عرض المواصفات (الألوان والمقاسات) -->
+            <div id="specsContainer" class="space-y-6">
                 <div id="colorSection" class="hidden">
-                    <p class="text-sm font-bold text-gray-400 mb-3">الألوان المتاحة:</p>
+                    <p class="text-sm text-gray-400 mb-3 font-bold">الألوان المتوفرة:</p>
                     <div id="colorsList" class="flex gap-3 flex-wrap"></div>
                 </div>
-
-                <!-- اختيار المقاسات -->
                 <div id="sizeSection" class="hidden">
-                    <p class="text-sm font-bold text-gray-400 mb-3">المقاسات:</p>
+                    <p class="text-sm text-gray-400 mb-3 font-bold">المقاسات المتاحة:</p>
                     <div id="sizesList" class="flex gap-3 flex-wrap"></div>
                 </div>
+            </div>
 
-                <!-- التايمر والعداد -->
-                <div class="glass p-6 rounded-3xl border-blue-500/20">
-                    <p class="text-[10px] text-blue-400 font-bold mb-4 uppercase tracking-widest italic">العرض ينتهي خلال:</p>
-                    <div class="flex gap-4 mb-6">
-                        <div class="timer-box"><span id="days" class="text-xl font-black">0</span><p class="text-[8px]">يوم</p></div>
-                        <div class="timer-box"><span id="hours" class="text-xl font-black">12</span><p class="text-[8px]">ساعة</p></div>
-                        <div class="timer-box"><span id="minutes" class="text-xl font-black">45</span><p class="text-[8px]">دقيقة</p></div>
-                        <div class="timer-box"><span id="seconds" class="text-xl font-black">30</span><p class="text-[8px]">ثانية</p></div>
-                    </div>
-                    <div class="flex items-center gap-2 text-xs text-gray-400">
-                        <span class="w-2 h-2 bg-red-500 rounded-full badge-live"></span>
-                        يشاهد هذا المنتج الآن <span class="text-white font-bold mx-1">74</span> عميل
-                    </div>
+            <!-- عداد الوقت والزوار للمظهر الاحترافي -->
+            <div class="glass p-6 rounded-3xl border-blue-500/20">
+                <p class="text-[10px] text-blue-400 font-bold mb-4 italic uppercase tracking-widest">ينتهي العرض الخاص في:</p>
+                <div class="flex gap-3 mb-6">
+                    <div class="timer-unit"><span id="days" class="text-xl font-black">01</span><p class="text-[8px]">يوم</p></div>
+                    <div class="timer-unit"><span id="hours" class="text-xl font-black">12</span><p class="text-[8px]">ساعة</p></div>
+                    <div class="timer-unit"><span id="minutes" class="text-xl font-black">45</span><p class="text-[8px]">دقيقة</p></div>
+                    <div class="timer-unit"><span id="seconds" class="text-xl font-black">30</span><p class="text-[8px]">ثانية</p></div>
                 </div>
+            </div>
 
-                <!-- فورم الشراء السريع -->
-                <div class="glass p-8 rounded-[40px] border-white/10">
-                    <h3 class="text-xl font-black mb-6 italic underline decoration-blue-500">أكمل بياناتك لإتمام الطلب</h3>
-                    <form id="orderForm" class="space-y-4">
-                        <input type="text" id="custName" required placeholder="الاسم بالكامل" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-xs text-white">
-                        <input type="tel" id="custPhone" required placeholder="رقم الهاتف" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-xs text-white">
-                        <select id="custCity" class="w-full bg-slate-800 border border-white/10 p-4 rounded-2xl text-xs text-white">
-                            <option value="القاهرة">القاهرة</option><option value="الجيزة">الجيزة</option><option value="الإسكندرية">الإسكندرية</option>
-                        </select>
-                        <textarea id="custAddress" required placeholder="العنوان بالتفصيل" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white h-20"></textarea>
-                        
-                        <div class="flex justify-between text-sm font-bold py-4 border-t border-white/5 mt-4">
-                            <span class="text-gray-400 tracking-tighter">إجمالي الدفع (شامل الشحن):</span>
-                            <span id="finalTotal" class="text-green-500 text-xl font-black"></span>
-                        </div>
-                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-5 rounded-2xl font-black text-xl shadow-xl transition-all transform hover:-translate-y-1">اطلب الآن</button>
-                    </form>
-                </div>
+            <!-- زر الشراء (يرسل العميل لصفحة order.html كما في كودك الأصلي) -->
+            <div class="space-y-4">
+                <button onclick="goToOrder()" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-6 rounded-2xl font-black text-2xl transition-all transform hover:-translate-y-1 shadow-xl">
+                    شراء الآن (دفع جدية حجز)
+                </button>
+                <p class="text-center text-xs text-gray-500 italic">عند الضغط، سيتم تحويلك لصفحة الدفع وتأكيد الحجز.</p>
+            </div>
 
-                <!-- قسم الوصف التفصيلي -->
-                <div class="space-y-4 pt-10">
-                    <h3 class="text-2xl font-black border-b border-white/10 pb-4">وصف المنتج:</h3>
-                    <p id="detDesc" class="text-gray-400 leading-relaxed italic whitespace-pre-line"></p>
-                </div>
+            <!-- الوصف التفصيلي (الذي يتم سحبه من داتابيز) -->
+            <div class="pt-8">
+                <h4 class="text-2xl font-black mb-4 border-b border-white/10 pb-4 italic">الوصف والموديل:</h4>
+                <p id="detDesc" class="text-gray-400 leading-relaxed italic whitespace-pre-wrap"></p>
             </div>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, get, push, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
         const firebaseConfig = { apiKey: "AIzaSyCyypXt8LnHiVBR2Ka0Mb8ntXu6dJH9N-w", authDomain: "start-online-6f460.firebaseapp.com", projectId: "start-online-6f460", databaseURL: "https://start-online-6f460-default-rtdb.firebaseio.com/" };
         const app = initializeApp(firebaseConfig); const db = getDatabase(app);
 
         const params = new URLSearchParams(window.location.search);
         const prodId = params.get('id');
+        let productOwnerId = ""; // سنحتاجه لصفحة الأوردر كما في كودك الأصلي
 
-        async function loadDetails() {
+        async function init() {
             const snap = await get(ref(db, 'products/' + prodId));
             if(snap.exists()) {
                 const p = snap.val();
+                productOwnerId = p.owner; // تخزين المالك
                 document.getElementById('detName').innerText = p.name;
                 document.getElementById('detPrice').innerText = "$" + p.price;
-                document.getElementById('finalTotal').innerText = "$" + (parseFloat(p.price) + 50); // فرضنا شحن 50
                 if(p.oldPrice) document.getElementById('detOldPrice').innerText = "$" + p.oldPrice;
                 document.getElementById('mainImg').src = p.image;
-                document.querySelectorAll('.thumb-img').forEach(img => img.src = p.image);
-                document.getElementById('detDesc').innerText = p.desc || "لا يوجد وصف حالياً.";
+                document.getElementById('detDesc').innerText = p.desc || "لا يوجد وصف متوفر حالياً لهذا المنتج.";
 
-                // معالجة الألوان والمقاسات
+                // توزيع الألوان والمقاسات (بدون حذف)
                 if(p.colors) {
                     document.getElementById('colorSection').classList.remove('hidden');
                     p.colors.split('،').forEach(c => {
-                        document.getElementById('colorsList').innerHTML += `<div class="spec-btn px-4 py-2 rounded-xl text-[10px] font-bold" onclick="selectSpec(this)">${c}</div>`;
+                        const btn = document.createElement('div'); btn.className='spec-btn'; btn.innerText=c.trim();
+                        btn.onclick=() => { btn.parentElement.querySelectorAll('.spec-btn').forEach(x=>x.classList.remove('active')); btn.classList.add('active'); };
+                        document.getElementById('colorsList').appendChild(btn);
                     });
                 }
                 if(p.sizes) {
                     document.getElementById('sizeSection').classList.remove('hidden');
                     p.sizes.split(',').forEach(s => {
-                        document.getElementById('sizesList').innerHTML += `<div class="spec-btn px-4 py-2 rounded-xl text-[10px] font-bold" onclick="selectSpec(this)">${s}</div>`;
+                        const btn = document.createElement('div'); btn.className='spec-btn'; btn.innerText=s.trim();
+                        btn.onclick=() => { btn.parentElement.querySelectorAll('.spec-btn').forEach(x=>x.classList.remove('active')); btn.classList.add('active'); };
+                        document.getElementById('sizesList').appendChild(btn);
                     });
                 }
             }
         }
 
-        window.selectSpec = (el) => {
-            el.parentElement.querySelectorAll('.spec-btn').forEach(b => b.classList.remove('active'));
-            el.classList.add('active');
+        // دالة الذهاب لصفحة الأوردر (تم إرجاعها كما كانت تماماً)
+        window.goToOrder = () => {
+            if(!productOwnerId) return alert("جاري تحميل البيانات...");
+            const url = `order.html?id=${prodId}&name=${encodeURIComponent(document.getElementById('detName').innerText)}&price=${params.get('price')}&image=${encodeURIComponent(document.getElementById('mainImg').src)}&owner=${productOwnerId}`;
+            window.location.href = url;
         };
 
-        // تنفيذ الطلب
-        document.getElementById('orderForm').onsubmit = async (e) => {
-            e.preventDefault();
-            const orderData = {
-                productName: document.getElementById('detName').innerText,
-                customerName: document.getElementById('custName').value,
-                phone: document.getElementById('custPhone').value,
-                city: document.getElementById('custCity').value,
-                address: document.getElementById('custAddress').value,
-                date: new Date().toLocaleString()
-            };
-            await set(push(ref(db, 'orders')), orderData);
-            alert("تم إرسال طلبك بنجاح!");
-            window.location.href = "products.html";
-        };
-
-        loadDetails();
-        
-        // تايمر بسيط
-        setInterval(() => {
-            let s = parseInt(document.getElementById('seconds').innerText);
-            if(s > 0) document.getElementById('seconds').innerText = s - 1;
-            else document.getElementById('seconds').innerText = 59;
-        }, 1000);
+        init();
     </script>
 </body>
 </html>

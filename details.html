@@ -2,131 +2,149 @@
 <html lang="ar" dir="rtl">
 <head>
     <script src="translations.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta charset="UTF-8"><title>عرض المنتج | Start Online</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta charset="UTF-8"><title>تفاصيل المنتج | Start Online</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        body { background: #020617; color: #f1f5f9; font-family: 'Cairo', sans-serif; }
+        body { background: #020617; color: #f1f5f9; font-family: 'Cairo', sans-serif; min-height: 100vh; margin: 0; }
         .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); }
-        .spec-btn { border: 1px solid rgba(255,255,255,0.1); transition: 0.3s; cursor: pointer; padding: 8px 16px; border-radius: 12px; font-size: 12px; font-weight: bold; text-align: center; }
-        .spec-btn.active { border-color: #3b82f6; background: rgba(59, 130, 246, 0.2); color: white; box-shadow: 0 0 10px rgba(59, 130, 246, 0.3); }
-        .thumb-img { width: 80px; height: 80px; object-fit: cover; border-radius: 12px; cursor: pointer; border: 2px solid transparent; transition: 0.3s; }
-        .thumb-img:hover, .thumb-img.active { border-color: #3b82f6; }
-        .timer-unit { background: #000; padding: 10px; border-radius: 12px; min-width: 55px; text-align: center; border: 1px solid rgba(59, 130, 246, 0.3); }
+        .spec-btn { border: 1px solid rgba(255,255,255,0.1); transition: 0.3s; cursor: pointer; padding: 10px 20px; border-radius: 15px; font-size: 12px; font-weight: bold; text-align: center; color: #94a3b8; }
+        .spec-btn.active { border-color: #3b82f6; background: rgba(59, 130, 246, 0.2); color: white; box-shadow: 0 0 15px rgba(59, 130, 246, 0.3); }
+        .thumb-img { width: 70px; height: 70px; object-fit: cover; border-radius: 12px; cursor: pointer; border: 2px solid transparent; transition: 0.3s; opacity: 0.6; }
+        .thumb-img:hover, .thumb-img.active { border-color: #3b82f6; opacity: 1; transform: scale(1.05); }
+        .timer-unit { background: #000; padding: 10px; border-radius: 12px; min-width: 60px; text-align: center; border: 1px solid rgba(59, 130, 246, 0.3); }
         .badge-live { animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.2); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.2); opacity: 0.5; } }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
     </style>
 </head>
 <body class="p-4 md:p-10 pb-32">
 
     <div class="max-w-7xl mx-auto flex flex-col lg:flex-row gap-12">
         
-        <!-- الجانب الأيمن: الصور والمواصفات -->
+        <!-- الجانب الأيمن: معرض الصور والمواصفات -->
         <div class="lg:w-1/2 space-y-6">
-            <div class="rounded-[40px] overflow-hidden shadow-2xl border border-white/5 bg-black">
-                <img id="mainImg" src="" class="w-full h-[500px] md:h-[650px] object-contain transition-all duration-500">
+            <div class="rounded-[40px] overflow-hidden shadow-2xl border border-white/5 bg-black/40 relative">
+                <img id="mainImg" src="" class="w-full h-[450px] md:h-[600px] object-contain transition-all duration-500">
+                <div class="absolute top-4 right-4 bg-red-600 text-white text-[10px] font-black px-3 py-1 rounded-full badge-live">حصري</div>
             </div>
-            <!-- الصور المصغرة -->
-            <div id="thumbList" class="flex gap-3 overflow-x-auto pb-2">
-                <!-- الصور الإضافية ستظهر هنا -->
+            
+            <!-- الصور الفرعية (Thumbnails) -->
+            <div id="thumbList" class="flex gap-3 overflow-x-auto pb-4 no-scrollbar">
+                <!-- الصور تظهر هنا -->
             </div>
 
-            <!-- وصف أيقوني تحت الصورة -->
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 pt-6">
-                <div id="matBox" class="glass p-4 rounded-2xl flex items-center gap-3 border-white/5">
-                    <div class="text-blue-400">🧵</div>
-                    <div><p class="text-[9px] text-gray-500 uppercase">الماتريال</p><p id="detMat" class="text-xs font-bold">-</p></div>
+            <!-- المواصفات بالأيقونات -->
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 pt-6 border-t border-white/5">
+                <div class="glass p-4 rounded-2xl flex items-center gap-3">
+                    <span class="text-2xl">🧵</span>
+                    <div><p class="text-[9px] text-gray-500 uppercase font-bold">الماتريال</p><p id="detMat" class="text-xs font-black text-white">-</p></div>
                 </div>
-                <div id="modBox" class="glass p-4 rounded-2xl flex items-center gap-3 border-white/5">
-                    <div class="text-blue-400">🏷</div>
-                    <div><p class="text-[9px] text-gray-500 uppercase">الموديل</p><p id="detMod" class="text-xs font-bold">-</p></div>
+                <div class="glass p-4 rounded-2xl flex items-center gap-3">
+                    <span class="text-2xl">🏷</span>
+                    <div><p class="text-[9px] text-gray-500 uppercase font-bold">الموديل</p><p id="detMod" class="text-xs font-black text-white">-</p></div>
                 </div>
-                <div class="glass p-4 rounded-2xl flex items-center gap-3 border-white/5">
-                    <div class="text-blue-400">📦</div>
-                    <div><p class="text-[9px] text-gray-500 uppercase">حالة المعاينة</p><p class="text-xs font-bold">متاحة عند الاستلام</p></div>
+                <div class="glass p-4 rounded-2xl flex items-center gap-3">
+                    <span class="text-2xl">📦</span>
+                    <div><p class="text-[9px] text-gray-500 uppercase font-bold">المعاينة</p><p class="text-xs font-black text-green-400">متاحة فورا</p></div>
                 </div>
             </div>
         </div>
 
-        <!-- الجانب الأيسر: المعلومات والشراء -->
-        <div class="lg:w-1/2 space-y-6">
-            <a href="products.html" class="text-blue-400 font-bold hover:underline flex items-center gap-2"><span>←</span> العودة للمتجر</a>
-            
-            <div>
-                <h1 id="detName" class="text-4xl font-black mb-4 tracking-tighter text-white">اسم المنتج</h1>
-                <div class="flex items-center gap-4">
-                    <span id="detPriceView" class="text-blue-400 font-black text-4xl tracking-tighter">0 ج.م</span>
-                    <span id="detOldPrice" class="text-gray-500 line-through text-xl"></span>
+        <!-- الجانب الأيسر: التحكم والشراء -->
+        <div class="lg:w-1/2 space-y-8">
+            <nav class="flex justify-between items-center">
+                <a href="products.html" class="text-blue-400 font-bold hover:underline flex items-center gap-2 text-sm"><span>←</span> العودة للمتجر</a>
+                <div class="flex items-center gap-2 text-[10px] text-gray-400 italic">
+                    <span class="w-2 h-2 bg-green-500 rounded-full badge-live"></span>
+                    متوفر حالياً
+                </div>
+            </nav>
+
+            <div class="animate-slide">
+                <h1 id="detName" class="text-4xl md:text-5xl font-black mb-4 tracking-tighter text-white">اسم المنتج</h1>
+                <div class="flex items-center gap-6">
+                    <span id="detPriceView" class="text-blue-500 font-black text-5xl tracking-tighter">0 ج.م</span>
+                    <span id="detOldPrice" class="text-gray-600 line-through text-2xl font-bold italic"></span>
                 </div>
             </div>
 
-            <!-- خيارات العميل -->
-            <div class="space-y-6 glass p-6 rounded-[30px] border-white/5">
+            <!-- الاختيارات: لون ومقاس -->
+            <div class="space-y-8 glass p-8 rounded-[35px] border-white/5 shadow-2xl">
                 <div id="colorSection" class="hidden">
-                    <p class="text-xs text-gray-400 mb-3 font-bold uppercase tracking-widest">اختر اللون:</p>
-                    <div id="colorsList" class="flex gap-2 flex-wrap"></div>
+                    <p class="text-xs text-gray-500 mb-4 font-black uppercase tracking-widest italic">اختر لونك المفضل:</p>
+                    <div id="colorsList" class="flex gap-3 flex-wrap"></div>
                 </div>
+
                 <div id="sizeSection" class="hidden">
-                    <p class="text-xs text-gray-400 mb-3 font-bold uppercase tracking-widest">اختر المقاس:</p>
-                    <div id="sizesList" class="flex gap-2 flex-wrap"></div>
+                    <p class="text-xs text-gray-500 mb-4 font-black uppercase tracking-widest italic">اختر المقاس المناسب:</p>
+                    <div id="sizesList" class="flex gap-3 flex-wrap"></div>
                 </div>
 
                 <!-- الكمية والمحافظة -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-white/5">
-                    <div>
-                        <p class="text-[10px] text-gray-500 mb-2 font-bold">الكمية:</p>
-                        <div class="flex items-center gap-4 bg-black/40 w-fit p-1 rounded-xl border border-white/10">
-                            <button onclick="changeQty(-1)" class="w-8 h-8 flex items-center justify-center bg-white/5 rounded-lg hover:bg-white/10">-</button>
-                            <span id="qtyView" class="font-black text-lg w-6 text-center">1</span>
-                            <button onclick="changeQty(1)" class="w-8 h-8 flex items-center justify-center bg-blue-600 rounded-lg">+</button>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6 border-t border-white/5">
+                    <div class="space-y-3">
+                        <p class="text-[10px] text-gray-500 font-black uppercase tracking-widest">تحديد الكمية:</p>
+                        <div class="flex items-center justify-between bg-black/40 p-2 rounded-2xl border border-white/10 w-full">
+                            <button onclick="changeQty(-1)" class="w-10 h-10 flex items-center justify-center bg-white/5 rounded-xl hover:bg-red-500/20 transition-all font-bold">-</button>
+                            <span id="qtyView" class="font-black text-xl text-white">1</span>
+                            <button onclick="changeQty(1)" class="w-10 h-10 flex items-center justify-center bg-blue-600 rounded-xl hover:bg-blue-500 transition-all shadow-lg font-bold">+</button>
                         </div>
                     </div>
-                    <div>
-                        <p class="text-[10px] text-gray-500 mb-2 font-bold">شحن إلى:</p>
-                        <select id="govSelect" onchange="updateFinalPrice()" class="w-full bg-slate-800 border border-white/10 p-3 rounded-xl text-xs outline-none text-white">
-                            <option value="0" data-price="0">اختر المحافظة (لمعرفة الشحن)</option>
-                            <option value="Cairo" data-price="50">القاهرة (50 ج.م)</option>
-                            <option value="Giza" data-price="50">الجيزة (50 ج.م)</option>
-                            <option value="Alex" data-price="65">الإسكندرية (65 ج.م)</option>
-                            <option value="Delta" data-price="70">وجه بحري / القناة (70 ج.م)</option>
-                            <option value="Upper" data-price="85">وجه قبلي (85 ج.م)</option>
-                            <option value="Remote" data-price="120">مطروح / سيناء / البحر الأحمر (120 ج.م)</option>
+                    <div class="space-y-3">
+                        <p class="text-[10px] text-gray-500 font-black uppercase tracking-widest">المحافظة (الشحن):</p>
+                        <select id="govSelect" onchange="updateFinalPrice()" class="w-full bg-slate-800 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white font-bold cursor-pointer focus:border-blue-500 transition-all">
+                            <option value="0" data-price="0">اختر المحافظة</option>
+                            <option value="القاهرة" data-price="50">القاهرة (50 ج.م)</option>
+                            <option value="الجيزة" data-price="50">الجيزة (50 ج.م)</option>
+                            <option value="الإسكندرية" data-price="65">الإسكندرية (65 ج.م)</option>
+                            <option value="البحيرة" data-price="70">البحيرة / وجه بحري (70 ج.م)</option>
+                            <option value="المنيا" data-price="85">المنيا / وجه قبلي (85 ج.م)</option>
+                            <option value="سيناء" data-price="120">سيناء / البحر الأحمر (120 ج.م)</option>
                         </select>
                     </div>
                 </div>
             </div>
 
-            <!-- السعر النهائي المتحرك -->
-            <div class="flex justify-between items-center bg-blue-600/10 p-6 rounded-3xl border border-blue-600/20">
+            <!-- ملخص السعر النهائي -->
+            <div class="flex justify-between items-center bg-blue-600/5 p-8 rounded-[35px] border border-blue-500/20 shadow-inner">
                 <div>
-                    <p class="text-[10px] text-blue-400 font-bold uppercase">إجمالي السعر شامل الشحن:</p>
-                    <h3 id="finalPriceView" class="text-3xl font-black text-white">0 ج.م</h3>
+                    <p class="text-[10px] text-blue-400 font-black uppercase mb-1 italic">الإجمالي شامل الشحن:</p>
+                    <h3 id="finalPriceView" class="text-4xl font-black text-white tracking-tighter">0 ج.م</h3>
                 </div>
-                <div class="text-right">
-                    <p class="text-[9px] text-gray-500">جدية حجز 5%:</p>
-                    <p id="depositView" class="text-lg font-bold text-green-400">0 ج.م</p>
+                <div class="text-left">
+                    <p class="text-[9px] text-gray-500 font-bold italic mb-1 text-left">جدية حجز (5%):</p>
+                    <p id="depositView" class="text-xl font-black text-green-400">0 ج.م</p>
                 </div>
             </div>
+
+            <!-- أزرار الأكشن -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <button onclick="addToCart()" class="w-full bg-white/5 border border-white/10 text-white py-5 rounded-[20px] font-black text-sm hover:bg-white/10 transition-all flex items-center justify-center gap-2">
                     <span>🛒</span> إضافة للسلة
                 </button>
-            <button onclick="goToOrder()" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-5 rounded-2xl font-black text-xl transition-all transform hover:-translate-y-1 shadow-xl shadow-blue-500/20">
-                إتمام الطلب الآن
-            </button>
-
-            <!-- عداد المشاهدين -->
-            <div class="flex justify-center items-center gap-2 text-xs text-gray-500 italic">
-                <span class="w-2 h-2 bg-red-600 rounded-full badge-live"></span>
-                يشاهد المنتج حالياً <span id="live-viewers" class="text-white font-black mx-1">82</span> عميل
+                <button onclick="goToOrder()" class="w-full bg-blue-600 text-white py-5 rounded-[20px] font-black text-sm hover:bg-blue-500 transition-all shadow-2xl shadow-blue-500/20 transform hover:-translate-y-1">
+                    شراء الآن (جدية حجز)
+                </button>
             </div>
 
-            <div class="pt-4">
-                <h4 class="text-xl font-black mb-3 border-b border-white/10 pb-3">وصف المنتج:</h4>
-                <p id="detDesc" class="text-gray-400 leading-relaxed text-sm whitespace-pre-wrap"></p>
+            <!-- عداد المشاهدين -->
+            <div class="glass p-4 rounded-2xl flex justify-center items-center gap-3 text-xs text-gray-400 border-white/5 italic">
+                <span class="w-2 h-2 bg-blue-500 rounded-full badge-live"></span>
+                هناك <span id="live-viewers" class="text-white font-black">94</span> شخص يتصفحون هذا العرض الآن
+            </div>
+
+            <div class="pt-6 border-t border-white/5">
+                <h4 class="text-lg font-black mb-4 italic text-blue-400 tracking-widest uppercase">وصف المنتج</h4>
+                <p id="detDesc" class="text-gray-400 leading-relaxed text-sm whitespace-pre-wrap italic"></p>
             </div>
         </div>
     </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 glass px-10 py-5 rounded-full text-white font-black shadow-2xl opacity-0 transition-all pointer-events-none z-[100] border-blue-500 border text-xs tracking-widest uppercase italic"></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -141,8 +159,9 @@
         let unitPrice = 0;
         let quantity = 1;
         let productOwnerId = "";
-        let selectedColor = "";
-        let selectedSize = "";
+        let selectedColor = "غير محدد";
+        let selectedSize = "عام";
+        let mainProductImage = "";
 
         async function init() {
             const snap = await get(ref(db, 'products/' + prodId));
@@ -150,24 +169,25 @@
                 const p = snap.val();
                 productOwnerId = p.owner;
                 unitPrice = parseFloat(p.price);
+                mainProductImage = p.image;
                 
                 document.getElementById('detName').innerText = p.name;
                 document.getElementById('detPriceView').innerText = unitPrice + " ج.م";
                 if(p.oldPrice) document.getElementById('detOldPrice').innerText = p.oldPrice + " ج.م";
                 document.getElementById('mainImg').src = p.image;
-                document.getElementById('detDesc').innerText = p.desc || "وصف المنتج غير متوفر حالياً.";
-                document.getElementById('detMat').innerText = p.material || "غير محدد";
-                document.getElementById('detMod').innerText = p.model || "غير محدد";
+                document.getElementById('detDesc').innerText = p.desc || "لا يوجد وصف متوفر.";
+                document.getElementById('detMat').innerText = p.material || "قطن 100%";
+                document.getElementById('detMod').innerText = p.model || "2026 Edition";
 
-                // الصور المصغرة
+                // معرض الصور
                 const thumbs = document.getElementById('thumbList');
-                const allImages = [p.image];
-                if(p.extraImages) allImages.push(...p.extraImages.split(','));
+                const images = [p.image];
+                if(p.extraImages) images.push(...p.extraImages.split(','));
                 
-                allImages.forEach((imgUrl, idx) => {
+                images.forEach((url, i) => {
                     const img = document.createElement('img');
-                    img.src = imgUrl.trim();
-                    img.className = `thumb-img ${idx === 0 ? 'active' : ''}`;
+                    img.src = url.trim();
+                    img.className = `thumb-img ${i === 0 ? 'active' : ''}`;
                     img.onclick = () => {
                         document.getElementById('mainImg').src = img.src;
                         thumbs.querySelectorAll('.thumb-img').forEach(t => t.classList.remove('active'));
@@ -197,23 +217,18 @@
             }
         }
 
-        window.changeQty = (val) => {
-            quantity = Math.max(1, quantity + val);
-            document.getElementById('qtyView').innerText = quantity;
-            updateFinalPrice();
-        };
+        window.changeQty = (v) => { quantity = Math.max(1, quantity + v); document.getElementById('qtyView').innerText = quantity; updateFinalPrice(); };
 
         window.updateFinalPrice = () => {
             const gov = document.getElementById('govSelect');
-            const shippingPrice = parseFloat(gov.options[gov.selectedIndex].getAttribute('data-price')) || 0;
+            const shipping = parseFloat(gov.options[gov.selectedIndex].getAttribute('data-price')) || 0;
             const subtotal = unitPrice * quantity;
-            const total = subtotal + shippingPrice;
-            const deposit = (subtotal * 0.05).toFixed(0);
-
+            const total = subtotal + shipping;
             document.getElementById('finalPriceView').innerText = total + " ج.م";
-            document.getElementById('depositView').innerText = deposit + " ج.م";
+            document.getElementById('depositView').innerText = (subtotal * 0.05).toFixed(0) + " ج.م";
         };
-                window.addToCart = () => {
+
+        window.addToCart = () => {
             const cartItem = { id: prodId, name: document.getElementById('detName').innerText, price: unitPrice, qty: quantity, color: selectedColor, size: selectedSize, image: mainProductImage };
             let cart = JSON.parse(localStorage.getItem('userCart')) || [];
             cart.push(cartItem);
@@ -223,18 +238,15 @@
 
         window.goToOrder = () => {
             const gov = document.getElementById('govSelect').value;
-            if(gov === "0") return alert("يرجى اختيار المحافظة لتحديد سعر الشحن");
-            
-            const shippingPrice = document.getElementById('govSelect').options[document.getElementById('govSelect').selectedIndex].getAttribute('data-price');
-            const total = document.getElementById('finalPriceView').innerText.replace(" ج.م", "");
-            
-            const url = `order.html?id=${prodId}&name=${encodeURIComponent(document.getElementById('detName').innerText)}&price=${unitPrice}&qty=${quantity}&color=${encodeURIComponent(selectedColor)}&size=${encodeURIComponent(selectedSize)}&gov=${gov}&shipping=${shippingPrice}&total=${total}&image=${encodeURIComponent(document.getElementById('mainImg').src)}&owner=${productOwnerId}`;
+            if(gov === "0") return alert("يرجى اختيار المحافظة أولاً!");
+            const shipping = document.getElementById('govSelect').options[document.getElementById('govSelect').selectedIndex].getAttribute('data-price');
+            const url = `order.html?id=${prodId}&name=${encodeURIComponent(document.getElementById('detName').innerText)}&price=${unitPrice}&qty=${quantity}&color=${encodeURIComponent(selectedColor)}&size=${encodeURIComponent(selectedSize)}&gov=${gov}&shipping=${shipping}&owner=${productOwnerId}&image=${encodeURIComponent(mainProductImage)}`;
             window.location.href = url;
         };
 
+        window.showToast = (m) => { const t = document.getElementById('toast'); t.innerText = m; t.style.opacity = '1'; setTimeout(() => t.style.opacity = '0', 3000); };
         init();
-        // محاكاة المشاهدين
-        setInterval(() => { document.getElementById('live-viewers').innerText = Math.floor(Math.random() * (150 - 50 + 1)) + 50; }, 5000);
+        setInterval(() => { document.getElementById('live-viewers').innerText = Math.floor(Math.random() * 100) + 50; }, 4000);
     </script>
 </body>
 </html>

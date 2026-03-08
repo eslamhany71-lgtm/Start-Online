@@ -66,7 +66,7 @@
 
     <!-- 2. لوحة السلة الجانبية -->
     <div id="cartDrawer" class="p-6 flex flex-col">
-        <div class="flex justify-between items-center mb-8 border-b border-white/10 pb-4">
+        <div class="flex justify-between items-center mb-8 border-b border-white/10 pb-4 text-right">
             <h2 class="text-xl font-black italic text-blue-400 uppercase tracking-tighter">سلة المشتريات</h2>
             <button onclick="toggleCart()" class="text-gray-500 hover:text-white text-2xl font-black">✕</button>
         </div>
@@ -78,6 +78,7 @@
                 <span>الإجمالي:</span>
                 <span id="cartTotal" class="text-blue-400 font-black">0 ج.م</span>
             </div>
+            <p class="text-[9px] text-gray-500 text-center italic mt-2">جدية الحجز تُدفع عند تأكيد الطلب</p>
             <button onclick="toggleCart()" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-4 rounded-2xl font-black mt-4 shadow-xl">متابعة المتجر</button>
         </div>
     </div>
@@ -92,17 +93,17 @@
                 <li><a href="profile.html" class="hover:text-white transition">حسابي</a></li>
             </ul>
             <div class="flex items-center gap-2">
-                <div id="userInfo" class="hidden lg:block text-[10px] font-bold text-gray-300 bg-white/5 px-3 py-1 rounded-full italic tracking-widest text-center uppercase">تحقق...</div>
+                <div id="userInfo" class="hidden lg:block text-[10px] font-bold text-gray-400 bg-white/5 px-3 py-1 rounded-full italic tracking-widest text-center uppercase">تحقق...</div>
                 <button onclick="logout()" class="bg-red-500/10 text-red-500 px-3 md:px-4 py-2 rounded-lg md:rounded-xl text-[10px] font-bold border border-red-500/20 hover:bg-red-500 hover:text-white transition shadow-lg">خروج</button>
             </div>
         </div>
     </nav>
 
-    <!-- 4. Navbar السفلي (ستايل الصفحة الرئيسية) -->
+    <!-- 4. Navbar السفلي للموبايل (ستايل الصفحة الرئيسية) -->
     <nav class="fixed bottom-4 left-4 right-4 z-50 md:hidden">
         <div class="glass rounded-[25px] p-2 flex justify-around items-center border border-white/10 shadow-[0_0_30px_rgba(0,0,0,0.5)]">
-            <a href="index.html" class="flex flex-col items-center gap-1 text-[10px] text-gray-400 p-2"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span>الرئيسية</span></a>
-            <a href="products.html" class="flex flex-col items-center gap-1 text-[10px] text-blue-400 p-2"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/></svg><span>المتجر</span></a>
+            <a href="index.html" class="flex flex-col items-center gap-1 text-[10px] text-gray-400 p-2"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>الرئيسية</span></a>
+            <a href="products.html" class="flex flex-col items-center gap-1 text-[10px] text-blue-400 p-2"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" y1="6" x2="21" y2="6"/></svg><span>المتجر</span></a>
             <a href="profile.html" class="flex flex-col items-center gap-1 text-[10px] text-gray-400 p-2"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>حسابي</span></a>
         </div>
     </nav>
@@ -133,14 +134,14 @@
 
     <!-- 7. لوحة إدارة كافة الأعضاء (Glow) -->
     <section id="adminUsersPanel" class="max-w-7xl mx-auto mb-10 px-4 hidden glass rounded-[35px] p-6 border border-white/10 shadow-2xl animate-fade-in">
-        <h2 class="text-xl font-black mb-6 text-gray-400 italic flex items-center gap-2">إدارة كافة الأعضاء <span class="text-[8px] bg-white/5 px-2 py-1 rounded-full uppercase">Control Panel</span></h2>
+        <h2 class="text-xl font-black mb-6 text-gray-400 italic flex items-center gap-2">إدارة كافة الأعضاء</h2>
         <div id="usersList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
     </section>
 
     <!-- 8. طلبات الانضمام -->
     <section id="marketerRequestsPanel" class="max-w-7xl mx-auto mb-10 px-4 hidden animate-fade-in">
         <div class="glass p-6 md:p-8 rounded-[35px] border border-blue-500/20 shadow-2xl">
-            <h2 class="text-lg md:text-xl font-black mb-6 text-blue-400 italic underline decoration-blue-500/30">طلبات انضمام مسوقين جدد</h2>
+            <h2 class="text-lg md:text-xl font-black mb-6 text-blue-400 italic underline decoration-blue-500/30">طلبات انضمام المسوقين الجدد</h2>
             <div id="requestsList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
         </div>
     </section>
@@ -149,8 +150,8 @@
     <section class="max-w-7xl mx-auto px-4 mb-10 flex flex-col md:flex-row gap-4 animate-fade-in">
         <input type="text" id="searchInput" oninput="filterProducts()" placeholder="ابحث عن منتجك المفضل..." class="flex-1 bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-sm text-white">
         <div class="flex gap-2">
-            <button onclick="loadWishlistOnly()" class="bg-pink-500/10 text-pink-500 px-6 py-4 rounded-2xl text-xs font-bold border border-pink-500/20 hover:bg-pink-500 transition-all">مفضلاتي ❤</button>
-            <button onclick="renderGrid(allProducts)" class="bg-white/5 text-gray-400 px-6 py-4 rounded-2xl text-xs font-bold border border-white/10 hover:bg-white hover:text-black transition-all italic">عرض الكل</button>
+            <button onclick="loadWishlistOnly()" class="bg-pink-500/10 text-pink-500 px-6 py-4 rounded-2xl text-xs font-bold border border-pink-500/20 hover:bg-pink-500 transition-all shadow-lg">مفضلاتي ❤</button>
+            <button onclick="renderGrid(allProducts)" class="bg-white/5 text-gray-400 px-6 py-4 rounded-2xl text-xs font-bold border border-white/10 hover:bg-white hover:text-black transition-all italic text-white">الكل</button>
         </div>
     </section>
 
@@ -172,25 +173,25 @@
                 <input type="text" id="pModel" placeholder="الموديل" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <input type="text" id="pColors" placeholder="الألوان (أحمر، أزرق...)" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
-                <input type="text" id="pSizes" placeholder="المقاسات (XL, L...)" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
+                <input type="text" id="pColors" placeholder="الألوان المتاحة" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
+                <input type="text" id="pSizes" placeholder="المقاسات" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <input type="text" id="pImage" placeholder="رابط الصورة الأساسية" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
                 <input type="text" id="pMaterial" placeholder="الماتريال" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
             </div>
             <input type="text" id="pExtraImages" placeholder="روابط صور الألوان (افصل بفاصلة , )" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white mb-6">
-            <textarea id="pDesc" placeholder="الوصف الكامل..." class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white h-32 mb-6"></textarea>
-            <button onclick="saveProduct()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-5 rounded-3xl shadow-xl transition-all">نشر المنتج الآن</button>
+            <textarea id="pDesc" placeholder="الوصف الكامل..." class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl h-32 mb-6 text-white text-xs"></textarea>
+            <button onclick="saveProduct()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-5 rounded-3xl shadow-xl transition-all uppercase tracking-widest">تأكيد النشر في المتجر</button>
         </div>
     </section>
 
     <!-- 11. Modal عرض المستخدمين -->
     <div id="usersModal" class="fixed inset-0 bg-black/95 z-[100] hidden items-center justify-center p-6">
-        <div class="glass w-full max-w-2xl p-8 rounded-[40px] border border-white/10 shadow-2xl relative animate-slide">
-            <button onclick="closeUsersModal()" class="absolute top-6 left-6 text-gray-500 hover:text-white font-black text-xl">✕</button>
-            <h2 id="modalTitle" class="text-2xl font-black mb-6 text-blue-400 italic underline decoration-blue-500/30 uppercase tracking-tighter">قائمة الأعضاء</h2>
-            <div id="modalList" class="space-y-3 max-h-[400px] overflow-y-auto no-scrollbar"></div>
+        <div class="glass w-full max-w-2xl p-8 rounded-[40px] border border-white/10 shadow-2xl relative shadow-2xl animate-slide">
+            <button onclick="closeUsersModal()" class="absolute top-6 left-6 text-gray-500 hover:text-white font-black">✕</button>
+            <h2 id="modalTitle" class="text-2xl font-black mb-6 text-blue-400 italic">قائمة الأعضاء</h2>
+            <div id="modalList" class="space-y-3 max-h-[400px] overflow-y-auto no-scrollbar pr-2"></div>
         </div>
     </div>
 
@@ -222,13 +223,16 @@
                         document.getElementById('marketerRequestsPanel').classList.remove('hidden');
                         loadAdminDashboard(); loadMarketerRequests(); loadUsers();
                     }
+                    if (userRole === 'marketer' || userRole === 'admin') {
+                        document.getElementById('controlPanel').classList.remove('hidden');
+                    }
                 }
                 loadProducts();
                 updateCartUI();
             } else { window.location.href = "login.html"; }
         });
 
-        // وظائف السلة
+        // --- وظائف السلة ---
         window.toggleCart = () => document.getElementById('cartDrawer').classList.toggle('open');
         window.updateCartUI = () => {
             const cart = JSON.parse(localStorage.getItem('userCart')) || [];
@@ -237,14 +241,14 @@
             badge.innerText = cart.length; list.innerHTML = ''; let total = 0;
             cart.forEach((item, idx) => {
                 total += item.price * item.qty;
-                list.innerHTML += `<div class="glass p-3 rounded-2xl flex gap-3 items-center border border-white/5 relative animate-slide"><img src="${item.image}" class="w-16 h-16 rounded-xl object-cover"><div class="flex-1 text-right"><h4 class="font-bold text-[10px] text-white">${item.name}</h4><p class="text-[8px] text-gray-500 italic mt-1">${item.color} | ${item.size} | س ${item.qty}</p><p class="text-blue-400 font-black text-xs mt-1">${item.price * item.qty} ج.م</p></div><div class="flex flex-col gap-2"><button onclick="removeFromCart(${idx})" class="text-red-500 text-xs">✕</button><a href="order.html?id=${item.id}&name=${encodeURIComponent(item.name)}&price=${item.price}&qty=${item.qty}&color=${encodeURIComponent(item.color)}&size=${encodeURIComponent(item.size)}&image=${encodeURIComponent(item.image)}" class="text-[8px] bg-blue-600 text-white p-1 rounded-lg text-center font-bold shadow-lg">اطلب</a></div></div>`;
+                list.innerHTML += `<div class="glass p-3 rounded-2xl flex gap-3 items-center border border-white/5 animate-slide mb-3 text-right"><img src="${item.image}" class="w-16 h-16 rounded-xl object-cover"><div class="flex-1 font-bold"><h4 class="text-[10px] text-white">${item.name}</h4><p class="text-[8px] text-gray-500 italic">${item.color} | ${item.size} | س ${item.qty}</p><p class="text-blue-400 font-black text-xs mt-1">${item.price * item.qty} ج.م</p></div><div class="flex flex-col gap-2"><button onclick="removeFromCart(${idx})" class="text-red-500 text-xs">✕</button><a href="order.html?id=${item.id}&name=${encodeURIComponent(item.name)}&price=${item.price}&qty=${item.qty}&color=${encodeURIComponent(item.color)}&size=${encodeURIComponent(item.size)}&image=${encodeURIComponent(item.image)}&owner=null" class="text-[8px] bg-blue-600 text-white p-1 rounded-lg text-center font-bold">اطلب</a></div></div>`;
             });
             document.getElementById('cartTotal').innerText = total + " ج.م";
-            if(cart.length === 0) list.innerHTML = '<p class="text-gray-500 text-center py-10 text-[10px] italic uppercase tracking-widest">سلتك فارغة حالياً.</p>';
+            if(cart.length === 0) list.innerHTML = '<p class="text-gray-500 text-center py-10 text-[10px] italic">سلتك فارغة حالياً.</p>';
         };
         window.removeFromCart = (idx) => { let cart = JSON.parse(localStorage.getItem('userCart')) || []; cart.splice(idx, 1); localStorage.setItem('userCart', JSON.stringify(cart)); updateCartUI(); };
 
-        // تصنيفات وأيقونات فرعية
+        // تصنيفات وأيقونات
         const subData = {
             clothes: [{n:'رجالي', i:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcq8MbpMpYi4h72YsWLGOu8L2bU7lNdq-3ZQ&s'}, {n:'حريمي', i:'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=100'}],
             acc: [{n:'رجالي', i:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHE6nx5A79B-M8Ptx1axoKtJyh__8fFnVf9Q&s'}, {n:'حريمي', i:'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg_2PO3OsO5EeG2It9AcKvUkfcraT1AzfcbFuB4c_RxtgsYzAPBUico99Z2PlxYnTKx4Rd0WlhLqoI6QpHR-IVSZsEXDQPij6CZY0eaoQ-tWvUO4PQrNOyYD_9CgZpLx6kUDFLBSBlP-f97/s1600/%D8%A7%D9%83%D8%B3%D8%B3%D9%88%D8%A7%D8%B1%D8%A7%D8%AA+%D9%85%D8%B3%D8%AA%D9%88%D8%B1%D8%AF%D8%A9+%D9%85%D9%86+%D8%A7%D9%84%D8%B5%D9%8A%D9%86.jpg'}],
@@ -252,7 +256,6 @@
             beauty: [{n:'رجالي', i:'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=100'}, {n:'حريمي', i:'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=100'}],
             best: []
         };
-
         window.showSubCats = (key, el) => {
             document.querySelectorAll('.category-item').forEach(i => i.classList.remove('active')); el.classList.add('active');
             const area = document.getElementById('subCatsArea');
@@ -278,7 +281,7 @@
             m.style.display = 'flex'; l.innerHTML = '';
             Object.values(allUsers).forEach(u => {
                 if(role === 'all' || u.role === role) {
-                    l.innerHTML += `<div class="bg-white/5 p-4 rounded-2xl border border-white/5"><p class="font-bold text-white uppercase tracking-tighter">${u.name} <span class="text-[9px] text-blue-400">(${u.role})</span></p><p class="text-[10px] text-gray-500 mt-1 italic">${u.email} | ${u.phone || 'بدون هاتف'}</p></div>`;
+                    l.innerHTML += `<div class="bg-white/5 p-4 rounded-2xl border border-white/5 text-right font-bold"><p class="text-white text-xs uppercase tracking-tighter">${u.name} <span class="text-[9px] text-blue-400">(${u.role})</span></p><p class="text-[10px] text-gray-500 mt-1 italic">${u.email} | ${u.phone || 'بدون هاتف'}</p></div>`;
                 }
             });
         };
@@ -291,7 +294,7 @@
                 if(data) {
                     Object.keys(data).forEach(uid => {
                         const r = data[uid];
-                        list.innerHTML += `<div class="glass p-5 rounded-3xl flex justify-between items-center animate-fade-in shadow-xl"><div><p class="font-bold text-sm text-white underline decoration-blue-500/30">${r.name}</p><p class="text-[10px] text-gray-500 italic">${r.email}</p></div><button onclick="approveMarketer('${uid}')" class="bg-blue-600 text-white px-5 py-2 rounded-xl text-[10px] font-black shadow-lg">قبول</button></div>`;
+                        list.innerHTML += `<div class="glass p-5 rounded-3xl flex justify-between items-center text-right font-bold animate-fade-in shadow-xl"><div><p class="text-sm text-white underline decoration-blue-500/30">${r.name}</p><p class="text-[10px] text-gray-500">${r.email}</p></div><button onclick="approveMarketer('${uid}')" class="bg-blue-600 text-white px-5 py-2 rounded-xl text-[10px] font-black">قبول</button></div>`;
                     });
                 }
             });
@@ -310,35 +313,34 @@
                     extraImages: document.getElementById('pExtraImages').value, owner: currentUser.uid, likes: 0
                 });
                 alert("تم النشر بنجاح!");
+                ["pName", "pPrice", "pOldPrice", "pColors", "pSizes", "pDesc", "pImage", "pExtraImages", "pMaterial", "pModel"].forEach(id => document.getElementById(id).value = "");
             }
         };
 
         window.editProduct = async (id, oldN, oldP, oldI) => {
-            const nn = prompt("الاسم:", oldN), np = prompt("السعر:", oldP), ni = prompt("الصورة:", oldI);
+            const nn = prompt("الاسم الجديد:", oldN), np = prompt("السعر الجديد:", oldP), ni = prompt("رابط الصورة:", oldI);
             if(nn && np) await update(ref(db, 'products/' + id), { name: nn, price: np, image: ni });
         };
 
         function loadProducts() { onValue(ref(db, 'products'), (s) => { allProducts = s.val() || {}; renderGrid(allProducts); }); }
 
-        function renderGrid(prods) {
+        function renderGrid(products) {
             const grid = document.getElementById('productsGrid'); grid.innerHTML = '';
-            Object.keys(prods).forEach(key => {
-                const p = prods[key], isSaved = userWishlist.includes(key), canM = (userRole === 'admin') || (userRole === 'marketer' && p.owner === currentUser.uid);
-                grid.innerHTML += `
-                    <div class="product-card glass p-5 rounded-[35px] animate-fade-in shadow-xl">
-                        <div class="absolute top-5 left-5 flex flex-col items-center gap-1 z-10">
-                            <button onclick="toggleWishlist('${key}')" class="p-2.5 rounded-full backdrop-blur-md ${isSaved ? 'text-pink-500 bg-pink-500/10' : 'text-gray-400 bg-black/30'} transition-all hover:scale-125">❤</button>
-                            <span class="text-[10px] font-black text-gray-400">${p.likes || 0}</span>
-                        </div>
-                        <div class="w-full h-48 md:h-52 rounded-[25px] overflow-hidden mb-6 shadow-2xl"><img src="${p.image}" class="w-full h-full object-cover"></div>
-                        <p class="text-[9px] text-blue-400 font-bold uppercase mb-1 italic tracking-widest">${p.category} | ${p.subCategory}</p>
-                        <h3 class="font-black text-lg mb-2 text-white tracking-tighter uppercase underline decoration-blue-500/20 underline-offset-4">${p.name}</h3>
-                        <div class="flex justify-between items-center mb-6">
-                            <div><span class="text-blue-400 font-black text-xl md:text-2xl tracking-tighter">${p.price} ج.م</span>${p.oldPrice ? `<span class="text-gray-500 text-xs line-through ml-2">${p.oldPrice} ج.م</span>` : ''}</div>
-                            ${canM ? `<div class="flex gap-2"><button onclick="editProduct('${key}', '${p.name}', '${p.price}', '${p.image}')" class="text-yellow-500 text-[11px] font-bold">✎</button><button onclick="deleteProduct('${key}')" class="text-red-500 text-[11px] font-bold">✕</button></div>` : ''}
-                        </div>
-                        <button onclick="viewDetails('${key}', '${p.name}', '${p.price}', '${p.image}')" class="w-full bg-white/5 hover:bg-blue-600 py-4 rounded-[20px] text-[10px] font-black uppercase transition-all shadow-xl border border-white/5 tracking-widest">التفاصيل والتقييمات</button>
-                    </div>`;
+            Object.keys(products).forEach(key => {
+                const p = products[key], isSaved = userWishlist.includes(key), canM = (userRole === 'admin') || (userRole === 'marketer' && p.owner === currentUser.uid);
+                grid.innerHTML += `<div class="product-card glass p-5 rounded-[35px] animate-fade-in shadow-xl text-right">
+                    <div class="absolute top-5 left-5 flex flex-col items-center gap-1 z-10">
+                        <button onclick="toggleWishlist('${key}')" class="p-2.5 rounded-full backdrop-blur-md ${isSaved ? 'text-pink-500 bg-pink-500/10' : 'text-gray-400 bg-black/30'}">❤</button>
+                        <span class="text-[10px] font-black text-gray-400">${p.likes || 0}</span>
+                    </div>
+                    <div class="w-full h-48 md:h-52 rounded-[25px] overflow-hidden mb-6 shadow-2xl border border-white/5"><img src="${p.image}" class="w-full h-full object-cover"></div>
+                    <h3 class="font-black text-base md:text-lg mb-2 text-white italic tracking-tighter uppercase underline decoration-blue-500/20 underline-offset-4">${p.name}</h3>
+                    <div class="flex justify-between items-center mb-6">
+                        <div><span class="text-blue-400 font-black text-xl md:text-2xl tracking-tighter">${p.price} ج.م</span>${p.oldPrice ? `<span class="text-gray-500 text-[10px] line-through ml-2">${p.oldPrice} ج.م</span>` : ''}</div>
+                        ${canM ? `<div class="flex gap-2"><button onclick="editProduct('${key}', '${p.name}', '${p.price}', '${p.image}')" class="text-yellow-500 text-[11px] font-bold">✎</button><button onclick="deleteProduct('${key}')" class="text-red-500 text-[11px] font-bold">✕</button></div>` : ''}
+                    </div>
+                    <button onclick="viewDetails('${key}', '${p.name}', '${p.price}', '${p.image}')" class="w-full bg-white/5 hover:bg-blue-600 py-4 rounded-[20px] text-[10px] font-black uppercase transition-all shadow-xl border border-white/5 tracking-widest">التفاصيل والتقييمات</button>
+                </div>`;
             });
         }
 
@@ -347,19 +349,18 @@
             const f = {}; Object.keys(allProducts).forEach(k => { if(allProducts[k].category === cat) f[k] = allProducts[k]; }); renderGrid(f);
         }
         window.filterBySub = (sub) => { const f = {}; Object.keys(allProducts).forEach(k => { if(allProducts[k].subCategory === sub) f[k] = allProducts[k]; }); renderGrid(f); };
-
         function loadUsers() {
             onValue(ref(db, 'users'), (snapshot) => {
                 const users = snapshot.val(); const list = document.getElementById('usersList'); list.innerHTML = '';
                 if(users) {
                     Object.keys(users).forEach(uid => {
                         const u = users[uid];
-                        list.innerHTML += `<div class="bg-white/5 p-4 rounded-2xl border border-white/5 flex flex-col gap-2">
-                            <div class="flex justify-between items-start"><p class="font-bold text-sm text-white">${u.name}</p><span class="text-[8px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 font-black uppercase tracking-tighter">${u.role}</span></div>
+                        list.innerHTML += `<div class="bg-white/5 p-4 rounded-2xl border border-white/5 flex flex-col gap-2 font-bold text-right animate-slide">
+                            <div class="flex justify-between items-start"><p class="text-sm text-white">${u.name}</p><span class="text-[8px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 font-black uppercase tracking-tighter">${u.role}</span></div>
                             <div class="flex gap-1">
-                                <button onclick="changeRole('${uid}', 'marketer')" class="flex-1 text-[8px] border border-blue-500/20 rounded-lg p-2 btn-glow-marketer text-blue-400">مسوق</button>
-                                <button onclick="changeRole('${uid}', 'admin')" class="flex-1 text-[8px] border border-yellow-500/20 rounded-lg p-2 btn-glow-admin text-yellow-500">أدمن</button>
-                                <button onclick="changeRole('${uid}', 'customer')" class="flex-1 text-[8px] bg-white/5 rounded-lg p-2 btn-glow-customer">عميل</button>
+                                <button onclick="changeRole('${uid}', 'marketer')" class="flex-1 text-[8px] border border-blue-500/20 rounded-lg p-2 btn-glow-marketer text-blue-400 uppercase">مسوق</button>
+                                <button onclick="changeRole('${uid}', 'admin')" class="flex-1 text-[8px] border border-yellow-500/20 rounded-lg p-2 btn-glow-admin text-yellow-500 uppercase">أدمن</button>
+                                <button onclick="changeRole('${uid}', 'customer')" class="flex-1 text-[8px] bg-white/5 rounded-lg p-2 text-white">عميل</button>
                             </div>
                         </div>`;
                     });
@@ -367,7 +368,7 @@
             });
         }
         window.changeRole = (uid, r) => update(ref(db, 'users/' + uid), { role: r });
-        window.toggleWishlist = async (id) => { const idx = userWishlist.indexOf(id); const rp = ref(db, `products/${id}/likes`); if (idx > -1) { userWishlist.splice(idx, 1); runTransaction(rp, (c) => (c || 1) - 1); } else { userWishlist.push(id); runTransaction(rp, (c) => (c || 0) + 1); } await update(ref(db, 'users/' + currentUser.uid), { wishlist: userWishlist }); };
+        window.toggleWishlist = async (id) => { const idx = userWishlist.indexOf(id); const refP = ref(db, `products/${id}/likes`); if (idx > -1) { userWishlist.splice(idx, 1); runTransaction(refP, (c) => (c || 1) - 1); } else { userWishlist.push(id); runTransaction(refP, (c) => (c || 0) + 1); } await update(ref(db, 'users/' + currentUser.uid), { wishlist: userWishlist }); };
         window.deleteProduct = (id) => confirm("حذف؟") && remove(ref(db, 'products/' + id));
         window.viewDetails = (id, n, p, i) => window.location.href = `details.html?id=${id}&name=${encodeURIComponent(n)}&price=${p}&image=${encodeURIComponent(i)}`;
         window.filterProducts = () => { const t = document.getElementById('searchInput').value.toLowerCase(); const f = {}; Object.keys(allProducts).forEach(k => { if(allProducts[k].name.toLowerCase().includes(t)) f[k] = allProducts[k]; }); renderGrid(f); };

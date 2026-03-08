@@ -213,6 +213,13 @@
             document.getElementById('finalPriceView').innerText = total + " ج.م";
             document.getElementById('depositView').innerText = deposit + " ج.م";
         };
+                window.addToCart = () => {
+            const cartItem = { id: prodId, name: document.getElementById('detName').innerText, price: unitPrice, qty: quantity, color: selectedColor, size: selectedSize, image: mainProductImage };
+            let cart = JSON.parse(localStorage.getItem('userCart')) || [];
+            cart.push(cartItem);
+            localStorage.setItem('userCart', JSON.stringify(cart));
+            showToast("تمت الإضافة إلى السلة بنجاح!");
+        };
 
         window.goToOrder = () => {
             const gov = document.getElementById('govSelect').value;

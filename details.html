@@ -228,13 +228,20 @@
             document.getElementById('depositView').innerText = (subtotal * 0.05).toFixed(0) + " ج.م";
         };
 
-        window.addToCart = () => {
-            const cartItem = { id: prodId, name: document.getElementById('detName').innerText, price: unitPrice, qty: quantity, color: selectedColor, size: selectedSize, image: mainProductImage };
-            let cart = JSON.parse(localStorage.getItem('userCart')) || [];
-            cart.push(cartItem);
-            localStorage.setItem('userCart', JSON.stringify(cart));
-            showToast("تمت الإضافة إلى السلة بنجاح!");
-        };
+window.addToCart = () => {
+    // جلب UID المستخدم الحالي
+    const user = auth.currentUser;
+    if(!user) return alert("يرجى تسجيل الدخول أولاً!");
+    
+    // إنشاء مفتاح سلة خاص بهذا الـ UID
+    const cartKey = `userCart_${user.uid}`;
+    
+    const cartItem = { id: prodId, name: document.getElementById('detName').innerText, price: unitPrice, qty: quantity, color: selectedColor, size: selectedSize, image: mainProductImage };
+    let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+    cart.push(cartItem);
+    localStorage.setItem(cartKey, JSON.stringify(cart));
+    showToast("تمت الإضافة إلى السلة بنجاح!");
+};
 
         window.goToOrder = () => {
             const gov = document.getElementById('govSelect').value;

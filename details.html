@@ -3,80 +3,125 @@
 <head>
     <script src="translations.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta charset="UTF-8"><title>عرض المنتج الاحترافي | Start Online</title>
+    <meta charset="UTF-8"><title>عرض المنتج | Start Online</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        body { background: #0f172a; color: #f1f5f9; font-family: 'Cairo', sans-serif; }
+        body { background: #020617; color: #f1f5f9; font-family: 'Cairo', sans-serif; }
         .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); }
-        .spec-btn { border: 1px solid rgba(255,255,255,0.1); transition: 0.3s; cursor: pointer; padding: 8px 16px; border-radius: 12px; font-size: 12px; font-weight: bold; }
-        .spec-btn.active { border-color: #3b82f6; background: rgba(59, 130, 246, 0.1); color: white; }
+        .spec-btn { border: 1px solid rgba(255,255,255,0.1); transition: 0.3s; cursor: pointer; padding: 8px 16px; border-radius: 12px; font-size: 12px; font-weight: bold; text-align: center; }
+        .spec-btn.active { border-color: #3b82f6; background: rgba(59, 130, 246, 0.2); color: white; box-shadow: 0 0 10px rgba(59, 130, 246, 0.3); }
+        .thumb-img { width: 80px; height: 80px; object-fit: cover; border-radius: 12px; cursor: pointer; border: 2px solid transparent; transition: 0.3s; }
+        .thumb-img:hover, .thumb-img.active { border-color: #3b82f6; }
         .timer-unit { background: #000; padding: 10px; border-radius: 12px; min-width: 55px; text-align: center; border: 1px solid rgba(59, 130, 246, 0.3); }
         .badge-live { animation: pulse 2s infinite; }
         @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.2); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
     </style>
 </head>
-<body class="p-4 md:p-10">
+<body class="p-4 md:p-10 pb-32">
 
     <div class="max-w-7xl mx-auto flex flex-col lg:flex-row gap-12">
         
-        <!-- الجانب الأيمن: الصور -->
+        <!-- الجانب الأيمن: الصور والمواصفات -->
         <div class="lg:w-1/2 space-y-6">
-            <div class="rounded-[40px] overflow-hidden shadow-2xl border border-white/5">
-                <img id="mainImg" src="" class="w-full h-[650px] object-cover">
+            <div class="rounded-[40px] overflow-hidden shadow-2xl border border-white/5 bg-black">
+                <img id="mainImg" src="" class="w-full h-[500px] md:h-[650px] object-contain transition-all duration-500">
+            </div>
+            <!-- الصور المصغرة -->
+            <div id="thumbList" class="flex gap-3 overflow-x-auto pb-2">
+                <!-- الصور الإضافية ستظهر هنا -->
+            </div>
+
+            <!-- وصف أيقوني تحت الصورة -->
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 pt-6">
+                <div id="matBox" class="glass p-4 rounded-2xl flex items-center gap-3 border-white/5">
+                    <div class="text-blue-400">🧵</div>
+                    <div><p class="text-[9px] text-gray-500 uppercase">الماتريال</p><p id="detMat" class="text-xs font-bold">-</p></div>
+                </div>
+                <div id="modBox" class="glass p-4 rounded-2xl flex items-center gap-3 border-white/5">
+                    <div class="text-blue-400">🏷</div>
+                    <div><p class="text-[9px] text-gray-500 uppercase">الموديل</p><p id="detMod" class="text-xs font-bold">-</p></div>
+                </div>
+                <div class="glass p-4 rounded-2xl flex items-center gap-3 border-white/5">
+                    <div class="text-blue-400">📦</div>
+                    <div><p class="text-[9px] text-gray-500 uppercase">حالة المعاينة</p><p class="text-xs font-bold">متاحة عند الاستلام</p></div>
+                </div>
             </div>
         </div>
 
         <!-- الجانب الأيسر: المعلومات والشراء -->
-        <div class="lg:w-1/2 space-y-8">
-            <a href="products.html" class="text-blue-400 font-bold hover:underline">← العودة للمتجر</a>
+        <div class="lg:w-1/2 space-y-6">
+            <a href="products.html" class="text-blue-400 font-bold hover:underline flex items-center gap-2"><span>←</span> العودة للمتجر</a>
             
             <div>
-                <h1 id="detName" class="text-4xl md:text-5xl font-black mb-4 tracking-tighter">اسم المنتج</h1>
-                <div class="flex items-center gap-4 mb-6">
-                    <span id="detPrice" class="text-blue-400 font-black text-4xl tracking-tighter">$0</span>
+                <h1 id="detName" class="text-4xl font-black mb-4 tracking-tighter text-white">اسم المنتج</h1>
+                <div class="flex items-center gap-4">
+                    <span id="detPriceView" class="text-blue-400 font-black text-4xl tracking-tighter">0 ج.م</span>
                     <span id="detOldPrice" class="text-gray-500 line-through text-xl"></span>
                 </div>
             </div>
 
-            <!-- المواصفات -->
-            <div id="specsContainer" class="space-y-6">
+            <!-- خيارات العميل -->
+            <div class="space-y-6 glass p-6 rounded-[30px] border-white/5">
                 <div id="colorSection" class="hidden">
-                    <p class="text-sm text-gray-400 mb-3 font-bold">الألوان المتوفرة:</p>
-                    <div id="colorsList" class="flex gap-3 flex-wrap"></div>
+                    <p class="text-xs text-gray-400 mb-3 font-bold uppercase tracking-widest">اختر اللون:</p>
+                    <div id="colorsList" class="flex gap-2 flex-wrap"></div>
                 </div>
                 <div id="sizeSection" class="hidden">
-                    <p class="text-sm text-gray-400 mb-3 font-bold">المقاسات المتاحة:</p>
-                    <div id="sizesList" class="flex gap-3 flex-wrap"></div>
+                    <p class="text-xs text-gray-400 mb-3 font-bold uppercase tracking-widest">اختر المقاس:</p>
+                    <div id="sizesList" class="flex gap-2 flex-wrap"></div>
+                </div>
+
+                <!-- الكمية والمحافظة -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-white/5">
+                    <div>
+                        <p class="text-[10px] text-gray-500 mb-2 font-bold">الكمية:</p>
+                        <div class="flex items-center gap-4 bg-black/40 w-fit p-1 rounded-xl border border-white/10">
+                            <button onclick="changeQty(-1)" class="w-8 h-8 flex items-center justify-center bg-white/5 rounded-lg hover:bg-white/10">-</button>
+                            <span id="qtyView" class="font-black text-lg w-6 text-center">1</span>
+                            <button onclick="changeQty(1)" class="w-8 h-8 flex items-center justify-center bg-blue-600 rounded-lg">+</button>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-gray-500 mb-2 font-bold">شحن إلى:</p>
+                        <select id="govSelect" onchange="updateFinalPrice()" class="w-full bg-slate-800 border border-white/10 p-3 rounded-xl text-xs outline-none text-white">
+                            <option value="0" data-price="0">اختر المحافظة (لمعرفة الشحن)</option>
+                            <option value="Cairo" data-price="50">القاهرة (50 ج.م)</option>
+                            <option value="Giza" data-price="50">الجيزة (50 ج.م)</option>
+                            <option value="Alex" data-price="65">الإسكندرية (65 ج.م)</option>
+                            <option value="Delta" data-price="70">وجه بحري / القناة (70 ج.م)</option>
+                            <option value="Upper" data-price="85">وجه قبلي (85 ج.م)</option>
+                            <option value="Remote" data-price="120">مطروح / سيناء / البحر الأحمر (120 ج.م)</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 
-            <!-- العداد التنازلي الحقيقي وعدد المشاهدين -->
-            <div class="glass p-6 rounded-3xl border-blue-500/20">
-                <p class="text-[10px] text-blue-400 font-bold mb-4 italic uppercase tracking-widest text-center">ينتهي العرض الخاص خلال:</p>
-                <div class="flex justify-center gap-3 mb-6 font-mono">
-                    <div class="timer-unit"><span id="days" class="text-xl font-black">00</span><p class="text-[8px]">يوم</p></div>
-                    <div class="timer-unit"><span id="hours" class="text-xl font-black">00</span><p class="text-[8px]">ساعة</p></div>
-                    <div class="timer-unit"><span id="minutes" class="text-xl font-black">00</span><p class="text-[8px]">دقيقة</p></div>
-                    <div class="timer-unit"><span id="seconds" class="text-xl font-black">00</span><p class="text-[8px]">ثانية</p></div>
+            <!-- السعر النهائي المتحرك -->
+            <div class="flex justify-between items-center bg-blue-600/10 p-6 rounded-3xl border border-blue-600/20">
+                <div>
+                    <p class="text-[10px] text-blue-400 font-bold uppercase">إجمالي السعر شامل الشحن:</p>
+                    <h3 id="finalPriceView" class="text-3xl font-black text-white">0 ج.م</h3>
                 </div>
-                <div class="flex justify-center items-center gap-2 text-xs text-gray-400 italic">
-                    <span class="w-2 h-2 bg-red-600 rounded-full badge-live"></span>
-                    يشاهد المنتج حالياً <span id="live-viewers" class="text-white font-black mx-1">74</span> عميل
+                <div class="text-right">
+                    <p class="text-[9px] text-gray-500">جدية حجز 5%:</p>
+                    <p id="depositView" class="text-lg font-bold text-green-400">0 ج.م</p>
                 </div>
             </div>
 
-            <!-- زر الشراء المربوط بصفحة order.html -->
-            <div class="space-y-4">
-                <button onclick="goToOrder()" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-6 rounded-2xl font-black text-2xl transition-all transform hover:-translate-y-1 shadow-xl shadow-blue-500/20">
-                    شراء الآن (دفع جدية حجز)
-                </button>
+            <button onclick="goToOrder()" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-5 rounded-2xl font-black text-xl transition-all transform hover:-translate-y-1 shadow-xl shadow-blue-500/20">
+                إتمام الطلب الآن
+            </button>
+
+            <!-- عداد المشاهدين -->
+            <div class="flex justify-center items-center gap-2 text-xs text-gray-500 italic">
+                <span class="w-2 h-2 bg-red-600 rounded-full badge-live"></span>
+                يشاهد المنتج حالياً <span id="live-viewers" class="text-white font-black mx-1">82</span> عميل
             </div>
 
-            <!-- الوصف التفصيلي -->
-            <div class="pt-8">
-                <h4 class="text-2xl font-black mb-4 border-b border-white/10 pb-4 italic">الوصف والموديل:</h4>
-                <p id="detDesc" class="text-gray-400 leading-relaxed italic whitespace-pre-wrap"></p>
+            <div class="pt-4">
+                <h4 class="text-xl font-black mb-3 border-b border-white/10 pb-3">وصف المنتج:</h4>
+                <p id="detDesc" class="text-gray-400 leading-relaxed text-sm whitespace-pre-wrap"></p>
             </div>
         </div>
     </div>
@@ -90,83 +135,97 @@
 
         const params = new URLSearchParams(window.location.search);
         const prodId = params.get('id');
+        
+        let unitPrice = 0;
+        let quantity = 1;
         let productOwnerId = "";
+        let selectedColor = "";
+        let selectedSize = "";
 
         async function init() {
             const snap = await get(ref(db, 'products/' + prodId));
             if(snap.exists()) {
                 const p = snap.val();
                 productOwnerId = p.owner;
+                unitPrice = parseFloat(p.price);
+                
                 document.getElementById('detName').innerText = p.name;
-                document.getElementById('detPrice').innerText = "$" + p.price;
-                if(p.oldPrice) document.getElementById('detOldPrice').innerText = "$" + p.oldPrice;
+                document.getElementById('detPriceView').innerText = unitPrice + " ج.م";
+                if(p.oldPrice) document.getElementById('detOldPrice').innerText = p.oldPrice + " ج.م";
                 document.getElementById('mainImg').src = p.image;
-                document.getElementById('detDesc').innerText = p.desc || "لا يوجد وصف متوفر.";
+                document.getElementById('detDesc').innerText = p.desc || "وصف المنتج غير متوفر حالياً.";
+                document.getElementById('detMat').innerText = p.material || "غير محدد";
+                document.getElementById('detMod').innerText = p.model || "غير محدد";
 
+                // الصور المصغرة
+                const thumbs = document.getElementById('thumbList');
+                const allImages = [p.image];
+                if(p.extraImages) allImages.push(...p.extraImages.split(','));
+                
+                allImages.forEach((imgUrl, idx) => {
+                    const img = document.createElement('img');
+                    img.src = imgUrl.trim();
+                    img.className = `thumb-img ${idx === 0 ? 'active' : ''}`;
+                    img.onclick = () => {
+                        document.getElementById('mainImg').src = img.src;
+                        thumbs.querySelectorAll('.thumb-img').forEach(t => t.classList.remove('active'));
+                        img.classList.add('active');
+                    };
+                    thumbs.appendChild(img);
+                });
+
+                // الألوان والمقاسات
                 if(p.colors) {
                     document.getElementById('colorSection').classList.remove('hidden');
                     p.colors.split('،').forEach(c => {
-                        const btn = document.createElement('div'); btn.className='spec-btn'; btn.innerText=c.trim();
-                        btn.onclick=() => { btn.parentElement.querySelectorAll('.spec-btn').forEach(x=>x.classList.remove('active')); btn.classList.add('active'); };
+                        const btn = document.createElement('button'); btn.className='spec-btn'; btn.innerText=c.trim();
+                        btn.onclick=() => { selectedColor = c.trim(); btn.parentElement.querySelectorAll('.spec-btn').forEach(x=>x.classList.remove('active')); btn.classList.add('active'); };
                         document.getElementById('colorsList').appendChild(btn);
                     });
                 }
                 if(p.sizes) {
                     document.getElementById('sizeSection').classList.remove('hidden');
                     p.sizes.split(',').forEach(s => {
-                        const btn = document.createElement('div'); btn.className='spec-btn'; btn.innerText=s.trim();
-                        btn.onclick=() => { btn.parentElement.querySelectorAll('.spec-btn').forEach(x=>x.classList.remove('active')); btn.classList.add('active'); };
+                        const btn = document.createElement('button'); btn.className='spec-btn'; btn.innerText=s.trim();
+                        btn.onclick=() => { selectedSize = s.trim(); btn.parentElement.querySelectorAll('.spec-btn').forEach(x=>x.classList.remove('active')); btn.classList.add('active'); };
                         document.getElementById('sizesList').appendChild(btn);
                     });
                 }
+                updateFinalPrice();
             }
         }
 
-        // --- كود العداد التنازلي الحقيقي (Countdown) ---
-        function startCountdown() {
-            const countdownDate = new Date();
-            countdownDate.setHours(23, 59, 59, 999); // العداد ينتهي بنهاية اليوم
+        window.changeQty = (val) => {
+            quantity = Math.max(1, quantity + val);
+            document.getElementById('qtyView').innerText = quantity;
+            updateFinalPrice();
+        };
 
-            const timer = setInterval(() => {
-                const now = new Date().getTime();
-                const distance = countdownDate - now;
+        window.updateFinalPrice = () => {
+            const gov = document.getElementById('govSelect');
+            const shippingPrice = parseFloat(gov.options[gov.selectedIndex].getAttribute('data-price')) || 0;
+            const subtotal = unitPrice * quantity;
+            const total = subtotal + shippingPrice;
+            const deposit = (subtotal * 0.05).toFixed(0);
 
-                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-                document.getElementById("days").innerText = days.toString().padStart(2, '0');
-                document.getElementById("hours").innerText = hours.toString().padStart(2, '0');
-                document.getElementById("minutes").innerText = minutes.toString().padStart(2, '0');
-                document.getElementById("seconds").innerText = seconds.toString().padStart(2, '0');
-
-                if (distance < 0) {
-                    clearInterval(timer);
-                    document.getElementById("seconds").innerText = "00";
-                }
-            }, 1000);
-        }
-
-        // --- كود محاكاة عدد المشاهدين (Live Viewers) ---
-        function startLiveViewers() {
-            const viewerEl = document.getElementById('live-viewers');
-            setInterval(() => {
-                // توليد رقم عشوائي بين 60 و 120 ليعطي مصداقية
-                const randomViewers = Math.floor(Math.random() * (120 - 60 + 1)) + 60;
-                viewerEl.innerText = randomViewers;
-            }, 4000); // يتغير كل 4 ثواني
-        }
+            document.getElementById('finalPriceView').innerText = total + " ج.م";
+            document.getElementById('depositView').innerText = deposit + " ج.م";
+        };
 
         window.goToOrder = () => {
-            if(!productOwnerId) return alert("جاري التحميل...");
-            const url = `order.html?id=${prodId}&name=${encodeURIComponent(document.getElementById('detName').innerText)}&price=${params.get('price')}&image=${encodeURIComponent(document.getElementById('mainImg').src)}&owner=${productOwnerId}`;
+            const gov = document.getElementById('govSelect').value;
+            if(gov === "0") return alert("يرجى اختيار المحافظة لتحديد سعر الشحن");
+            
+            const shippingPrice = document.getElementById('govSelect').options[document.getElementById('govSelect').selectedIndex].getAttribute('data-price');
+            const total = document.getElementById('finalPriceView').innerText.replace(" ج.م", "");
+            
+            const url = `order.html?id=${prodId}&name=${encodeURIComponent(document.getElementById('detName').innerText)}&price=${unitPrice}&qty=${quantity}&color=${encodeURIComponent(selectedColor)}&size=${encodeURIComponent(selectedSize)}&gov=${gov}&shipping=${shippingPrice}&total=${total}&image=${encodeURIComponent(document.getElementById('mainImg').src)}&owner=${productOwnerId}`;
             window.location.href = url;
         };
 
         init();
-        startCountdown();
-        startLiveViewers();
+        // محاكاة المشاهدين
+        setInterval(() => { document.getElementById('live-viewers').innerText = Math.floor(Math.random() * (150 - 50 + 1)) + 50; }, 5000);
     </script>
 </body>
 </html>

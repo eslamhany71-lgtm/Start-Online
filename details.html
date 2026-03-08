@@ -2,171 +2,257 @@
 <html lang="ar" dir="rtl">
 <head>
     <script src="translations.js"></script>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta charset="UTF-8"><title>عرض المنتج الاحترافي | Start Online</title>
+    <title>تفاصيل المنتج | Start Online</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        body { background: #0f172a; color: #f1f5f9; font-family: 'Cairo', sans-serif; }
-        .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); }
-        .spec-btn { border: 1px solid rgba(255,255,255,0.1); transition: 0.3s; cursor: pointer; padding: 8px 16px; border-radius: 12px; font-size: 12px; font-weight: bold; }
-        .spec-btn.active { border-color: #3b82f6; background: rgba(59, 130, 246, 0.1); color: white; }
-        .timer-unit { background: #000; padding: 10px; border-radius: 12px; min-width: 55px; text-align: center; border: 1px solid rgba(59, 130, 246, 0.3); }
-        .badge-live { animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.2); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
+        body { background: #fff; color: #111; font-family: 'Cairo', sans-serif; }
+        .price-before { text-decoration: line-through; color: #888; font-size: 12px; }
+        .price-after { color: #000; font-weight: 900; font-size: 22px; }
+        .spec-btn { border: 1px solid #e5e7eb; padding: 6px 15px; border-radius: 50px; font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.2s; background: #fff; }
+        .spec-btn.active { background: #000; color: #fff; border-color: #000; }
+        .timer-unit { background: #111; color: #fff; border-radius: 8px; width: 45px; height: 45px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 14px; font-weight: bold; }
+        .timer-label { font-size: 8px; color: #aaa; margin-top: -2px; }
+        .form-input { width: 100%; border: 1px solid #ddd; padding: 12px; border-radius: 4px; font-size: 12px; margin-bottom: 10px; outline: none; }
+        .btn-buy { background: #000; color: #fff; width: 100%; padding: 15px; font-weight: 900; border-radius: 4px; font-size: 14px; text-transform: uppercase; }
+        .section-header { font-weight: 900; font-size: 18px; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
     </style>
 </head>
-<body class="p-4 md:p-10">
+<body class="p-4 md:p-8">
 
-    <div class="max-w-7xl mx-auto flex flex-col lg:flex-row gap-12">
+<div class="max-w-6xl mx-auto">
+    <!-- Header/Back Link -->
+    <div class="mb-6"><a href="products.html" class="text-xs text-gray-500 hover:text-black">← العودة للمتجر</a></div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
         
-        <!-- الجانب الأيمن: الصور -->
-        <div class="lg:w-1/2 space-y-6">
-            <div class="rounded-[40px] overflow-hidden shadow-2xl border border-white/5">
-                <img id="mainImg" src="" class="w-full h-[650px] object-cover">
+        <!-- الجانب الأيمن: معرض الصور -->
+        <div class="space-y-4">
+            <div class="border rounded-lg overflow-hidden bg-gray-50">
+                <img id="mainImg" src="" class="w-full h-auto object-cover">
+            </div>
+            <div id="thumbGallery" class="grid grid-cols-5 gap-2">
+                <!-- الصور المصغرة تظهر هنا برمجياً -->
             </div>
         </div>
 
-        <!-- الجانب الأيسر: المعلومات والشراء -->
-        <div class="lg:w-1/2 space-y-8">
-            <a href="products.html" class="text-blue-400 font-bold hover:underline">← العودة للمتجر</a>
+        <!-- الجانب الأيسر: البيانات والشراء -->
+        <div class="space-y-6">
+            <h1 id="detName" class="text-2xl md:text-3xl font-black text-gray-900 leading-tight">...</h1>
             
-            <div>
-                <h1 id="detName" class="text-4xl md:text-5xl font-black mb-4 tracking-tighter">اسم المنتج</h1>
-                <div class="flex items-center gap-4 mb-6">
-                    <span id="detPrice" class="text-blue-400 font-black text-4xl tracking-tighter">$0</span>
-                    <span id="detOldPrice" class="text-gray-500 line-through text-xl"></span>
+            <div class="space-y-1">
+                <p class="text-xs text-gray-500 font-bold uppercase">Price Before Discount: <span id="detOldPrice" class="price-before">0</span> EGP</p>
+                <p class="text-xs text-gray-500 font-bold uppercase">Price After Discount: <span id="detPrice" class="price-after">0</span> EGP</p>
+            </div>
+
+            <!-- الألوان -->
+            <div id="colorSection">
+                <p class="text-xs font-bold mb-3">الألوان: <span id="activeColor" class="text-gray-400"></span></p>
+                <div id="colorsList" class="flex gap-2 flex-wrap"></div>
+            </div>
+
+            <!-- المقاسات -->
+            <div id="sizeSection">
+                <p class="text-xs font-bold mb-3">المقاسات: <span id="activeSize" class="text-gray-400"></span></p>
+                <div id="sizesList" class="flex gap-2 flex-wrap"></div>
+            </div>
+
+            <!-- العداد -->
+            <div class="py-4 border-t border-b">
+                <p class="text-[10px] font-black mb-3 uppercase tracking-tighter">Time Left For Discount</p>
+                <div class="flex gap-2">
+                    <div class="timer-unit"><span id="days">0</span><span class="timer-label">Days</span></div>
+                    <div class="timer-unit"><span id="hours">0</span><span class="timer-label">Hours</span></div>
+                    <div class="timer-unit"><span id="minutes">0</span><span class="timer-label">Minutes</span></div>
+                    <div class="timer-unit"><span id="seconds">0</span><span class="timer-label">Seconds</span></div>
+                </div>
+                <div class="mt-4 text-[11px] font-bold text-gray-600">
+                    Watching this product Now <span class="bg-gray-100 px-2 py-1 rounded mx-1 text-black" id="live-viewers">66</span> Client
                 </div>
             </div>
 
-            <!-- المواصفات -->
-            <div id="specsContainer" class="space-y-6">
-                <div id="colorSection" class="hidden">
-                    <p class="text-sm text-gray-400 mb-3 font-bold">الألوان المتوفرة:</p>
-                    <div id="colorsList" class="flex gap-3 flex-wrap"></div>
-                </div>
-                <div id="sizeSection" class="hidden">
-                    <p class="text-sm text-gray-400 mb-3 font-bold">المقاسات المتاحة:</p>
-                    <div id="sizesList" class="flex gap-3 flex-wrap"></div>
-                </div>
+            <!-- أزرار الشراء السريع -->
+            <div class="flex gap-2">
+                <button class="btn-buy">Buy now</button>
+                <button class="border border-black text-black w-full font-black text-sm rounded">Add to cart</button>
             </div>
 
-            <!-- العداد التنازلي الحقيقي وعدد المشاهدين -->
-            <div class="glass p-6 rounded-3xl border-blue-500/20">
-                <p class="text-[10px] text-blue-400 font-bold mb-4 italic uppercase tracking-widest text-center">ينتهي العرض الخاص خلال:</p>
-                <div class="flex justify-center gap-3 mb-6 font-mono">
-                    <div class="timer-unit"><span id="days" class="text-xl font-black">00</span><p class="text-[8px]">يوم</p></div>
-                    <div class="timer-unit"><span id="hours" class="text-xl font-black">00</span><p class="text-[8px]">ساعة</p></div>
-                    <div class="timer-unit"><span id="minutes" class="text-xl font-black">00</span><p class="text-[8px]">دقيقة</p></div>
-                    <div class="timer-unit"><span id="seconds" class="text-xl font-black">00</span><p class="text-[8px]">ثانية</p></div>
-                </div>
-                <div class="flex justify-center items-center gap-2 text-xs text-gray-400 italic">
-                    <span class="w-2 h-2 bg-red-600 rounded-full badge-live"></span>
-                    يشاهد المنتج حالياً <span id="live-viewers" class="text-white font-black mx-1">74</span> عميل
-                </div>
-            </div>
+            <!-- فورم البيانات مدمج (كما في الصورة) -->
+            <div class="bg-gray-50 p-6 rounded-lg border">
+                <p class="font-black text-sm mb-4">Please fill your information to complete the order</p>
+                <form id="directOrderForm">
+                    <div class="flex items-center gap-4 mb-4">
+                        <span class="text-xs font-bold">Items Count</span>
+                        <div class="flex items-center border bg-white">
+                            <button type="button" onclick="changeQty(-1)" class="px-3 py-1 border-l">-</button>
+                            <input type="number" id="qty" value="1" readonly class="w-10 text-center text-xs outline-none">
+                            <button type="button" onclick="changeQty(1)" class="px-3 py-1 border-r">+</button>
+                        </div>
+                    </div>
 
-            <!-- زر الشراء المربوط بصفحة order.html -->
-            <div class="space-y-4">
-                <button onclick="goToOrder()" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-6 rounded-2xl font-black text-2xl transition-all transform hover:-translate-y-1 shadow-xl shadow-blue-500/20">
-                    شراء الآن (دفع جدية حجز)
-                </button>
-            </div>
+                    <input type="text" id="cName" placeholder="اسمك بالكامل" class="form-input" required>
+                    <input type="tel" id="cPhone" placeholder="رقم الهاتف" class="form-input" required>
+                    <select id="cCity" class="form-input">
+                        <option>القاهرة</option><option>الجيزة</option><option>بني سويف</option><option>المنصورة</option>
+                    </select>
+                    <textarea id="cAddress" placeholder="العنوان بالتفصيل" class="form-input h-20" required></textarea>
 
-            <!-- الوصف التفصيلي -->
-            <div class="pt-8">
-                <h4 class="text-2xl font-black mb-4 border-b border-white/10 pb-4 italic">الوصف والموديل:</h4>
-                <p id="detDesc" class="text-gray-400 leading-relaxed italic whitespace-pre-wrap"></p>
+                    <div class="flex justify-between text-xs font-bold py-2 text-gray-500">
+                        <span>Shipping Cost</span> <span>65 EGP</span>
+                    </div>
+                    <div class="flex justify-between font-black border-t py-4 text-lg">
+                        <span>Total</span> <span id="finalTotal">0 EGP</span>
+                    </div>
+
+                    <button type="submit" class="btn-buy shadow-xl">Buy now</button>
+                </form>
             </div>
         </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    <!-- الجزء السفلي: الوصف التفصيلي (نسخة الصورة) -->
+    <div class="mt-16 border-t pt-12 max-w-4xl mx-auto space-y-12 pb-20">
+        <section>
+            <h3 class="section-header">🌟 الوصف:</h3>
+            <p id="descText" class="text-sm text-gray-600 leading-relaxed"></p>
+        </section>
 
-        const firebaseConfig = { apiKey: "AIzaSyCyypXt8LnHiVBR2Ka0Mb8ntXu6dJH9N-w", authDomain: "start-online-6f460.firebaseapp.com", projectId: "start-online-6f460", databaseURL: "https://start-online-6f460-default-rtdb.firebaseio.com/" };
-        const app = initializeApp(firebaseConfig); const db = getDatabase(app);
+        <section>
+            <h3 class="section-header">👗 الموديل:</h3>
+            <ul id="modelText" class="text-sm text-gray-600 list-disc pr-5 space-y-2"></ul>
+        </section>
 
-        const params = new URLSearchParams(window.location.search);
-        const prodId = params.get('id');
-        let productOwnerId = "";
+        <section>
+            <h3 class="section-header">💎 الماتريال:</h3>
+            <ul id="materialText" class="text-sm text-gray-600 list-disc pr-5 space-y-2"></ul>
+        </section>
 
-        async function init() {
-            const snap = await get(ref(db, 'products/' + prodId));
-            if(snap.exists()) {
-                const p = snap.val();
-                productOwnerId = p.owner;
-                document.getElementById('detName').innerText = p.name;
-                document.getElementById('detPrice').innerText = "$" + p.price;
-                if(p.oldPrice) document.getElementById('detOldPrice').innerText = "$" + p.oldPrice;
-                document.getElementById('mainImg').src = p.image;
-                document.getElementById('detDesc').innerText = p.desc || "لا يوجد وصف متوفر.";
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <section>
+                <h3 class="section-header">📏 المقاس:</h3>
+                <p id="sizeText" class="text-sm text-gray-600"></p>
+            </section>
+            <section>
+                <h3 class="section-header">🎨 الألوان:</h3>
+                <p id="colorText" class="text-sm text-gray-600"></p>
+            </section>
+        </div>
 
-                if(p.colors) {
-                    document.getElementById('colorSection').classList.remove('hidden');
-                    p.colors.split('،').forEach(c => {
-                        const btn = document.createElement('div'); btn.className='spec-btn'; btn.innerText=c.trim();
-                        btn.onclick=() => { btn.parentElement.querySelectorAll('.spec-btn').forEach(x=>x.classList.remove('active')); btn.classList.add('active'); };
-                        document.getElementById('colorsList').appendChild(btn);
-                    });
-                }
-                if(p.sizes) {
-                    document.getElementById('sizeSection').classList.remove('hidden');
-                    p.sizes.split(',').forEach(s => {
-                        const btn = document.createElement('div'); btn.className='spec-btn'; btn.innerText=s.trim();
-                        btn.onclick=() => { btn.parentElement.querySelectorAll('.spec-btn').forEach(x=>x.classList.remove('active')); btn.classList.add('active'); };
-                        document.getElementById('sizesList').appendChild(btn);
-                    });
-                }
+        <section>
+            <h3 class="section-header">📦 حالة المعاينة:</h3>
+            <div class="bg-gray-50 p-4 border-r-4 border-black text-sm text-gray-600 italic" id="policyText"></div>
+        </section>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, get, push, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+    const firebaseConfig = { apiKey: "AIzaSyCyypXt8LnHiVBR2Ka0Mb8ntXu6dJH9N-w", authDomain: "start-online-6f460.firebaseapp.com", projectId: "start-online-6f460", databaseURL: "https://start-online-6f460-default-rtdb.firebaseio.com/" };
+    const app = initializeApp(firebaseConfig); const db = getDatabase(app);
+
+    const params = new URLSearchParams(window.location.search);
+    const prodId = params.get('id');
+    let productPrice = 0;
+    let ownerId = "";
+
+    async function loadProduct() {
+        const snap = await get(ref(db, 'products/' + prodId));
+        if(snap.exists()) {
+            const p = snap.val();
+            productPrice = parseFloat(p.price);
+            ownerId = p.owner;
+
+            document.getElementById('detName').innerText = p.name;
+            document.getElementById('detPrice').innerText = p.price;
+            document.getElementById('detOldPrice').innerText = p.oldPrice || (productPrice + 150);
+            document.getElementById('mainImg').src = p.image;
+            document.getElementById('descText').innerText = p.desc;
+            document.getElementById('policyText').innerText = p.policy || "معاينة المنتج مع دفع الشحن في حالة رفض الاستلام";
+            document.getElementById('sizeText').innerText = p.sizes;
+            document.getElementById('colorText').innerText = p.colors;
+
+            // معالجة القوائم
+            if(p.modelInfo) p.modelInfo.split(',').forEach(item => document.getElementById('modelText').innerHTML += `<li>${item.trim()}</li>`);
+            if(p.material) p.material.split(',').forEach(item => document.getElementById('materialText').innerHTML += `<li>${item.trim()}</li>`);
+
+            // معرض الصور
+            if(p.gallery) {
+                p.gallery.split(',').forEach(url => {
+                    const img = document.createElement('img'); img.src = url.trim(); img.className = "cursor-pointer border rounded hover:border-black transition";
+                    img.onclick = () => document.getElementById('mainImg').src = url.trim();
+                    document.getElementById('thumbGallery').appendChild(img);
+                });
             }
+
+            // الألوان والمقاسات (كأزرار)
+            if(p.colors) p.colors.split('،').forEach(c => {
+                const b = document.createElement('div'); b.className = 'spec-btn'; b.innerText = c.trim();
+                b.onclick = () => { selectSpec(b, 'colorsList', 'activeColor'); };
+                document.getElementById('colorsList').appendChild(b);
+            });
+            if(p.sizes) p.sizes.split(',').forEach(s => {
+                const b = document.createElement('div'); b.className = 'spec-btn'; b.innerText = s.trim();
+                b.onclick = () => { selectSpec(b, 'sizesList', 'activeSize'); };
+                document.getElementById('sizesList').appendChild(b);
+            });
+
+            updatePrice();
         }
+    }
 
-        // --- كود العداد التنازلي الحقيقي (Countdown) ---
-        function startCountdown() {
-            const countdownDate = new Date();
-            countdownDate.setHours(23, 59, 59, 999); // العداد ينتهي بنهاية اليوم
+    function selectSpec(el, parentId, displayId) {
+        document.getElementById(parentId).querySelectorAll('.spec-btn').forEach(x => x.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById(displayId).innerText = el.innerText;
+    }
 
-            const timer = setInterval(() => {
-                const now = new Date().getTime();
-                const distance = countdownDate - now;
+    window.changeQty = (v) => {
+        let q = parseInt(document.getElementById('qty').value);
+        if(q + v >= 1) { document.getElementById('qty').value = q + v; updatePrice(); }
+    };
 
-                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    function updatePrice() {
+        const q = parseInt(document.getElementById('qty').value);
+        document.getElementById('finalTotal').innerText = (q * productPrice) + 65 + " EGP";
+    }
 
-                document.getElementById("days").innerText = days.toString().padStart(2, '0');
-                document.getElementById("hours").innerText = hours.toString().padStart(2, '0');
-                document.getElementById("minutes").innerText = minutes.toString().padStart(2, '0');
-                document.getElementById("seconds").innerText = seconds.toString().padStart(2, '0');
-
-                if (distance < 0) {
-                    clearInterval(timer);
-                    document.getElementById("seconds").innerText = "00";
-                }
-            }, 1000);
-        }
-
-        // --- كود محاكاة عدد المشاهدين (Live Viewers) ---
-        function startLiveViewers() {
-            const viewerEl = document.getElementById('live-viewers');
-            setInterval(() => {
-                // توليد رقم عشوائي بين 60 و 120 ليعطي مصداقية
-                const randomViewers = Math.floor(Math.random() * (120 - 60 + 1)) + 60;
-                viewerEl.innerText = randomViewers;
-            }, 4000); // يتغير كل 4 ثواني
-        }
-
-        window.goToOrder = () => {
-            if(!productOwnerId) return alert("جاري التحميل...");
-            const url = `order.html?id=${prodId}&name=${encodeURIComponent(document.getElementById('detName').innerText)}&price=${params.get('price')}&image=${encodeURIComponent(document.getElementById('mainImg').src)}&owner=${productOwnerId}`;
-            window.location.href = url;
+    // إرسال الأوردر (مباشرة للمسوق)
+    document.getElementById('directOrderForm').onsubmit = async (e) => {
+        e.preventDefault();
+        const order = {
+            productName: document.getElementById('detName').innerText,
+            customerName: document.getElementById('cName').value,
+            phone: document.getElementById('cPhone').value,
+            address: document.getElementById('cAddress').value,
+            city: document.getElementById('cCity').value,
+            qty: document.getElementById('qty').value,
+            color: document.getElementById('activeColor').innerText,
+            size: document.getElementById('activeSize').innerText,
+            total: document.getElementById('finalTotal').innerText,
+            marketerId: ownerId,
+            status: 'pending',
+            date: new Date().toLocaleString()
         };
+        await set(push(ref(db, 'orders')), order);
+        alert("تم تسجيل طلبك بنجاح!");
+        location.href = "products.html";
+    };
 
-        init();
-        startCountdown();
-        startLiveViewers();
-    </script>
+    // العداد التنازلي الحقيقي
+    setInterval(() => {
+        const now = new Date();
+        document.getElementById('hours').innerText = 23 - now.getHours();
+        document.getElementById('minutes').innerText = 59 - now.getMinutes();
+        document.getElementById('seconds').innerText = 59 - now.getSeconds();
+        // محاكاة عدد المشاهدين
+        document.getElementById('live-viewers').innerText = Math.floor(Math.random() * (90 - 40 + 1)) + 40;
+    }, 1000);
+
+    loadProduct();
+</script>
 </body>
 </html>

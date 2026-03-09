@@ -273,30 +273,57 @@
         showToast("تم تحديث كافة المحافظ ✅");
     };
 
-    // الدالة المصلحة والذكية لتحديث الطلبات
-    window.updateOrderStatus = async (orderId, status, amount) => {
-        try {
-            // جلب بيانات الطلب من القاعدة للتأكد من السعر الحقيقي في حال فشل المتصفح في تمريره
-            const orderSnap = await get(ref(db, 'orders/' + orderId));
-            if (!orderSnap.exists()) return showToast("الطلب غير موجود!");
+window.updateOrderStatus = async (orderId, status, amount) => {
+    try {
+        const orderSnap = await get(ref(db, 'orders/' + orderId));
+        if (!orderSnap.exists()) return showToast("الطلب غير موجود!");
+        
+        const orderData = orderSnap.val();
+        
+        // جلب السعر الخام (سواء من الزر أو القاعدة)
+        let rawPrice = amount || orderData.totalPrice || orderData.price || 0;
+        
+        // تنظيف السعر: إزالة أي حروف (مثل ج.م) وتحويله لرقم حقيقي
+        const finalAmount = parseFloat(String(rawPrice).replace(/[^\d.-]/g, '')) || 0;
+
+        console.log("السعر المستخرج بعد التنظيف:", finalAmount); // للتأكد في الكونسول
+
+        if (status === 'completed' && finalAmount > 0) {
+            const commission = finalAmount * 0.10;
+            const walletRef = ref(db, `users/${myUid}/wallet`);
             
-            const orderData = orderSnap.val();
-            // صمام أمان للأرقام
-            const finalAmount = Number(amount) || Number(orderData.totalPrice) || 0;
+            const wSnap = await get(walletRef);
+            let currentBalance = 0;
+            let currentDebt = 0;
 
-            if (status === 'completed') {
-                const commission = finalAmount * 0.10;
-                const walletRef = ref(db, `users/${myUid}/wallet`);
-                
-                const wSnap = await get(walletRef);
-                let currentBalance = 0;
-                let currentDebt = 0;
+            if (wSnap.exists()) {
+                const w = wSnap.val();
+                currentBalance = Number(w.balance) || 0;
+                currentDebt = Number(w.debt) || 0;
+            }
 
-                if (wSnap.exists()) {
-                    const w = wSnap.val();
-                    currentBalance = Number(w.balance) || 0;
-                    currentDebt = Number(w.debt) || 0;
-                }
+            await update(walletRef, {
+                balance: currentBalance + finalAmount,
+                debt: currentDebt + commission
+            });
+
+            await push(ref(db, `transactions/${myUid}`), {
+                title: `مبيع: ${orderData.productName || 'منتج'}`,
+                amount: finalAmount,
+                commission: commission,
+                type: 'sale',
+                date: new Date().toLocaleString('ar-EG')
+            });
+        }
+
+        await update(ref(db, 'orders/' + orderId), { status: status });
+        showToast("تم التحديث بنجاح ✅");
+        
+    } catch (error) {
+        console.error("Update Error:", error);
+        showToast("حدث خطأ تقني!");
+    }
+};
 
                 // تحديث المحفظة بأرقام صريحة ومنع NaN
                 await update(walletRef, {

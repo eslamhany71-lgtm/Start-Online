@@ -251,15 +251,29 @@
             document.getElementById('depositView').innerText = (subtotal * 0.05).toFixed(0) + " ج.م";
         };
 
-        window.addToCart = () => {
-            const user = auth.currentUser;
-            const cartKey = `userCart_${user.uid}`;
-            const item = { id: prodId, name: document.getElementById('detName').innerText, price: unitPrice, qty: quantity, color: selectedColor, size: selectedSize, image: mainImgUrl };
-            let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
-            cart.push(item);
-            localStorage.setItem(cartKey, JSON.stringify(cart));
-            showToast("تمت الإضافة للسلة بنجاح!");
-        };
+window.addToCart = async () => {
+    const user = auth.currentUser;
+    if(!user) return alert("يرجى تسجيل الدخول أولاً!");
+    
+    // حفظ في Firebase بدل الـ LocalStorage
+    const cartRef = ref(db, `carts/${user.uid}`);
+    const item = { 
+        id: prodId, 
+        name: document.getElementById('detName').innerText, 
+        price: unitPrice, 
+        qty: quantity, 
+        color: selectedColor, 
+        size: selectedSize, 
+        image: mainImgUrl 
+    };
+    
+    try {
+        await push(cartRef, item);
+        showToast("تمت الإضافة للسلة السحابية بنجاح!");
+    } catch (error) {
+        showToast("حدث خطأ أثناء الحفظ!");
+    }
+};
 
         window.goToOrder = () => {
             const gov = document.getElementById('govSelect').value;

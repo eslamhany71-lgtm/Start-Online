@@ -3,11 +3,12 @@
 <head>
     <script src="translations.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta charset="UTF-8"><title>تفاصيل المنتج | Start Online</title>
+    <meta charset="UTF-8">
+    <title>تفاصيل المنتج | Start Online</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        body { background: #020617; color: #f1f5f9; font-family: 'Cairo', sans-serif; min-height: 100vh; margin: 0; }
+        body { background: #020617; color: #f1f5f9; font-family: 'Cairo', sans-serif; min-height: 100vh; margin: 0; scroll-behavior: smooth; }
         .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); }
         .spec-btn { border: 1px solid rgba(255,255,255,0.1); transition: 0.3s; cursor: pointer; padding: 10px 20px; border-radius: 15px; font-size: 12px; font-weight: bold; text-align: center; color: #94a3b8; }
         .spec-btn.active { border-color: #3b82f6; background: rgba(59, 130, 246, 0.2); color: white; box-shadow: 0 0 15px rgba(59, 130, 246, 0.3); }
@@ -15,7 +16,15 @@
         .thumb-img.active { border-color: #3b82f6; opacity: 1; transform: scale(1.05); }
         .timer-unit { background: #000; padding: 10px; border-radius: 12px; min-width: 60px; text-align: center; border: 1px solid rgba(59, 130, 246, 0.3); }
         .badge-live { animation: pulse 2s infinite; }
-        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.2); opacity: 0.5; } }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.7; } }
+        
+        /* نجوم التقييم */
+        .star-rating { direction: ltr; display: inline-flex; }
+        .star-rating input { display: none; }
+        .star-rating label { font-size: 2rem; color: #1e293b; cursor: pointer; transition: 0.2s; }
+        .star-rating input:checked ~ label { color: #f59e0b; }
+        .star-rating label:hover, .star-rating label:hover ~ label { color: #fbbf24; }
+
         ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
     </style>
@@ -24,17 +33,14 @@
 
     <div class="max-w-7xl mx-auto flex flex-col lg:flex-row gap-12">
         
-        <!-- الجانب الأيمن: الصور والمواصفات (Right Side) -->
         <div class="lg:w-1/2 space-y-6 lg:order-2">
-            <div class="rounded-[40px] overflow-hidden shadow-2xl border border-white/5 bg-black/40 relative">
-                <img id="mainImg" src="" class="w-full h-[450px] md:h-[600px] object-contain transition-all duration-500">
-                <div class="absolute top-4 right-4 bg-blue-600 text-white text-[10px] font-black px-3 py-1 rounded-full badge-live uppercase">Premium</div>
+            <div class="rounded-[40px] overflow-hidden shadow-2xl border border-white/5 bg-black/40 relative group">
+                <img id="mainImg" src="https://via.placeholder.com/600x800?text=Loading..." class="w-full h-[450px] md:h-[600px] object-contain transition-all duration-700 group-hover:scale-110">
+                <div class="absolute top-4 right-4 bg-blue-600 text-white text-[10px] font-black px-4 py-1.5 rounded-full badge-live uppercase tracking-widest shadow-lg">Premium Quality</div>
             </div>
             
-            <!-- الصور المصغرة -->
             <div id="thumbList" class="flex gap-3 overflow-x-auto pb-2 no-scrollbar"></div>
 
-            <!-- المواصفات بالأيقونات تحت الصورة -->
             <div class="grid grid-cols-2 md:grid-cols-3 gap-4 pt-6 border-t border-white/5">
                 <div class="glass p-4 rounded-2xl flex items-center gap-3 border border-white/5">
                     <span class="text-2xl">🧵</span>
@@ -46,91 +52,63 @@
                 </div>
                 <div class="glass p-4 rounded-2xl flex items-center gap-3 border border-white/5">
                     <span class="text-2xl">📦</span>
-                    <div><p class="text-[9px] text-gray-500 uppercase font-bold tracking-tighter">المعاينة</p><p class="text-xs font-black text-green-400">متاحة فورا</p></div>
+                    <div><p class="text-[9px] text-gray-500 uppercase font-bold tracking-tighter">المعاينة</p><p class="text-xs font-black text-green-400">متاحة قبل الاستلام</p></div>
                 </div>
             </div>
         </div>
 
-        <!-- الجانب الأيسر: التحكم والشراء (Left Side) -->
         <div class="lg:w-1/2 space-y-8 lg:order-1 text-right">
             <nav class="flex justify-between items-center">
-                <a href="products.html" class="text-blue-400 font-bold hover:underline flex items-center gap-2 text-sm"> العودة للمتجر ←</a>
-                <div class="flex items-center gap-2 text-[10px] text-gray-400 italic">
-                    <span class="w-2 h-2 bg-green-500 rounded-full badge-live"></span>
-                    متوفر في المخازن
+                <a href="products.html" class="text-blue-400 font-black hover:text-white transition-all flex items-center gap-2 text-xs uppercase italic tracking-widest"> ← العودة للمتجر </a>
+                <div class="flex items-center gap-2 text-[10px] text-gray-400 italic font-bold">
+                    <span class="w-2.5 h-2.5 bg-green-500 rounded-full badge-live shadow-[0_0_10px_#22c55e]"></span>
+                    متاح بالمخزن
                 </div>
             </nav>
 
             <div class="animate-slide">
-                <h1 id="detName" class="text-4xl md:text-5xl font-black mb-4 tracking-tighter text-white">تحميل...</h1>
+                <h1 id="detName" class="text-4xl md:text-6xl font-black mb-4 tracking-tighter text-white italic">...</h1>
                 <div class="flex items-center gap-6 justify-end">
-                    <span id="detOldPrice" class="text-gray-600 line-through text-2xl font-bold italic"></span>
-                    <span id="detPriceView" class="text-blue-500 font-black text-5xl tracking-tighter">0 ج.م</span>
+                    <span id="detOldPrice" class="text-gray-700 line-through text-2xl font-bold italic"></span>
+                    <span id="detPriceView" class="text-blue-500 font-black text-5xl md:text-6xl tracking-tighter">0 ج.م</span>
                 </div>
             </div>
 
-            <!-- خيارات المنتج -->
-            <div class="space-y-8 glass p-8 rounded-[35px] border border-white/5 shadow-2xl">
+            <div class="space-y-8 glass p-8 rounded-[40px] border border-white/5 shadow-2xl relative overflow-hidden">
                 <div id="colorSection" class="hidden text-right">
-                    <p class="text-xs text-gray-500 mb-4 font-black uppercase tracking-widest italic">اختر اللون:</p>
+                    <p class="text-xs text-gray-500 mb-4 font-black uppercase tracking-widest italic">اختر اللون المفضل:</p>
                     <div id="colorsList" class="flex gap-3 flex-wrap justify-end"></div>
                 </div>
 
                 <div id="sizeSection" class="hidden text-right">
-                    <p class="text-xs text-gray-500 mb-4 font-black uppercase tracking-widest italic">اختر المقاس:</p>
+                    <p class="text-xs text-gray-500 mb-4 font-black uppercase tracking-widest italic">المقاس المتاح:</p>
                     <div id="sizesList" class="flex gap-3 flex-wrap justify-end"></div>
                 </div>
 
-                <!-- الكمية والمحافظة -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6 border-t border-white/5">
                     <div class="space-y-3 order-2 md:order-1">
-                        <p class="text-[10px] text-gray-500 font-black uppercase tracking-widest text-right md:text-left">المحافظة (الشحن):</p>
-                        <select id="govSelect" onchange="updateFinalPrice()" class="w-full bg-slate-800 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white font-bold cursor-pointer focus:border-blue-500 transition-all">
+                        <p class="text-[10px] text-gray-500 font-black uppercase tracking-widest text-right">المحافظة (الشحن):</p>
+                        <select id="govSelect" onchange="updateFinalPrice()" class="w-full bg-slate-900 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white font-bold cursor-pointer focus:border-blue-500 transition-all">
                             <option value="0" data-price="0">اختر المحافظة لتقدير الشحن</option>
                             <option value="القاهرة" data-price="50">القاهرة (50 ج.م)</option>
                             <option value="الجيزة" data-price="50">الجيزة (50 ج.م)</option>
-                            <option value="الإسكندرية" data-price="150">الإسكندرية (150 ج.م)</option>
-                            <option value="القليوبية" data-price="60">القليوبية (60 ج.م)</option>
-                            <option value="المنوفية" data-price="70">المنوفية (70 ج.م)</option>
-                            <option value="البحيرة" data-price="80">البحيرة (80 ج.م)</option>
-                            <option value="الدقهلية" data-price="70">الدقهلية (70 ج.م)</option>
-                            <option value="الغربية" data-price="70">الغربية (70 ج.م)</option>
-                            <option value="الشرقية" data-price="70">الشرقية (70 ج.م)</option>
-                            <option value="كفر الشيخ" data-price="80">كفر الشيخ (80 ج.م)</option>
-                            <option value="دمياط" data-price="80">دمياط (80 ج.م)</option>
-                            <option value="بورسعيد" data-price="80">بورسعيد (80 ج.م)</option>
-                            <option value="الإسماعيلية" data-price="70">الإسماعيلية (70 ج.م)</option>
-                            <option value="السويس" data-price="70">السويس (70 ج.م)</option>
-                            <option value="الفيوم" data-price="80">الفيوم (80 ج.م)</option>
-                            <option value="بني سويف" data-price="80">بني سويف (80 ج.م)</option>
-                            <option value="المنيا" data-price="90">المنيا (90 ج.م)</option>
-                            <option value="أسيوط" data-price="100">أسيوط (100 ج.م)</option>
-                            <option value="سوهاج" data-price="110">سوهاج (110 ج.م)</option>
-                            <option value="قنا" data-price="120">قنا (120 ج.م)</option>
-                            <option value="الأقصر" data-price="130">الأقصر (130 ج.م)</option>
-                            <option value="أسوان" data-price="150">أسوان (150 ج.م)</option>
-                            <option value="مطروح" data-price="180">مطروح (180 ج.م)</option>
-                            <option value="الوادي الجديد" data-price="180">الوادي الجديد (180 ج.م)</option>
-                            <option value="البحر الأحمر" data-price="150">البحر الأحمر (150 ج.م)</option>
-                            <option value="شمال سيناء" data-price="180">شمال سيناء (180 ج.م)</option>
-                            <option value="جنوب سيناء" data-price="180">جنوب سيناء (180 ج.م)</option>
+                            <option value="الإسكندرية" data-price="100">الإسكندرية (100 ج.م)</option>
                         </select>
                     </div>
-                    <div class="space-y-3 order-1 md:order-2 text-right">
-                        <p class="text-[10px] text-gray-500 font-black uppercase tracking-widest">الكمية المطلوبة:</p>
-                        <div class="flex items-center justify-between bg-black/40 p-2 rounded-2xl border border-white/10 w-full">
-                            <button onclick="changeQty(-1)" class="w-10 h-10 flex items-center justify-center bg-white/5 rounded-xl hover:bg-white/10 transition-all font-bold">-</button>
-                            <span id="qtyView" class="font-black text-xl text-white">1</span>
-                            <button onclick="changeQty(1)" class="w-10 h-10 flex items-center justify-center bg-blue-600 rounded-xl hover:bg-blue-500 transition-all shadow-lg font-bold">+</button>
+                    <div class="space-y-3 order-1 md:order-2">
+                        <p class="text-[10px] text-gray-500 font-black uppercase tracking-widest">الكمية:</p>
+                        <div class="flex items-center justify-between bg-black/40 p-2 rounded-2xl border border-white/10">
+                            <button onclick="changeQty(-1)" class="w-10 h-10 bg-white/5 rounded-xl hover:bg-white/10 font-bold">-</button>
+                            <span id="qtyView" class="font-black text-xl">1</span>
+                            <button onclick="changeQty(1)" class="w-10 h-10 bg-blue-600 rounded-xl hover:bg-blue-500 font-bold">+</button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- ملخص الحساب النهائي -->
-            <div class="flex justify-between items-center bg-blue-600/5 p-8 rounded-[35px] border border-blue-500/20 shadow-inner">
-                <div>
-                    <p class="text-[10px] text-blue-400 font-black uppercase mb-1 italic">الإجمالي شامل الشحن:</p>
+            <div class="flex justify-between items-center bg-blue-600/10 p-8 rounded-[40px] border border-blue-500/20">
+                <div class="text-right">
+                    <p class="text-[10px] text-blue-400 font-black uppercase mb-1 italic">الإجمالي النهائي:</p>
                     <h3 id="finalPriceView" class="text-4xl font-black text-white tracking-tighter">0 ج.م</h3>
                 </div>
                 <div class="text-left">
@@ -139,71 +117,79 @@
                 </div>
             </div>
 
-            <!-- أزرار الأكشن -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <button onclick="addToCart()" class="w-full bg-white/5 border border-white/10 text-white py-5 rounded-[20px] font-black text-sm hover:bg-white/10 transition-all flex items-center justify-center gap-2">
-                    <span>🛒</span> إضافة للسلة
-                </button>
-                <button onclick="goToOrder()" class="w-full bg-blue-600 text-white py-5 rounded-[20px] font-black text-sm hover:bg-blue-500 transition-all shadow-2xl shadow-blue-500/20 transform hover:-translate-y-1">
-                    إتمام الطلب (جدية حجز)
-                </button>
+                <button onclick="addToCart()" class="w-full bg-white/5 border border-white/10 py-5 rounded-2xl font-black text-sm hover:bg-white/10 transition-all">🛒 إضافة للسلة</button>
+                <button onclick="goToOrder()" class="w-full bg-blue-600 text-white py-5 rounded-2xl font-black text-sm hover:bg-blue-500 shadow-2xl transition-all">إتمام الشراء الآن</button>
             </div>
 
-            <!-- عداد العرض -->
-            <div class="glass p-6 rounded-3xl border border-blue-500/20 text-center">
-                <p class="text-[10px] text-blue-400 font-bold mb-4 italic tracking-widest uppercase">ينتهي العرض الخاص خلال:</p>
-                <div class="flex justify-center gap-3 mb-4 font-mono">
-                    <div class="timer-unit"><span id="days" class="text-xl font-black">00</span><p class="text-[8px]">يوم</p></div>
+            <div class="glass p-6 rounded-3xl border border-blue-500/10">
+                <div class="flex justify-center gap-3 mb-4">
                     <div class="timer-unit"><span id="hours" class="text-xl font-black">00</span><p class="text-[8px]">ساعة</p></div>
                     <div class="timer-unit"><span id="minutes" class="text-xl font-black">00</span><p class="text-[8px]">دقيقة</p></div>
                     <div class="timer-unit"><span id="seconds" class="text-xl font-black">00</span><p class="text-[8px]">ثانية</p></div>
                 </div>
-                <div class="flex justify-center items-center gap-2 text-xs text-gray-500 italic">
-                    <span class="w-2 h-2 bg-red-600 rounded-full badge-live"></span>
-                    يشاهد العرض حالياً <span id="live-viewers" class="text-white font-black mx-1">94</span> عميل
-                </div>
+                <p class="text-[10px] text-gray-500 font-bold"><span class="text-red-500">●</span> يشاهده الآن <span id="live-viewers" class="text-white">...</span> عملاء</p>
             </div>
 
-            <div class="pt-6 border-t border-white/5">
-                <h4 class="text-xl font-black mb-4 italic text-blue-400">وصف المنتج والموديل:</h4>
-                <p id="detDesc" class="text-gray-400 leading-relaxed text-sm whitespace-pre-wrap italic text-right"></p>
+            <div class="pt-10 border-t border-white/5">
+                <h4 class="text-2xl font-black mb-6 text-blue-400 italic">آراء المبدعين (التقييمات):</h4>
+                
+                <div class="glass p-6 rounded-[30px] mb-8 border border-white/5">
+                    <p class="text-xs font-bold text-gray-400 mb-2">اترك تقييمك وتجربتك:</p>
+                    <div class="star-rating mb-4">
+                        <input type="radio" name="star" id="s5" value="5"><label for="s5">★</label>
+                        <input type="radio" name="star" id="s4" value="4"><label for="s4">★</label>
+                        <input type="radio" name="star" id="s3" value="3"><label for="s3">★</label>
+                        <input type="radio" name="star" id="s2" value="2"><label for="s2">★</label>
+                        <input type="radio" name="star" id="s1" value="1"><label for="s1">★</label>
+                    </div>
+                    <textarea id="revText" class="w-full bg-black/40 border border-white/10 p-4 rounded-2xl text-xs text-white h-24 mb-4 outline-none focus:border-blue-500" placeholder="اكتب رأيك هنا بكل صراحة..."></textarea>
+                    <button onclick="submitReview()" class="bg-blue-600 text-white px-8 py-3 rounded-xl font-black text-xs hover:bg-blue-500 transition-all">نشر التقييم</button>
+                </div>
+
+                <div id="reviewsContainer" class="space-y-4">
+                    <p class="text-gray-500 italic text-sm">جاري تحميل التقييمات...</p>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 glass px-10 py-5 rounded-full text-white font-black shadow-2xl opacity-0 transition-all pointer-events-none z-[100] border-blue-500 border text-xs tracking-widest italic"></div>
+    <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 glass px-10 py-5 rounded-full text-white font-black shadow-2xl opacity-0 transition-all pointer-events-none z-[100] border-blue-500 border text-xs italic uppercase"></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getDatabase, ref, get,push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, get, push, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        const firebaseConfig = { apiKey: "AIzaSyCyypXt8LnHiVBR2Ka0Mb8ntXu6dJH9N-w", authDomain: "start-online-6f460.firebaseapp.com", projectId: "start-online-6f460", databaseURL: "https://start-online-6f460-default-rtdb.firebaseio.com/", storageBucket: "start-online-6f460.firebasestorage.app", messagingSenderId: "343437561451", appId: "1:343437561451:web:2318fb3b90eb48fd0a6b2e" };
+        const firebaseConfig = { apiKey: "AIzaSyCyypXt8LnHiVBR2Ka0Mb8ntXu6dJH9N-w", authDomain: "start-online-6f460.firebaseapp.com", projectId: "start-online-6f460", databaseURL: "https://start-online-6f460-default-rtdb.firebaseio.com/" };
         const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getDatabase(app);
 
         const params = new URLSearchParams(window.location.search);
         const prodId = params.get('id');
-        
-        let unitPrice = 0, quantity = 1, productOwnerId = "", selectedColor = "عام", selectedSize = "عام", mainImgUrl = "";
+        let unitPrice = 0, quantity = 1, productOwnerId = "", selectedColor = "عام", selectedSize = "عام", mainImgUrl = "", userData = {};
 
-        onAuthStateChanged(auth, async (user) => { if (user) { init(); } else { window.location.href = "login.html"; } });
+        onAuthStateChanged(auth, async (user) => { 
+            if (user) { 
+                const uSnap = await get(ref(db, 'users/' + user.uid));
+                userData = uSnap.exists() ? uSnap.val() : { name: "مستخدم" };
+                init(); 
+                loadReviews();
+            } else { window.location.href = "login.html"; } 
+        });
 
         async function init() {
             const snap = await get(ref(db, 'products/' + prodId));
             if(snap.exists()) {
                 const p = snap.val();
-                productOwnerId = p.owner; unitPrice = parseFloat(p.price); mainImgUrl = p.image;
-                
+                unitPrice = parseFloat(p.price); productOwnerId = p.owner; mainImgUrl = p.image;
                 document.getElementById('detName').innerText = p.name;
                 document.getElementById('detPriceView').innerText = unitPrice + " ج.م";
                 if(p.oldPrice) document.getElementById('detOldPrice').innerText = p.oldPrice + " ج.م";
                 document.getElementById('mainImg').src = p.image;
-                document.getElementById('detDesc').innerText = p.desc || "لا يوجد وصف متوفر حالياً.";
-                document.getElementById('detMat').innerText = p.material || "خامة عالية الجودة";
-                document.getElementById('detMod').innerText = p.model || "أحدث موديل";
+                document.getElementById('detMat').innerText = p.material || "خامة ممتازة";
+                document.getElementById('detMod').innerText = p.model || "2024";
 
-                // توليد الصور المصغرة
+                // الصور المصغرة
                 const thumbs = document.getElementById('thumbList');
                 const images = [p.image]; if(p.extraImages) images.push(...p.extraImages.split(','));
                 images.forEach((url, i) => {
@@ -217,77 +203,103 @@
                     thumbs.appendChild(img);
                 });
 
-                // الألوان والمقاسات (يدعم الفاصلة العربية والإنجليزية)
-                if(p.colors) {
-                    document.getElementById('colorSection').classList.remove('hidden');
-                    const cArray = p.colors.includes('،') ? p.colors.split('،') : p.colors.split(',');
-                    cArray.forEach(c => {
-                        const btn = document.createElement('button'); btn.className='spec-btn'; btn.innerText=c.trim();
-                        btn.onclick=() => { selectedColor = c.trim(); btn.parentElement.querySelectorAll('.spec-btn').forEach(x=>x.classList.remove('active')); btn.classList.add('active'); };
-                        document.getElementById('colorsList').appendChild(btn);
-                    });
-                }
-                if(p.sizes) {
-                    document.getElementById('sizeSection').classList.remove('hidden');
-                    const sArray = p.sizes.includes('،') ? p.sizes.split('،') : p.sizes.split(',');
-                    sArray.forEach(s => {
-                        const btn = document.createElement('button'); btn.className='spec-btn'; btn.innerText=s.trim();
-                        btn.onclick=() => { selectedSize = s.trim(); btn.parentElement.querySelectorAll('.spec-btn').forEach(x=>x.classList.remove('active')); btn.classList.add('active'); };
-                        document.getElementById('sizesList').appendChild(btn);
-                    });
-                }
+                // الألوان والمقاسات
+                if(p.colors) buildSpecs(p.colors, 'colorsList', (v) => selectedColor = v);
+                if(p.sizes) buildSpecs(p.sizes, 'sizesList', (v) => selectedSize = v);
+
                 updateFinalPrice();
                 startCountdown();
             }
         }
 
+        function buildSpecs(data, containerId, callback) {
+            document.getElementById(containerId).parentElement.classList.remove('hidden');
+            const arr = data.includes('،') ? data.split('،') : data.split(',');
+            arr.forEach(item => {
+                const btn = document.createElement('button'); btn.className='spec-btn'; btn.innerText=item.trim();
+                btn.onclick=() => { callback(item.trim()); btn.parentElement.querySelectorAll('.spec-btn').forEach(x=>x.classList.remove('active')); btn.classList.add('active'); };
+                document.getElementById(containerId).appendChild(btn);
+            });
+        }
+
+        // --- نظام التقييمات ---
+        window.submitReview = async () => {
+            const star = document.querySelector('input[name="star"]:checked');
+            const text = document.getElementById('revText').value;
+            if(!star) return showToast("يرجى اختيار عدد النجوم!");
+            if(!text.trim()) return showToast("يرجى كتابة تعليق!");
+
+            const reviewData = {
+                uid: auth.currentUser.uid,
+                userName: userData.name,
+                rating: star.value,
+                comment: text,
+                date: new Date().toLocaleDateString('ar-EG')
+            };
+
+            await push(ref(db, `reviews/${prodId}`), reviewData);
+            showToast("شكراً لتقييمك الرائع! ⭐");
+            document.getElementById('revText').value = "";
+        };
+
+        function loadReviews() {
+            onValue(ref(db, `reviews/${prodId}`), (snap) => {
+                const container = document.getElementById('reviewsContainer');
+                container.innerHTML = "";
+                const data = snap.val();
+                if(data) {
+                    Object.values(data).reverse().forEach(r => {
+                        container.innerHTML += `
+                            <div class="glass p-5 rounded-2xl border border-white/5 animate-fade-in">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-blue-400 font-black text-xs">${r.userName}</span>
+                                    <span class="text-yellow-500 text-xs">${"★".repeat(r.rating)}</span>
+                                </div>
+                                <p class="text-gray-300 text-xs italic">${r.comment}</p>
+                                <p class="text-[8px] text-gray-600 mt-2 text-left">${r.date}</p>
+                            </div>`;
+                    });
+                } else {
+                    container.innerHTML = "<p class='text-gray-600 text-xs'>كن أول من يقيم هذا المنتج!</p>";
+                }
+            });
+        }
+
         window.changeQty = (v) => { quantity = Math.max(1, quantity + v); document.getElementById('qtyView').innerText = quantity; updateFinalPrice(); };
-        
         window.updateFinalPrice = () => {
             const gov = document.getElementById('govSelect');
             const shipping = parseFloat(gov.options[gov.selectedIndex].getAttribute('data-price')) || 0;
-            const subtotal = unitPrice * quantity;
-            document.getElementById('finalPriceView').innerText = (subtotal + shipping) + " ج.م";
-            document.getElementById('depositView').innerText = (subtotal * 0.05).toFixed(0) + " ج.م";
+            const total = (unitPrice * quantity) + shipping;
+            document.getElementById('finalPriceView').innerText = total + " ج.م";
+            document.getElementById('depositView').innerText = ((unitPrice * quantity) * 0.05).toFixed(0) + " ج.م";
         };
 
-        // --- إضافة للسلة (النسخة المصلحة سحابياً) ---
         window.addToCart = async () => {
-            const user = auth.currentUser;
-            if(!user) return alert("سجل دخولك أولاً!");
-            
-            const cartRef = ref(db, `carts/${user.uid}`);
             const item = { id: prodId, name: document.getElementById('detName').innerText, price: unitPrice, qty: quantity, color: selectedColor, size: selectedSize, image: mainImgUrl };
-            
-            try {
-                await push(cartRef, item);
-                showToast("تمت الإضافة للسحاب بنجاح! 🛒");
-            } catch (err) {
-                showToast("خطأ في الاتصال بالسحاب!");
-                console.error(err);
-            }
+            await push(ref(db, `carts/${auth.currentUser.uid}`), item);
+            showToast("تمت الإضافة للسلة! 🛒");
         };
 
         window.goToOrder = () => {
             const gov = document.getElementById('govSelect').value;
-            if(gov === "0") return alert("يرجى اختيار المحافظة لتحديد سعر الشحن!");
+            if(gov === "0") return showToast("اختر المحافظة أولاً!");
             const shipping = document.getElementById('govSelect').options[document.getElementById('govSelect').selectedIndex].getAttribute('data-price');
             const total = document.getElementById('finalPriceView').innerText.replace(" ج.م", "");
             window.location.href = `order.html?id=${prodId}&name=${encodeURIComponent(document.getElementById('detName').innerText)}&price=${unitPrice}&qty=${quantity}&color=${encodeURIComponent(selectedColor)}&size=${encodeURIComponent(selectedSize)}&gov=${gov}&shipping=${shipping}&total=${total}&image=${encodeURIComponent(mainImgUrl)}&owner=${productOwnerId}`;
         };
 
         function startCountdown() {
-            const end = new Date(); end.setHours(23, 59, 59);
+            const end = new Date().setHours(23, 59, 59);
             setInterval(() => {
-                const now = new Date().getTime(); const dist = end - now;
-                document.getElementById("hours").innerText = Math.floor((dist % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2,'0');
-                document.getElementById("minutes").innerText = Math.floor((dist % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2,'0');
-                document.getElementById("seconds").innerText = Math.floor((dist % (1000 * 60)) / 1000).toString().padStart(2,'0');
+                const dist = end - new Date().getTime();
+                document.getElementById("hours").innerText = Math.floor((dist / (1000 * 60 * 60)) % 24).toString().padStart(2,'0');
+                document.getElementById("minutes").innerText = Math.floor((dist / 1000 / 60) % 60).toString().padStart(2,'0');
+                document.getElementById("seconds").innerText = Math.floor((dist / 1000) % 60).toString().padStart(2,'0');
             }, 1000);
         }
 
         window.showToast = (m) => { const t = document.getElementById('toast'); t.innerText = m; t.style.opacity = '1'; setTimeout(() => t.style.opacity = '0', 3000); };
-        setInterval(() => { document.getElementById('live-viewers').innerText = Math.floor(Math.random() * 50) + 70; }, 4000);
+        setInterval(() => { document.getElementById('live-viewers').innerText = Math.floor(Math.random() * 40) + 60; }, 3000);
     </script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
-    <title>لوحة التحكم الشاملة | Start Online</title>
+    <title>لوحة التحكم الاحترافية | Start Online</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
@@ -13,13 +13,14 @@
         @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
         .stat-box { background: rgba(59, 130, 246, 0.05); border: 1px solid rgba(59, 130, 246, 0.1); cursor: pointer; transition: 0.3s; }
         .stat-box:hover { background: rgba(59, 130, 246, 0.15); transform: translateY(-5px); border-color: rgba(59, 130, 246, 0.4); }
+        .status-badge { padding: 2px 8px; border-radius: 10px; font-size: 9px; font-weight: 900; text-transform: uppercase; }
         .status-pending { color: #eab308; background: rgba(234, 179, 8, 0.1); }
         .status-completed { color: #22c55e; background: rgba(34, 197, 94, 0.1); }
         .status-failed { color: #ef4444; background: rgba(239, 68, 68, 0.1); }
-        .status-badge { padding: 2px 8px; border-radius: 10px; font-size: 9px; font-weight: 900; text-transform: uppercase; }
+        input::placeholder { color: rgba(255, 255, 255, 0.2); }
     </style>
 </head>
-<body class="pb-20">
+<body class="pb-20 text-right">
 
 <nav class="fixed top-0 left-0 right-0 z-50 p-2 md:p-6">
     <div class="max-w-7xl mx-auto glass rounded-xl md:rounded-2xl px-4 py-3 flex justify-between items-center shadow-2xl">
@@ -29,9 +30,7 @@
             <li><a href="products.html" class="hover:text-white transition">المتجر</a></li>
             <li><a href="profile.html" class="text-blue-400 font-bold">حسابي</a></li>
         </ul>
-        <div class="flex gap-2">
-            <button onclick="logout()" class="bg-red-600/20 text-red-500 px-4 py-2 rounded-xl text-[10px] font-black transition-all">خروج</button>
-        </div>
+        <button onclick="logout()" class="bg-red-600/20 text-red-500 px-4 py-2 rounded-xl text-[10px] font-black hover:bg-red-600 hover:text-white transition">خروج</button>
     </div>
 </nav>
 
@@ -40,30 +39,36 @@
         
         <div class="lg:col-span-1 space-y-6">
             <div id="mainSidebar" class="glass p-8 rounded-[40px] text-center border border-white/5 relative overflow-hidden shadow-2xl">
-                <div id="userRoleBadge" class="absolute top-4 left-4 text-[8px] font-black bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full uppercase italic tracking-widest">Guest</div>
+                <div id="userRoleBadge" class="absolute top-4 left-4 text-[8px] font-black bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full uppercase italic">Guest</div>
                 <img id="userImg" src="https://via.placeholder.com/150" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover border-4 border-blue-500/20 shadow-xl">
                 <h1 id="userName" class="text-2xl font-black mb-1 italic">تحميل...</h1>
-                <p id="userEmail" class="text-gray-500 text-[10px] mb-6 tracking-wider">email@example.com</p>
+                <p id="userEmail" class="text-gray-500 text-[10px] mb-6">email@example.com</p>
                 
-                <div id="walletBox" class="hidden bg-white/5 p-5 rounded-3xl border border-white/5 mb-6 text-right">
-                    <p class="text-[9px] text-blue-400 font-black mb-3 uppercase italic">المحفظة الذكية</p>
+                <div id="walletBox" class="hidden bg-white/5 p-5 rounded-3xl border border-white/5 mb-6 text-right animate-slide">
+                    <p class="text-[9px] text-blue-400 font-black mb-3 uppercase italic tracking-widest">المحفظة الذكية</p>
                     <div class="flex justify-between items-center mb-2">
-                        <span class="text-[10px] text-gray-400">إجمالي الأرباح:</span>
+                        <span class="text-[10px] text-gray-400">أرباحي المستحقة:</span>
                         <span id="walletBalance" class="text-lg font-black text-white">0 ج.م</span>
                     </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-[10px] text-red-400">مديونية المنصة (10%):</span>
+                    <div class="flex justify-between items-center border-t border-white/5 pt-2">
+                        <span class="text-[10px] text-red-400">عمولة المنصة (10%):</span>
                         <span id="walletDebt" class="text-lg font-black text-red-500">0 ج.م</span>
                     </div>
                 </div>
 
-                <div id="marketerSettings" class="hidden border-t border-white/5 pt-6 mt-4 mb-6">
-                    <input type="text" id="payNumber" placeholder="رقم استقبال التحويلات" class="w-full bg-white/5 border border-white/10 p-3 rounded-xl text-xs outline-none focus:border-blue-500 mb-2 text-white text-center font-bold">
-                    <button onclick="updatePaymentInfo()" class="w-full bg-blue-600/20 text-blue-400 py-2 rounded-xl text-[10px] font-black hover:bg-blue-600 hover:text-white transition">حفظ بيانات الدفع</button>
+                <div id="marketerSettings" class="hidden border-t border-white/5 pt-6 mt-4 mb-6 text-right">
+                    <p class="text-[9px] text-blue-400 font-black mb-4 uppercase italic">وسائل استلام الأرباح</p>
+                    <div class="space-y-3">
+                        <input type="text" id="vodaPay" placeholder="رقم فودافون كاش" class="w-full bg-white/5 border border-white/10 p-3 rounded-xl text-xs text-white text-center font-bold outline-none focus:border-red-500">
+                        <input type="text" id="etiPay" placeholder="رقم اتصالات كاش" class="w-full bg-white/5 border border-white/10 p-3 rounded-xl text-xs text-white text-center font-bold outline-none focus:border-green-500">
+                        <input type="text" id="orangePay" placeholder="أورانج كاش / وي" class="w-full bg-white/5 border border-white/10 p-3 rounded-xl text-xs text-white text-center font-bold outline-none focus:border-orange-500">
+                        <input type="text" id="instaPay" placeholder="عنوان InstaPay (ID)" class="w-full bg-white/5 border border-white/10 p-3 rounded-xl text-xs text-white text-center font-bold outline-none focus:border-purple-500">
+                    </div>
+                    <button onclick="updateDetailedPayment()" class="w-full mt-4 bg-blue-600/20 text-blue-400 py-2 rounded-xl text-[10px] font-black hover:bg-blue-600 transition">حفظ المحافظ</button>
                 </div>
 
                 <div class="space-y-3">
-                    <button onclick="toggleSettings()" class="w-full py-3 glass rounded-2xl text-[10px] font-black hover:bg-white/10 transition border border-white/5">تعديل البروفايل</button>
+                    <button onclick="toggleSettings()" class="w-full py-3 glass rounded-2xl text-[10px] font-black border border-white/5">تعديل البروفايل</button>
                 </div>
             </div>
 
@@ -84,15 +89,15 @@
             <section id="insightsDashboard" class="hidden animate-slide">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="stat-box p-6 rounded-[30px] border-green-500/10 text-right">
-                        <p class="text-[9px] text-gray-500 font-bold uppercase mb-2">مبيعات مكتملة</p>
+                        <p class="text-[9px] text-gray-500 font-bold uppercase mb-2">إجمالي المبيعات</p>
                         <h3 id="totalRevenue" class="text-2xl font-black text-green-400">0 ج.م</h3>
                     </div>
                     <div onclick="openOrderArchive('completed')" class="stat-box p-6 rounded-[30px] border-blue-500/20 text-right">
-                        <p class="text-[9px] text-blue-400 font-bold uppercase mb-2">الأرشيف الناجح</p>
+                        <p class="text-[9px] text-blue-400 font-bold uppercase mb-2">طلبات ناجحة</p>
                         <h3 id="successOrdersCount" class="text-2xl font-black text-blue-400">0</h3>
                     </div>
                     <div onclick="openOrderArchive('failed')" class="stat-box p-6 rounded-[30px] border-red-500/20 text-right">
-                        <p class="text-[9px] text-red-400 font-bold uppercase mb-2">الأرشيف الملغي</p>
+                        <p class="text-[9px] text-red-400 font-bold uppercase mb-2">طلبات ملغاة</p>
                         <h3 id="failedOrdersCount" class="text-2xl font-black text-red-400">0</h3>
                     </div>
                 </div>
@@ -101,54 +106,43 @@
             <section id="myPurchaseSection" class="animate-slide">
                 <h2 class="text-2xl font-black mb-6 flex items-center gap-3 italic text-blue-400">
                     <span class="w-2 h-6 bg-blue-500 rounded-full"></span>
-                    تتبع طلباتي
+                    تتبع طلباتي المشترية
                 </h2>
-                <div id="myPurchasesList" class="space-y-4">
-                    <p class="text-gray-600 text-[10px] italic">لا يوجد طلبات حالياً.</p>
-                </div>
+                <div id="myPurchasesList" class="space-y-4 text-gray-500 text-xs italic">جاري تحميل طلباتك...</div>
             </section>
 
             <section id="ordersSection" class="hidden">
                 <h2 class="text-2xl font-black mb-6 flex items-center gap-3 italic text-yellow-500">
-                    <span class="w-2 h-6 bg-yellow-500 rounded-full shadow-[0_0_10px_#eab308]"></span>
-                    الطلبات الواردة الجديدة
+                    <span class="w-2 h-6 bg-yellow-500 rounded-full"></span>
+                    إدارة الطلبات الواردة
                 </h2>
                 <div id="ordersList" class="space-y-4"></div>
             </section>
 
             <section id="orderArchiveSection" class="hidden glass p-8 rounded-[40px] border border-white/10 animate-slide">
-                <div class="flex justify-between items-center mb-6 border-b border-white/5 pb-4">
-                    <h3 class="text-xl font-black italic text-white">سجل العمليات المؤرشفة</h3>
-                    <button onclick="document.getElementById('orderArchiveSection').classList.add('hidden')" class="text-[10px] text-gray-500 underline">إغلاق</button>
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-black text-white italic underline">سجل المبيعات المؤرشفة</h3>
+                    <button onclick="document.getElementById('orderArchiveSection').classList.add('hidden')" class="text-[10px] text-gray-500">إغلاق</button>
                 </div>
-                <div id="archiveList" class="space-y-4 max-h-[400px] overflow-y-auto pr-2"></div>
+                <div id="archiveList" class="space-y-4"></div>
             </section>
 
             <section id="requestMarketerSection" class="hidden animate-slide">
                 <div class="glass p-8 rounded-[40px] border border-blue-500/30 bg-blue-500/5">
                     <div id="requestStatic">
-                        <h3 class="text-xl font-black mb-2 italic">كن جزءاً من فريقنا!</h3>
-                        <p class="text-gray-400 text-sm mb-6 leading-relaxed">قدم طلب انضمام لتبدأ برفع منتجاتك والحصول على أرباح فورية.</p>
-                        <button onclick="showJoinForm()" class="bg-blue-600 text-white px-8 py-3 rounded-2xl font-black text-xs">ملئ الاستمارة</button>
+                        <h3 class="text-xl font-black mb-2 italic">ابدأ الربح معنا اليوم!</h3>
+                        <p class="text-gray-400 text-sm mb-6 leading-relaxed">كن مسوقاً معتمداً وابدأ بعرض منتجاتك والحصول على دخل إضافي.</p>
+                        <button onclick="showJoinForm()" class="bg-blue-600 text-white px-8 py-3 rounded-2xl font-black text-xs">تقديم طلب انضمام</button>
                     </div>
                     <div id="joinForm" class="hidden space-y-4">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <input type="text" id="reqPhone" placeholder="رقم الموبايل" class="bg-white/5 border border-white/10 p-4 rounded-2xl text-white outline-none">
-                            <input type="text" id="reqAddress" placeholder="العنوان" class="bg-white/5 border border-white/10 p-4 rounded-2xl text-white outline-none">
+                            <input type="text" id="reqAddress" placeholder="العنوان بالتفصيل" class="bg-white/5 border border-white/10 p-4 rounded-2xl text-white outline-none">
                         </div>
-                        <textarea id="reqBio" placeholder="أخبرنا عنك" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl h-24 text-white outline-none"></textarea>
-                        <button onclick="sendFullMarketerRequest()" class="bg-green-600 text-white px-10 py-3 rounded-2xl font-black text-xs">إرسال الطلب</button>
+                        <textarea id="reqBio" placeholder="خبراتك السابقة (إن وجد)" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl h-24 text-white outline-none"></textarea>
+                        <button onclick="sendFullMarketerRequest()" class="bg-green-600 text-white px-10 py-3 rounded-2xl font-black text-xs">إرسال الطلب الآن</button>
                     </div>
                 </div>
-            </section>
-
-            <section id="settingsPanel" class="hidden glass p-8 rounded-[40px] animate-slide">
-                <h3 class="text-xl font-black mb-6 text-blue-400">تعديل البيانات العامة</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                    <input type="text" id="newName" placeholder="اسم جديد" class="bg-white/5 border border-white/10 p-4 rounded-2xl text-white">
-                    <input type="text" id="newImg" placeholder="رابط صورة جديد" class="bg-white/5 border border-white/10 p-4 rounded-2xl text-white">
-                </div>
-                <button onclick="updateProfile()" class="bg-blue-600 text-white px-10 py-3 rounded-2xl font-black text-xs">حفظ التغييرات</button>
             </section>
 
             <section id="wishlistSection">
@@ -162,20 +156,29 @@
             <section id="myProductsSection" class="hidden">
                 <h2 class="text-2xl font-black mb-6 flex items-center gap-3 italic text-blue-400">
                     <span class="w-2 h-6 bg-blue-500 rounded-full"></span>
-                    منتجاتي المعروضة
+                    إدارة منتجاتي المعروضة
                 </h2>
                 <div id="myProductsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+            </section>
+
+            <section id="settingsPanel" class="hidden glass p-8 rounded-[40px] animate-slide">
+                <h3 class="text-xl font-black mb-6 text-blue-400 italic underline">تحديث الملف الشخصي</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <input type="text" id="newName" placeholder="اسم جديد" class="bg-white/5 border border-white/10 p-4 rounded-2xl text-white outline-none">
+                    <input type="text" id="newImg" placeholder="رابط صورة شخصية" class="bg-white/5 border border-white/10 p-4 rounded-2xl text-white outline-none">
+                </div>
+                <button onclick="updateProfile()" class="bg-blue-600 text-white px-10 py-3 rounded-2xl font-black text-xs shadow-lg">حفظ البيانات</button>
             </section>
         </div>
     </div>
 </div>
 
 <div id="receiptModal" class="fixed inset-0 bg-black/90 z-[200] flex items-center justify-center hidden p-6">
-    <div class="glass max-w-lg w-full p-8 rounded-[40px] text-center border border-white/10 relative shadow-2xl">
-        <button onclick="closeReceipt()" class="absolute top-6 left-6 text-gray-500 hover:text-white">✕</button>
-        <h3 class="text-xl font-black mb-6 text-blue-400 underline italic">إثبات الدفع والتحويل</h3>
-        <div id="receiptContent" class="text-white text-sm break-words bg-white/5 p-6 rounded-2xl border border-white/5 mb-6 font-mono text-center"></div>
-        <button onclick="closeReceipt()" class="bg-white text-black px-10 py-2 rounded-xl font-bold uppercase text-[10px]">إغلاق</button>
+    <div class="glass max-w-lg w-full p-8 rounded-[40px] text-center relative border border-white/10">
+        <button onclick="closeReceipt()" class="absolute top-6 left-6 text-gray-500">✕</button>
+        <h3 class="text-xl font-black mb-6 text-blue-400 italic">بيانات الدفع / التحويل</h3>
+        <div id="receiptContent" class="text-white text-sm bg-white/5 p-6 rounded-2xl font-mono mb-6 text-center break-all"></div>
+        <button onclick="closeReceipt()" class="bg-white text-black px-10 py-2 rounded-xl font-bold text-[10px]">إغلاق</button>
     </div>
 </div>
 
@@ -205,8 +208,8 @@
                 
                 if(u.role === 'marketer' || u.role === 'admin') {
                     document.querySelectorAll('#marketerSettings, #ordersSection, #insightsDashboard, #walletBox, #marketerStatsBox, #myProductsSection').forEach(el => el.classList.remove('hidden'));
-                    
-                    // تحديث محفظة المسوق
+                    loadPaymentDetails();
+                    // مراقبة المحفظة
                     onValue(ref(db, `users/${myUid}/wallet`), (s) => {
                         const w = s.val() || { balance: 0, debt: 0 };
                         document.getElementById('walletBalance').innerText = (w.balance || 0) + " ج.م";
@@ -221,7 +224,28 @@
         } else { window.location.href = "login.html"; }
     });
 
-    // تحديث الطلب + حساب المديونية
+    async function loadPaymentDetails() {
+        const snap = await get(ref(db, `users/${myUid}/paymentMethods`));
+        if(snap.exists()){
+            const d = snap.val();
+            document.getElementById('vodaPay').value = d.vodafone || '';
+            document.getElementById('etiPay').value = d.etisalat || '';
+            document.getElementById('orangePay').value = d.orange || '';
+            document.getElementById('instaPay').value = d.instapay || '';
+        }
+    }
+
+    window.updateDetailedPayment = async () => {
+        const p = {
+            vodafone: document.getElementById('vodaPay').value,
+            etisalat: document.getElementById('etiPay').value,
+            orange: document.getElementById('orangePay').value,
+            instapay: document.getElementById('instaPay').value
+        };
+        await set(ref(db, `users/${myUid}/paymentMethods`), p);
+        showToast("تم تحديث كافة المحافظ ✅");
+    };
+
     window.updateOrderStatus = async (orderId, status, amount) => {
         if(status === 'completed') {
             const commission = amount * 0.10;
@@ -235,13 +259,11 @@
             });
             await push(ref(db, `transactions/${myUid}`), {
                 title: `عمولة طلب #${orderId.slice(-4)}`,
-                amount: commission,
-                type: 'debt',
-                date: new Date().toLocaleString('ar-EG')
+                amount: commission, type: 'debt', date: new Date().toLocaleString('ar-EG')
             });
         }
         await update(ref(db, 'orders/' + orderId), { status: status });
-        showToast("تم تحديث حالة الطلب");
+        showToast("تم تحديث الحالة");
     };
 
     function loadOrders(role) {
@@ -250,55 +272,49 @@
             const incomingList = document.getElementById('ordersList');
             const myPurchaseList = document.getElementById('myPurchasesList');
             incomingList.innerHTML = ''; myPurchaseList.innerHTML = '';
-            let revenue = 0, success = 0, failed = 0;
+            let rev = 0, succ = 0, fail = 0;
 
             Object.keys(currentOrdersData).reverse().forEach(key => {
                 const o = currentOrdersData[key];
-                
                 if(o.customerUid === myUid) {
                     myPurchaseList.innerHTML += `
-                        <div class="glass p-5 rounded-2xl flex justify-between items-center text-right border border-white/5">
+                        <div class="glass p-5 rounded-2xl flex justify-between items-center border border-white/5">
                             <div><h4 class="text-[10px] font-black text-blue-400 uppercase">${o.productName}</h4><p class="text-[8px] text-gray-500 mt-1">${o.date}</p></div>
                             <span class="status-badge status-${o.status || 'pending'}">${o.status || 'pending'}</span>
                         </div>`;
                 }
-
                 if(role === 'admin' || o.marketerId === myUid) {
-                    if(o.status === 'completed') { revenue += o.totalPrice; success++; }
-                    else if(o.status === 'failed') { failed++; }
+                    if(o.status === 'completed') { rev += o.totalPrice; succ++; }
+                    else if(o.status === 'failed') { fail++; }
 
                     if(!o.status || o.status === 'pending') {
                         incomingList.innerHTML += `
-                            <div class="glass p-6 rounded-3xl border border-white/10 space-y-4 animate-slide text-right">
+                            <div class="glass p-6 rounded-3xl border border-white/10 space-y-4 animate-slide">
                                 <div class="flex justify-between items-start border-b border-white/5 pb-4">
-                                    <div>
-                                        <h4 class="font-black text-blue-400">${o.productName}</h4>
-                                        <p class="text-[10px] text-white">العميل: ${o.customerName}</p>
-                                        <p class="text-[9px] text-yellow-500 font-bold mt-1">طريقة الدفع: ${o.payMethod}</p>
-                                    </div>
+                                    <div><h4 class="font-black text-blue-400">${o.productName}</h4><p class="text-[10px] text-white">العميل: ${o.customerName}</p></div>
                                     <div class="flex gap-2">
                                         <button onclick="updateOrderStatus('${key}', 'completed', ${o.totalPrice})" class="bg-green-600 text-white px-3 py-1 rounded-lg text-[9px] font-black">تم التسليم</button>
                                         <button onclick="updateOrderStatus('${key}', 'failed', 0)" class="bg-red-600 text-white px-3 py-1 rounded-lg text-[9px] font-black">إلغاء</button>
                                     </div>
                                 </div>
                                 <div class="text-[10px] text-gray-400 grid grid-cols-1 md:grid-cols-2 gap-2">
-                                    <p>📍 العنوان: ${o.address}</p>
-                                    <p>📞 موبايل: ${o.phone} | <button onclick="viewReceipt('${o.receipt}')" class="text-blue-400 underline">الإثبات</button></p>
+                                    <p>📍 ${o.address}</p>
+                                    <p>📞 ${o.phone} | <button onclick="viewReceipt('${o.receipt}')" class="text-blue-400 underline">إثبات الدفع</button></p>
                                 </div>
-                                <p class="text-white font-black font-mono">السعر المطلوب: ${o.totalPrice} ج.م</p>
+                                <p class="text-white font-black">المبلغ: ${o.totalPrice} ج.م | وسيلة الدفع: ${o.payMethod}</p>
                             </div>`;
                     }
                 }
             });
             if(document.getElementById('totalRevenue')) {
-                document.getElementById('totalRevenue').innerText = revenue + " ج.م";
-                document.getElementById('successOrdersCount').innerText = success;
-                document.getElementById('failedOrdersCount').innerText = failed;
+                document.getElementById('totalRevenue').innerText = rev + " ج.م";
+                document.getElementById('successOrdersCount').innerText = succ;
+                document.getElementById('failedOrdersCount').innerText = fail;
             }
         });
     }
 
-    function loadContent(userId, wishlist) {
+    function loadContent(uId, wishlist) {
         onValue(ref(db, 'products'), (snap) => {
             const prods = snap.val() || {};
             const wishGrid = document.getElementById('wishlistGrid');
@@ -309,14 +325,11 @@
                 const p = prods[key];
                 const card = `<div class="glass p-4 rounded-3xl border border-white/5 flex gap-4 items-center">
                     <img src="${p.image}" class="w-12 h-12 rounded-xl object-cover">
-                    <div class="flex-1 font-bold text-[10px]">
-                        <h4 class="text-white">${p.name}</h4>
-                        <p class="text-blue-400 mt-1">${p.price} ج.م</p>
-                    </div>
+                    <div class="flex-1 font-bold text-[10px]"><h4 class="text-white">${p.name}</h4><p class="text-blue-400 mt-1">${p.price} ج.م</p></div>
                     <a href="details.html?id=${key}" class="p-2 bg-blue-500/10 text-blue-400 rounded-xl text-[9px] font-black">عرض</a>
                 </div>`;
                 if(wishlist.includes(key)) wishGrid.innerHTML += card;
-                if(p.owner === userId) { myGrid.innerHTML += card; myCount++; }
+                if(p.owner === uId) { myGrid.innerHTML += card; myCount++; }
             });
             document.getElementById('wishCount').innerText = wishlist.length;
             if(document.getElementById('prodCount')) document.getElementById('prodCount').innerText = myCount;
@@ -357,7 +370,6 @@
         await update(ref(db, 'users/' + myUid), u); location.reload();
     };
 
-    window.updatePaymentInfo = async () => { await update(ref(db, 'users/' + myUid), { payNumber: document.getElementById('payNumber').value }); showToast("تم حفظ بيانات الدفع!"); };
     window.viewReceipt = (v) => { if(v.startsWith('http')) window.open(v, '_blank'); else { document.getElementById('receiptContent').innerText = v; document.getElementById('receiptModal').classList.remove('hidden'); } };
     window.closeReceipt = () => document.getElementById('receiptModal').classList.add('hidden');
     window.toggleSettings = () => document.getElementById('settingsPanel').classList.toggle('hidden');

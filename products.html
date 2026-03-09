@@ -249,7 +249,7 @@ window.updateCartUI = () => {
                         <button onclick="removeFromCart('${key}')" class="text-red-500 text-xs">✕</button>
                         <a href="order.html?id=${item.id}&name=${encodeURIComponent(item.name)}&price=${item.price}&qty=${item.qty}&color=${encodeURIComponent(item.color)}&size=${encodeURIComponent(item.size)}&image=${encodeURIComponent(item.image)}&owner=null" class="text-[8px] bg-blue-600 text-white p-1 rounded-lg text-center font-bold">اطلب</a>
                     </div>
-                </div>`;
+                </div>;
         });
         document.getElementById('cartTotal').innerText = total + " ج.م";
         if(keys.length === 0) list.innerHTML = '<p class="text-gray-500 text-center py-10 text-[10px]">سلتك فارغة حالياً.</p>';

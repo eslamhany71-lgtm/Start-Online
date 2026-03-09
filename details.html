@@ -111,10 +111,7 @@
                     <p class="text-[10px] text-blue-400 font-black uppercase mb-1 italic">الإجمالي النهائي:</p>
                     <h3 id="finalPriceView" class="text-4xl font-black text-white tracking-tighter">0 ج.م</h3>
                 </div>
-                <div class="text-left">
-                    <p class="text-[9px] text-gray-500 font-bold italic mb-1">جدية حجز (5%):</p>
-                    <p id="depositView" class="text-xl font-black text-green-400">0 ج.م</p>
-                </div>
+             
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -271,7 +268,7 @@
             const shipping = parseFloat(gov.options[gov.selectedIndex].getAttribute('data-price')) || 0;
             const total = (unitPrice * quantity) + shipping;
             document.getElementById('finalPriceView').innerText = total + " ج.م";
-            document.getElementById('depositView').innerText = ((unitPrice * quantity) * 0.05).toFixed(0) + " ج.م";
+           
         };
 
         window.addToCart = async () => {

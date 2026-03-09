@@ -18,7 +18,6 @@
         .status-completed { color: #22c55e; background: rgba(34, 197, 94, 0.1); }
         .status-failed { color: #ef4444; background: rgba(239, 68, 68, 0.1); }
         input::placeholder { color: rgba(255, 255, 255, 0.2); }
-        /* ستايل مخصص لتنبيه الدين */
         .debt-critical { animation: pulse-red 2s infinite; border-color: #ef4444 !important; }
         @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
     </style>
@@ -200,7 +199,7 @@
     const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getDatabase(app);
 
     let myUid = null; let myRole = 'customer'; let currentOrdersData = {};
-    const DEBT_LIMIT = 500; // حد المديونية
+    const DEBT_LIMIT = 500;
 
     onAuthStateChanged(auth, async (user) => {
         if (user) {
@@ -218,14 +217,13 @@
                     document.querySelectorAll('#marketerSettings, #ordersSection, #insightsDashboard, #walletBox, #marketerStatsBox, #myProductsSection').forEach(el => el.classList.remove('hidden'));
                     loadPaymentDetails();
                     
-                    // مراقبة المحفظة والمديونية
                     onValue(ref(db, `users/${myUid}/wallet`), (s) => {
                         const w = s.val() || { balance: 0, debt: 0 };
+                        const balance = Number(w.balance || 0);
                         const debt = Number(w.debt || 0);
-                        document.getElementById('walletBalance').innerText = (w.balance || 0) + " ج.م";
+                        document.getElementById('walletBalance').innerText = balance + " ج.م";
                         document.getElementById('walletDebt').innerText = debt + " ج.م";
 
-                        // منطق التنبيه بالمديونية
                         const debtContainer = document.getElementById('debtContainer');
                         const debtAlert = document.getElementById('debtGlobalAlert');
                         const debtNotice = document.getElementById('debtNotice');
@@ -239,7 +237,7 @@
                         } else {
                             debtContainer.classList.remove('debt-critical', 'bg-red-500/10');
                             debtAlert.classList.add('hidden');
-                            debtNotice.classList.remove('hidden'); // إظهار النص العادي للإرشاد
+                            debtNotice.classList.remove('hidden');
                         }
                     });
                 } else {
@@ -251,7 +249,8 @@
         } else { window.location.href = "login.html"; }
     });
 
-    // --- الدوال الأصلية الخاصة بك بدون تغيير ---
+    // --- الدوال الأساسية ---
+
     async function loadPaymentDetails() {
         const snap = await get(ref(db, `users/${myUid}/paymentMethods`));
         if(snap.exists()){
@@ -274,48 +273,56 @@
         showToast("تم تحديث كافة المحافظ ✅");
     };
 
-window.updateOrderStatus = async (orderId, status, amount) => {
-    // التأكد من أن المبلغ رقم صحيح وليس NaN
-    const safeAmount = Number(amount) || 0;
-
-    if (status === 'completed') {
-        const commission = safeAmount * 0.10; // عمولة 10%
-        const walletRef = ref(db, `users/${myUid}/wallet`);
-        
+    // الدالة المصلحة والذكية لتحديث الطلبات
+    window.updateOrderStatus = async (orderId, status, amount) => {
         try {
-            const wSnap = await get(walletRef);
-            let currentBalance = 0;
-            let currentDebt = 0;
+            // جلب بيانات الطلب من القاعدة للتأكد من السعر الحقيقي في حال فشل المتصفح في تمريره
+            const orderSnap = await get(ref(db, 'orders/' + orderId));
+            if (!orderSnap.exists()) return showToast("الطلب غير موجود!");
+            
+            const orderData = orderSnap.val();
+            // صمام أمان للأرقام
+            const finalAmount = Number(amount) || Number(orderData.totalPrice) || 0;
 
-            if (wSnap.exists()) {
-                const w = wSnap.val();
-                // التأكد من تحويل القيم المخزنة لأرقام لتجنب NaN
-                currentBalance = Number(w.balance) || 0;
-                currentDebt = Number(w.debt) || 0;
+            if (status === 'completed') {
+                const commission = finalAmount * 0.10;
+                const walletRef = ref(db, `users/${myUid}/wallet`);
+                
+                const wSnap = await get(walletRef);
+                let currentBalance = 0;
+                let currentDebt = 0;
+
+                if (wSnap.exists()) {
+                    const w = wSnap.val();
+                    currentBalance = Number(w.balance) || 0;
+                    currentDebt = Number(w.debt) || 0;
+                }
+
+                // تحديث المحفظة بأرقام صريحة ومنع NaN
+                await update(walletRef, {
+                    balance: currentBalance + finalAmount,
+                    debt: currentDebt + commission
+                });
+
+                // تسجيل العملية في السجل التاريخي
+                await push(ref(db, `transactions/${myUid}`), {
+                    title: `مبيع: ${orderData.productName || 'منتج'}`,
+                    amount: finalAmount,
+                    commission: commission,
+                    type: 'sale',
+                    date: new Date().toLocaleString('ar-EG')
+                });
             }
 
-            // التحديث بالقيم الجديدة
-            await update(walletRef, {
-                balance: currentBalance + safeAmount,
-                debt: currentDebt + commission
-            });
-
-            // تسجيل العملية في السجل
-            await push(ref(db, `transactions/${myUid}`), {
-                title: `عمولة طلب #${orderId.slice(-4)}`,
-                amount: commission,
-                type: 'debt',
-                date: new Date().toLocaleString('ar-EG')
-            });
+            // تحديث حالة الطلب
+            await update(ref(db, 'orders/' + orderId), { status: status });
+            showToast("تم تحديث الحالة والحسابات بنجاح ✅");
+            
         } catch (error) {
-            console.error("خطأ في تحديث المحفظة:", error);
+            console.error("Update Error:", error);
+            showToast("حدث خطأ تقني!");
         }
-    }
-
-    // تحديث حالة الطلب نفسه
-    await update(ref(db, 'orders/' + orderId), { status: status });
-    showToast("تم تحديث حالة الطلب ✅");
-};
+    };
 
     function loadOrders(role) {
         onValue(ref(db, 'orders'), (snap) => {
@@ -327,6 +334,8 @@ window.updateOrderStatus = async (orderId, status, amount) => {
 
             Object.keys(currentOrdersData).reverse().forEach(key => {
                 const o = currentOrdersData[key];
+                const safePrice = Number(o.totalPrice) || 0;
+
                 if(o.customerUid === myUid) {
                     myPurchaseList.innerHTML += `
                         <div class="glass p-5 rounded-2xl flex justify-between items-center border border-white/5">
@@ -334,8 +343,9 @@ window.updateOrderStatus = async (orderId, status, amount) => {
                             <span class="status-badge status-${o.status || 'pending'}">${o.status || 'pending'}</span>
                         </div>`;
                 }
+
                 if(role === 'admin' || o.marketerId === myUid) {
-                    if(o.status === 'completed') { rev += o.totalPrice; succ++; }
+                    if(o.status === 'completed') { rev += safePrice; succ++; }
                     else if(o.status === 'failed') { fail++; }
 
                     if(!o.status || o.status === 'pending') {
@@ -344,7 +354,7 @@ window.updateOrderStatus = async (orderId, status, amount) => {
                                 <div class="flex justify-between items-start border-b border-white/5 pb-4">
                                     <div><h4 class="font-black text-blue-400">${o.productName}</h4><p class="text-[10px] text-white">العميل: ${o.customerName}</p></div>
                                     <div class="flex gap-2">
-                                        <button onclick="updateOrderStatus('${key}', 'completed', ${o.totalPrice})" class="bg-green-600 text-white px-3 py-1 rounded-lg text-[9px] font-black">تم التسليم</button>
+                                        <button onclick="updateOrderStatus('${key}', 'completed', ${safePrice})" class="bg-green-600 text-white px-3 py-1 rounded-lg text-[9px] font-black">تم التسليم</button>
                                         <button onclick="updateOrderStatus('${key}', 'failed', 0)" class="bg-red-600 text-white px-3 py-1 rounded-lg text-[9px] font-black">إلغاء</button>
                                     </div>
                                 </div>
@@ -352,11 +362,12 @@ window.updateOrderStatus = async (orderId, status, amount) => {
                                     <p>📍 ${o.address}</p>
                                     <p>📞 ${o.phone} | <button onclick="viewReceipt('${o.receipt}')" class="text-blue-400 underline">إثبات الدفع</button></p>
                                 </div>
-                                <p class="text-white font-black">المبلغ: ${o.totalPrice} ج.م | وسيلة الدفع: ${o.payMethod}</p>
+                                <p class="text-white font-black">المبلغ: ${safePrice} ج.م | وسيلة الدفع: ${o.payMethod}</p>
                             </div>`;
                     }
                 }
             });
+
             if(document.getElementById('totalRevenue')) {
                 document.getElementById('totalRevenue').innerText = rev + " ج.م";
                 document.getElementById('successOrdersCount').innerText = succ;

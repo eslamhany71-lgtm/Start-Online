@@ -381,7 +381,7 @@ window.updateOrderStatus = async (orderId, status, amount) => {
                                 <div class="flex justify-between items-start border-b border-white/5 pb-4">
                                     <div><h4 class="font-black text-blue-400">${o.productName}</h4><p class="text-[10px] text-white">العميل: ${o.customerName}</p></div>
                                     <div class="flex gap-2">
-                                        <button onclick="updateOrderStatus('${key}', 'completed', ${safePrice})" class="bg-green-600 text-white px-3 py-1 rounded-lg text-[9px] font-black">تم التسليم</button>
+                                        <button onclick="updateOrderStatus('${key}', 'completed', '${o.totalPrice || o.price || 0}')" class="bg-green-600 text-white px-3 py-1 rounded-lg text-[9px] font-black">تم التسليم</button>
                                         <button onclick="updateOrderStatus('${key}', 'failed', 0)" class="bg-red-600 text-white px-3 py-1 rounded-lg text-[9px] font-black">إلغاء</button>
                                     </div>
                                 </div>

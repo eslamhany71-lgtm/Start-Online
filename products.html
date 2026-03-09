@@ -36,16 +36,12 @@
         
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fade-in { animation: fadeIn 0.6s ease-out forwards; }
-        
-        /* إشعار المديونية */
-        #debtAlert { background: linear-gradient(90deg, #7f1d1d, #450a0a); border: 1px solid #dc2626; color: #fecaca; display: none; }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body class="pb-24">
-
-    <div id="debtAlert" class="fixed top-24 left-4 right-4 z-[60] p-3 rounded-2xl text-center text-[10px] font-bold shadow-2xl animate-pulse">
-        ⚠️ تنبيه: تجاوزت مديونيتك 500 ج.م. تم إيقاف صلاحية النشر مؤقتاً لحين السداد.
-    </div>
 
     <div class="cart-float md:bottom-10" onclick="toggleCart()">
         <div class="bg-blue-600 p-4 rounded-2xl shadow-2xl border border-blue-400/30 relative">
@@ -65,17 +61,30 @@
                 <span class="text-gray-400">الإجمالي:</span>
                 <span id="cartTotal" class="text-blue-400 font-black">0 ج.م</span>
             </div>
-            <button onclick="toggleCart()" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-4 rounded-2xl font-black mt-4 shadow-xl transition-all active:scale-95 text-center">استكمال التسوق</button>
+            <button onclick="toggleCart()" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-4 rounded-2xl font-black mt-4 shadow-xl transition-all active:scale-95">استكمال التسوق</button>
         </div>
     </div>
 
     <nav class="fixed top-0 left-0 right-0 z-50 p-2 md:p-6">
         <div class="max-w-7xl mx-auto glass rounded-xl md:rounded-2xl px-4 md:px-8 py-3 md:py-4 flex justify-between items-center shadow-2xl">
             <div class="text-lg md:text-2xl font-black text-white hover:scale-105 transition-transform"><a href="index.html">START<span class="text-blue-400">ONLINE</span></a></div>
+            <ul class="hidden md:flex gap-8 font-bold text-sm text-gray-400">
+                <li><a href="index.html" class="hover:text-white transition">الرئيسية</a></li>
+                <li><a href="products.html" class="text-blue-400 font-black border-b-2 border-blue-400 pb-1">المتجر</a></li>
+                <li><a href="profile.html" class="hover:text-white transition">حسابي</a></li>
+            </ul>
             <div class="flex items-center gap-2">
                 <div id="userInfo" class="hidden lg:block text-[10px] font-bold text-gray-300 bg-white/5 px-3 py-1 rounded-full italic tracking-widest text-center uppercase border border-white/5">تحقق...</div>
                 <button onclick="logout()" class="bg-red-500/10 text-red-500 px-3 md:px-4 py-2 rounded-lg md:rounded-xl text-[10px] font-bold border border-red-500/20 hover:bg-red-500 hover:text-white transition shadow-lg">خروج</button>
             </div>
+        </div>
+    </nav>
+
+    <nav class="fixed bottom-4 left-4 right-4 z-50 md:hidden">
+        <div class="glass rounded-[25px] p-2 flex justify-around items-center border border-white/10 shadow-[0_0_30px_rgba(0,0,0,0.5)]">
+            <a href="index.html" class="flex flex-col items-center gap-1 text-[10px] text-gray-400 p-2 hover:text-blue-400 transition"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span>الرئيسية</span></a>
+            <a href="products.html" class="flex flex-col items-center gap-1 text-[10px] text-blue-400 p-2"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/></svg><span>المتجر</span></a>
+            <a href="profile.html" class="flex flex-col items-center gap-1 text-[10px] text-gray-400 p-2 hover:text-blue-400 transition"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>حسابي</span></a>
         </div>
     </nav>
 
@@ -88,6 +97,7 @@
             <div class="category-item" data-cat="إكسسوارات" onclick="showSubCats('acc', this)"><img src="https://jlood.com/cdn/shop/files/Men_Accessories_in_Egypt2_large.jpg"><span>إكسسوارات</span></div>
             <div class="category-item" data-cat="عطور" onclick="showSubCats('perfume', this)"><img src="https://images.unsplash.com/photo-1541643600914-78b084683601?w=200"><span>عطور</span></div>
             <div class="category-item" data-cat="صحة وجمال" onclick="showSubCats('beauty', this)"><img src="https://cdn.youcan.shop/stores/0dc0cbcb1b32177428c303a8e891bc1e/products/ekcrAIzCdbM7DYOPYwqrxERfMKBM01UitNaY2FfO_md.png"><span>صحة وجمال</span></div>
+            <div class="category-item" data-cat="أكثر مبيعاً" onclick="showSubCats('best', this)"><img src="https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?w=200"><span>أكثر مبيعاً</span></div>
         </div>
         <div id="subCatsArea" class="sub-cats-area glass p-4 rounded-3xl border border-white/5"></div>
     </section>
@@ -100,16 +110,35 @@
         <div class="stat-card p-5 rounded-3xl text-center shadow-lg"><p class="text-[9px] text-gray-500 uppercase font-black">التقييمات</p><h3 id="totalReviews" class="text-xl font-black text-yellow-400 italic">0</h3></div>
     </section>
 
-    <section id="controlPanel" class="max-w-5xl mx-auto px-4 mb-12 hidden animate-fade-in">
-        <div id="lockMessage" class="hidden glass p-8 rounded-[40px] border border-red-500/30 text-center mb-8">
-            <p class="text-red-500 font-black text-lg">🚫 عذراً، خاصية النشر معطلة حالياً بسبب ارتفاع المديونية.</p>
-            <p class="text-gray-400 text-xs mt-2 italic">يرجى تسوية الحساب مع الإدارة لتفعيل النشر مجدداً.</p>
+    <section id="adminUsersPanel" class="max-w-7xl mx-auto mb-10 px-4 hidden glass rounded-[35px] p-6 border border-white/10 shadow-2xl animate-fade-in text-right">
+        <h2 class="text-xl font-black mb-6 text-gray-400 italic flex items-center gap-2">إدارة كافة الأعضاء <span class="text-[8px] bg-white/5 px-2 py-1 rounded-full uppercase italic border border-white/5">Super Admin</span></h2>
+        <div id="usersList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    </section>
+
+    <section id="marketerRequestsPanel" class="max-w-7xl mx-auto mb-10 px-4 hidden animate-fade-in text-right">
+        <div class="glass p-6 md:p-8 rounded-[35px] border border-blue-500/20 shadow-2xl">
+            <h2 class="text-lg md:text-xl font-black mb-6 text-blue-400 italic underline decoration-blue-500/30">طلبات انضمام مسوقين جدد</h2>
+            <div id="requestsList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
         </div>
-        <div id="publishForm" class="glass p-6 md:p-8 rounded-[40px] border border-blue-500/10 shadow-2xl text-right">
-            <h2 class="text-2xl font-black mb-8 text-blue-400 italic uppercase">نشر إبداع جديد</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                <input type="text" id="pName" placeholder="اسم المنتج" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
-                <select id="pCategory" class="bg-slate-800 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
+    </section>
+
+    <section class="max-w-7xl mx-auto px-4 mb-10 flex flex-col md:flex-row gap-4 animate-fade-in text-right">
+        <div class="relative flex-1">
+            <input type="text" id="searchInput" oninput="filterProducts()" placeholder="ابحث عن منتجك المفضل..." class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-sm text-white transition-all shadow-inner">
+            <span class="absolute left-4 top-4 text-gray-500">🔍</span>
+        </div>
+        <div class="flex gap-2">
+            <button onclick="loadWishlistOnly()" class="flex-1 md:flex-none bg-pink-500/10 text-pink-500 px-6 py-4 rounded-2xl text-xs font-bold border border-pink-500/20 hover:bg-pink-500 hover:text-white transition-all shadow-lg active:scale-95">مفضلاتي ❤</button>
+            <button onclick="resetAllFilters()" class="flex-1 md:flex-none bg-white/5 text-gray-400 px-6 py-4 rounded-2xl text-xs font-bold border border-white/10 hover:bg-white hover:text-black transition-all italic active:scale-95">عرض الكل</button>
+        </div>
+    </section>
+
+    <section id="controlPanel" class="max-w-5xl mx-auto px-4 mb-12 hidden animate-fade-in">
+        <div class="glass p-6 md:p-8 rounded-[40px] border border-blue-500/10 shadow-2xl text-right">
+            <h2 class="text-2xl font-black mb-8 text-blue-400 italic underline underline-offset-8 decoration-blue-500/30 uppercase tracking-tighter">نشر إبداع جديد</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6">
+                <input type="text" id="pName" placeholder="اسم المنتج" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white focus:border-blue-500 transition-all">
+                <select id="pCategory" class="bg-slate-800 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white cursor-pointer">
                     <option value="الكل">النوع الأساسي</option>
                     <option value="ملابس">ملابس</option><option value="إكسسوارات">إكسسوارات</option><option value="عطور">عطور</option><option value="صحة وجمال">صحة وجمال</option>
                 </select>
@@ -120,18 +149,37 @@
                 <input type="number" id="pOldPrice" placeholder="السعر القديم" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
                 <input type="text" id="pModel" placeholder="الموديل" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
             </div>
-            <textarea id="pDesc" placeholder="الوصف الكامل..." class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl h-32 mb-6 text-white text-xs"></textarea>
-            <input type="text" id="pImage" placeholder="رابط الصورة" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl text-xs text-white mb-6">
-            <button onclick="saveProduct()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-5 rounded-3xl shadow-xl active:scale-95 uppercase">نشر المنتج الآن</button>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <input type="text" id="pColors" placeholder="الألوان المتاحة" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
+                <input type="text" id="pSizes" placeholder="المقاسات" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <input type="text" id="pImage" placeholder="رابط الصورة الأساسية" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
+                <input type="text" id="pMaterial" placeholder="الماتريال" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
+            </div>
+            <input type="text" id="pExtraImages" placeholder="روابط صور الألوان (افصل بفاصلة , )" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white mb-6">
+            <textarea id="pDesc" placeholder="الوصف الكامل للمنتج..." class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl h-32 mb-6 text-white text-xs resize-none"></textarea>
+            <button onclick="saveProduct()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-5 rounded-3xl shadow-xl transition-all uppercase tracking-widest italic active:scale-95">نشر المنتج الآن</button>
         </div>
     </section>
 
+    <div id="usersModal" class="fixed inset-0 bg-black/95 z-[100] hidden items-center justify-center p-6 text-right transition-all">
+        <div class="glass w-full max-w-2xl p-8 rounded-[40px] border border-white/10 shadow-2xl relative animate-slide">
+            <button onclick="closeUsersModal()" class="absolute top-6 left-6 text-gray-500 hover:text-white font-black text-xl transition-colors">✕</button>
+            <h2 id="modalTitle" class="text-2xl font-black mb-6 text-blue-400 italic underline decoration-blue-500/30 uppercase tracking-tighter">قائمة الأعضاء</h2>
+            <div id="modalList" class="space-y-3 max-h-[400px] overflow-y-auto no-scrollbar pr-2"></div>
+        </div>
+    </div>
+
     <main class="max-w-7xl mx-auto px-4 min-h-[400px]">
-        <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8"></div>
-        <div id="noResults" class="hidden text-center py-20"><p class="text-gray-500 font-bold italic">عذراً، لم نجد ما تبحث عنه حالياً.</p></div>
+        <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 md:gap-10"></div>
+        <div id="noResults" class="hidden text-center py-20 animate-fade-in">
+            <div class="text-6xl mb-4">🔍</div>
+            <p class="text-gray-500 font-bold italic">عذراً، لم نجد ما تبحث عنه حالياً.</p>
+        </div>
     </main>
 
-    <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 glass px-10 py-5 rounded-full text-white font-black opacity-0 transition-all z-[100] border-blue-500 border text-xs"></div>
+    <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 glass px-10 py-5 rounded-full text-white font-black shadow-2xl opacity-0 transition-all pointer-events-none z-[100] border-blue-500 border text-xs tracking-widest uppercase italic"></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -141,116 +189,266 @@
         const firebaseConfig = { apiKey: "AIzaSyCyypXt8LnHiVBR2Ka0Mb8ntXu6dJH9N-w", authDomain: "start-online-6f460.firebaseapp.com", projectId: "start-online-6f460", databaseURL: "https://start-online-6f460-default-rtdb.firebaseio.com/" };
         const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getDatabase(app);
 
-        let currentUser = null, userRole = 'customer', allProducts = {}, userWishlist = [];
-        const DEBT_LIMIT = 500;
+        let currentUser = null, userRole = 'customer', allProducts = {}, allUsers = {}, userWishlist = [];
+        let selectedMainCat = 'الكل', selectedSubCat = 'الكل';
 
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
-                onValue(ref(db, 'users/' + user.uid), (snapshot) => {
-                    if (snapshot.exists()) {
-                        const u = snapshot.val();
-                        userRole = u.role;
-                        userWishlist = u.wishlist || [];
-                        const debt = (u.wallet && u.wallet.debt) ? u.wallet.debt : 0;
-
-                        document.getElementById('userInfo').innerText = `${u.name} | ${userRole.toUpperCase()}`;
-
-                        // إظهار لوحة النشر والتحقق من المديونية
-                        if (userRole === 'marketer' || userRole === 'admin') {
-                            document.getElementById('controlPanel').classList.remove('hidden');
-                            if(debt >= DEBT_LIMIT) {
-                                document.getElementById('debtAlert').style.display = 'block';
-                                document.getElementById('lockMessage').classList.remove('hidden');
-                                document.getElementById('publishForm').classList.add('hidden');
-                            } else {
-                                document.getElementById('debtAlert').style.display = 'none';
-                                document.getElementById('lockMessage').classList.add('hidden');
-                                document.getElementById('publishForm').classList.remove('hidden');
-                            }
-                        }
-                        
-                        if (userRole === 'admin') document.getElementById('adminStats').classList.remove('hidden');
+                const userSnap = await get(ref(db, 'users/' + user.uid));
+                if (userSnap.exists()) {
+                    const u = userSnap.val(); userRole = u.role; userWishlist = u.wishlist || [];
+                    document.getElementById('userInfo').innerText = `${u.name} | ${userRole.toUpperCase()}`;
+                    if (userRole === 'admin') {
+                        document.getElementById('adminStats').classList.remove('hidden');
+                        document.getElementById('adminUsersPanel').classList.remove('hidden');
+                        document.getElementById('marketerRequestsPanel').classList.remove('hidden');
+                        loadAdminDashboard(); loadMarketerRequests(); loadUsers();
                     }
-                });
+                    if (userRole === 'marketer' || userRole === 'admin') { document.getElementById('controlPanel').classList.remove('hidden'); }
+                }
                 loadProducts(); updateCartUI();
             } else { window.location.href = "login.html"; }
         });
 
-        // النشر
-        window.saveProduct = () => {
-            const name = document.getElementById('pName').value, price = document.getElementById('pPrice').value;
-            if(name && price) {
-                push(ref(db, 'products'), {
-                    name, price,
-                    category: document.getElementById('pCategory').value,
-                    subCategory: document.getElementById('pSubCategory').value,
-                    desc: document.getElementById('pDesc').value,
-                    image: document.getElementById('pImage').value || 'https://via.placeholder.com/400',
-                    owner: currentUser.uid,
-                    likes: 0
+        // --- السلة (Cart) ---
+        window.toggleCart = () => document.getElementById('cartDrawer').classList.toggle('open');
+        window.updateCartUI = () => {
+            if(!currentUser) return;
+            const cartKey = `carts/${currentUser.uid}`;
+            onValue(ref(db, cartKey), (snap) => {
+                const data = snap.val() || {};
+                const list = document.getElementById('cartItemsList');
+                const badge = document.getElementById('cartCountBadge');
+                const totalEl = document.getElementById('cartTotal');
+                const keys = Object.keys(data);
+                badge.innerText = keys.length; list.innerHTML = ''; let total = 0;
+                keys.forEach((key) => {
+                    const item = data[key];
+                    total += Number(item.price) * Number(item.qty);
+                    list.innerHTML += `<div class="glass p-3 rounded-2xl flex gap-3 items-center border border-white/5 animate-slide mb-3 text-right group">
+                        <img src="${item.image}" class="w-16 h-16 rounded-xl object-cover">
+                        <div class="flex-1 font-bold">
+                            <h4 class="text-[10px] text-white line-clamp-1">${item.name}</h4>
+                            <p class="text-[8px] text-gray-500 italic">${item.color} | ${item.size} | س ${item.qty}</p>
+                            <p class="text-blue-400 font-black text-xs mt-1">${item.price * item.qty} ج.م</p>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <button onclick="removeFromCart('${key}')" class="text-red-500 hover:text-red-400 text-xs font-bold">✕</button>
+                            <a href="order.html?id=${item.id}&name=${encodeURIComponent(item.name)}&price=${item.price}&qty=${item.qty}&color=${encodeURIComponent(item.color)}&size=${encodeURIComponent(item.size)}&image=${encodeURIComponent(item.image)}&owner=null" class="text-[8px] bg-blue-600 text-white p-1 rounded-lg text-center font-black hover:bg-blue-500 transition-colors">اطلب</a>
+                        </div>
+                    </div>`;
                 });
-                showToast("✅ تم النشر بنجاح");
-                ["pName", "pPrice", "pDesc", "pImage"].forEach(id => document.getElementById(id).value = "");
-            } else { showToast("⚠️ أكمل الاسم والسعر"); }
+                totalEl.innerText = total + " ج.م";
+                if(keys.length === 0) list.innerHTML = '<div class="flex flex-col items-center justify-center h-40 opacity-50"><span class="text-4xl mb-2">🛒</span><p class="text-[10px]">سلتك فارغة حالياً</p></div>';
+            });
+        };
+        window.removeFromCart = (key) => { if(confirm("حذف المنتج من السلة؟")) remove(ref(db, `carts/${currentUser.uid}/${key}`)); };
+
+        // --- الفلترة المزدوجة ---
+        const subData = {
+            clothes: [{n:'رجالي', i:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcq8MbpMpYi4h72YsWLGOu8L2bU7lNdq-3ZQ&s'}, {n:'حريمي', i:'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=100'}],
+            acc: [{n:'رجالي', i:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHE6nx5A79B-M8Ptx1axoKtJyh__8fFnVf9Q&s'}, {n:'حريمي', i:'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg_2PO3OsO5EeG2It9AcKvUkfcraT1AzfcbFuB4c_RxtgsYzAPBUico99Z2PlxYnTKx4Rd0WlhLqoI6QpHR-IVSZsEXDQPij6CZY0eaoQ-tWvUO4PQrNOyYD_9CgZpLx6kUDFLBSBlP-f97/s1600/%D8%A7%D9%83%D8%B3%D8%B3%D9%88%D8%A7%D8%B1%D8%A7%D8%AA+%D9%85%D8%B3%D8%AA%D9%88%D8%B1%D8%AF%D8%A9+%D9%85%D9%86+%D8%A7%D9%84%D8%B5%D9%8A%D9%86.jpg'}],
+            perfume: [{n:'رجالي', i:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqYTBqAT9RJHsyFI4Pbp1btFlcsx3YVcowXw&s'}, {n:'حريمي', i:'https://www.faces.eg/dw/image/v2/BJSM_PRD/on/demandware.static/-/Sites-faces-master-catalog/default/dw14914fb4/product/3614270175572/3614270175572.jpg?sw=800&sh=800'}],
+            beauty: [{n:'رجالي', i:'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=100'}, {n:'حريمي', i:'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=100'}]
         };
 
-        // عرض المنتجات
-        function loadProducts() {
-            onValue(ref(db, 'products'), (s) => {
-                allProducts = s.val() || {};
-                renderGrid(allProducts);
+        window.showSubCats = (key, el) => {
+            document.querySelectorAll('.category-item').forEach(i => i.classList.remove('active')); el.classList.add('active');
+            selectedMainCat = el.querySelector('span').innerText.trim(); 
+            selectedSubCat = 'الكل';
+            const area = document.getElementById('subCatsArea');
+            if(key === 'all' || key === 'best') { area.style.display = 'none'; applyDualFilter(); return; }
+            area.style.display = 'flex';
+            area.innerHTML = subData[key].map(s => `<div class="sub-cat-item" onclick="filterBySub('${s.n}', this)"><img src="${s.i}"><span>${s.n}</span></div>`).join('');
+            applyDualFilter();
+        };
+
+        window.filterBySub = (sub, el) => {
+            document.querySelectorAll('.sub-cat-item').forEach(i => i.classList.remove('active')); if(el) el.classList.add('active');
+            selectedSubCat = sub; applyDualFilter();
+        };
+
+        function applyDualFilter() {
+            const f = {}; 
+            const searchVal = document.getElementById('searchInput').value.toLowerCase();
+            Object.keys(allProducts).forEach(k => {
+                const p = allProducts[k];
+                const matchMain = (selectedMainCat === 'الكل' || p.category === selectedMainCat);
+                const matchSub = (selectedSubCat === 'الكل' || p.subCategory === selectedSubCat);
+                const matchSearch = p.name.toLowerCase().includes(searchVal);
+                if(matchMain && matchSub && matchSearch) f[k] = p;
             });
+            renderGrid(f);
         }
 
+        window.resetAllFilters = () => {
+            selectedMainCat = 'الكل'; selectedSubCat = 'الكل';
+            document.getElementById('searchInput').value = '';
+            document.querySelectorAll('.category-item').forEach(i => i.classList.remove('active'));
+            document.querySelector('[data-cat="all"]').classList.add('active');
+            document.getElementById('subCatsArea').style.display = 'none';
+            renderGrid(allProducts);
+        };
+
+        // --- الإحصائيات وإدارة الأعضاء ---
+        function loadAdminDashboard() {
+            onValue(ref(db, 'users'), (snap) => {
+                allUsers = snap.val() || {}; const uArr = Object.values(allUsers);
+                document.getElementById('totalUsers').innerText = uArr.length;
+                document.getElementById('totalMarketers').innerText = uArr.filter(u => u.role === 'marketer').length;
+                document.getElementById('totalCustomers').innerText = uArr.filter(u => u.role === 'customer').length;
+            });
+            onValue(ref(db, 'products'), (s) => document.getElementById('totalProducts').innerText = Object.keys(s.val() || {}).length);
+            onValue(ref(db, 'reviews'), (s) => { let c = 0; const data = s.val() || {}; Object.values(data).forEach(r => c += Object.keys(r).length); document.getElementById('totalReviews').innerText = c; });
+        }
+
+        window.openUsersModal = (role) => {
+            const m = document.getElementById('usersModal'); const l = document.getElementById('modalList');
+            m.style.display = 'flex'; l.innerHTML = '';
+            Object.values(allUsers).forEach(u => { 
+                if(role === 'all' || u.role === role) 
+                    l.innerHTML += `<div class="bg-white/5 p-4 rounded-2xl border border-white/5 text-right font-bold hover:bg-white/10 transition-colors">
+                        <p class="text-white text-xs uppercase tracking-tighter">${u.name} <span class="text-[9px] text-blue-400">(${u.role})</span></p>
+                        <p class="text-[10px] text-gray-500 mt-1 italic">${u.email}</p>
+                    </div>`; 
+            });
+        };
+
+        window.closeUsersModal = () => document.getElementById('usersModal').style.display = 'none';
+
+        function loadMarketerRequests() { 
+            onValue(ref(db, 'marketer_requests'), (snap) => { 
+                const list = document.getElementById('requestsList'); list.innerHTML = ''; 
+                const data = snap.val(); 
+                if(data) Object.keys(data).forEach(uid => { 
+                    const r = data[uid]; 
+                    list.innerHTML += `<div class="glass p-5 rounded-3xl flex justify-between items-center text-right font-bold animate-fade-in shadow-xl border border-white/5">
+                        <div><p class="text-sm text-white underline decoration-blue-500/30 tracking-widest">${r.name}</p><p class="text-[10px] text-gray-500">${r.email}</p></div>
+                        <button onclick="approveMarketer('${uid}')" class="bg-blue-600 text-white px-5 py-2 rounded-xl text-[10px] font-black shadow-lg hover:bg-blue-500 transition-colors active:scale-95">قبول</button>
+                    </div>`; 
+                }); 
+            }); 
+        }
+
+        window.approveMarketer = async (uid) => { await update(ref(db, 'users/' + uid), { role: 'marketer' }); await remove(ref(db, 'marketer_requests/' + uid)); showToast("تم قبول المسوق بنجاح!"); };
+
+        window.saveProduct = () => {
+            const name = document.getElementById('pName').value, price = document.getElementById('pPrice').value;
+            if(name && price) { 
+                push(ref(db, 'products'), { 
+                    name, price, 
+                    oldPrice: document.getElementById('pOldPrice').value, 
+                    category: document.getElementById('pCategory').value, 
+                    subCategory: document.getElementById('pSubCategory').value, 
+                    model: document.getElementById('pModel').value, 
+                    material: document.getElementById('pMaterial').value, 
+                    colors: document.getElementById('pColors').value, 
+                    sizes: document.getElementById('pSizes').value, 
+                    desc: document.getElementById('pDesc').value, 
+                    image: document.getElementById('pImage').value || 'https://via.placeholder.com/400', 
+                    extraImages: document.getElementById('pExtraImages').value, 
+                    owner: currentUser.uid, 
+                    likes: 0 
+                }); 
+                showToast("تم نشر المنتج بنجاح!"); 
+                ["pName", "pPrice", "pOldPrice", "pColors", "pSizes", "pDesc", "pImage", "pExtraImages", "pMaterial", "pModel"].forEach(id => document.getElementById(id).value = ""); 
+            } else {
+                showToast("يرجى ملء الاسم والسعر على الأقل");
+            }
+        };
+
+        window.editProduct = async (id, oldN, oldP, oldI) => { 
+            const nn = prompt("الاسم الجديد:", oldN); 
+            const np = prompt("السعر الجديد:", oldP); 
+            const ni = prompt("رابط الصورة الجديد:", oldI); 
+            if(nn && np) { await update(ref(db, 'products/' + id), { name: nn, price: np, image: ni }); showToast("تم التحديث!"); } 
+        };
+
+        function loadProducts() { onValue(ref(db, 'products'), (s) => { allProducts = s.val() || {}; renderGrid(allProducts); }); }
+
         function renderGrid(products) {
-            const grid = document.getElementById('productsGrid'); grid.innerHTML = '';
+            const grid = document.getElementById('productsGrid'); 
+            const noRes = document.getElementById('noResults');
+            grid.innerHTML = '';
             const keys = Object.keys(products);
-            if(keys.length === 0) { document.getElementById('noResults').classList.remove('hidden'); return; }
-            document.getElementById('noResults').classList.add('hidden');
+            if(keys.length === 0) { noRes.classList.remove('hidden'); return; }
+            noRes.classList.add('hidden');
 
             keys.forEach(key => {
-                const p = products[key];
-                const isSaved = userWishlist.includes(key);
+                const p = products[key], isSaved = userWishlist.includes(key);
                 const canManage = (userRole === 'admin') || (userRole === 'marketer' && p.owner === currentUser.uid);
-                grid.innerHTML += `
-                <div class="product-card glass p-5 rounded-[35px] text-right flex flex-col justify-between shadow-xl animate-fade-in">
+                grid.innerHTML += `<div class="product-card glass p-5 rounded-[35px] animate-fade-in shadow-xl text-right flex flex-col justify-between h-full">
                     <div class="relative">
-                        <button onclick="toggleWishlist('${key}')" class="absolute top-0 left-0 p-2 rounded-full ${isSaved ? 'text-pink-500 bg-pink-500/20' : 'text-gray-400 bg-black/30'}">❤</button>
-                        <img src="${p.image}" class="w-full h-48 object-cover rounded-[25px] mb-4 shadow-lg">
+                        <div class="absolute top-0 left-0 flex flex-col items-center gap-1 z-10">
+                            <button onclick="toggleWishlist('${key}')" class="p-2.5 rounded-full backdrop-blur-md ${isSaved ? 'text-pink-500 bg-pink-500/20' : 'text-gray-400 bg-black/30'} transition-all hover:scale-110 active:scale-90">❤</button>
+                            <span class="text-[10px] font-black text-gray-400">${p.likes || 0}</span>
+                        </div>
+                        <div class="w-full h-48 md:h-52 rounded-[25px] overflow-hidden mb-5 shadow-2xl border border-white/5">
+                            <img src="${p.image}" class="w-full h-full object-cover" loading="lazy">
+                        </div>
                     </div>
                     <div>
-                        <h3 class="font-black text-white italic mb-2 line-clamp-1 text-sm uppercase">${p.name}</h3>
-                        <p class="text-blue-400 font-black text-xl mb-4">${p.price} ج.م</p>
-                        <div class="flex gap-2">
-                             <button onclick="viewDetails('${key}', '${p.name}', '${p.price}', '${p.image}')" class="flex-1 bg-white/5 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-600 transition-all">التفاصيل</button>
-                             ${canManage ? `<button onclick="deleteProduct('${key}')" class="text-red-500 font-bold px-2">✕</button>` : ''}
+                        <h3 class="font-black text-base md:text-lg mb-2 text-white italic tracking-tighter uppercase line-clamp-1">${p.name}</h3>
+                        <div class="flex justify-between items-center mb-5">
+                            <div>
+                                <span class="text-blue-400 font-black text-xl md:text-2xl tracking-tighter">${p.price} ج.م</span>
+                                ${p.oldPrice ? `<span class="text-gray-500 text-[10px] line-through ml-2">${p.oldPrice} ج.م</span>` : ''}
+                            </div>
+                            ${canManage ? `<div class="flex gap-2">
+                                <button onclick="editProduct('${key}', '${p.name}', '${p.price}', '${p.image}')" class="text-yellow-500 text-[10px] font-bold italic border-b border-yellow-500/30">تعديل</button>
+                                <button onclick="deleteProduct('${key}')" class="text-red-500 text-[10px] font-bold italic border-b border-red-500/30">حذف</button>
+                            </div>` : ''}
                         </div>
+                        <button onclick="viewDetails('${key}', '${p.name}', '${p.price}', '${p.image}')" class="w-full bg-white/5 hover:bg-blue-600 hover:text-white py-4 rounded-[20px] text-[10px] font-black uppercase transition-all shadow-xl border border-white/5 tracking-widest active:scale-95">التفاصيل والتقييمات</button>
                     </div>
                 </div>`;
             });
         }
 
-        window.toggleWishlist = async (id) => {
-            const idx = userWishlist.indexOf(id);
-            if(idx > -1) { userWishlist.splice(idx, 1); } else { userWishlist.push(id); }
-            await update(ref(db, 'users/' + currentUser.uid), { wishlist: userWishlist });
+        function loadUsers() { 
+            onValue(ref(db, 'users'), (snapshot) => { 
+                const users = snapshot.val(); const list = document.getElementById('usersList'); 
+                list.innerHTML = ''; 
+                if(users) Object.keys(users).forEach(uid => { 
+                    const u = users[uid]; 
+                    list.innerHTML += `<div class="bg-white/5 p-4 rounded-2xl border border-white/5 flex flex-col gap-3 font-bold text-right animate-slide">
+                        <div class="flex justify-between items-start">
+                            <p class="text-sm text-white">${u.name}</p>
+                            <span class="text-[8px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 font-black uppercase border border-blue-500/20">${u.role}</span>
+                        </div>
+                        <div class="flex gap-1">
+                            <button onclick="changeRole('${uid}', 'marketer')" class="flex-1 text-[8px] border border-blue-500/20 rounded-lg p-2 hover:bg-blue-500 hover:text-white text-blue-400 transition-all font-black uppercase">مسوق</button>
+                            <button onclick="changeRole('${uid}', 'admin')" class="flex-1 text-[8px] border border-yellow-500/20 rounded-lg p-2 hover:bg-yellow-500 hover:text-white text-yellow-500 transition-all font-black uppercase">أدمن</button>
+                            <button onclick="changeRole('${uid}', 'customer')" class="flex-1 text-[8px] bg-white/5 rounded-lg p-2 text-white hover:bg-white/20 transition-all font-black uppercase">عميل</button>
+                        </div>
+                    </div>`; 
+                }); 
+            }); 
+        }
+
+        window.changeRole = (uid, r) => { if(confirm("تغيير الرتبة؟")) { update(ref(db, 'users/' + uid), { role: r }); showToast("تم تغيير الرتبة!"); } };
+
+        window.toggleWishlist = async (id) => { 
+            if(!currentUser) return;
+            const idx = userWishlist.indexOf(id); 
+            const rp = ref(db, `products/${id}/likes`); 
+            if (idx > -1) { 
+                userWishlist.splice(idx, 1); 
+                runTransaction(rp, (c) => (c || 1) - 1); 
+            } else { 
+                userWishlist.push(id); 
+                runTransaction(rp, (c) => (c || 0) + 1); 
+            } 
+            await update(ref(db, 'users/' + currentUser.uid), { wishlist: userWishlist }); 
         };
 
-        window.toggleCart = () => document.getElementById('cartDrawer').classList.toggle('open');
-        window.updateCartUI = () => {
-            onValue(ref(db, `carts/${currentUser.uid}`), (snap) => {
-                const data = snap.val() || {};
-                document.getElementById('cartCountBadge').innerText = Object.keys(data).length;
-                let total = 0; Object.values(data).forEach(i => total += (i.price * i.qty));
-                document.getElementById('cartTotal').innerText = total + " ج.م";
-            });
-        };
-
-        window.showToast = (m) => { const t = document.getElementById('toast'); t.innerText = m; t.style.opacity = '1'; setTimeout(() => t.style.opacity = '0', 3000); };
+        window.deleteProduct = (id) => confirm("هل أنت متأكد من حذف هذا المنتج نهائياً؟") && remove(ref(db, 'products/' + id)) && showToast("تم الحذف بنجاح.");
         window.viewDetails = (id, n, p, i) => window.location.href = `details.html?id=${id}&name=${encodeURIComponent(n)}&price=${p}&image=${encodeURIComponent(i)}`;
-        window.deleteProduct = (id) => confirm("حذف نهائي؟") && remove(ref(db, 'products/' + id)) && showToast("تم الحذف");
-        window.logout = () => confirm("خروج؟") && signOut(auth).then(() => window.location.href = "login.html");
+        window.filterProducts = () => applyDualFilter();
+        window.loadWishlistOnly = () => { const f = {}; Object.keys(allProducts).forEach(k => { if(userWishlist.includes(k)) f[k] = allProducts[k]; }); renderGrid(f); };
+        window.showToast = (m) => { const t = document.getElementById('toast'); t.innerText = m; t.style.opacity = '1'; setTimeout(() => t.style.opacity = '0', 3000); };
+        window.logout = () => confirm("هل تود الخروج؟") && signOut(auth).then(() => window.location.href = "login.html");
     </script>
 </body>
 </html>

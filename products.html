@@ -218,24 +218,50 @@
             } else { window.location.href = "login.html"; }
         });
 
-        // --- وظائف السلة الخاصة ---
-        window.toggleCart = () => document.getElementById('cartDrawer').classList.toggle('open');
-        window.updateCartUI = () => {
-            if(!currentUser) return;
-            const cartKey = `userCart_${currentUser.uid}`;
-            const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
-            const list = document.getElementById('cartItemsList');
-            const badge = document.getElementById('cartCountBadge');
-            badge.innerText = cart.length; list.innerHTML = ''; let total = 0;
-            cart.forEach((item, idx) => {
-                total += item.price * item.qty;
-                list.innerHTML += `<div class="glass p-3 rounded-2xl flex gap-3 items-center border border-white/5 animate-slide mb-3 text-right"><img src="${item.image}" class="w-16 h-16 rounded-xl object-cover"><div class="flex-1 font-bold"><h4 class="text-[10px] text-white">${item.name}</h4><p class="text-[8px] text-gray-500">${item.color} | ${item.size} | س ${item.qty}</p><p class="text-blue-400 font-black text-xs mt-1">${item.price * item.qty} ج.م</p></div><div class="flex flex-col gap-2"><button onclick="removeFromCart(${idx})" class="text-red-500 text-xs">✕</button><a href="order.html?id=${item.id}&name=${encodeURIComponent(item.name)}&price=${item.price}&qty=${item.qty}&color=${encodeURIComponent(item.color)}&size=${encodeURIComponent(item.size)}&image=${encodeURIComponent(item.image)}&owner=null" class="text-[8px] bg-blue-600 text-white p-1 rounded-lg text-center font-bold">اطلب</a></div></div>`;
-            });
-            document.getElementById('cartTotal').innerText = total + " ج.م";
-            if(cart.length === 0) list.innerHTML = '<p class="text-gray-500 text-center py-10 text-[10px]">سلتك فارغة حالياً.</p>';
-        };
-        window.removeFromCart = (idx) => { const cartKey = `userCart_${currentUser.uid}`; let cart = JSON.parse(localStorage.getItem(cartKey)) || []; cart.splice(idx, 1); localStorage.setItem(cartKey, JSON.stringify(cart)); updateCartUI(); };
+      // تحديث السلة من قاعدة البيانات مباشرة (Real-time)
+window.updateCartUI = () => {
+    if(!currentUser) return;
+    
+    const cartRef = ref(db, `carts/${currentUser.uid}`);
+    onValue(cartRef, (snapshot) => {
+        const data = snapshot.val() || {};
+        const list = document.getElementById('cartItemsList');
+        const badge = document.getElementById('cartCountBadge');
+        const totalEl = document.getElementById('cartTotal');
+        
+        const keys = Object.keys(data);
+        badge.innerText = keys.length;
+        list.innerHTML = '';
+        let total = 0;
 
+        keys.forEach((key) => {
+            const item = data[key];
+            total += item.price * item.qty;
+            list.innerHTML += `
+                <div class="glass p-3 rounded-2xl flex gap-3 items-center border border-white/5 animate-slide mb-3 text-right">
+                    <img src="${item.image}" class="w-16 h-16 rounded-xl object-cover">
+                    <div class="flex-1 font-bold">
+                        <h4 class="text-[10px] text-white">${item.name}</h4>
+                        <p class="text-[8px] text-gray-500 italic">${item.color} | ${item.size} | س ${item.qty}</p>
+                        <p class="text-blue-400 font-black text-xs mt-1">${item.price * item.qty} ج.م</p>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <button onclick="removeFromCart('${key}')" class="text-red-500 text-xs">✕</button>
+                        <a href="order.html?id=${item.id}&name=${encodeURIComponent(item.name)}&price=${item.price}&qty=${item.qty}&color=${encodeURIComponent(item.color)}&size=${encodeURIComponent(item.size)}&image=${encodeURIComponent(item.image)}&owner=null" class="text-[8px] bg-blue-600 text-white p-1 rounded-lg text-center font-bold">اطلب</a>
+                    </div>
+                </div>`;
+        });
+        document.getElementById('cartTotal').innerText = total + " ج.م";
+        if(keys.length === 0) list.innerHTML = '<p class="text-gray-500 text-center py-10 text-[10px]">سلتك فارغة حالياً.</p>';
+    });
+};
+
+// حذف منتج من السلة السحابية
+window.removeFromCart = (key) => {
+    if(confirm("هل تريد حذف المنتج من السلة؟")) {
+        remove(ref(db, `carts/${currentUser.uid}/${key}`));
+    }
+};
         // --- الفلترة المزدوجة ---
         const subData = {
             clothes: [{n:'رجالي', i:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcq8MbpMpYi4h72YsWLGOu8L2bU7lNdq-3ZQ&s'}, {n:'حريمي', i:'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=100'}],

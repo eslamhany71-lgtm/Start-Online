@@ -274,25 +274,48 @@
         showToast("تم تحديث كافة المحافظ ✅");
     };
 
-    window.updateOrderStatus = async (orderId, status, amount) => {
-        if(status === 'completed') {
-            const commission = amount * 0.10;
-            const walletRef = ref(db, `users/${myUid}/wallet`);
-            const wSnap = await get(walletRef);
-            const w = wSnap.exists() ? wSnap.val() : { balance: 0, debt: 0 };
+window.updateOrderStatus = async (orderId, status, amount) => {
+    // التأكد من أن المبلغ رقم صحيح وليس NaN
+    const safeAmount = Number(amount) || 0;
 
+    if (status === 'completed') {
+        const commission = safeAmount * 0.10; // عمولة 10%
+        const walletRef = ref(db, `users/${myUid}/wallet`);
+        
+        try {
+            const wSnap = await get(walletRef);
+            let currentBalance = 0;
+            let currentDebt = 0;
+
+            if (wSnap.exists()) {
+                const w = wSnap.val();
+                // التأكد من تحويل القيم المخزنة لأرقام لتجنب NaN
+                currentBalance = Number(w.balance) || 0;
+                currentDebt = Number(w.debt) || 0;
+            }
+
+            // التحديث بالقيم الجديدة
             await update(walletRef, {
-                balance: (w.balance || 0) + amount,
-                debt: (w.debt || 0) + commission
+                balance: currentBalance + safeAmount,
+                debt: currentDebt + commission
             });
+
+            // تسجيل العملية في السجل
             await push(ref(db, `transactions/${myUid}`), {
                 title: `عمولة طلب #${orderId.slice(-4)}`,
-                amount: commission, type: 'debt', date: new Date().toLocaleString('ar-EG')
+                amount: commission,
+                type: 'debt',
+                date: new Date().toLocaleString('ar-EG')
             });
+        } catch (error) {
+            console.error("خطأ في تحديث المحفظة:", error);
         }
-        await update(ref(db, 'orders/' + orderId), { status: status });
-        showToast("تم تحديث الحالة");
-    };
+    }
+
+    // تحديث حالة الطلب نفسه
+    await update(ref(db, 'orders/' + orderId), { status: status });
+    showToast("تم تحديث حالة الطلب ✅");
+};
 
     function loadOrders(role) {
         onValue(ref(db, 'orders'), (snap) => {

@@ -1,74 +1,89 @@
 const translations = {
     ar: {
-        // Navbar
         nav_home: "الرئيسية",
-        nav_shop: "المتجر",
+        nav_store: "المتجر",
         nav_profile: "حسابي",
-        nav_login: "دخول / انضم إلينا",
-        nav_logout: "خروج",
-        // Login Page
-        login_title: "START ONLINE",
-        login_welcome: "سجل دخولك للوصول إلى لوحة التحكم",
-        login_email: "البريد الإلكتروني",
-        login_pass: "كلمة المرور",
-        login_btn: "دخول",
-        register_link: "إنشاء حساب جديد",
-        // Products Page
-        shop_title: "المعرض الرقمي",
-        search_placeholder: "ابحث عن منتج...",
-        btn_details: "التفاصيل والتقييمات",
-        // Global
-        dir: "rtl"
+        nav_start: "ابدأ الآن",
+        nav_dashboard: "لوحة التحكم",
+        hero_title: "مستقبلك الرقمي <br> يبدأ بلمسة",
+        hero_desc: "انضم لأكبر منصة عربية لعرض وبيع المنتجات الرقمية. نحن نوفر لك لوحة تحكم ذكية مدعومة بتقنيات السحاب، لتُبدع في عالمك الخاص.",
+        btn_browse: "تصفح المتجر",
+        btn_marketer: "لوحة المسوقين",
+        btn_be_marketer: "كن مسوقاً معنا",
+        dir: "rtl",
+        font: "'Cairo', sans-serif"
     },
     en: {
-        // Navbar
         nav_home: "Home",
-        nav_shop: "Shop",
-        nav_profile: "My Profile",
-        nav_login: "Login / Join Us",
-        nav_logout: "Logout",
-        // Login Page
-        login_title: "START ONLINE",
-        login_welcome: "Login to access your dashboard",
-        login_email: "Email Address",
-        login_pass: "Password",
-        login_btn: "Login",
-        register_link: "Create New Account",
-        // Products Page
-        shop_title: "Digital Marketplace",
-        search_placeholder: "Search for a product...",
-        btn_details: "Details & Reviews",
-        // Global
-        dir: "ltr"
+        nav_store: "Store",
+        nav_profile: "Profile",
+        nav_start: "Start Now",
+        nav_dashboard: "Dashboard",
+        hero_title: "Your Digital Future <br> Starts with a Touch",
+        hero_desc: "Join the largest platform for digital products. We provide a smart cloud-powered dashboard to help you excel in your own world.",
+        btn_browse: "Browse Shop",
+        btn_marketer: "Marketer Hub",
+        btn_be_marketer: "Become a Marketer",
+        dir: "ltr",
+        font: "'Inter', sans-serif" // ممكن تستخدم خط أجنبي أنحف
     }
 };
 
-// وظيفة تطبيق الترجمة
 function applyLanguage(lang) {
-    const elements = document.querySelectorAll("[data-i18n]");
-    elements.forEach(el => {
-        const key = el.getAttribute("data-i18n");
-        if (translations[lang][key]) {
-            if (el.tagName === "INPUT") {
-                el.placeholder = translations[lang][key];
-            } else {
-                el.innerText = translations[lang][key];
-            }
+    const t = translations[lang];
+    document.querySelectorAll('[data-key]').forEach(el => {
+        const key = el.getAttribute('data-key');
+        if (t[key]) {
+            if (el.tagName === 'INPUT') el.placeholder = t[key];
+            else el.innerHTML = t[key];
         }
     });
-    // تغيير اتجاه الموقع
-    document.documentElement.dir = translations[lang].dir;
+    document.documentElement.dir = t.dir;
     document.documentElement.lang = lang;
+    document.body.style.fontFamily = t.font;
 }
 
-// عند تحميل أي صفحة
-document.addEventListener("DOMContentLoaded", () => {
-    const savedLang = localStorage.getItem("lang") || "ar";
+window.setLanguage = (lang) => {
+    localStorage.setItem('lang', lang);
+    location.reload(); // إعادة التحميل لضبط الاتجاهات والخطوط بشكل سليم
+};
+
+// تشغيل اللغة المختارة عند التحميل
+document.addEventListener('DOMContentLoaded', () => {
+    const savedLang = localStorage.getItem('lang') || 'ar';
     applyLanguage(savedLang);
 });
+// أضف هذه المفاتيح لملف الترجمة القديم
+translations.ar = {
+    ...translations.ar, // يحافظ على القديم
+    shop_title: "المتجر الذكي",
+    search_placeholder: "ابحث عن منتجك المفضل...",
+    cat_all: "الكل",
+    cat_clothes: "ملابس",
+    cat_acc: "إكسسوارات",
+    cat_perfume: "عطور",
+    cat_beauty: "صحة وجمال",
+    cat_best: "أكثر مبيعاً",
+    cart_title: "سلة المشتريات",
+    cart_total: "الإجمالي التقديري:",
+    btn_details: "التفاصيل والتقييمات",
+    publish_title: "نشر إبداع جديد",
+    logout: "خروج"
+};
 
-// وظيفة تبديل اللغة
-window.setLanguage = (lang) => {
-    localStorage.setItem("lang", lang);
-    location.reload(); // إعادة تحميل لتطبيق التغييرات في كل مكان
+translations.en = {
+    ...translations.en,
+    shop_title: "Smart Store",
+    search_placeholder: "Search for your favorite product...",
+    cat_all: "All",
+    cat_clothes: "Clothes",
+    cat_acc: "Accessories",
+    cat_perfume: "Perfumes",
+    cat_beauty: "Beauty",
+    cat_best: "Best Sellers",
+    cart_title: "Shopping Cart",
+    cart_total: "Estimated Total:",
+    btn_details: "Details & Reviews",
+    publish_title: "Publish New Product",
+    logout: "Logout"
 };

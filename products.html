@@ -43,6 +43,10 @@
 </head>
 <body class="pb-24">
 
+    <div id="debtAlert" class="hidden fixed top-24 left-4 right-4 z-[60] bg-red-900/90 border border-red-500 text-red-200 p-3 rounded-2xl text-center text-xs font-bold shadow-2xl animate-pulse backdrop-blur-md">
+        ⚠️ تنبيه: تجاوزت مديونيتك 500 ج.م. تم إيقاف صلاحية النشر مؤقتاً لحين السداد.
+    </div>
+
     <div class="cart-float md:bottom-10" onclick="toggleCart()">
         <div class="bg-blue-600 p-4 rounded-2xl shadow-2xl border border-blue-400/30 relative">
             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
@@ -61,7 +65,7 @@
                 <span class="text-gray-400">الإجمالي:</span>
                 <span id="cartTotal" class="text-blue-400 font-black">0 ج.م</span>
             </div>
-            <button onclick="toggleCart()" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-4 rounded-2xl font-black mt-4 shadow-xl transition-all active:scale-95">استكمال التسوق</button>
+            <button onclick="toggleCart()" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-4 rounded-2xl font-black mt-4 shadow-xl transition-all active:scale-95 text-center">استكمال التسوق</button>
         </div>
     </div>
 
@@ -136,30 +140,38 @@
     <section id="controlPanel" class="max-w-5xl mx-auto px-4 mb-12 hidden animate-fade-in">
         <div class="glass p-6 md:p-8 rounded-[40px] border border-blue-500/10 shadow-2xl text-right">
             <h2 class="text-2xl font-black mb-8 text-blue-400 italic underline underline-offset-8 decoration-blue-500/30 uppercase tracking-tighter">نشر إبداع جديد</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6">
-                <input type="text" id="pName" placeholder="اسم المنتج" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white focus:border-blue-500 transition-all">
-                <select id="pCategory" class="bg-slate-800 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white cursor-pointer">
-                    <option value="الكل">النوع الأساسي</option>
-                    <option value="ملابس">ملابس</option><option value="إكسسوارات">إكسسوارات</option><option value="عطور">عطور</option><option value="صحة وجمال">صحة وجمال</option>
-                </select>
+            
+            <div id="lockMessage" class="hidden glass p-8 rounded-[40px] border border-red-500/30 text-center mb-8">
+                <p class="text-red-500 font-black text-lg">🚫 عذراً، خاصية النشر معطلة حالياً بسبب ارتفاع المديونية.</p>
+                <p class="text-gray-400 text-xs mt-2 italic">يرجى تسوية الحساب مع الإدارة لتفعيل النشر مجدداً.</p>
             </div>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                <select id="pSubCategory" class="bg-slate-800 border border-white/10 p-4 rounded-2xl outline-none text-[10px] text-white"><option value="عام">عام</option><option value="رجالي">رجالي</option><option value="حريمي">حريمي</option></select>
-                <input type="number" id="pPrice" placeholder="السعر النهائي" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
-                <input type="number" id="pOldPrice" placeholder="السعر القديم" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
-                <input type="text" id="pModel" placeholder="الموديل" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
+
+            <div id="publishForm">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6">
+                    <input type="text" id="pName" placeholder="اسم المنتج" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white focus:border-blue-500 transition-all">
+                    <select id="pCategory" class="bg-slate-800 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white cursor-pointer">
+                        <option value="الكل">النوع الأساسي</option>
+                        <option value="ملابس">ملابس</option><option value="إكسسوارات">إكسسوارات</option><option value="عطور">عطور</option><option value="صحة وجمال">صحة وجمال</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                    <select id="pSubCategory" class="bg-slate-800 border border-white/10 p-4 rounded-2xl outline-none text-[10px] text-white"><option value="عام">عام</option><option value="رجالي">رجالي</option><option value="حريمي">حريمي</option></select>
+                    <input type="number" id="pPrice" placeholder="السعر النهائي" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
+                    <input type="number" id="pOldPrice" placeholder="السعر القديم" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
+                    <input type="text" id="pModel" placeholder="الموديل" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <input type="text" id="pColors" placeholder="الألوان المتاحة" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
+                    <input type="text" id="pSizes" placeholder="المقاسات" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <input type="text" id="pImage" placeholder="رابط الصورة الأساسية" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
+                    <input type="text" id="pMaterial" placeholder="الماتريال" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
+                </div>
+                <input type="text" id="pExtraImages" placeholder="روابط صور الألوان (افصل بفاصلة , )" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white mb-6">
+                <textarea id="pDesc" placeholder="الوصف الكامل للمنتج..." class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl h-32 mb-6 text-white text-xs resize-none"></textarea>
+                <button onclick="saveProduct()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-5 rounded-3xl shadow-xl transition-all uppercase tracking-widest italic active:scale-95">نشر المنتج الآن</button>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <input type="text" id="pColors" placeholder="الألوان المتاحة" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
-                <input type="text" id="pSizes" placeholder="المقاسات" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <input type="text" id="pImage" placeholder="رابط الصورة الأساسية" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
-                <input type="text" id="pMaterial" placeholder="الماتريال" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
-            </div>
-            <input type="text" id="pExtraImages" placeholder="روابط صور الألوان (افصل بفاصلة , )" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white mb-6">
-            <textarea id="pDesc" placeholder="الوصف الكامل للمنتج..." class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl h-32 mb-6 text-white text-xs resize-none"></textarea>
-            <button onclick="saveProduct()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-5 rounded-3xl shadow-xl transition-all uppercase tracking-widest italic active:scale-95">نشر المنتج الآن</button>
         </div>
     </section>
 
@@ -191,21 +203,37 @@
 
         let currentUser = null, userRole = 'customer', allProducts = {}, allUsers = {}, userWishlist = [];
         let selectedMainCat = 'الكل', selectedSubCat = 'الكل';
+        const DEBT_LIMIT = 500; // الحد الأقصى للمديونية
 
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
                 const userSnap = await get(ref(db, 'users/' + user.uid));
                 if (userSnap.exists()) {
-                    const u = userSnap.val(); userRole = u.role; userWishlist = u.wishlist || [];
+                    const u = userSnap.val(); 
+                    userRole = u.role; 
+                    userWishlist = u.wishlist || [];
+                    const debt = (u.wallet && u.wallet.debt) ? Number(u.wallet.debt) : 0; // جلب المديونية
+
                     document.getElementById('userInfo').innerText = `${u.name} | ${userRole.toUpperCase()}`;
+                    
                     if (userRole === 'admin') {
                         document.getElementById('adminStats').classList.remove('hidden');
                         document.getElementById('adminUsersPanel').classList.remove('hidden');
                         document.getElementById('marketerRequestsPanel').classList.remove('hidden');
                         loadAdminDashboard(); loadMarketerRequests(); loadUsers();
                     }
-                    if (userRole === 'marketer' || userRole === 'admin') { document.getElementById('controlPanel').classList.remove('hidden'); }
+
+                    if (userRole === 'marketer' || userRole === 'admin') { 
+                        document.getElementById('controlPanel').classList.remove('hidden'); 
+
+                        // نظام حظر النشر للمسوقين المديونين
+                        if(userRole === 'marketer' && debt > DEBT_LIMIT) {
+                            document.getElementById('debtAlert').classList.remove('hidden');
+                            document.getElementById('publishForm').classList.add('hidden');
+                            document.getElementById('lockMessage').classList.remove('hidden');
+                        }
+                    }
                 }
                 loadProducts(); updateCartUI();
             } else { window.location.href = "login.html"; }

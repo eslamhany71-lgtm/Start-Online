@@ -27,7 +27,7 @@ const translations = {
         order_status_completed: "تم التسليم",
         order_status_failed: "ملغاة",
         dir: "rtl",
-        font: "'Cairo', sans-serif"
+        font: "'Cairo', sans-serif",
         // أضف هذه القيم داخل translations.ar
 login_btn: "دخول",
 signup_btn: "إنشاء حساب",
@@ -70,7 +70,7 @@ or_via: "أو عبر"
         order_status_completed: "Completed",
         order_status_failed: "Failed",
         dir: "ltr",
-        font: "'Inter', sans-serif"
+        font: "'Inter', sans-serif",
         // وأضف مقابلها في translations.en
 login_btn: "Login",
 signup_btn: "Sign Up",

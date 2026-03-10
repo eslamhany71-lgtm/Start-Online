@@ -13,7 +13,7 @@
         @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
         .stat-box { background: rgba(59, 130, 246, 0.05); border: 1px solid rgba(59, 130, 246, 0.1); cursor: pointer; transition: 0.3s; }
         .stat-box:hover { background: rgba(59, 130, 246, 0.15); transform: translateY(-5px); border-color: rgba(59, 130, 246, 0.4); }
-        .status-badge { padding: 2px 8px; border-radius: 10px; font-size: 9px; font-weight: 900; text-transform: uppercase; }
+        .status-badge { padding: 4px 10px; border-radius: 12px; font-size: 10px; font-weight: 900; }
         .status-pending { color: #eab308; background: rgba(234, 179, 8, 0.1); }
         .status-completed { color: #22c55e; background: rgba(34, 197, 94, 0.1); }
         .status-failed { color: #ef4444; background: rgba(239, 68, 68, 0.1); }
@@ -127,6 +127,19 @@
                 <div id="archiveList" class="space-y-4"></div>
             </section>
 
+            <div id="orderFullDetailsModal" class="fixed inset-0 bg-black/95 z-[300] hidden flex items-center justify-center p-4">
+                <div class="glass max-w-2xl w-full p-8 rounded-[40px] border border-blue-500/20 shadow-2xl relative overflow-y-auto max-h-[90vh]">
+                    <button onclick="closeOrderModal()" class="absolute top-6 left-6 text-gray-400 hover:text-white">✕</button>
+                    <h2 class="text-2xl font-black text-blue-400 mb-8 flex items-center gap-2">
+                        <span class="w-2 h-6 bg-blue-500 rounded-full"></span> تفاصيل الطلب كاملة
+                    </h2>
+                    <div id="orderModalBody" class="grid grid-cols-1 md:grid-cols-2 gap-8 text-right">
+                        </div>
+                    <div id="orderModalActions" class="mt-8 pt-8 border-t border-white/5 flex gap-4">
+                        </div>
+                </div>
+            </div>
+
             <section id="requestMarketerSection" class="hidden animate-slide">
                 <div class="glass p-8 rounded-[40px] border border-blue-500/30 bg-blue-500/5">
                     <div id="requestStatic">
@@ -173,7 +186,7 @@
     </div>
 </div>
 
-<div id="receiptModal" class="fixed inset-0 bg-black/90 z-[200] flex items-center justify-center hidden p-6">
+<div id="receiptModal" class="fixed inset-0 bg-black/90 z-[400] flex items-center justify-center hidden p-6">
     <div class="glass max-w-lg w-full p-8 rounded-[40px] text-center relative border border-white/10">
         <button onclick="closeReceipt()" class="absolute top-6 left-6 text-gray-500">✕</button>
         <h3 class="text-xl font-black mb-6 text-blue-400 italic">بيانات الدفع / التحويل</h3>
@@ -182,7 +195,7 @@
     </div>
 </div>
 
-<div id="toast" class="fixed bottom-10 right-10 glass px-8 py-4 rounded-2xl text-white font-black opacity-0 transition-all pointer-events-none z-[100] border-blue-500/50 border text-[10px]"></div>
+<div id="toast" class="fixed bottom-10 right-10 glass px-8 py-4 rounded-2xl text-white font-black opacity-0 transition-all pointer-events-none z-[500] border-blue-500/50 border text-[10px]"></div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -209,7 +222,6 @@
                 if(u.role === 'marketer' || u.role === 'admin') {
                     document.querySelectorAll('#marketerSettings, #ordersSection, #insightsDashboard, #walletBox, #marketerStatsBox, #myProductsSection').forEach(el => el.classList.remove('hidden'));
                     loadPaymentDetails();
-                    // مراقبة المحفظة
                     onValue(ref(db, `users/${myUid}/wallet`), (s) => {
                         const w = s.val() || { balance: 0, debt: 0 };
                         document.getElementById('walletBalance').innerText = (w.balance || 0) + " ج.م";
@@ -246,50 +258,45 @@
         showToast("تم تحديث كافة المحافظ ✅");
     };
 
-   window.updateOrderStatus = async (orderId, status, amount) => {
-    try {
-        const orderSnap = await get(ref(db, 'orders/' + orderId));
-        if (!orderSnap.exists()) return;
-        
-        const orderData = orderSnap.val();
-        
-        // هنا السر: الكود الآن يبحث عن total أولاً
-        let rawPrice = amount || orderData.total || orderData.totalPrice || 0;
-        
-        // تنظيف السعر من أي نصوص وتحويله لرقم
-        const finalAmount = parseFloat(String(rawPrice).replace(/[^\d.-]/g, '')) || 0;
+    window.updateOrderStatus = async (orderId, status, amount) => {
+        try {
+            const orderSnap = await get(ref(db, 'orders/' + orderId));
+            if (!orderSnap.exists()) return;
+            const orderData = orderSnap.val();
+            
+            // اصلاح المبلغ ليقرأ من total أولاً
+            let rawPrice = amount || orderData.total || orderData.totalPrice || 0;
+            const finalAmount = parseFloat(String(rawPrice).replace(/[^\d.-]/g, '')) || 0;
 
-        console.log("السعر الذي تم العثور عليه في total هو:", finalAmount);
+            if (status === 'completed' && finalAmount > 0) {
+                const commission = finalAmount * 0.10;
+                const walletRef = ref(db, `users/${myUid}/wallet`);
+                const wSnap = await get(walletRef);
+                const w = wSnap.val() || { balance: 0, debt: 0 };
 
-        if (status === 'completed' && finalAmount > 0) {
-            const commission = finalAmount * 0.10; // عمولة 10%
-            const walletRef = ref(db, `users/${myUid}/wallet`);
-            const wSnap = await get(walletRef);
-            const w = wSnap.val() || { balance: 0, debt: 0 };
+                await update(walletRef, {
+                    balance: (Number(w.balance) || 0) + finalAmount,
+                    debt: (Number(w.debt) || 0) + commission
+                });
 
-            await update(walletRef, {
-                balance: (Number(w.balance) || 0) + finalAmount,
-                debt: (Number(w.debt) || 0) + commission
-            });
+                await push(ref(db, `transactions/${myUid}`), {
+                    title: `مبيع: ${orderData.productName || 'منتج'}`,
+                    amount: finalAmount,
+                    type: 'sale',
+                    date: new Date().toLocaleString('ar-EG')
+                });
+            }
 
-            // تسجيل العملية في سجل الحسابات
-            await push(ref(db, `transactions/${myUid}`), {
-                title: `مبيع: ${orderData.productName || 'منتج'}`,
-                amount: finalAmount,
-                type: 'sale',
-                date: new Date().toLocaleString('ar-EG')
-            });
+            await update(ref(db, 'orders/' + orderId), { status: status });
+            closeOrderModal();
+            showToast("تم تحديث الحالة ✅");
+            
+        } catch (e) {
+            console.error(e);
+            showToast("خطأ في الاتصال!");
         }
+    };
 
-        // تحديث حالة الطلب في النهاية
-        await update(ref(db, 'orders/' + orderId), { status: status });
-        showToast("تم تحديث الحالة والمحفظة بنجاح ✅");
-        
-    } catch (e) {
-        console.error(e);
-        showToast("حدث خطأ في الاتصال!");
-    }
-};
     function loadOrders(role) {
         onValue(ref(db, 'orders'), (snap) => {
             currentOrdersData = snap.val() || {};
@@ -300,6 +307,8 @@
 
             Object.keys(currentOrdersData).reverse().forEach(key => {
                 const o = currentOrdersData[key];
+                const displayTotal = o.total || o.totalPrice || 0;
+
                 if(o.customerUid === myUid) {
                     myPurchaseList.innerHTML += `
                         <div class="glass p-5 rounded-2xl flex justify-between items-center border border-white/5">
@@ -308,24 +317,25 @@
                         </div>`;
                 }
                 if(role === 'admin' || o.marketerId === myUid) {
-                    if(o.status === 'completed') { rev += o.totalPrice; succ++; }
+                    if(o.status === 'completed') { rev += Number(displayTotal); succ++; }
                     else if(o.status === 'failed') { fail++; }
 
                     if(!o.status || o.status === 'pending') {
                         incomingList.innerHTML += `
                             <div class="glass p-6 rounded-3xl border border-white/10 space-y-4 animate-slide">
-                                <div class="flex justify-between items-start border-b border-white/5 pb-4">
-                                    <div><h4 class="font-black text-blue-400">${o.productName}</h4><p class="text-[10px] text-white">العميل: ${o.customerName}</p></div>
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-black text-blue-400">${o.productName}</h4>
+                                        <p class="text-[10px] text-white">العميل: ${o.customerName}</p>
+                                    </div>
                                     <div class="flex gap-2">
-                                        <button onclick="updateOrderStatus('${key}', 'completed', ${o.totalPrice})" class="bg-green-600 text-white px-3 py-1 rounded-lg text-[9px] font-black">تم التسليم</button>
-                                        <button onclick="updateOrderStatus('${key}', 'failed', 0)" class="bg-red-600 text-white px-3 py-1 rounded-lg text-[9px] font-black">إلغاء</button>
+                                        <button onclick="viewOrderDetails('${key}')" class="bg-blue-600/20 text-blue-400 px-3 py-1 rounded-lg text-[9px] font-black">تفاصيل الطلب</button>
                                     </div>
                                 </div>
-                                <div class="text-[10px] text-gray-400 grid grid-cols-1 md:grid-cols-2 gap-2">
-                                    <p>📍 ${o.address}</p>
-                                    <p>📞 ${o.phone} | <button onclick="viewReceipt('${o.receipt}')" class="text-blue-400 underline">إثبات الدفع</button></p>
+                                <div class="flex justify-between items-center border-t border-white/5 pt-4">
+                                    <p class="text-white font-black text-xs">المبلغ: ${displayTotal} ج.م</p>
+                                    <span class="status-badge status-pending">قيد الانتظار</span>
                                 </div>
-                                <p class="text-white font-black">المبلغ: ${o.totalPrice} ج.م | وسيلة الدفع: ${o.payMethod}</p>
                             </div>`;
                     }
                 }
@@ -337,6 +347,39 @@
             }
         });
     }
+
+    // الفانكشن اللي هتبهرك: عرض بيانات الطلب بالكامل
+    window.viewOrderDetails = (id) => {
+        const o = currentOrdersData[id];
+        if(!o) return;
+        const displayTotal = o.total || o.totalPrice || 0;
+        const body = document.getElementById('orderModalBody');
+        const actions = document.getElementById('orderModalActions');
+        
+        body.innerHTML = `
+            <div class="space-y-4">
+                <div><label class="text-gray-500 text-[10px] block">اسم العميل</label><p class="text-white font-bold">${o.customerName || 'غير معروف'}</p></div>
+                <div><label class="text-gray-500 text-[10px] block">رقم الهاتف</label><p class="text-white font-bold">${o.phone || 'بدون رقم'}</p></div>
+                <div><label class="text-gray-500 text-[10px] block">العنوان بالتفصيل</label><p class="text-white font-bold">${o.address || 'بدون عنوان'}</p></div>
+                <div><label class="text-gray-500 text-[10px] block">تاريخ الطلب</label><p class="text-white font-bold">${o.date || 'غير مسجل'}</p></div>
+            </div>
+            <div class="space-y-4">
+                <div><label class="text-gray-500 text-[10px] block">المنتج</label><p class="text-blue-400 font-bold font-black italic">${o.productName}</p></div>
+                <div><label class="text-gray-500 text-[10px] block">المبلغ الإجمالي</label><p class="text-green-400 font-black text-xl">${displayTotal} ج.م</p></div>
+                <div><label class="text-gray-500 text-[10px] block">وسيلة الدفع</label><p class="text-white font-bold uppercase">${o.payMethod || 'COD'}</p></div>
+                <div><label class="text-gray-500 text-[10px] block">إثبات الدفع</label><button onclick="viewReceipt('${o.receipt || ''}')" class="text-blue-400 underline text-xs">عرض المرفق</button></div>
+            </div>
+        `;
+
+        actions.innerHTML = `
+            <button onclick="updateOrderStatus('${id}', 'completed', ${displayTotal})" class="flex-1 bg-green-600 text-white py-3 rounded-2xl font-black text-xs hover:bg-green-500">تم التسليم والأرشفة</button>
+            <button onclick="updateOrderStatus('${id}', 'failed', 0)" class="flex-1 bg-red-600/20 text-red-500 py-3 rounded-2xl font-black text-xs hover:bg-red-600 hover:text-white">إلغاء الطلب</button>
+        `;
+
+        document.getElementById('orderFullDetailsModal').classList.remove('hidden');
+    };
+
+    window.closeOrderModal = () => document.getElementById('orderFullDetailsModal').classList.add('hidden');
 
     function loadContent(uId, wishlist) {
         onValue(ref(db, 'products'), (snap) => {
@@ -366,8 +409,9 @@
         sect.classList.remove('hidden'); list.innerHTML = '';
         Object.keys(currentOrdersData).forEach(key => {
             const o = currentOrdersData[key];
+            const displayTotal = o.total || o.totalPrice || 0;
             if(o.status === status && (myRole === 'admin' || o.marketerId === myUid)) {
-                list.innerHTML += `<div class="bg-white/5 p-4 rounded-2xl flex justify-between items-center text-[10px] mb-2"><div><p class="text-blue-400 font-black">${o.productName}</p><p class="text-gray-500">${o.customerName}</p></div><span class="font-bold text-white">${o.totalPrice} ج.م</span></div>`;
+                list.innerHTML += `<div class="bg-white/5 p-4 rounded-2xl flex justify-between items-center text-[10px] mb-2"><div><p class="text-blue-400 font-black">${o.productName}</p><p class="text-gray-500">${o.customerName}</p></div><span class="font-bold text-white">${displayTotal} ج.م</span></div>`;
             }
         });
     };
@@ -394,7 +438,11 @@
         await update(ref(db, 'users/' + myUid), u); location.reload();
     };
 
-    window.viewReceipt = (v) => { if(v.startsWith('http')) window.open(v, '_blank'); else { document.getElementById('receiptContent').innerText = v; document.getElementById('receiptModal').classList.remove('hidden'); } };
+    window.viewReceipt = (v) => { 
+        if(!v) return showToast("لا يوجد مرفق!");
+        if(v.startsWith('http')) window.open(v, '_blank'); 
+        else { document.getElementById('receiptContent').innerText = v; document.getElementById('receiptModal').classList.remove('hidden'); } 
+    };
     window.closeReceipt = () => document.getElementById('receiptModal').classList.add('hidden');
     window.toggleSettings = () => document.getElementById('settingsPanel').classList.toggle('hidden');
     window.showToast = (m) => { const t = document.getElementById('toast'); t.innerText = m; t.style.opacity = '1'; setTimeout(() => t.style.opacity = '0', 3000); };

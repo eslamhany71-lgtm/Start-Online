@@ -10,13 +10,32 @@
     
     <style>
         body { margin: 0; min-height: 100vh; background-color: #020617; color: #f1f5f9; font-family: 'Cairo', sans-serif; overflow-x: hidden; }
-        .bg-image-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: url('https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=2000'); background-size: cover; background-position: center; opacity: 0.15; filter: grayscale(100%) brightness(0.5); z-index: -3; animation: slowZoom 20s infinite alternate; pointer-events: none; }
-        .bg-grid { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(59, 130, 246, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.08) 1px, transparent 1px); background-size: 50px 50px; mask-image: radial-gradient(circle at center, black, transparent 90%); -webkit-mask-image: radial-gradient(circle at center, black, transparent 90%); z-index: -1; }
-        #mouseGlow { position: fixed; width: 600px; height: 600px; background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%); border-radius: 50%; pointer-events: none; z-index: -1; transform: translate(-50%, -50%); will-change: left, top; }
-        .glass { background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .btn-glow { transition: 0.4s; box-shadow: 0 0 20px rgba(59, 130, 246, 0.4); }
-        .btn-glow:hover { box-shadow: 0 0 40px rgba(59, 130, 246, 0.7); transform: translateY(-3px); }
-        @keyframes slowZoom { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
+        
+        /* تحسين طبقات الخلفية */
+        .bg-image-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: url('https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=2000'); background-size: cover; background-position: center; opacity: 0.12; filter: grayscale(100%) brightness(0.4); z-index: -3; animation: slowZoom 25s infinite alternate; pointer-events: none; }
+        .bg-grid { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(59, 130, 246, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.05) 1px, transparent 1px); background-size: 40px 40px; mask-image: radial-gradient(circle at center, black, transparent 80%); z-index: -1; }
+        
+        /* توهج الماوس المطور */
+        #mouseGlow { position: fixed; width: 700px; height: 700px; background: radial-gradient(circle, rgba(59, 130, 246, 0.18) 0%, transparent 70%); border-radius: 50%; pointer-events: none; z-index: -1; transform: translate(-50%, -50%); transition: opacity 0.3s; will-change: left, top; }
+        
+        .glass { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        
+        /* لوجو احترافي */
+        .logo-brand { font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 4px; }
+        .logo-box { background: #2563eb; color: white; padding: 2px 8px; border-radius: 6px; transform: skewX(-12deg); display: inline-block; }
+
+        /* نص الهيرو الخرافي */
+        .hero-gradient-text {
+            background: linear-gradient(to bottom, #ffffff 30%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 10px 20px rgba(59, 130, 246, 0.2));
+        }
+
+        .btn-glow { transition: 0.4s; box-shadow: 0 0 15px rgba(59, 130, 246, 0.3); }
+        .btn-glow:hover { box-shadow: 0 0 35px rgba(59, 130, 246, 0.6); transform: translateY(-4px); }
+        
+        @keyframes slowZoom { 0% { transform: scale(1); } 100% { transform: scale(1.15); } }
     </style>
 </head>
 <body>
@@ -26,106 +45,112 @@
     <div class="bg-grid"></div>
 
     <nav class="fixed top-0 left-0 right-0 z-50 p-4 md:p-6">
-        <div class="max-w-7xl mx-auto glass rounded-2xl md:rounded-3xl px-6 py-3 flex justify-between items-center shadow-2xl">
+        <div class="max-w-7xl mx-auto glass rounded-[25px] md:rounded-[35px] px-8 py-4 flex justify-between items-center shadow-2xl">
             
-            <div class="text-xl md:text-2xl font-black text-white tracking-tighter">
-                <a href="index.html">START<span class="text-blue-500">ONLINE</span></a>
+            <div class="logo-brand text-xl md:text-2xl font-black italic tracking-tighter">
+                <a href="index.html" class="flex items-center gap-1">
+                    <span class="text-white">START</span>
+                    <span class="logo-box">ONLINE</span>
+                </a>
             </div>
 
-            <ul class="hidden md:flex gap-8 font-bold text-sm text-gray-300">
-                <li><a href="index.html" data-key="nav_home" class="text-blue-400">الرئيسية</a></li>
+            <ul class="hidden md:flex gap-10 font-bold text-xs text-gray-400">
+                <li><a href="index.html" data-key="nav_home" class="text-blue-400 hover:text-white transition">الرئيسية</a></li>
                 <li><a href="products.html" data-key="nav_store" class="hover:text-white transition">المتجر</a></li>
                 <li><a href="profile.html" data-key="nav_profile" class="hover:text-white transition">حسابي</a></li>
             </ul>
 
             <div class="flex items-center gap-4">
-                <button onclick="setLanguage(localStorage.getItem('lang') === 'en' ? 'ar' : 'en')" class="text-xs font-bold text-gray-400 hover:text-white transition flex items-center gap-1 bg-white/5 px-3 py-2 rounded-lg border border-white/10">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                <button onclick="setLanguage(localStorage.getItem('lang') === 'en' ? 'ar' : 'en')" class="hidden md:flex text-[10px] font-black text-gray-400 hover:text-white transition items-center gap-2 bg-white/5 px-4 py-2 rounded-xl border border-white/10">
                     <span id="langLabel">English</span>
                 </button>
 
-                <a href="login.html" id="navBtn" data-key="nav_start" class="bg-blue-600 text-white px-6 py-2.5 rounded-xl text-xs md:text-sm font-black btn-glow transition-all">
+                <a href="login.html" id="navBtn" data-key="nav_start" class="bg-blue-600 text-white px-8 py-3 rounded-2xl text-xs font-black btn-glow transition-all">
                     ابدأ الآن
                 </a>
             </div>
         </div>
     </nav>
 
-    <nav class="fixed bottom-4 left-4 right-4 z-50 md:hidden">
-        <div class="glass rounded-[25px] p-2 flex justify-around items-center border border-white/10 shadow-2xl">
+    <nav class="fixed bottom-6 left-6 right-6 z-50 md:hidden">
+        <div class="glass rounded-[30px] p-3 flex justify-around items-center border border-white/10 shadow-3xl">
             <a href="index.html" class="flex flex-col items-center gap-1 text-[10px] text-blue-400 p-2">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-                <span data-key="nav_home" class="font-bold">الرئيسية</span>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+                <span data-key="nav_home" class="font-black">الرئيسية</span>
             </a>
-            <a href="products.html" class="flex flex-col items-center gap-1 text-[10px] text-gray-400 p-2 hover:text-white transition">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-            <span data-key="nav_store" class="font-bold">المتجر</span>
-        </a>
-            <a href="profile.html" class="flex flex-col items-center gap-1 text-[10px] text-gray-400 p-2 hover:text-white transition">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            <span data-key="nav_profile" class="font-bold">حسابي</span>
-        </a>
-            </div>
+            <a href="products.html" class="flex flex-col items-center gap-1 text-[10px] text-gray-500 p-2">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                <span data-key="nav_store" class="font-black">المتجر</span>
+            </a>
+            <a href="profile.html" class="flex flex-col items-center gap-1 text-[10px] text-gray-500 p-2">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <span data-key="nav_profile" class="font-black">حسابي</span>
+            </a>
+        </div>
     </nav>
 
-    <section class="min-h-screen flex flex-col justify-center items-center text-center px-6 pt-20">
-        <h1 data-key="hero_title" class="text-5xl md:text-8xl font-black mb-8 leading-tight text-white tracking-tighter">
-            مستقبلك الرقمي <br> <span class="text-blue-500 italic">يبدأ بلمسة</span>
+    <section class="min-h-screen flex flex-col justify-center items-center text-center px-8 pt-20">
+        <h1 data-key="hero_title" class="text-6xl md:text-9xl font-black mb-8 leading-[1.1] tracking-tighter hero-gradient-text">
+            مستقبلك الرقمي <br> <span class="italic">يبدأ بلمسة</span>
         </h1>
-        <p data-key="hero_desc" class="text-gray-400 text-sm md:text-xl max-w-2xl mb-12 leading-relaxed opacity-90">
-            انضم لأكبر منصة عربية لعرض وبيع المنتجات الرقمية.
+        <p data-key="hero_desc" class="text-gray-400 text-sm md:text-xl max-w-2xl mb-14 leading-relaxed font-medium opacity-80">
+            انضم لأكبر منصة عربية لعرض وبيع المنتجات الرقمية. نحن نوفر لك البيئة المثالية للإبداع والربح.
         </p>
         
         <div class="flex flex-col md:flex-row justify-center gap-6 w-full md:w-auto">
-            <a href="products.html" data-key="btn_browse" class="bg-white text-slate-950 px-12 py-4 rounded-2xl font-black btn-glow text-sm md:text-lg transition-all">
+            <a href="products.html" data-key="btn_browse" class="bg-white text-slate-950 px-14 py-5 rounded-[22px] font-black btn-glow text-sm md:text-lg transition-all">
                 تصفح المتجر
             </a>
-            <a href="login.html" id="marketerBtn" data-key="btn_marketer" class="glass text-white px-12 py-4 rounded-2xl font-bold text-sm md:text-lg hover:bg-white/10 transition-all border border-white/10">
-                لوحة المسوقين
+            <a href="community.html" id="marketerBtn" data-key="btn_community" class="glass text-white px-14 py-5 rounded-[22px] font-bold text-sm md:text-lg hover:bg-white/10 transition-all border border-white/10">
+                انضم لمجتمعنا
             </a>
         </div>
     </section>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        // ... نفس الـ config بتاعك ...
         const firebaseConfig = { apiKey: "AIzaSyCyypXt8LnHiVBR2Ka0Mb8ntXu6dJH9N-w", authDomain: "start-online-6f460.firebaseapp.com", projectId: "start-online-6f460", databaseURL: "https://start-online-6f460-default-rtdb.firebaseio.com/" };
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getDatabase(app);
 
-        // تحديث زر اللغة
-        const currentLang = localStorage.getItem('lang') || 'ar';
-        document.getElementById('langLabel').innerText = currentLang === 'ar' ? 'English' : 'العربية';
-
+        // تحديث حالة الأزرار عند تسجيل الدخول
         onAuthStateChanged(auth, async (user) => {
+            const navBtn = document.getElementById('navBtn');
             if (user) {
+                // تحويل الزر العلوي لزر خروج
+                navBtn.innerText = localStorage.getItem('lang') === 'en' ? 'Logout' : 'خروج';
+                navBtn.classList.replace('bg-blue-600', 'bg-red-600/20');
+                navBtn.classList.add('text-red-500', 'border', 'border-red-600/30');
+                navBtn.href = "#";
+                navBtn.onclick = () => {
+                    signOut(auth).then(() => location.reload());
+                };
+
+                // تحديث زر المجتمع ليكون "لوحة التحكم" للمسوقين
                 const snapshot = await get(ref(db, 'users/' + user.uid));
-                if (snapshot.exists()) {
-                    const u = snapshot.val();
-                    const navBtn = document.getElementById('navBtn');
+                if (snapshot.exists() && snapshot.val().role !== 'customer') {
                     const marketerBtn = document.getElementById('marketerBtn');
-                    
-                    navBtn.setAttribute('data-key', 'nav_dashboard');
-                    navBtn.href = "dashboard.html"; // يفضل لوحة تحكم منفصلة
-                    
-                    if(marketerBtn) {
-                        marketerBtn.setAttribute('data-key', u.role === 'customer' ? 'btn_be_marketer' : 'nav_dashboard');
-                    }
-                    // إعادة تطبيق الترجمة بعد تغيير الـ Keys ديناميكياً
-                    if(window.applyLanguage) applyLanguage(currentLang);
+                    marketerBtn.innerText = localStorage.getItem('lang') === 'en' ? 'Dashboard' : 'لوحة التحكم';
+                    marketerBtn.href = "profile.html";
                 }
             }
         });
 
+        // حركة توهج الماوس
         const glow = document.getElementById('mouseGlow');
         window.addEventListener('mousemove', (e) => {
             glow.style.left = e.clientX + 'px';
             glow.style.top = e.clientY + 'px';
         });
+
+        // لغة وافتراضيات
+        const currentLang = localStorage.getItem('lang') || 'ar';
+        const langLabel = document.getElementById('langLabel');
+        if(langLabel) langLabel.innerText = currentLang === 'ar' ? 'English' : 'العربية';
     </script>
 </body>
 </html>

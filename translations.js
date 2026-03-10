@@ -40,8 +40,11 @@ const translations = {
         pass_placeholder: "كلمة المرور",
         forgot_pass: "نسيت كلمة المرور؟",
         google_btn: "سجل بواسطة جوجل",
-        or_via: "أو عبر"
-    },
+        or_via: "أو عبر",
+        // داخل translations.ar
+        btn_community: "انضم لمجتمعنا",
+        logout: "خروج",
+        },
     en: {
         nav_home: "Home",
         nav_store: "Store",
@@ -83,8 +86,11 @@ const translations = {
         pass_placeholder: "Password",
         forgot_pass: "Forgot Password?",
         google_btn: "Sign in with Google",
-        or_via: "OR VIA"
-    }
+        or_via: "OR VIA",
+        // داخل translations.en
+        btn_community: "Join Community",
+        logout: "Logout",
+        }
 };
 
 function applyLanguage(lang) {

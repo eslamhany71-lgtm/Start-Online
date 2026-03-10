@@ -4,12 +4,17 @@
     <script src="translations.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>المتجر الذكي | Start Online</title>
+    <title data-key="shop_title">المتجر الذكي | Start Online</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         body { background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%); color: #f1f5f9; font-family: 'Cairo', sans-serif; min-height: 100vh; margin: 0; overflow-x: hidden; scroll-behavior: smooth; }
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .glass { background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        
+        /* اللوجو الاحترافي */
+        .logo-brand { font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 4px; }
+        .logo-box { background: #2563eb; color: white; padding: 2px 8px; border-radius: 6px; transform: skewX(-12deg); display: inline-block; }
+
         .product-card { transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); position: relative; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.05); }
         .product-card:hover { transform: translateY(-15px) scale(1.03); background: rgba(255, 255, 255, 0.08); border-color: rgba(59, 130, 246, 0.6); box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), 0 0 30px rgba(59, 130, 246, 0.2); }
         .product-card img { transition: 0.8s ease; }
@@ -56,109 +61,127 @@
 
     <div id="cartDrawer" class="p-6 flex flex-col">
         <div class="flex justify-between items-center mb-8 border-b border-white/10 pb-4">
-            <h2 class="text-xl font-black italic text-blue-400 uppercase tracking-tighter">سلة المشتريات</h2>
+            <h2 class="text-xl font-black italic text-blue-400 uppercase tracking-tighter" data-key="cart_title">سلة المشتريات</h2>
             <button onclick="toggleCart()" class="text-gray-500 hover:text-white text-2xl font-black transition-colors">✕</button>
         </div>
         <div id="cartItemsList" class="flex-1 overflow-y-auto space-y-4 no-scrollbar"></div>
         <div class="border-t border-white/10 pt-6 mt-6">
             <div class="flex justify-between font-bold text-lg px-2 text-right">
-                <span class="text-gray-400">الإجمالي:</span>
+                <span class="text-gray-400" data-key="cart_total">الإجمالي:</span>
                 <span id="cartTotal" class="text-blue-400 font-black">0 ج.م</span>
             </div>
-            <button onclick="toggleCart()" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-4 rounded-2xl font-black mt-4 shadow-xl transition-all active:scale-95 text-center">استكمال التسوق</button>
+            <button onclick="toggleCart()" data-key="btn_shopping" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-4 rounded-2xl font-black mt-4 shadow-xl transition-all active:scale-95 text-center">استكمال التسوق</button>
         </div>
     </div>
 
     <nav class="fixed top-0 left-0 right-0 z-50 p-2 md:p-6">
-        <div class="max-w-7xl mx-auto glass rounded-xl md:rounded-2xl px-4 md:px-8 py-3 md:py-4 flex justify-between items-center shadow-2xl">
-            <div class="text-lg md:text-2xl font-black text-white hover:scale-105 transition-transform"><a href="index.html">START<span class="text-blue-400">ONLINE</span></a></div>
+        <div class="max-w-7xl mx-auto glass rounded-xl md:rounded-[30px] px-4 md:px-8 py-3 md:py-4 flex justify-between items-center shadow-2xl">
+            <div class="logo-brand text-lg md:text-2xl font-black italic tracking-tighter">
+                <a href="index.html" class="flex items-center gap-1">
+                    <span class="text-white">START</span>
+                    <span class="logo-box">ONLINE</span>
+                </a>
+            </div>
+
             <ul class="hidden md:flex gap-8 font-bold text-sm text-gray-400">
-                <li><a href="index.html" class="hover:text-white transition">الرئيسية</a></li>
-                <li><a href="products.html" class="text-blue-400 font-black border-b-2 border-blue-400 pb-1">المتجر</a></li>
-                <li><a href="profile.html" class="hover:text-white transition">حسابي</a></li>
+                <li><a href="index.html" data-key="nav_home" class="hover:text-white transition">الرئيسية</a></li>
+                <li><a href="products.html" data-key="nav_store" class="text-blue-400 font-black border-b-2 border-blue-400 pb-1">المتجر</a></li>
+                <li><a href="profile.html" data-key="nav_profile" class="hover:text-white transition">حسابي</a></li>
             </ul>
             <div class="flex items-center gap-2">
+                <button onclick="setLanguage(localStorage.getItem('lang') === 'en' ? 'ar' : 'en')" class="text-[9px] md:text-[10px] font-black text-gray-400 hover:text-white transition flex items-center gap-1 bg-white/5 px-2 md:px-4 py-2 rounded-lg border border-white/10">
+                    <span id="langLabel">English</span>
+                </button>
                 <div id="userInfo" class="hidden lg:block text-[10px] font-bold text-gray-300 bg-white/5 px-3 py-1 rounded-full italic tracking-widest text-center uppercase border border-white/5">تحقق...</div>
-                <button onclick="logout()" class="bg-red-500/10 text-red-500 px-3 md:px-4 py-2 rounded-lg md:rounded-xl text-[10px] font-bold border border-red-500/20 hover:bg-red-500 hover:text-white transition shadow-lg">خروج</button>
+                <button onclick="logout()" data-key="logout" class="bg-red-500/10 text-red-500 px-3 md:px-4 py-2 rounded-lg md:rounded-xl text-[10px] font-bold border border-red-500/20 hover:bg-red-500 hover:text-white transition shadow-lg">خروج</button>
             </div>
         </div>
     </nav>
 
-    <nav class="fixed bottom-4 left-4 right-4 z-50 md:hidden">
-        <div class="glass rounded-[25px] p-2 flex justify-around items-center border border-white/10 shadow-[0_0_30px_rgba(0,0,0,0.5)]">
-            <a href="index.html" class="flex flex-col items-center gap-1 text-[10px] text-gray-400 p-2 hover:text-blue-400 transition"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span>الرئيسية</span></a>
-            <a href="products.html" class="flex flex-col items-center gap-1 text-[10px] text-blue-400 p-2"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/></svg><span>المتجر</span></a>
-            <a href="profile.html" class="flex flex-col items-center gap-1 text-[10px] text-gray-400 p-2 hover:text-blue-400 transition"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>حسابي</span></a>
+    <nav class="fixed bottom-6 left-6 right-6 z-50 md:hidden">
+        <div class="glass rounded-[30px] p-3 flex justify-around items-center border border-white/10 shadow-3xl">
+            <a href="index.html" class="flex flex-col items-center gap-1 text-[10px] text-gray-500 p-2 hover:text-blue-400 transition">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+                <span data-key="nav_home" class="font-black">الرئيسية</span>
+            </a>
+            <a href="products.html" class="flex flex-col items-center gap-1 text-[10px] text-blue-400 p-2">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                <span data-key="nav_store" class="font-black">المتجر</span>
+            </a>
+            <a href="profile.html" class="flex flex-col items-center gap-1 text-[10px] text-gray-500 p-2 hover:text-blue-400 transition">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <span data-key="nav_profile" class="font-black">حسابي</span>
+            </a>
         </div>
     </nav>
 
-    <div class="pt-24 md:pt-32"></div>
+    <div class="pt-24 md:pt-40"></div>
 
     <section class="max-w-7xl mx-auto px-4 mb-10">
         <div class="flex gap-6 overflow-x-auto no-scrollbar pb-4 justify-start md:justify-center">
-            <div class="category-item active" data-cat="all" onclick="showSubCats('all', this)"><img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200"><span>الكل</span></div>
-            <div class="category-item" data-cat="ملابس" onclick="showSubCats('clothes', this)"><img src="https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=200"><span>ملابس</span></div>
-            <div class="category-item" data-cat="إكسسوارات" onclick="showSubCats('acc', this)"><img src="https://jlood.com/cdn/shop/files/Men_Accessories_in_Egypt2_large.jpg"><span>إكسسوارات</span></div>
-            <div class="category-item" data-cat="عطور" onclick="showSubCats('perfume', this)"><img src="https://images.unsplash.com/photo-1541643600914-78b084683601?w=200"><span>عطور</span></div>
-            <div class="category-item" data-cat="صحة وجمال" onclick="showSubCats('beauty', this)"><img src="https://cdn.youcan.shop/stores/0dc0cbcb1b32177428c303a8e891bc1e/products/ekcrAIzCdbM7DYOPYwqrxERfMKBM01UitNaY2FfO_md.png"><span>صحة وجمال</span></div>
-            <div class="category-item" data-cat="أكثر مبيعاً" onclick="showSubCats('best', this)"><img src="https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?w=200"><span>أكثر مبيعاً</span></div>
+            <div class="category-item active" data-cat="all" onclick="showSubCats('all', this)"><img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200"><span data-key="cat_all">الكل</span></div>
+            <div class="category-item" data-cat="ملابس" onclick="showSubCats('clothes', this)"><img src="https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=200"><span data-key="cat_clothes">ملابس</span></div>
+            <div class="category-item" data-cat="إكسسوارات" onclick="showSubCats('acc', this)"><img src="https://jlood.com/cdn/shop/files/Men_Accessories_in_Egypt2_large.jpg"><span data-key="cat_acc">إكسسوارات</span></div>
+            <div class="category-item" data-cat="عطور" onclick="showSubCats('perfume', this)"><img src="https://images.unsplash.com/photo-1541643600914-78b084683601?w=200"><span data-key="cat_perfume">عطور</span></div>
+            <div class="category-item" data-cat="صحة وجمال" onclick="showSubCats('beauty', this)"><img src="https://cdn.youcan.shop/stores/0dc0cbcb1b32177428c303a8e891bc1e/products/ekcrAIzCdbM7DYOPYwqrxERfMKBM01UitNaY2FfO_md.png"><span data-key="cat_beauty">صحة وجمال</span></div>
+            <div class="category-item" data-cat="أكثر مبيعاً" onclick="showSubCats('best', this)"><img src="https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?w=200"><span data-key="cat_best">أكثر مبيعاً</span></div>
         </div>
         <div id="subCatsArea" class="sub-cats-area glass p-4 rounded-3xl border border-white/5"></div>
     </section>
 
     <section id="adminStats" class="max-w-7xl mx-auto px-4 mb-10 hidden grid grid-cols-2 md:grid-cols-5 gap-4 animate-fade-in">
-        <div class="stat-card p-5 rounded-3xl text-center shadow-lg" onclick="openUsersModal('all')"><p class="text-[9px] text-gray-500 uppercase font-black">المستخدمين</p><h3 id="totalUsers" class="text-xl font-black text-blue-400 italic">0</h3></div>
-        <div class="stat-card p-5 rounded-3xl text-center shadow-lg"><p class="text-[9px] text-gray-500 uppercase font-black">المنتجات</p><h3 id="totalProducts" class="text-xl font-black text-green-400 italic">0</h3></div>
-        <div class="stat-card p-5 rounded-3xl text-center shadow-lg" onclick="openUsersModal('marketer')"><p class="text-[9px] text-gray-500 uppercase font-black">المسوقين</p><h3 id="totalMarketers" class="text-xl font-black text-purple-400 italic">0</h3></div>
-        <div class="stat-card p-5 rounded-3xl text-center shadow-lg" onclick="openUsersModal('customer')"><p class="text-[9px] text-gray-500 uppercase font-black">العملاء</p><h3 id="totalCustomers" class="text-xl font-black text-pink-400 italic">0</h3></div>
-        <div class="stat-card p-5 rounded-3xl text-center shadow-lg"><p class="text-[9px] text-gray-500 uppercase font-black">التقييمات</p><h3 id="totalReviews" class="text-xl font-black text-yellow-400 italic">0</h3></div>
+        <div class="stat-card p-5 rounded-3xl text-center shadow-lg" onclick="openUsersModal('all')"><p class="text-[9px] text-gray-500 uppercase font-black" data-key="stat_users">المستخدمين</p><h3 id="totalUsers" class="text-xl font-black text-blue-400 italic">0</h3></div>
+        <div class="stat-card p-5 rounded-3xl text-center shadow-lg"><p class="text-[9px] text-gray-500 uppercase font-black" data-key="stat_prods">المنتجات</p><h3 id="totalProducts" class="text-xl font-black text-green-400 italic">0</h3></div>
+        <div class="stat-card p-5 rounded-3xl text-center shadow-lg" onclick="openUsersModal('marketer')"><p class="text-[9px] text-gray-500 uppercase font-black" data-key="stat_marketers">المسوقين</p><h3 id="totalMarketers" class="text-xl font-black text-purple-400 italic">0</h3></div>
+        <div class="stat-card p-5 rounded-3xl text-center shadow-lg" onclick="openUsersModal('customer')"><p class="text-[9px] text-gray-500 uppercase font-black" data-key="stat_customers">العملاء</p><h3 id="totalCustomers" class="text-xl font-black text-pink-400 italic">0</h3></div>
+        <div class="stat-card p-5 rounded-3xl text-center shadow-lg"><p class="text-[9px] text-gray-500 uppercase font-black" data-key="stat_reviews">التقييمات</p><h3 id="totalReviews" class="text-xl font-black text-yellow-400 italic">0</h3></div>
     </section>
 
     <section id="adminUsersPanel" class="max-w-7xl mx-auto mb-10 px-4 hidden glass rounded-[35px] p-6 border border-white/10 shadow-2xl animate-fade-in text-right">
-        <h2 class="text-xl font-black mb-6 text-gray-400 italic flex items-center gap-2">إدارة كافة الأعضاء <span class="text-[8px] bg-white/5 px-2 py-1 rounded-full uppercase italic border border-white/5">Super Admin</span></h2>
+        <h2 class="text-xl font-black mb-6 text-gray-400 italic flex items-center gap-2" data-key="admin_panel_members">إدارة كافة الأعضاء <span class="text-[8px] bg-white/5 px-2 py-1 rounded-full uppercase italic border border-white/5">Super Admin</span></h2>
         <div id="usersList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
     </section>
 
     <section id="marketerRequestsPanel" class="max-w-7xl mx-auto mb-10 px-4 hidden animate-fade-in text-right">
         <div class="glass p-6 md:p-8 rounded-[35px] border border-blue-500/20 shadow-2xl">
-            <h2 class="text-lg md:text-xl font-black mb-6 text-blue-400 italic underline decoration-blue-500/30">طلبات انضمام مسوقين جدد</h2>
+            <h2 class="text-lg md:text-xl font-black mb-6 text-blue-400 italic underline decoration-blue-500/30" data-key="marketer_requests_title">طلبات انضمام مسوقين جدد</h2>
             <div id="requestsList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
         </div>
     </section>
 
     <section class="max-w-7xl mx-auto px-4 mb-10 flex flex-col md:flex-row gap-4 animate-fade-in text-right">
         <div class="relative flex-1">
-            <input type="text" id="searchInput" oninput="filterProducts()" placeholder="ابحث عن منتجك المفضل..." class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-sm text-white transition-all shadow-inner">
+            <input type="text" id="searchInput" oninput="filterProducts()" data-key="search_placeholder" placeholder="ابحث عن منتجك المفضل..." class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-sm text-white transition-all shadow-inner">
             <span class="absolute left-4 top-4 text-gray-500">🔍</span>
         </div>
         <div class="flex gap-2">
-            <button onclick="loadWishlistOnly()" class="flex-1 md:flex-none bg-pink-500/10 text-pink-500 px-6 py-4 rounded-2xl text-xs font-bold border border-pink-500/20 hover:bg-pink-500 hover:text-white transition-all shadow-lg active:scale-95">مفضلاتي ❤</button>
-            <button onclick="resetAllFilters()" class="flex-1 md:flex-none bg-white/5 text-gray-400 px-6 py-4 rounded-2xl text-xs font-bold border border-white/10 hover:bg-white hover:text-black transition-all italic active:scale-95">عرض الكل</button>
+            <button onclick="loadWishlistOnly()" data-key="btn_my_wishlist" class="flex-1 md:flex-none bg-pink-500/10 text-pink-500 px-6 py-4 rounded-2xl text-xs font-bold border border-pink-500/20 hover:bg-pink-500 hover:text-white transition-all shadow-lg active:scale-95">مفضلاتي ❤</button>
+            <button onclick="resetAllFilters()" data-key="btn_show_all" class="flex-1 md:flex-none bg-white/5 text-gray-400 px-6 py-4 rounded-2xl text-xs font-bold border border-white/10 hover:bg-white hover:text-black transition-all italic active:scale-95">عرض الكل</button>
         </div>
     </section>
 
     <section id="controlPanel" class="max-w-5xl mx-auto px-4 mb-12 hidden animate-fade-in">
         <div class="glass p-6 md:p-8 rounded-[40px] border border-blue-500/10 shadow-2xl text-right">
-            <h2 class="text-2xl font-black mb-8 text-blue-400 italic underline underline-offset-8 decoration-blue-500/30 uppercase tracking-tighter">نشر إبداع جديد</h2>
+            <h2 class="text-2xl font-black mb-8 text-blue-400 italic underline underline-offset-8 decoration-blue-500/30 uppercase tracking-tighter" data-key="publish_title">نشر إبداع جديد</h2>
             
             <div id="lockMessage" class="hidden glass p-8 rounded-[40px] border border-red-500/30 text-center mb-8">
-                <p class="text-red-500 font-black text-lg">🚫 عذراً، خاصية النشر معطلة حالياً بسبب ارتفاع المديونية.</p>
+                <p class="text-red-500 font-black text-lg" data-key="lock_message">🚫 عذراً، خاصية النشر معطلة حالياً بسبب ارتفاع المديونية.</p>
                 <p class="text-gray-400 text-xs mt-2 italic">يرجى تسوية الحساب مع الإدارة لتفعيل النشر مجدداً.</p>
             </div>
 
             <div id="publishForm">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6">
-                    <input type="text" id="pName" placeholder="اسم المنتج" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white focus:border-blue-500 transition-all">
+                    <input type="text" id="pName" data-key="p_name" placeholder="اسم المنتج" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white focus:border-blue-500 transition-all">
                     <select id="pCategory" class="bg-slate-800 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white cursor-pointer">
-                        <option value="الكل">النوع الأساسي</option>
+                        <option value="الكل" data-key="cat_all">النوع الأساسي</option>
                         <option value="ملابس">ملابس</option><option value="إكسسوارات">إكسسوارات</option><option value="عطور">عطور</option><option value="صحة وجمال">صحة وجمال</option>
                     </select>
                 </div>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                     <select id="pSubCategory" class="bg-slate-800 border border-white/10 p-4 rounded-2xl outline-none text-[10px] text-white"><option value="عام">عام</option><option value="رجالي">رجالي</option><option value="حريمي">حريمي</option></select>
-                    <input type="number" id="pPrice" placeholder="السعر النهائي" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
-                    <input type="number" id="pOldPrice" placeholder="السعر القديم" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
-                    <input type="text" id="pModel" placeholder="الموديل" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
+                    <input type="number" id="pPrice" data-key="p_price" placeholder="السعر النهائي" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
+                    <input type="number" id="pOldPrice" data-key="p_commission" placeholder="عمولتك" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
+                    <input type="text" id="pModel" data-key="p_model" placeholder="الموديل" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     <input type="text" id="pColors" placeholder="الألوان المتاحة" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
@@ -170,7 +193,7 @@
                 </div>
                 <input type="text" id="pExtraImages" placeholder="روابط صور الألوان (افصل بفاصلة , )" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white mb-6">
                 <textarea id="pDesc" placeholder="الوصف الكامل للمنتج..." class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl h-32 mb-6 text-white text-xs resize-none"></textarea>
-                <button onclick="saveProduct()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-5 rounded-3xl shadow-xl transition-all uppercase tracking-widest italic active:scale-95">نشر المنتج الآن</button>
+                <button onclick="saveProduct()" data-key="btn_publish" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-5 rounded-3xl shadow-xl transition-all uppercase tracking-widest italic active:scale-95">نشر المنتج الآن</button>
             </div>
         </div>
     </section>
@@ -178,7 +201,7 @@
     <div id="usersModal" class="fixed inset-0 bg-black/95 z-[100] hidden items-center justify-center p-6 text-right transition-all">
         <div class="glass w-full max-w-2xl p-8 rounded-[40px] border border-white/10 shadow-2xl relative animate-slide">
             <button onclick="closeUsersModal()" class="absolute top-6 left-6 text-gray-500 hover:text-white font-black text-xl transition-colors">✕</button>
-            <h2 id="modalTitle" class="text-2xl font-black mb-6 text-blue-400 italic underline decoration-blue-500/30 uppercase tracking-tighter">قائمة الأعضاء</h2>
+            <h2 id="modalTitle" class="text-2xl font-black mb-6 text-blue-400 italic underline decoration-blue-500/30 uppercase tracking-tighter" data-key="stat_users">قائمة الأعضاء</h2>
             <div id="modalList" class="space-y-3 max-h-[400px] overflow-y-auto no-scrollbar pr-2"></div>
         </div>
     </div>
@@ -191,7 +214,7 @@
         </div>
     </main>
 
-    <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 glass px-10 py-5 rounded-full text-white font-black shadow-2xl opacity-0 transition-all pointer-events-none z-[100] border-blue-500 border text-xs tracking-widest uppercase italic"></div>
+    <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 glass px-10 py-5 rounded-full text-white font-black shadow-2xl opacity-0 transition-all pointer-events-none z-[100] border-blue-500 border text-xs tracking-widest uppercase italic text-center"></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -203,48 +226,46 @@
 
         let currentUser = null, userRole = 'customer', allProducts = {}, allUsers = {}, userWishlist = [];
         let selectedMainCat = 'الكل', selectedSubCat = 'الكل';
-        const DEBT_LIMIT = 500; // الحد الأقصى للمديونية
+        const DEBT_LIMIT = 500;
 
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
                 const userSnap = await get(ref(db, 'users/' + user.uid));
                 if (userSnap.exists()) {
-                    const u = userSnap.val(); 
-                    userRole = u.role; 
+                    const u = userSnap.val(); 
+                    userRole = u.role; 
                     userWishlist = u.wishlist || [];
-                    const debt = (u.wallet && u.wallet.debt) ? Number(u.wallet.debt) : 0; // جلب المديونية
+                    const debt = (u.wallet && u.wallet.debt) ? Number(u.wallet.debt) : 0;
 
-                    document.getElementById('userInfo').innerText = `${u.name} | ${userRole.toUpperCase()}`;
+                    const userInfoEl = document.getElementById('userInfo');
+                    if(userInfoEl) userInfoEl.innerText = `${u.name} | ${userRole.toUpperCase()}`;
                     
                     if (userRole === 'admin') {
-                        document.getElementById('adminStats').classList.remove('hidden');
-                        document.getElementById('adminUsersPanel').classList.remove('hidden');
-                        document.getElementById('marketerRequestsPanel').classList.remove('hidden');
+                        document.getElementById('adminStats')?.classList.remove('hidden');
+                        document.getElementById('adminUsersPanel')?.classList.remove('hidden');
+                        document.getElementById('marketerRequestsPanel')?.classList.remove('hidden');
                         loadAdminDashboard(); loadMarketerRequests(); loadUsers();
                     }
 
-                    if (userRole === 'marketer' || userRole === 'admin') { 
-                        document.getElementById('controlPanel').classList.remove('hidden'); 
-
-                        // نظام حظر النشر للمسوقين المديونين
+                    if (userRole === 'marketer' || userRole === 'admin') { 
+                        document.getElementById('controlPanel')?.classList.remove('hidden'); 
                         if(userRole === 'marketer' && debt > DEBT_LIMIT) {
-                            document.getElementById('debtAlert').classList.remove('hidden');
-                            document.getElementById('publishForm').classList.add('hidden');
-                            document.getElementById('lockMessage').classList.remove('hidden');
+                            document.getElementById('debtAlert')?.classList.remove('hidden');
+                            document.getElementById('publishForm')?.classList.add('hidden');
+                            document.getElementById('lockMessage')?.classList.remove('hidden');
                         }
                     }
+                    if(window.applyLanguage) applyLanguage(localStorage.getItem('lang') || 'ar');
                 }
                 loadProducts(); updateCartUI();
             } else { window.location.href = "login.html"; }
         });
 
-        // --- السلة (Cart) ---
         window.toggleCart = () => document.getElementById('cartDrawer').classList.toggle('open');
         window.updateCartUI = () => {
             if(!currentUser) return;
-            const cartKey = `carts/${currentUser.uid}`;
-            onValue(ref(db, cartKey), (snap) => {
+            onValue(ref(db, `carts/${currentUser.uid}`), (snap) => {
                 const data = snap.val() || {};
                 const list = document.getElementById('cartItemsList');
                 const badge = document.getElementById('cartCountBadge');
@@ -254,26 +275,20 @@
                 keys.forEach((key) => {
                     const item = data[key];
                     total += Number(item.price) * Number(item.qty);
-                    list.innerHTML += `<div class="glass p-3 rounded-2xl flex gap-3 items-center border border-white/5 animate-slide mb-3 text-right group">
+                    list.innerHTML += `<div class="glass p-3 rounded-2xl flex gap-3 items-center border border-white/5 animate-slide mb-3 text-right">
                         <img src="${item.image}" class="w-16 h-16 rounded-xl object-cover">
                         <div class="flex-1 font-bold">
                             <h4 class="text-[10px] text-white line-clamp-1">${item.name}</h4>
-                            <p class="text-[8px] text-gray-500 italic">${item.color} | ${item.size} | س ${item.qty}</p>
                             <p class="text-blue-400 font-black text-xs mt-1">${item.price * item.qty} ج.م</p>
                         </div>
-                        <div class="flex flex-col gap-2">
-                            <button onclick="removeFromCart('${key}')" class="text-red-500 hover:text-red-400 text-xs font-bold">✕</button>
-                            <a href="order.html?id=${item.id}&name=${encodeURIComponent(item.name)}&price=${item.price}&qty=${item.qty}&color=${encodeURIComponent(item.color)}&size=${encodeURIComponent(item.size)}&image=${encodeURIComponent(item.image)}&owner=null" class="text-[8px] bg-blue-600 text-white p-1 rounded-lg text-center font-black hover:bg-blue-500 transition-colors">اطلب</a>
-                        </div>
+                        <button onclick="removeFromCart('${key}')" class="text-red-500 text-xs font-bold">✕</button>
                     </div>`;
                 });
                 totalEl.innerText = total + " ج.م";
-                if(keys.length === 0) list.innerHTML = '<div class="flex flex-col items-center justify-center h-40 opacity-50"><span class="text-4xl mb-2">🛒</span><p class="text-[10px]">سلتك فارغة حالياً</p></div>';
             });
         };
-        window.removeFromCart = (key) => { if(confirm("حذف المنتج من السلة؟")) remove(ref(db, `carts/${currentUser.uid}/${key}`)); };
+        window.removeFromCart = (key) => remove(ref(db, `carts/${currentUser.uid}/${key}`));
 
-        // --- الفلترة المزدوجة ---
         const subData = {
             clothes: [{n:'رجالي', i:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcq8MbpMpYi4h72YsWLGOu8L2bU7lNdq-3ZQ&s'}, {n:'حريمي', i:'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=100'}],
             acc: [{n:'رجالي', i:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHE6nx5A79B-M8Ptx1axoKtJyh__8fFnVf9Q&s'}, {n:'حريمي', i:'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg_2PO3OsO5EeG2It9AcKvUkfcraT1AzfcbFuB4c_RxtgsYzAPBUico99Z2PlxYnTKx4Rd0WlhLqoI6QpHR-IVSZsEXDQPij6CZY0eaoQ-tWvUO4PQrNOyYD_9CgZpLx6kUDFLBSBlP-f97/s1600/%D8%A7%D9%83%D8%B3%D8%B3%D9%88%D8%A7%D8%B1%D8%A7%D8%AA+%D9%85%D8%B3%D8%AA%D9%88%D8%B1%D8%AF%D8%A9+%D9%85%D9%86+%D8%A7%D9%84%D8%B5%D9%8A%D9%86.jpg'}],
@@ -283,7 +298,7 @@
 
         window.showSubCats = (key, el) => {
             document.querySelectorAll('.category-item').forEach(i => i.classList.remove('active')); el.classList.add('active');
-            selectedMainCat = el.querySelector('span').innerText.trim(); 
+            selectedMainCat = el.querySelector('span').innerText.trim(); 
             selectedSubCat = 'الكل';
             const area = document.getElementById('subCatsArea');
             if(key === 'all' || key === 'best') { area.style.display = 'none'; applyDualFilter(); return; }
@@ -298,7 +313,7 @@
         };
 
         function applyDualFilter() {
-            const f = {}; 
+            const f = {}; 
             const searchVal = document.getElementById('searchInput').value.toLowerCase();
             Object.keys(allProducts).forEach(k => {
                 const p = allProducts[k];
@@ -319,85 +334,81 @@
             renderGrid(allProducts);
         };
 
-        // --- الإحصائيات وإدارة الأعضاء ---
         function loadAdminDashboard() {
             onValue(ref(db, 'users'), (snap) => {
                 allUsers = snap.val() || {}; const uArr = Object.values(allUsers);
-                document.getElementById('totalUsers').innerText = uArr.length;
-                document.getElementById('totalMarketers').innerText = uArr.filter(u => u.role === 'marketer').length;
-                document.getElementById('totalCustomers').innerText = uArr.filter(u => u.role === 'customer').length;
+                const tu = document.getElementById('totalUsers'); if(tu) tu.innerText = uArr.length;
+                const tm = document.getElementById('totalMarketers'); if(tm) tm.innerText = uArr.filter(u => u.role === 'marketer').length;
+                const tc = document.getElementById('totalCustomers'); if(tc) tc.innerText = uArr.filter(u => u.role === 'customer').length;
             });
-            onValue(ref(db, 'products'), (s) => document.getElementById('totalProducts').innerText = Object.keys(s.val() || {}).length);
-            onValue(ref(db, 'reviews'), (s) => { let c = 0; const data = s.val() || {}; Object.values(data).forEach(r => c += Object.keys(r).length); document.getElementById('totalReviews').innerText = c; });
+            onValue(ref(db, 'products'), (s) => { const tp = document.getElementById('totalProducts'); if(tp) tp.innerText = Object.keys(s.val() || {}).length; });
         }
 
         window.openUsersModal = (role) => {
             const m = document.getElementById('usersModal'); const l = document.getElementById('modalList');
             m.style.display = 'flex'; l.innerHTML = '';
-            Object.values(allUsers).forEach(u => { 
-                if(role === 'all' || u.role === role) 
-                    l.innerHTML += `<div class="bg-white/5 p-4 rounded-2xl border border-white/5 text-right font-bold hover:bg-white/10 transition-colors">
-                        <p class="text-white text-xs uppercase tracking-tighter">${u.name} <span class="text-[9px] text-blue-400">(${u.role})</span></p>
-                        <p class="text-[10px] text-gray-500 mt-1 italic">${u.email}</p>
-                    </div>`; 
+            Object.keys(allUsers).forEach(uid => { 
+                const u = allUsers[uid];
+                if(role === 'all' || u.role === role) 
+                    l.innerHTML += `<div class="bg-white/5 p-4 rounded-2xl border border-white/5 flex justify-between items-center font-bold hover:bg-white/10 transition-colors mb-2">
+                        <div class="text-right"><p class="text-white text-xs uppercase">${u.name} <span class="text-[9px] text-blue-400">(${u.role})</span></p><p class="text-[10px] text-gray-500 italic">${u.email}</p></div>
+                        <button onclick="visitAccount('${uid}')" data-key="btn_visit" class="bg-blue-600/20 text-blue-400 px-3 py-1 rounded-lg text-[9px] font-black border border-blue-400/30">زيارة</button>
+                    </div>`; 
             });
+        };
+
+        window.visitAccount = (uid) => {
+            showToast("جاري توجيهك للملف الشخصي...");
+            window.location.href = `profile.html?uid=${uid}`; 
         };
 
         window.closeUsersModal = () => document.getElementById('usersModal').style.display = 'none';
 
-        function loadMarketerRequests() { 
-            onValue(ref(db, 'marketer_requests'), (snap) => { 
-                const list = document.getElementById('requestsList'); list.innerHTML = ''; 
-                const data = snap.val(); 
-                if(data) Object.keys(data).forEach(uid => { 
-                    const r = data[uid]; 
-                    list.innerHTML += `<div class="glass p-5 rounded-3xl flex justify-between items-center text-right font-bold animate-fade-in shadow-xl border border-white/5">
-                        <div><p class="text-sm text-white underline decoration-blue-500/30 tracking-widest">${r.name}</p><p class="text-[10px] text-gray-500">${r.email}</p></div>
-                        <button onclick="approveMarketer('${uid}')" class="bg-blue-600 text-white px-5 py-2 rounded-xl text-[10px] font-black shadow-lg hover:bg-blue-500 transition-colors active:scale-95">قبول</button>
-                    </div>`; 
-                }); 
-            }); 
+        function loadMarketerRequests() { 
+            onValue(ref(db, 'marketer_requests'), (snap) => { 
+                const list = document.getElementById('requestsList'); list.innerHTML = ''; 
+                const data = snap.val(); 
+                if(data) Object.keys(data).forEach(uid => { 
+                    const r = data[uid]; 
+                    list.innerHTML += `<div class="glass p-5 rounded-3xl flex justify-between items-center text-right font-bold animate-fade-in border border-white/5">
+                        <div><p class="text-sm text-white font-black italic underline decoration-blue-500/30">${r.name}</p><p class="text-[10px] text-gray-500">${r.email}</p></div>
+                        <button onclick="approveMarketer('${uid}')" class="bg-blue-600 text-white px-5 py-2 rounded-xl text-[10px] font-black shadow-lg">قبول</button>
+                    </div>`; 
+                }); 
+            }); 
         }
 
         window.approveMarketer = async (uid) => { await update(ref(db, 'users/' + uid), { role: 'marketer' }); await remove(ref(db, 'marketer_requests/' + uid)); showToast("تم قبول المسوق بنجاح!"); };
 
         window.saveProduct = () => {
             const name = document.getElementById('pName').value, price = document.getElementById('pPrice').value;
-            if(name && price) { 
-                push(ref(db, 'products'), { 
-                    name, price, 
-                    oldPrice: document.getElementById('pOldPrice').value, 
-                    category: document.getElementById('pCategory').value, 
-                    subCategory: document.getElementById('pSubCategory').value, 
-                    model: document.getElementById('pModel').value, 
-                    material: document.getElementById('pMaterial').value, 
-                    colors: document.getElementById('pColors').value, 
-                    sizes: document.getElementById('pSizes').value, 
-                    desc: document.getElementById('pDesc').value, 
-                    image: document.getElementById('pImage').value || 'https://via.placeholder.com/400', 
-                    extraImages: document.getElementById('pExtraImages').value, 
-                    owner: currentUser.uid, 
-                    likes: 0 
-                }); 
-                showToast("تم نشر المنتج بنجاح!"); 
-                ["pName", "pPrice", "pOldPrice", "pColors", "pSizes", "pDesc", "pImage", "pExtraImages", "pMaterial", "pModel"].forEach(id => document.getElementById(id).value = ""); 
-            } else {
-                showToast("يرجى ملء الاسم والسعر على الأقل");
-            }
-        };
-
-        window.editProduct = async (id, oldN, oldP, oldI) => { 
-            const nn = prompt("الاسم الجديد:", oldN); 
-            const np = prompt("السعر الجديد:", oldP); 
-            const ni = prompt("رابط الصورة الجديد:", oldI); 
-            if(nn && np) { await update(ref(db, 'products/' + id), { name: nn, price: np, image: ni }); showToast("تم التحديث!"); } 
+            if(name && price) { 
+                push(ref(db, 'products'), { 
+                    name, price, 
+                    oldPrice: document.getElementById('pOldPrice').value, 
+                    category: document.getElementById('pCategory').value, 
+                    subCategory: document.getElementById('pSubCategory').value, 
+                    model: document.getElementById('pModel').value, 
+                    material: document.getElementById('pMaterial').value, 
+                    colors: document.getElementById('pColors').value, 
+                    sizes: document.getElementById('pSizes').value, 
+                    desc: document.getElementById('pDesc').value, 
+                    image: document.getElementById('pImage').value || 'https://via.placeholder.com/400', 
+                    extraImages: document.getElementById('pExtraImages').value, 
+                    owner: currentUser.uid, 
+                    likes: 0 
+                }); 
+                showToast("تم نشر المنتج بنجاح!"); 
+                ["pName", "pPrice", "pOldPrice", "pColors", "pSizes", "pDesc", "pImage", "pExtraImages", "pMaterial", "pModel"].forEach(id => document.getElementById(id).value = ""); 
+            } else { showToast("يرجى ملء الاسم والسعر على الأقل"); }
         };
 
         function loadProducts() { onValue(ref(db, 'products'), (s) => { allProducts = s.val() || {}; renderGrid(allProducts); }); }
 
         function renderGrid(products) {
-            const grid = document.getElementById('productsGrid'); 
+            const grid = document.getElementById('productsGrid'); 
             const noRes = document.getElementById('noResults');
+            if(!grid) return;
             grid.innerHTML = '';
             const keys = Object.keys(products);
             if(keys.length === 0) { noRes.classList.remove('hidden'); return; }
@@ -418,64 +429,52 @@
                     </div>
                     <div>
                         <h3 class="font-black text-base md:text-lg mb-2 text-white italic tracking-tighter uppercase line-clamp-1">${p.name}</h3>
-                        <div class="flex justify-between items-center mb-5">
-                            <div>
-                                <span class="text-blue-400 font-black text-xl md:text-2xl tracking-tighter">${p.price} ج.م</span>
-                                ${p.oldPrice ? `<span class="text-gray-500 text-[10px] line-through ml-2">${p.oldPrice} ج.م</span>` : ''}
-                            </div>
-                            ${canManage ? `<div class="flex gap-2">
-                                <button onclick="editProduct('${key}', '${p.name}', '${p.price}', '${p.image}')" class="text-yellow-500 text-[10px] font-bold italic border-b border-yellow-500/30">تعديل</button>
-                                <button onclick="deleteProduct('${key}')" class="text-red-500 text-[10px] font-bold italic border-b border-red-500/30">حذف</button>
-                            </div>` : ''}
+                        <div class="flex flex-col mb-5">
+                            <span class="text-blue-400 font-black text-xl md:text-2xl tracking-tighter">${p.price} ج.م</span>
+                            ${p.oldPrice ? `<p class="text-green-400 text-[10px] font-black mt-1 uppercase italic tracking-widest"><span data-key="p_commission">عمولتك</span>: ${p.oldPrice} ج.م</p>` : ''}
                         </div>
-                        <button onclick="viewDetails('${key}', '${p.name}', '${p.price}', '${p.image}')" class="w-full bg-white/5 hover:bg-blue-600 hover:text-white py-4 rounded-[20px] text-[10px] font-black uppercase transition-all shadow-xl border border-white/5 tracking-widest active:scale-95">التفاصيل والتقييمات</button>
+                        <div class="flex gap-2 mb-4">
+                            ${canManage ? `<button onclick="editProduct('${key}', '${p.name}', '${p.price}', '${p.image}')" class="text-yellow-500 text-[10px] font-bold italic border-b border-yellow-500/30">تعديل</button>
+                            <button onclick="deleteProduct('${key}')" class="text-red-500 text-[10px] font-bold italic border-b border-red-500/30">حذف</button>` : ''}
+                        </div>
+                        <button onclick="viewDetails('${key}', '${p.name}', '${p.price}', '${p.image}')" data-key="btn_details" class="w-full bg-white/5 hover:bg-blue-600 hover:text-white py-4 rounded-[20px] text-[10px] font-black uppercase transition-all shadow-xl border border-white/5 tracking-widest active:scale-95">التفاصيل والتقييمات</button>
                     </div>
                 </div>`;
             });
+            if(window.applyLanguage) applyLanguage(localStorage.getItem('lang') || 'ar');
         }
 
-        function loadUsers() { 
-            onValue(ref(db, 'users'), (snapshot) => { 
-                const users = snapshot.val(); const list = document.getElementById('usersList'); 
-                list.innerHTML = ''; 
-                if(users) Object.keys(users).forEach(uid => { 
-                    const u = users[uid]; 
+        function loadUsers() { 
+            onValue(ref(db, 'users'), (snapshot) => { 
+                allUsers = snapshot.val() || {}; const list = document.getElementById('usersList'); 
+                if(!list) return;
+                list.innerHTML = ''; 
+                Object.keys(allUsers).forEach(uid => { 
+                    const u = allUsers[uid]; 
                     list.innerHTML += `<div class="bg-white/5 p-4 rounded-2xl border border-white/5 flex flex-col gap-3 font-bold text-right animate-slide">
                         <div class="flex justify-between items-start">
-                            <p class="text-sm text-white">${u.name}</p>
-                            <span class="text-[8px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 font-black uppercase border border-blue-500/20">${u.role}</span>
+                            <div class="text-right">
+                                <p class="text-sm text-white">${u.name}</p>
+                                <span class="text-[8px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 font-black uppercase border border-blue-500/20">${u.role}</span>
+                            </div>
+                            <button onclick="visitAccount('${uid}')" data-key="btn_visit" class="bg-blue-600/20 text-blue-400 px-3 py-1 rounded-lg text-[9px] font-black border border-blue-400/30">زيارة</button>
                         </div>
                         <div class="flex gap-1">
-                            <button onclick="changeRole('${uid}', 'marketer')" class="flex-1 text-[8px] border border-blue-500/20 rounded-lg p-2 hover:bg-blue-500 hover:text-white text-blue-400 transition-all font-black uppercase">مسوق</button>
-                            <button onclick="changeRole('${uid}', 'admin')" class="flex-1 text-[8px] border border-yellow-500/20 rounded-lg p-2 hover:bg-yellow-500 hover:text-white text-yellow-500 transition-all font-black uppercase">أدمن</button>
-                            <button onclick="changeRole('${uid}', 'customer')" class="flex-1 text-[8px] bg-white/5 rounded-lg p-2 text-white hover:bg-white/20 transition-all font-black uppercase">عميل</button>
+                            <button onclick="changeRole('${uid}', 'marketer')" class="flex-1 text-[8px] border border-blue-500/20 rounded-lg p-2 hover:bg-blue-500 hover:text-white text-blue-400 transition-all font-black">مسوق</button>
+                            <button onclick="changeRole('${uid}', 'admin')" class="flex-1 text-[8px] border border-yellow-500/20 rounded-lg p-2 hover:bg-yellow-500 hover:text-white text-yellow-500 transition-all font-black">أدمن</button>
+                            <button onclick="changeRole('${uid}', 'customer')" class="flex-1 text-[8px] bg-white/5 rounded-lg p-2 text-white hover:bg-white/20 transition-all font-black">عميل</button>
                         </div>
-                    </div>`; 
-                }); 
-            }); 
+                    </div>`; 
+                }); 
+            }); 
         }
 
+        window.setLanguage = (lang) => { localStorage.setItem('lang', lang); location.reload(); };
         window.changeRole = (uid, r) => { if(confirm("تغيير الرتبة؟")) { update(ref(db, 'users/' + uid), { role: r }); showToast("تم تغيير الرتبة!"); } };
-
-        window.toggleWishlist = async (id) => { 
-            if(!currentUser) return;
-            const idx = userWishlist.indexOf(id); 
-            const rp = ref(db, `products/${id}/likes`); 
-            if (idx > -1) { 
-                userWishlist.splice(idx, 1); 
-                runTransaction(rp, (c) => (c || 1) - 1); 
-            } else { 
-                userWishlist.push(id); 
-                runTransaction(rp, (c) => (c || 0) + 1); 
-            } 
-            await update(ref(db, 'users/' + currentUser.uid), { wishlist: userWishlist }); 
-        };
-
+        window.toggleWishlist = async (id) => { if(!currentUser) return; const idx = userWishlist.indexOf(id); const rp = ref(db, `products/${id}/likes`); if (idx > -1) { userWishlist.splice(idx, 1); runTransaction(rp, (c) => (c || 1) - 1); } else { userWishlist.push(id); runTransaction(rp, (c) => (c || 0) + 1); } await update(ref(db, 'users/' + currentUser.uid), { wishlist: userWishlist }); };
         window.deleteProduct = (id) => confirm("هل أنت متأكد من حذف هذا المنتج نهائياً؟") && remove(ref(db, 'products/' + id)) && showToast("تم الحذف بنجاح.");
         window.viewDetails = (id, n, p, i) => window.location.href = `details.html?id=${id}&name=${encodeURIComponent(n)}&price=${p}&image=${encodeURIComponent(i)}`;
-        window.filterProducts = () => applyDualFilter();
-        window.loadWishlistOnly = () => { const f = {}; Object.keys(allProducts).forEach(k => { if(userWishlist.includes(k)) f[k] = allProducts[k]; }); renderGrid(f); };
-        window.showToast = (m) => { const t = document.getElementById('toast'); t.innerText = m; t.style.opacity = '1'; setTimeout(() => t.style.opacity = '0', 3000); };
+        window.showToast = (m) => { const t = document.getElementById('toast'); if(t){ t.innerText = m; t.style.opacity = '1'; setTimeout(() => t.style.opacity = '0', 3000); } };
         window.logout = () => confirm("هل تود الخروج؟") && signOut(auth).then(() => window.location.href = "login.html");
     </script>
 </body>

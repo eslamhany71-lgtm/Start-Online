@@ -11,50 +11,36 @@
         body { background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%); color: #f1f5f9; font-family: 'Cairo', sans-serif; min-height: 100vh; margin: 0; overflow-x: hidden; scroll-behavior: smooth; }
         .glass { background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
         
-        /* اللوجو الاحترافي */
         .logo-brand { font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 4px; }
         .logo-box { background: #2563eb; color: white; padding: 2px 8px; border-radius: 6px; transform: skewX(-12deg); display: inline-block; }
 
-        .product-card { transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); position: relative; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.05); }
-        .product-card:hover { transform: translateY(-15px) scale(1.03); background: rgba(255, 255, 255, 0.08); border-color: rgba(59, 130, 246, 0.6); box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), 0 0 30px rgba(59, 130, 246, 0.2); }
-        .product-card img { transition: 0.8s ease; }
-        .product-card:hover img { transform: scale(1.15); }
-        .category-item { width: 85px; text-align: center; cursor: pointer; transition: 0.4s; flex-shrink: 0; }
-        .category-item img { width: 65px; height: 65px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.1); transition: 0.4s; }
-        .category-item.active img { border-color: #3b82f6; box-shadow: 0 0 20px rgba(59, 130, 246, 0.5); transform: scale(1.1); }
-        .category-item span { font-size: 11px; font-weight: 900; color: #94a3b8; display: block; margin-top: 5px; }
-        .sub-cats-area { display: none; width: 100%; justify-content: center; gap: 15px; margin-top: 15px; animation: fadeIn 0.5s ease; flex-wrap: wrap; }
-        .sub-cat-item { cursor: pointer; text-align: center; transition: 0.3s; width: 65px; }
-        .sub-cat-item img { width: 50px; height: 50px; border-radius: 15px; object-fit: cover; border: 1px solid rgba(255,255,255,0.1); }
-        .sub-cat-item:hover img, .sub-cat-item.active img { border-color: #3b82f6; transform: scale(1.1); box-shadow: 0 0 15px rgba(59, 130, 246, 0.3); }
-        .sub-cat-item span { font-size: 10px; color: #64748b; font-weight: bold; }
+        .product-card { transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); position: relative; border: 1px solid rgba(255, 255, 255, 0.05); background: rgba(255,255,255,0.02); }
+        .product-card:hover { transform: translateY(-10px); background: rgba(255, 255, 255, 0.08); border-color: #3b82f6; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
         
-        .cart-float { position: fixed; bottom: 100px; left: 30px; z-index: 100; cursor: pointer; transition: 0.4s; }
-        .cart-float:active { transform: scale(0.9); }
-        .cart-badge { position: absolute; top: -5px; right: -5px; background: #ef4444; color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; border: 2px solid #0f172a; box-shadow: 0 0 10px rgba(239, 68, 68, 0.5); }
+        .category-item { width: 85px; text-align: center; cursor: pointer; transition: 0.4s; flex-shrink: 0; }
+        .category-item img { width: 65px; height: 65px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.1); }
+        .category-item.active img { border-color: #3b82f6; box-shadow: 0 0 20px rgba(59, 130, 246, 0.5); transform: scale(1.1); }
+        
+        .cart-float { position: fixed; bottom: 100px; left: 30px; z-index: 100; cursor: pointer; }
+        .cart-badge { position: absolute; top: -5px; right: -5px; background: #ef4444; color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; border: 2px solid #0f172a; }
 
-        #cartDrawer { position: fixed; top: 0; left: -100%; width: 100%; max-width: 350px; height: 100%; background: rgba(15, 23, 42, 0.98); backdrop-filter: blur(30px); z-index: 200; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); border-right: 1px solid rgba(255,255,255,0.1); }
+        #cartDrawer { position: fixed; top: 0; left: -100%; width: 100%; max-width: 350px; height: 100%; background: rgba(15, 23, 42, 0.98); backdrop-filter: blur(30px); z-index: 200; transition: 0.5s; border-right: 1px solid rgba(255,255,255,0.1); }
         #cartDrawer.open { left: 0; }
 
-        .stat-card { background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(255, 255, 255, 0.02)); border: 1px solid rgba(255,255,255,0.05); transition: 0.4s; cursor: pointer; }
-        .stat-card:hover { transform: translateY(-5px); border-color: #3b82f6; background: rgba(59, 130, 246, 0.15); }
-        
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fade-in { animation: fadeIn 0.6s ease-out forwards; }
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body class="pb-24">
 
-    <div id="debtAlert" class="hidden fixed top-24 left-4 right-4 z-[60] bg-red-900/90 border border-red-500 text-red-200 p-3 rounded-2xl text-center text-xs font-bold shadow-2xl animate-pulse backdrop-blur-md">
+    <div id="debtAlert" class="hidden fixed top-24 left-4 right-4 z-[60] bg-red-900/90 border border-red-500 text-red-200 p-3 rounded-2xl text-center text-xs font-bold animate-pulse backdrop-blur-md">
         ⚠️ تنبيه: تجاوزت مديونيتك 500 ج.م. تم إيقاف صلاحية النشر مؤقتاً لحين السداد.
     </div>
 
     <div class="cart-float md:bottom-10" onclick="toggleCart()">
         <div class="bg-blue-600 p-4 rounded-2xl shadow-2xl border border-blue-400/30 relative">
-            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
             <div id="cartCountBadge" class="cart-badge">0</div>
         </div>
     </div>
@@ -62,7 +48,7 @@
     <div id="cartDrawer" class="p-6 flex flex-col">
         <div class="flex justify-between items-center mb-8 border-b border-white/10 pb-4">
             <h2 class="text-xl font-black italic text-blue-400 uppercase tracking-tighter" data-key="cart_title">سلة المشتريات</h2>
-            <button onclick="toggleCart()" class="text-gray-500 hover:text-white text-2xl font-black transition-colors">✕</button>
+            <button onclick="toggleCart()" class="text-gray-500 hover:text-white text-2xl font-black">✕</button>
         </div>
         <div id="cartItemsList" class="flex-1 overflow-y-auto space-y-4 no-scrollbar"></div>
         <div class="border-t border-white/10 pt-6 mt-6">
@@ -70,7 +56,7 @@
                 <span class="text-gray-400" data-key="cart_total">الإجمالي:</span>
                 <span id="cartTotal" class="text-blue-400 font-black">0 ج.م</span>
             </div>
-            <button onclick="toggleCart()" data-key="btn_shopping" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-4 rounded-2xl font-black mt-4 shadow-xl transition-all active:scale-95 text-center">استكمال التسوق</button>
+            <button onclick="toggleCart()" data-key="btn_shopping" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-4 rounded-2xl font-black mt-4 shadow-xl">استكمال التسوق</button>
         </div>
     </div>
 
@@ -82,18 +68,17 @@
                     <span class="logo-box">ONLINE</span>
                 </a>
             </div>
-
             <ul class="hidden md:flex gap-8 font-bold text-sm text-gray-400">
                 <li><a href="index.html" data-key="nav_home" class="hover:text-white transition">الرئيسية</a></li>
                 <li><a href="products.html" data-key="nav_store" class="text-blue-400 font-black border-b-2 border-blue-400 pb-1">المتجر</a></li>
                 <li><a href="profile.html" data-key="nav_profile" class="hover:text-white transition">حسابي</a></li>
             </ul>
             <div class="flex items-center gap-2">
-                <button onclick="setLanguage(localStorage.getItem('lang') === 'en' ? 'ar' : 'en')" class="text-[9px] md:text-[10px] font-black text-gray-400 hover:text-white transition flex items-center gap-1 bg-white/5 px-2 md:px-4 py-2 rounded-lg border border-white/10">
+                <button onclick="setLanguage(localStorage.getItem('lang') === 'en' ? 'ar' : 'en')" class="text-[9px] md:text-[10px] font-black text-gray-400 bg-white/5 px-3 py-2 rounded-lg border border-white/10 hover:text-white">
                     <span id="langLabel">English</span>
                 </button>
-                <div id="userInfo" class="hidden lg:block text-[10px] font-bold text-gray-300 bg-white/5 px-3 py-1 rounded-full italic tracking-widest text-center uppercase border border-white/5">تحقق...</div>
-                <button onclick="logout()" data-key="logout" class="bg-red-500/10 text-red-500 px-3 md:px-4 py-2 rounded-lg md:rounded-xl text-[10px] font-bold border border-red-500/20 hover:bg-red-500 hover:text-white transition shadow-lg">خروج</button>
+                <div id="userInfo" class="hidden lg:block text-[10px] font-bold text-gray-300 bg-white/5 px-3 py-1 rounded-full border border-white/5 italic">تحقق...</div>
+                <button onclick="logout()" data-key="logout" class="bg-red-500/10 text-red-500 px-3 md:px-4 py-2 rounded-lg md:rounded-xl text-[10px] font-bold border border-red-500/20 hover:bg-red-500 hover:text-white transition">خروج</button>
             </div>
         </div>
     </nav>
@@ -120,101 +105,80 @@
     <section class="max-w-7xl mx-auto px-4 mb-10">
         <div class="flex gap-6 overflow-x-auto no-scrollbar pb-4 justify-start md:justify-center">
             <div class="category-item active" data-cat="all" onclick="showSubCats('all', this)"><img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200"><span data-key="cat_all">الكل</span></div>
-            <div class="category-item" data-cat="ملابس" onclick="showSubCats('clothes', this)"><img src="https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=200"><span data-key="cat_clothes">ملابس</span></div>
-            <div class="category-item" data-cat="إكسسوارات" onclick="showSubCats('acc', this)"><img src="https://jlood.com/cdn/shop/files/Men_Accessories_in_Egypt2_large.jpg"><span data-key="cat_acc">إكسسوارات</span></div>
-            <div class="category-item" data-cat="عطور" onclick="showSubCats('perfume', this)"><img src="https://images.unsplash.com/photo-1541643600914-78b084683601?w=200"><span data-key="cat_perfume">عطور</span></div>
-            <div class="category-item" data-cat="صحة وجمال" onclick="showSubCats('beauty', this)"><img src="https://cdn.youcan.shop/stores/0dc0cbcb1b32177428c303a8e891bc1e/products/ekcrAIzCdbM7DYOPYwqrxERfMKBM01UitNaY2FfO_md.png"><span data-key="cat_beauty">صحة وجمال</span></div>
-            <div class="category-item" data-cat="أكثر مبيعاً" onclick="showSubCats('best', this)"><img src="https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?w=200"><span data-key="cat_best">أكثر مبيعاً</span></div>
+            <div class="category-item" data-cat="ملابس" onclick="showSubCats('clothes', this)"><img src="https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=200"><span>ملابس</span></div>
+            <div class="category-item" data-cat="إكسسوارات" onclick="showSubCats('acc', this)"><img src="https://jlood.com/cdn/shop/files/Men_Accessories_in_Egypt2_large.jpg"><span>إكسسوارات</span></div>
+            <div class="category-item" data-cat="عطور" onclick="showSubCats('perfume', this)"><img src="https://images.unsplash.com/photo-1541643600914-78b084683601?w=200"><span>عطور</span></div>
         </div>
         <div id="subCatsArea" class="sub-cats-area glass p-4 rounded-3xl border border-white/5"></div>
     </section>
 
-    <section id="adminStats" class="max-w-7xl mx-auto px-4 mb-10 hidden grid grid-cols-2 md:grid-cols-5 gap-4 animate-fade-in">
-        <div class="stat-card p-5 rounded-3xl text-center shadow-lg" onclick="openUsersModal('all')"><p class="text-[9px] text-gray-500 uppercase font-black" data-key="stat_users">المستخدمين</p><h3 id="totalUsers" class="text-xl font-black text-blue-400 italic">0</h3></div>
-        <div class="stat-card p-5 rounded-3xl text-center shadow-lg"><p class="text-[9px] text-gray-500 uppercase font-black" data-key="stat_prods">المنتجات</p><h3 id="totalProducts" class="text-xl font-black text-green-400 italic">0</h3></div>
-        <div class="stat-card p-5 rounded-3xl text-center shadow-lg" onclick="openUsersModal('marketer')"><p class="text-[9px] text-gray-500 uppercase font-black" data-key="stat_marketers">المسوقين</p><h3 id="totalMarketers" class="text-xl font-black text-purple-400 italic">0</h3></div>
-        <div class="stat-card p-5 rounded-3xl text-center shadow-lg" onclick="openUsersModal('customer')"><p class="text-[9px] text-gray-500 uppercase font-black" data-key="stat_customers">العملاء</p><h3 id="totalCustomers" class="text-xl font-black text-pink-400 italic">0</h3></div>
-        <div class="stat-card p-5 rounded-3xl text-center shadow-lg"><p class="text-[9px] text-gray-500 uppercase font-black" data-key="stat_reviews">التقييمات</p><h3 id="totalReviews" class="text-xl font-black text-yellow-400 italic">0</h3></div>
+    <section id="adminStats" class="max-w-7xl mx-auto px-4 mb-10 hidden grid grid-cols-2 md:grid-cols-5 gap-4 animate-fade-in text-center">
+        <div class="stat-card p-5 rounded-3xl glass" onclick="openUsersModal('all')"><p class="text-[9px] text-gray-500 uppercase font-black" data-key="stat_users">المستخدمين</p><h3 id="totalUsers" class="text-xl font-black text-blue-400 italic">0</h3></div>
+        <div class="stat-card p-5 rounded-3xl glass"><p class="text-[9px] text-gray-500 uppercase font-black" data-key="stat_prods">المنتجات</p><h3 id="totalProducts" class="text-xl font-black text-green-400 italic">0</h3></div>
     </section>
 
-    <section id="adminUsersPanel" class="max-w-7xl mx-auto mb-10 px-4 hidden glass rounded-[35px] p-6 border border-white/10 shadow-2xl animate-fade-in text-right">
-        <h2 class="text-xl font-black mb-6 text-gray-400 italic flex items-center gap-2" data-key="admin_panel_members">إدارة كافة الأعضاء <span class="text-[8px] bg-white/5 px-2 py-1 rounded-full uppercase italic border border-white/5">Super Admin</span></h2>
+    <section id="adminUsersPanel" class="max-w-7xl mx-auto mb-10 px-4 hidden glass rounded-[35px] p-6 text-right border border-white/10 shadow-2xl">
+        <h2 class="text-xl font-black mb-6 text-gray-400 italic" data-key="admin_panel_members">إدارة كافة الأعضاء</h2>
         <div id="usersList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
     </section>
 
-    <section id="marketerRequestsPanel" class="max-w-7xl mx-auto mb-10 px-4 hidden animate-fade-in text-right">
-        <div class="glass p-6 md:p-8 rounded-[35px] border border-blue-500/20 shadow-2xl">
-            <h2 class="text-lg md:text-xl font-black mb-6 text-blue-400 italic underline decoration-blue-500/30" data-key="marketer_requests_title">طلبات انضمام مسوقين جدد</h2>
+    <section id="marketerRequestsPanel" class="max-w-7xl mx-auto mb-10 px-4 hidden text-right">
+        <div class="glass p-6 rounded-[35px] border border-blue-500/20">
+            <h2 class="text-xl font-black mb-6 text-blue-400" data-key="marketer_requests_title">طلبات انضمام مسوقين جدد</h2>
             <div id="requestsList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
         </div>
     </section>
 
-    <section class="max-w-7xl mx-auto px-4 mb-10 flex flex-col md:flex-row gap-4 animate-fade-in text-right">
+    <section class="max-w-7xl mx-auto px-4 mb-10 flex flex-col md:flex-row gap-4 text-right">
         <div class="relative flex-1">
-            <input type="text" id="searchInput" oninput="filterProducts()" data-key="search_placeholder" placeholder="ابحث عن منتجك المفضل..." class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-sm text-white transition-all shadow-inner">
+            <input type="text" id="searchInput" oninput="filterProducts()" data-key="search_placeholder" placeholder="ابحث عن منتجك المفضل..." class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500 text-sm text-white transition-all">
             <span class="absolute left-4 top-4 text-gray-500">🔍</span>
         </div>
         <div class="flex gap-2">
-            <button onclick="loadWishlistOnly()" data-key="btn_my_wishlist" class="flex-1 md:flex-none bg-pink-500/10 text-pink-500 px-6 py-4 rounded-2xl text-xs font-bold border border-pink-500/20 hover:bg-pink-500 hover:text-white transition-all shadow-lg active:scale-95">مفضلاتي ❤</button>
-            <button onclick="resetAllFilters()" data-key="btn_show_all" class="flex-1 md:flex-none bg-white/5 text-gray-400 px-6 py-4 rounded-2xl text-xs font-bold border border-white/10 hover:bg-white hover:text-black transition-all italic active:scale-95">عرض الكل</button>
+            <button onclick="loadWishlistOnly()" data-key="btn_my_wishlist" class="flex-1 md:flex-none bg-pink-500/10 text-pink-500 px-6 py-4 rounded-2xl text-xs font-bold border border-pink-500/20 transition-all active:scale-95">مفضلاتي ❤</button>
+            <button onclick="resetAllFilters()" data-key="btn_show_all" class="flex-1 md:flex-none bg-white/5 text-gray-400 px-6 py-4 rounded-2xl text-xs font-bold border border-white/10 transition-all active:scale-95">عرض الكل</button>
         </div>
     </section>
 
-    <section id="controlPanel" class="max-w-5xl mx-auto px-4 mb-12 hidden animate-fade-in">
-        <div class="glass p-6 md:p-8 rounded-[40px] border border-blue-500/10 shadow-2xl text-right">
-            <h2 class="text-2xl font-black mb-8 text-blue-400 italic underline underline-offset-8 decoration-blue-500/30 uppercase tracking-tighter" data-key="publish_title">نشر إبداع جديد</h2>
+    <section id="controlPanel" class="max-w-5xl mx-auto px-4 mb-12 hidden animate-fade-in text-right">
+        <div class="glass p-8 rounded-[40px] border border-blue-500/10 shadow-2xl">
+            <h2 class="text-2xl font-black mb-8 text-blue-400 italic" data-key="publish_title">نشر إبداع جديد</h2>
             
-            <div id="lockMessage" class="hidden glass p-8 rounded-[40px] border border-red-500/30 text-center mb-8">
-                <p class="text-red-500 font-black text-lg" data-key="lock_message">🚫 عذراً، خاصية النشر معطلة حالياً بسبب ارتفاع المديونية.</p>
-                <p class="text-gray-400 text-xs mt-2 italic">يرجى تسوية الحساب مع الإدارة لتفعيل النشر مجدداً.</p>
+            <div id="lockMessage" class="hidden glass p-8 rounded-3xl border border-red-500/30 text-center mb-6">
+                <p class="text-red-500 font-black" data-key="lock_message">🚫 خاصية النشر معطلة حالياً بسبب المديونية.</p>
             </div>
 
-            <div id="publishForm">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6">
-                    <input type="text" id="pName" data-key="p_name" placeholder="اسم المنتج" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white focus:border-blue-500 transition-all">
-                    <select id="pCategory" class="bg-slate-800 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white cursor-pointer">
-                        <option value="الكل" data-key="cat_all">النوع الأساسي</option>
-                        <option value="ملابس">ملابس</option><option value="إكسسوارات">إكسسوارات</option><option value="عطور">عطور</option><option value="صحة وجمال">صحة وجمال</option>
-                    </select>
-                </div>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                    <select id="pSubCategory" class="bg-slate-800 border border-white/10 p-4 rounded-2xl outline-none text-[10px] text-white"><option value="عام">عام</option><option value="رجالي">رجالي</option><option value="حريمي">حريمي</option></select>
+            <div id="publishForm" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <input type="text" id="pName" data-key="p_name" placeholder="اسم المنتج" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
                     <input type="number" id="pPrice" data-key="p_price" placeholder="السعر النهائي" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <input type="number" id="pOldPrice" data-key="p_commission" placeholder="عمولتك" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
-                    <input type="text" id="pModel" data-key="p_model" placeholder="الموديل" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
+                    <input type="text" id="pImage" placeholder="رابط الصورة" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <input type="text" id="pColors" placeholder="الألوان المتاحة" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
-                    <input type="text" id="pSizes" placeholder="المقاسات" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <input type="text" id="pImage" placeholder="رابط الصورة الأساسية" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
-                    <input type="text" id="pMaterial" placeholder="الماتريال" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
-                </div>
-                <input type="text" id="pExtraImages" placeholder="روابط صور الألوان (افصل بفاصلة , )" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white mb-6">
-                <textarea id="pDesc" placeholder="الوصف الكامل للمنتج..." class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl h-32 mb-6 text-white text-xs resize-none"></textarea>
-                <button onclick="saveProduct()" data-key="btn_publish" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-5 rounded-3xl shadow-xl transition-all uppercase tracking-widest italic active:scale-95">نشر المنتج الآن</button>
+                <button onclick="saveProduct()" data-key="btn_publish" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-5 rounded-3xl shadow-xl transition-all active:scale-95">نشر المنتج الآن</button>
             </div>
         </div>
     </section>
-
-    <div id="usersModal" class="fixed inset-0 bg-black/95 z-[100] hidden items-center justify-center p-6 text-right transition-all">
-        <div class="glass w-full max-w-2xl p-8 rounded-[40px] border border-white/10 shadow-2xl relative animate-slide">
-            <button onclick="closeUsersModal()" class="absolute top-6 left-6 text-gray-500 hover:text-white font-black text-xl transition-colors">✕</button>
-            <h2 id="modalTitle" class="text-2xl font-black mb-6 text-blue-400 italic underline decoration-blue-500/30 uppercase tracking-tighter" data-key="stat_users">قائمة الأعضاء</h2>
-            <div id="modalList" class="space-y-3 max-h-[400px] overflow-y-auto no-scrollbar pr-2"></div>
-        </div>
-    </div>
 
     <main class="max-w-7xl mx-auto px-4 min-h-[400px]">
         <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 md:gap-10"></div>
         <div id="noResults" class="hidden text-center py-20 animate-fade-in">
             <div class="text-6xl mb-4">🔍</div>
-            <p class="text-gray-500 font-bold italic">عذراً، لم نجد ما تبحث عنه حالياً.</p>
+            <p class="text-gray-500 font-bold italic italic">عذراً، لم نجد ما تبحث عنه حالياً.</p>
         </div>
     </main>
 
-    <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 glass px-10 py-5 rounded-full text-white font-black shadow-2xl opacity-0 transition-all pointer-events-none z-[100] border-blue-500 border text-xs tracking-widest uppercase italic text-center"></div>
+    <div id="usersModal" class="fixed inset-0 bg-black/95 z-[100] hidden items-center justify-center p-6 text-right">
+        <div class="glass w-full max-w-2xl p-8 rounded-[40px] border border-white/10 relative">
+            <button onclick="closeUsersModal()" class="absolute top-6 left-6 text-gray-500 text-xl font-black">✕</button>
+            <h2 id="modalTitle" class="text-2xl font-black mb-6 text-blue-400 italic" data-key="stat_users">قائمة الأعضاء</h2>
+            <div id="modalList" class="space-y-3 max-h-[400px] overflow-y-auto no-scrollbar pr-2"></div>
+        </div>
+    </div>
+
+    <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 glass px-10 py-5 rounded-full text-white font-black shadow-2xl opacity-0 transition-all pointer-events-none z-[100] border-blue-500 border text-xs text-center"></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -225,7 +189,7 @@
         const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getDatabase(app);
 
         let currentUser = null, userRole = 'customer', allProducts = {}, allUsers = {}, userWishlist = [];
-        let selectedMainCat = 'الكل', selectedSubCat = 'الكل';
+        let selectedMainCat = 'الكل';
         const DEBT_LIMIT = 500;
 
         onAuthStateChanged(auth, async (user) => {
@@ -233,8 +197,8 @@
                 currentUser = user;
                 const userSnap = await get(ref(db, 'users/' + user.uid));
                 if (userSnap.exists()) {
-                    const u = userSnap.val(); 
-                    userRole = u.role; 
+                    const u = userSnap.val();
+                    userRole = u.role;
                     userWishlist = u.wishlist || [];
                     const debt = (u.wallet && u.wallet.debt) ? Number(u.wallet.debt) : 0;
 
@@ -247,235 +211,131 @@
                         document.getElementById('marketerRequestsPanel')?.classList.remove('hidden');
                         loadAdminDashboard(); loadMarketerRequests(); loadUsers();
                     }
-
-                    if (userRole === 'marketer' || userRole === 'admin') { 
-                        document.getElementById('controlPanel')?.classList.remove('hidden'); 
+                    if (userRole === 'marketer' || userRole === 'admin') {
+                        document.getElementById('controlPanel')?.classList.remove('hidden');
                         if(userRole === 'marketer' && debt > DEBT_LIMIT) {
                             document.getElementById('debtAlert')?.classList.remove('hidden');
                             document.getElementById('publishForm')?.classList.add('hidden');
                             document.getElementById('lockMessage')?.classList.remove('hidden');
                         }
                     }
-                    if(window.applyLanguage) applyLanguage(localStorage.getItem('lang') || 'ar');
                 }
                 loadProducts(); updateCartUI();
             } else { window.location.href = "login.html"; }
         });
 
-        window.toggleCart = () => document.getElementById('cartDrawer').classList.toggle('open');
-        window.updateCartUI = () => {
-            if(!currentUser) return;
-            onValue(ref(db, `carts/${currentUser.uid}`), (snap) => {
-                const data = snap.val() || {};
-                const list = document.getElementById('cartItemsList');
-                const badge = document.getElementById('cartCountBadge');
-                const totalEl = document.getElementById('cartTotal');
-                const keys = Object.keys(data);
-                badge.innerText = keys.length; list.innerHTML = ''; let total = 0;
-                keys.forEach((key) => {
-                    const item = data[key];
-                    total += Number(item.price) * Number(item.qty);
-                    list.innerHTML += `<div class="glass p-3 rounded-2xl flex gap-3 items-center border border-white/5 animate-slide mb-3 text-right">
-                        <img src="${item.image}" class="w-16 h-16 rounded-xl object-cover">
-                        <div class="flex-1 font-bold">
-                            <h4 class="text-[10px] text-white line-clamp-1">${item.name}</h4>
-                            <p class="text-blue-400 font-black text-xs mt-1">${item.price * item.qty} ج.م</p>
-                        </div>
-                        <button onclick="removeFromCart('${key}')" class="text-red-500 text-xs font-bold">✕</button>
-                    </div>`;
-                });
-                totalEl.innerText = total + " ج.م";
-            });
-        };
-        window.removeFromCart = (key) => remove(ref(db, `carts/${currentUser.uid}/${key}`));
-
-        const subData = {
-            clothes: [{n:'رجالي', i:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcq8MbpMpYi4h72YsWLGOu8L2bU7lNdq-3ZQ&s'}, {n:'حريمي', i:'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=100'}],
-            acc: [{n:'رجالي', i:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHE6nx5A79B-M8Ptx1axoKtJyh__8fFnVf9Q&s'}, {n:'حريمي', i:'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg_2PO3OsO5EeG2It9AcKvUkfcraT1AzfcbFuB4c_RxtgsYzAPBUico99Z2PlxYnTKx4Rd0WlhLqoI6QpHR-IVSZsEXDQPij6CZY0eaoQ-tWvUO4PQrNOyYD_9CgZpLx6kUDFLBSBlP-f97/s1600/%D8%A7%D9%83%D8%B3%D8%B3%D9%88%D8%A7%D8%B1%D8%A7%D8%AA+%D9%85%D8%B3%D8%AA%D9%88%D8%B1%D8%AF%D8%A9+%D9%85%D9%86+%D8%A7%D9%84%D8%B5%D9%8A%D9%86.jpg'}],
-            perfume: [{n:'رجالي', i:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqYTBqAT9RJHsyFI4Pbp1btFlcsx3YVcowXw&s'}, {n:'حريمي', i:'https://www.faces.eg/dw/image/v2/BJSM_PRD/on/demandware.static/-/Sites-faces-master-catalog/default/dw14914fb4/product/3614270175572/3614270175572.jpg?sw=800&sh=800'}],
-            beauty: [{n:'رجالي', i:'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=100'}, {n:'حريمي', i:'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=100'}]
+        // --- وظائف التعديل والحذف (مُصلحة ومربوطة بالـ Window) ---
+        window.editProduct = async (id, oldN, oldP, oldI) => {
+            const nn = prompt("الاسم الجديد:", oldN);
+            const np = prompt("السعر الجديد:", oldP);
+            const ni = prompt("رابط الصورة الجديد:", oldI);
+            if (nn && np) {
+                await update(ref(db, 'products/' + id), { name: nn, price: np, image: ni });
+                showToast("تم تحديث المنتج بنجاح!");
+            }
         };
 
-        window.showSubCats = (key, el) => {
-            document.querySelectorAll('.category-item').forEach(i => i.classList.remove('active')); el.classList.add('active');
-            selectedMainCat = el.querySelector('span').innerText.trim(); 
-            selectedSubCat = 'الكل';
-            const area = document.getElementById('subCatsArea');
-            if(key === 'all' || key === 'best') { area.style.display = 'none'; applyDualFilter(); return; }
-            area.style.display = 'flex';
-            area.innerHTML = subData[key].map(s => `<div class="sub-cat-item" onclick="filterBySub('${s.n}', this)"><img src="${s.i}"><span>${s.n}</span></div>`).join('');
-            applyDualFilter();
-        };
-
-        window.filterBySub = (sub, el) => {
-            document.querySelectorAll('.sub-cat-item').forEach(i => i.classList.remove('active')); if(el) el.classList.add('active');
-            selectedSubCat = sub; applyDualFilter();
-        };
-
-        function applyDualFilter() {
-            const f = {}; 
-            const searchVal = document.getElementById('searchInput').value.toLowerCase();
-            Object.keys(allProducts).forEach(k => {
-                const p = allProducts[k];
-                const matchMain = (selectedMainCat === 'الكل' || p.category === selectedMainCat);
-                const matchSub = (selectedSubCat === 'الكل' || p.subCategory === selectedSubCat);
-                const matchSearch = p.name.toLowerCase().includes(searchVal);
-                if(matchMain && matchSub && matchSearch) f[k] = p;
-            });
-            renderGrid(f);
-        }
-
-        window.resetAllFilters = () => {
-            selectedMainCat = 'الكل'; selectedSubCat = 'الكل';
-            document.getElementById('searchInput').value = '';
-            document.querySelectorAll('.category-item').forEach(i => i.classList.remove('active'));
-            document.querySelector('[data-cat="all"]').classList.add('active');
-            document.getElementById('subCatsArea').style.display = 'none';
-            renderGrid(allProducts);
-        };
-
-        function loadAdminDashboard() {
-            onValue(ref(db, 'users'), (snap) => {
-                allUsers = snap.val() || {}; const uArr = Object.values(allUsers);
-                const tu = document.getElementById('totalUsers'); if(tu) tu.innerText = uArr.length;
-                const tm = document.getElementById('totalMarketers'); if(tm) tm.innerText = uArr.filter(u => u.role === 'marketer').length;
-                const tc = document.getElementById('totalCustomers'); if(tc) tc.innerText = uArr.filter(u => u.role === 'customer').length;
-            });
-            onValue(ref(db, 'products'), (s) => { const tp = document.getElementById('totalProducts'); if(tp) tp.innerText = Object.keys(s.val() || {}).length; });
-        }
-
-        window.openUsersModal = (role) => {
-            const m = document.getElementById('usersModal'); const l = document.getElementById('modalList');
-            m.style.display = 'flex'; l.innerHTML = '';
-            Object.keys(allUsers).forEach(uid => { 
-                const u = allUsers[uid];
-                if(role === 'all' || u.role === role) 
-                    l.innerHTML += `<div class="bg-white/5 p-4 rounded-2xl border border-white/5 flex justify-between items-center font-bold hover:bg-white/10 transition-colors mb-2">
-                        <div class="text-right"><p class="text-white text-xs uppercase">${u.name} <span class="text-[9px] text-blue-400">(${u.role})</span></p><p class="text-[10px] text-gray-500 italic">${u.email}</p></div>
-                        <button onclick="visitAccount('${uid}')" data-key="btn_visit" class="bg-blue-600/20 text-blue-400 px-3 py-1 rounded-lg text-[9px] font-black border border-blue-400/30">زيارة</button>
-                    </div>`; 
-            });
+        window.deleteProduct = (id) => {
+            if (confirm("هل أنت متأكد من حذف هذا المنتج نهائياً؟")) {
+                remove(ref(db, 'products/' + id));
+                showToast("تم حذف المنتج بنجاح.");
+            }
         };
 
         window.visitAccount = (uid) => {
-            showToast("جاري توجيهك للملف الشخصي...");
+            showToast("جاري توجيهك لملف العضو...");
             window.location.href = `profile.html?uid=${uid}`; 
         };
 
-        window.closeUsersModal = () => document.getElementById('usersModal').style.display = 'none';
-
-        function loadMarketerRequests() { 
-            onValue(ref(db, 'marketer_requests'), (snap) => { 
-                const list = document.getElementById('requestsList'); list.innerHTML = ''; 
-                const data = snap.val(); 
-                if(data) Object.keys(data).forEach(uid => { 
-                    const r = data[uid]; 
-                    list.innerHTML += `<div class="glass p-5 rounded-3xl flex justify-between items-center text-right font-bold animate-fade-in border border-white/5">
-                        <div><p class="text-sm text-white font-black italic underline decoration-blue-500/30">${r.name}</p><p class="text-[10px] text-gray-500">${r.email}</p></div>
-                        <button onclick="approveMarketer('${uid}')" class="bg-blue-600 text-white px-5 py-2 rounded-xl text-[10px] font-black shadow-lg">قبول</button>
-                    </div>`; 
-                }); 
-            }); 
-        }
-
-        window.approveMarketer = async (uid) => { await update(ref(db, 'users/' + uid), { role: 'marketer' }); await remove(ref(db, 'marketer_requests/' + uid)); showToast("تم قبول المسوق بنجاح!"); };
-
-        window.saveProduct = () => {
-            const name = document.getElementById('pName').value, price = document.getElementById('pPrice').value;
-            if(name && price) { 
-                push(ref(db, 'products'), { 
-                    name, price, 
-                    oldPrice: document.getElementById('pOldPrice').value, 
-                    category: document.getElementById('pCategory').value, 
-                    subCategory: document.getElementById('pSubCategory').value, 
-                    model: document.getElementById('pModel').value, 
-                    material: document.getElementById('pMaterial').value, 
-                    colors: document.getElementById('pColors').value, 
-                    sizes: document.getElementById('pSizes').value, 
-                    desc: document.getElementById('pDesc').value, 
-                    image: document.getElementById('pImage').value || 'https://via.placeholder.com/400', 
-                    extraImages: document.getElementById('pExtraImages').value, 
-                    owner: currentUser.uid, 
-                    likes: 0 
-                }); 
-                showToast("تم نشر المنتج بنجاح!"); 
-                ["pName", "pPrice", "pOldPrice", "pColors", "pSizes", "pDesc", "pImage", "pExtraImages", "pMaterial", "pModel"].forEach(id => document.getElementById(id).value = ""); 
-            } else { showToast("يرجى ملء الاسم والسعر على الأقل"); }
+        window.approveMarketer = async (uid) => { 
+            await update(ref(db, 'users/' + uid), { role: 'marketer' }); 
+            await remove(ref(db, 'marketer_requests/' + uid)); 
+            showToast("تم قبول المسوق بنجاح!"); 
         };
 
-        function loadProducts() { onValue(ref(db, 'products'), (s) => { allProducts = s.val() || {}; renderGrid(allProducts); }); }
+        window.changeRole = (uid, r) => { 
+            if(confirm("هل تريد تغيير رتبة هذا العضو؟")) { 
+                update(ref(db, 'users/' + uid), { role: r }); 
+                showToast("تم تغيير الرتبة بنجاح!"); 
+            } 
+        };
 
+        // --- رندر المنتجات (مُصلح للموبايل) ---
         function renderGrid(products) {
-            const grid = document.getElementById('productsGrid'); 
-            const noRes = document.getElementById('noResults');
+            const grid = document.getElementById('productsGrid');
             if(!grid) return;
             grid.innerHTML = '';
             const keys = Object.keys(products);
-            if(keys.length === 0) { noRes.classList.remove('hidden'); return; }
-            noRes.classList.add('hidden');
+            if(keys.length === 0) { document.getElementById('noResults')?.classList.remove('hidden'); return; }
+            document.getElementById('noResults')?.classList.add('hidden');
 
             keys.forEach(key => {
-                const p = products[key], isSaved = userWishlist.includes(key);
+                const p = products[key];
+                const isSaved = userWishlist.includes(key);
                 const canManage = (userRole === 'admin') || (userRole === 'marketer' && p.owner === currentUser.uid);
-                grid.innerHTML += `<div class="product-card glass p-5 rounded-[35px] animate-fade-in shadow-xl text-right flex flex-col justify-between h-full">
+                
+                grid.innerHTML += `<div class="product-card glass p-5 rounded-[35px] text-right flex flex-col justify-between h-full animate-fade-in relative">
                     <div class="relative">
-                        <div class="absolute top-0 left-0 flex flex-col items-center gap-1 z-10">
-                            <button onclick="toggleWishlist('${key}')" class="p-2.5 rounded-full backdrop-blur-md ${isSaved ? 'text-pink-500 bg-pink-500/20' : 'text-gray-400 bg-black/30'} transition-all hover:scale-110 active:scale-90">❤</button>
+                        <div class="absolute top-0 left-0 flex flex-col items-center gap-1 z-20">
+                            <button onclick="toggleWishlist('${key}')" class="p-2.5 rounded-full backdrop-blur-md ${isSaved ? 'text-pink-500 bg-pink-500/10' : 'text-gray-400 bg-black/20'} transition-all">❤</button>
                             <span class="text-[10px] font-black text-gray-400">${p.likes || 0}</span>
                         </div>
-                        <div class="w-full h-48 md:h-52 rounded-[25px] overflow-hidden mb-5 shadow-2xl border border-white/5">
-                            <img src="${p.image}" class="w-full h-full object-cover" loading="lazy">
+                        <div class="w-full h-48 md:h-52 rounded-[25px] overflow-hidden mb-5 border border-white/5 shadow-xl">
+                            <img src="${p.image}" class="w-full h-full object-cover">
                         </div>
                     </div>
-                    <div>
-                        <h3 class="font-black text-base md:text-lg mb-2 text-white italic tracking-tighter uppercase line-clamp-1">${p.name}</h3>
-                        <div class="flex flex-col mb-5">
-                            <span class="text-blue-400 font-black text-xl md:text-2xl tracking-tighter">${p.price} ج.م</span>
+                    <div class="z-10 relative">
+                        <h3 class="font-black text-white text-base md:text-lg mb-2 line-clamp-1 italic">${p.name}</h3>
+                        <div class="flex flex-col mb-4">
+                            <span class="text-blue-400 font-black text-xl md:text-2xl">${p.price} ج.م</span>
                             ${p.oldPrice ? `<p class="text-green-400 text-[10px] font-black mt-1 uppercase italic tracking-widest"><span data-key="p_commission">عمولتك</span>: ${p.oldPrice} ج.م</p>` : ''}
                         </div>
-                        <div class="flex gap-2 mb-4">
-                            ${canManage ? `<button onclick="editProduct('${key}', '${p.name}', '${p.price}', '${p.image}')" class="text-yellow-500 text-[10px] font-bold italic border-b border-yellow-500/30">تعديل</button>
-                            <button onclick="deleteProduct('${key}')" class="text-red-500 text-[10px] font-bold italic border-b border-red-500/30">حذف</button>` : ''}
+                        
+                        <div class="flex gap-4 mb-4 ${canManage ? 'flex' : 'hidden'}">
+                            <button onclick="editProduct('${key}', '${p.name}', '${p.price}', '${p.image}')" class="text-yellow-500 text-[10px] font-black uppercase border-b border-yellow-500/30 py-1">تعديل</button>
+                            <button onclick="deleteProduct('${key}')" class="text-red-500 text-[10px] font-black uppercase border-b border-red-500/30 py-1">حذف</button>
                         </div>
-                        <button onclick="viewDetails('${key}', '${p.name}', '${p.price}', '${p.image}')" data-key="btn_details" class="w-full bg-white/5 hover:bg-blue-600 hover:text-white py-4 rounded-[20px] text-[10px] font-black uppercase transition-all shadow-xl border border-white/5 tracking-widest active:scale-95">التفاصيل والتقييمات</button>
+                        
+                        <button onclick="viewDetails('${key}', '${p.name}', '${p.price}', '${p.image}')" data-key="btn_details" class="w-full bg-white/5 hover:bg-blue-600 hover:text-white py-4 rounded-[20px] text-[10px] font-black transition-all border border-white/10 active:scale-95">التفاصيل والتقييمات</button>
                     </div>
                 </div>`;
             });
             if(window.applyLanguage) applyLanguage(localStorage.getItem('lang') || 'ar');
         }
 
-        function loadUsers() { 
-            onValue(ref(db, 'users'), (snapshot) => { 
-                allUsers = snapshot.val() || {}; const list = document.getElementById('usersList'); 
-                if(!list) return;
-                list.innerHTML = ''; 
-                Object.keys(allUsers).forEach(uid => { 
-                    const u = allUsers[uid]; 
-                    list.innerHTML += `<div class="bg-white/5 p-4 rounded-2xl border border-white/5 flex flex-col gap-3 font-bold text-right animate-slide">
-                        <div class="flex justify-between items-start">
-                            <div class="text-right">
-                                <p class="text-sm text-white">${u.name}</p>
-                                <span class="text-[8px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 font-black uppercase border border-blue-500/20">${u.role}</span>
-                            </div>
-                            <button onclick="visitAccount('${uid}')" data-key="btn_visit" class="bg-blue-600/20 text-blue-400 px-3 py-1 rounded-lg text-[9px] font-black border border-blue-400/30">زيارة</button>
-                        </div>
-                        <div class="flex gap-1">
-                            <button onclick="changeRole('${uid}', 'marketer')" class="flex-1 text-[8px] border border-blue-500/20 rounded-lg p-2 hover:bg-blue-500 hover:text-white text-blue-400 transition-all font-black">مسوق</button>
-                            <button onclick="changeRole('${uid}', 'admin')" class="flex-1 text-[8px] border border-yellow-500/20 rounded-lg p-2 hover:bg-yellow-500 hover:text-white text-yellow-500 transition-all font-black">أدمن</button>
-                            <button onclick="changeRole('${uid}', 'customer')" class="flex-1 text-[8px] bg-white/5 rounded-lg p-2 text-white hover:bg-white/20 transition-all font-black">عميل</button>
-                        </div>
-                    </div>`; 
-                }); 
-            }); 
-        }
-
-        window.setLanguage = (lang) => { localStorage.setItem('lang', lang); location.reload(); };
-        window.changeRole = (uid, r) => { if(confirm("تغيير الرتبة؟")) { update(ref(db, 'users/' + uid), { role: r }); showToast("تم تغيير الرتبة!"); } };
+        // --- باقي الوظائف (تحديث السلة، جلب البيانات، إلخ) ---
+        window.loadProducts = () => { onValue(ref(db, 'products'), (s) => { allProducts = s.val() || {}; renderGrid(allProducts); }); };
+        window.toggleCart = () => document.getElementById('cartDrawer').classList.toggle('open');
+        window.updateCartUI = () => {
+            if(!currentUser) return;
+            onValue(ref(db, `carts/${currentUser.uid}`), (snap) => {
+                const data = snap.val() || {}, list = document.getElementById('cartItemsList'), badge = document.getElementById('cartCountBadge'), totalEl = document.getElementById('cartTotal'), keys = Object.keys(data);
+                badge.innerText = keys.length; list.innerHTML = ''; let total = 0;
+                keys.forEach((key) => { const item = data[key]; total += Number(item.price) * Number(item.qty); list.innerHTML += `<div class="glass p-3 rounded-2xl flex gap-3 items-center border border-white/5 mb-3 text-right animate-slide"><img src="${item.image}" class="w-14 h-14 rounded-xl object-cover"><div class="flex-1 font-bold"><h4 class="text-[10px] text-white line-clamp-1">${item.name}</h4><p class="text-blue-400 font-black text-xs mt-1">${item.price * item.qty} ج.م</p></div><button onclick="removeFromCart('${key}')" class="text-red-500 text-xs">✕</button></div>`; });
+                totalEl.innerText = total + " ج.م";
+            });
+        };
+        window.removeFromCart = (key) => remove(ref(db, `carts/${currentUser.uid}/${key}`));
+        window.saveProduct = () => {
+            const name = document.getElementById('pName').value, price = document.getElementById('pPrice').value;
+            if(name && price) { push(ref(db, 'products'), { name, price, oldPrice: document.getElementById('pOldPrice').value, image: document.getElementById('pImage').value || 'https://via.placeholder.com/400', owner: currentUser.uid, likes: 0 }); showToast("تم النشر بنجاح!"); ["pName", "pPrice", "pOldPrice", "pImage"].forEach(id => document.getElementById(id).value = ""); }
+            else { showToast("يرجى إكمال البيانات الأساسية."); }
+        };
         window.toggleWishlist = async (id) => { if(!currentUser) return; const idx = userWishlist.indexOf(id); const rp = ref(db, `products/${id}/likes`); if (idx > -1) { userWishlist.splice(idx, 1); runTransaction(rp, (c) => (c || 1) - 1); } else { userWishlist.push(id); runTransaction(rp, (c) => (c || 0) + 1); } await update(ref(db, 'users/' + currentUser.uid), { wishlist: userWishlist }); };
-        window.deleteProduct = (id) => confirm("هل أنت متأكد من حذف هذا المنتج نهائياً؟") && remove(ref(db, 'products/' + id)) && showToast("تم الحذف بنجاح.");
+        window.loadAdminDashboard = () => { onValue(ref(db, 'users'), (snap) => { allUsers = snap.val() || {}; const uArr = Object.values(allUsers); document.getElementById('totalUsers').innerText = uArr.length; }); onValue(ref(db, 'products'), (s) => document.getElementById('totalProducts').innerText = Object.keys(s.val() || {}).length); };
+        window.loadUsers = () => { onValue(ref(db, 'users'), (s) => { allUsers = s.val() || {}; const list = document.getElementById('usersList'); if(!list) return; list.innerHTML = ''; Object.keys(allUsers).forEach(uid => { const u = allUsers[uid]; list.innerHTML += `<div class="bg-white/5 p-4 rounded-2xl border border-white/5 flex justify-between items-center font-bold mb-3 animate-slide"><div><p class="text-sm text-white">${u.name}</p><span class="text-[8px] text-blue-400 uppercase tracking-widest">${u.role}</span></div><button onclick="visitAccount('${uid}')" data-key="btn_visit" class="bg-blue-600/20 text-blue-400 px-4 py-1.5 rounded-lg text-[9px] font-black border border-blue-400/30 transition-all hover:bg-blue-600 hover:text-white">زيارة</button></div>`; }); }); };
+        function loadMarketerRequests() { onValue(ref(db, 'marketer_requests'), (snap) => { const list = document.getElementById('requestsList'); if(!list) return; list.innerHTML = ''; const data = snap.val(); if(data) Object.keys(data).forEach(uid => { const r = data[uid]; list.innerHTML += `<div class="glass p-5 rounded-3xl flex justify-between items-center text-right font-bold animate-fade-in border border-white/5"><div><p class="text-sm text-white italic underline decoration-blue-500/30">${r.name}</p><p class="text-[10px] text-gray-500">${r.email}</p></div><button onclick="approveMarketer('${uid}')" class="bg-blue-600 text-white px-5 py-2 rounded-xl text-[10px] font-black shadow-lg active:scale-95">قبول</button></div>`; }); }); }
+        window.setLanguage = (lang) => { localStorage.setItem('lang', lang); location.reload(); };
+        window.closeUsersModal = () => document.getElementById('usersModal').style.display = 'none';
         window.viewDetails = (id, n, p, i) => window.location.href = `details.html?id=${id}&name=${encodeURIComponent(n)}&price=${p}&image=${encodeURIComponent(i)}`;
         window.showToast = (m) => { const t = document.getElementById('toast'); if(t){ t.innerText = m; t.style.opacity = '1'; setTimeout(() => t.style.opacity = '0', 3000); } };
         window.logout = () => confirm("هل تود الخروج؟") && signOut(auth).then(() => window.location.href = "login.html");
+        
+        // --- الفلترة ---
+        window.showSubCats = (key, el) => { document.querySelectorAll('.category-item').forEach(i => i.classList.remove('active')); el.classList.add('active'); loadProducts(); };
+        window.filterProducts = () => { const val = document.getElementById('searchInput').value.toLowerCase(); const filtered = {}; Object.keys(allProducts).forEach(k => { if(allProducts[k].name.toLowerCase().includes(val)) filtered[k] = allProducts[k]; }); renderGrid(filtered); };
+        window.loadWishlistOnly = () => { const f = {}; Object.keys(allProducts).forEach(k => { if(userWishlist.includes(k)) f[k] = allProducts[k]; }); renderGrid(f); };
+        window.resetAllFilters = () => { document.getElementById('searchInput').value = ''; renderGrid(allProducts); };
     </script>
 </body>
 </html>

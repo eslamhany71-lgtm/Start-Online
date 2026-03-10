@@ -44,33 +44,34 @@
     <div id="mouseGlow"></div>
     <div class="bg-grid"></div>
 
-    <nav class="fixed top-0 left-0 right-0 z-50 p-4 md:p-6">
-        <div class="max-w-7xl mx-auto glass rounded-[25px] md:rounded-[35px] px-8 py-4 flex justify-between items-center shadow-2xl">
-            
-            <div class="logo-brand text-xl md:text-2xl font-black italic tracking-tighter">
-                <a href="index.html" class="flex items-center gap-1">
-                    <span class="text-white">START</span>
-                    <span class="logo-box">ONLINE</span>
-                </a>
-            </div>
-
-            <ul class="hidden md:flex gap-10 font-bold text-xs text-gray-400">
-                <li><a href="index.html" data-key="nav_home" class="text-blue-400 hover:text-white transition">الرئيسية</a></li>
-                <li><a href="products.html" data-key="nav_store" class="hover:text-white transition">المتجر</a></li>
-                <li><a href="profile.html" data-key="nav_profile" class="hover:text-white transition">حسابي</a></li>
-            </ul>
-
-            <div class="flex items-center gap-4">
-                <button onclick="setLanguage(localStorage.getItem('lang') === 'en' ? 'ar' : 'en')" class="hidden md:flex text-[10px] font-black text-gray-400 hover:text-white transition items-center gap-2 bg-white/5 px-4 py-2 rounded-xl border border-white/10">
-                    <span id="langLabel">English</span>
-                </button>
-
-                <a href="login.html" id="navBtn" data-key="nav_start" class="bg-blue-600 text-white px-8 py-3 rounded-2xl text-xs font-black btn-glow transition-all">
-                    ابدأ الآن
-                </a>
-            </div>
+    <nav class="fixed top-0 left-0 right-0 z-50 p-3 md:p-6">
+    <div class="max-w-7xl mx-auto glass rounded-[20px] md:rounded-[35px] px-4 md:px-8 py-3 md:py-4 flex justify-between items-center shadow-2xl">
+        
+        <div class="logo-brand text-lg md:text-2xl font-black italic tracking-tighter">
+            <a href="index.html" class="flex items-center gap-1">
+                <span class="text-white">START</span>
+                <span class="logo-box">ONLINE</span>
+            </a>
         </div>
-    </nav>
+
+        <ul class="hidden md:flex gap-10 font-bold text-xs text-gray-400">
+            <li><a href="index.html" data-key="nav_home" class="text-blue-400 hover:text-white transition">الرئيسية</a></li>
+            <li><a href="products.html" data-key="nav_store" class="hover:text-white transition">المتجر</a></li>
+            <li><a href="profile.html" data-key="nav_profile" class="hover:text-white transition">حسابي</a></li>
+        </ul>
+
+        <div class="flex items-center gap-2 md:gap-4">
+            <button onclick="setLanguage(localStorage.getItem('lang') === 'en' ? 'ar' : 'en')" class="flex text-[9px] md:text-[10px] font-black text-gray-400 hover:text-white transition items-center gap-1 md:gap-2 bg-white/5 px-2 md:px-4 py-2 rounded-lg md:rounded-xl border border-white/10">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="md:w-3 md:h-3"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                <span id="langLabel">English</span>
+            </button>
+
+            <a href="login.html" id="navBtn" data-key="nav_start" class="bg-blue-600 text-white px-4 md:px-8 py-2 md:py-3 rounded-xl md:rounded-2xl text-[10px] md:text-xs font-black btn-glow transition-all">
+                ابدأ الآن
+            </a>
+        </div>
+    </div>
+</nav>
 
     <nav class="fixed bottom-6 left-6 right-6 z-50 md:hidden">
         <div class="glass rounded-[30px] p-3 flex justify-around items-center border border-white/10 shadow-3xl">

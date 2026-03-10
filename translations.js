@@ -44,7 +44,31 @@ const translations = {
         // داخل translations.ar
         btn_community: "انضم لمجتمعنا",
         logout: "خروج",
-        },
+                // أضف هذه للقسم العربي ar
+        shop_title: "المتجر الذكي",
+        cart_title: "سلة المشتريات",
+        cart_total: "الإجمالي:",
+        btn_shopping: "استكمال التسوق",
+        stat_users: "المستخدمين",
+        stat_prods: "المنتجات",
+        stat_marketers: "المسوقين",
+        stat_customers: "العملاء",
+        stat_reviews: "التقييمات",
+        admin_panel_members: "إدارة كافة الأعضاء",
+        marketer_requests_title: "طلبات انضمام مسوقين جدد",
+        search_placeholder: "ابحث عن منتجك المفضل...",
+        btn_my_wishlist: "مفضلاتي ❤",
+        btn_show_all: "عرض الكل",
+        publish_title: "نشر إبداع جديد",
+        lock_message: "🚫 عذراً، خاصية النشر معطلة حالياً بسبب ارتفاع المديونية.",
+        p_name: "اسم المنتج",
+        p_price: "السعر النهائي",
+        p_commission: "عمولتك",
+        p_model: "الموديل",
+        btn_publish: "نشر المنتج الآن",
+        btn_visit: "زيارة",
+        btn_details: "التفاصيل والتقييمات",
+                },
     en: {
         nav_home: "Home",
         nav_store: "Store",
@@ -90,8 +114,32 @@ const translations = {
         // داخل translations.en
         btn_community: "Join Community",
         logout: "Logout",
-        }
-};
+        // أضف هذه للقسم الإنجليزي en
+        shop_title: "Smart Store",
+        cart_title: "Shopping Cart",
+        cart_total: "Total:",
+        btn_shopping: "Continue Shopping",
+        stat_users: "Users",
+        stat_prods: "Products",
+        stat_marketers: "Marketers",
+        stat_customers: "Customers",
+        stat_reviews: "Reviews",
+        admin_panel_members: "All Members Management",
+        marketer_requests_title: "New Marketer Requests",
+        search_placeholder: "Search your favorite product...",
+        btn_my_wishlist: "My Wishlist ❤",
+        btn_show_all: "Show All",
+        publish_title: "Publish New Creation",
+        lock_message: "🚫 Sorry, publishing is disabled due to high debt.",
+        p_name: "Product Name",
+        p_price: "Final Price",
+        p_commission: "Commission",
+        p_model: "Model",
+        btn_publish: "Publish Product Now",
+        btn_visit: "Visit",
+        btn_details: "Details & Reviews"
+                }
+        };
 
 function applyLanguage(lang) {
     const t = translations[lang];

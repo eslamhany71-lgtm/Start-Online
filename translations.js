@@ -28,19 +28,19 @@ const translations = {
         order_status_failed: "ملغاة",
         dir: "rtl",
         font: "'Cairo', sans-serif",
-        // أضف هذه القيم داخل translations.ar
-login_btn: "دخول",
-signup_btn: "إنشاء حساب",
-signup_link: "إنشاء حساب",
-login_link: "تسجيل دخول",
-no_account: "ليس لديك حساب؟",
-have_account: "لديك حساب بالفعل؟",
-name_placeholder: "الاسم الكامل",
-email_placeholder: "البريد الإلكتروني",
-pass_placeholder: "كلمة المرور",
-forgot_pass: "نسيت كلمة المرور؟",
-google_btn: "سجل بواسطة جوجل",
-or_via: "أو عبر"
+        // قيم صفحة الدخول
+        login_btn: "دخول",
+        signup_btn: "إنشاء حساب",
+        signup_link: "إنشاء حساب",
+        login_link: "تسجيل دخول",
+        no_account: "ليس لديك حساب؟",
+        have_account: "لديك حساب بالفعل؟",
+        name_placeholder: "الاسم الكامل",
+        email_placeholder: "البريد الإلكتروني",
+        pass_placeholder: "كلمة المرور",
+        forgot_pass: "نسيت كلمة المرور؟",
+        google_btn: "سجل بواسطة جوجل",
+        or_via: "أو عبر"
     },
     en: {
         nav_home: "Home",
@@ -71,36 +71,46 @@ or_via: "أو عبر"
         order_status_failed: "Failed",
         dir: "ltr",
         font: "'Inter', sans-serif",
-        // وأضف مقابلها في translations.en
-login_btn: "Login",
-signup_btn: "Sign Up",
-signup_link: "Create Account",
-login_link: "Sign In",
-no_account: "Don't have an account?",
-have_account: "Already have an account?",
-name_placeholder: "Full Name",
-email_placeholder: "Email Address",
-pass_placeholder: "Password",
-forgot_pass: "Forgot Password?",
-google_btn: "Sign in with Google",
-or_via: "OR VIA"
+        // Login page values
+        login_btn: "Login",
+        signup_btn: "Sign Up",
+        signup_link: "Create Account",
+        login_link: "Sign In",
+        no_account: "Don't have an account?",
+        have_account: "Already have an account?",
+        name_placeholder: "Full Name",
+        email_placeholder: "Email Address",
+        pass_placeholder: "Password",
+        forgot_pass: "Forgot Password?",
+        google_btn: "Sign in with Google",
+        or_via: "OR VIA"
     }
 };
 
 function applyLanguage(lang) {
     const t = translations[lang];
+    if (!t) return;
+
     document.querySelectorAll('[data-key]').forEach(el => {
         const key = el.getAttribute('data-key');
         if (t[key]) {
-            if (el.tagName === 'INPUT') el.placeholder = t[key];
-            else el.innerHTML = t[key];
+            // ترجمة الـ Placeholder إذا كان العنصر Input
+            if (el.tagName === 'INPUT') {
+                el.placeholder = t[key];
+            } else {
+                el.innerHTML = t[key];
+            }
         }
     });
+
+    // ضبط الاتجاه واللغة والخط
     document.documentElement.dir = t.dir;
     document.documentElement.lang = lang;
     document.body.style.fontFamily = t.font;
+
+    // تحديث نص زر اللغة إذا كان موجوداً
     const langLabel = document.getElementById('langLabel');
-    if(langLabel) langLabel.innerText = t.lang_btn;
+    if (langLabel) langLabel.innerText = t.lang_btn;
 }
 
 window.setLanguage = (lang) => {
@@ -112,4 +122,3 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedLang = localStorage.getItem('lang') || 'ar';
     applyLanguage(savedLang);
 });
-

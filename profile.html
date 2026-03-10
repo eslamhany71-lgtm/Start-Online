@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="translations.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta charset="UTF-8">
-    <title>لوحة التحكم الاحترافية | Start Online</title>
+    <title data-key="profile_title">لوحة التحكم الاحترافية | Start Online</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         body { background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%); color: #f1f5f9; font-family: 'Cairo', sans-serif; min-height: 100vh; margin: 0; }
         .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.08); }
@@ -17,20 +18,53 @@
         .status-pending { color: #eab308; background: rgba(234, 179, 8, 0.1); }
         .status-completed { color: #22c55e; background: rgba(34, 197, 94, 0.1); }
         .status-failed { color: #ef4444; background: rgba(239, 68, 68, 0.1); }
-        input::placeholder { color: rgba(255, 255, 255, 0.2); }
+        input::placeholder, textarea::placeholder { color: rgba(255, 255, 255, 0.2); }
+        
+        /* اللوجو الاحترافي */
+        .logo-brand { font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 4px; }
+        .logo-box { background: #2563eb; color: white; padding: 2px 8px; border-radius: 6px; transform: skewX(-12deg); display: inline-block; }
     </style>
 </head>
-<body class="pb-20 text-right">
+<body class="pb-24 text-right">
 
 <nav class="fixed top-0 left-0 right-0 z-50 p-2 md:p-6">
     <div class="max-w-7xl mx-auto glass rounded-xl md:rounded-2xl px-4 py-3 flex justify-between items-center shadow-2xl">
-        <div class="text-lg md:text-2xl font-black text-white"><a href="index.html">START<span class="text-blue-400">ONLINE</span></a></div>
+        <div class="logo-brand text-lg md:text-2xl font-black italic tracking-tighter hover:scale-105 transition-transform">
+            <a href="index.html" class="flex items-center gap-1">
+                <span class="text-white">START</span>
+                <span class="logo-box">ONLINE</span>
+            </a>
+        </div>
+        
         <ul class="hidden md:flex gap-8 font-bold text-sm text-gray-300">
-            <li><a href="index.html" class="hover:text-white transition">الرئيسية</a></li>
-            <li><a href="products.html" class="hover:text-white transition">المتجر</a></li>
-            <li><a href="profile.html" class="text-blue-400 font-bold">حسابي</a></li>
+            <li><a href="index.html" data-key="nav_home" class="hover:text-white transition">الرئيسية</a></li>
+            <li><a href="products.html" data-key="nav_store" class="hover:text-white transition">المتجر</a></li>
+            <li><a href="profile.html" data-key="nav_profile" class="text-blue-400 font-bold border-b-2 border-blue-400 pb-1">حسابي</a></li>
         </ul>
-        <button onclick="logout()" class="bg-red-600/20 text-red-500 px-4 py-2 rounded-xl text-[10px] font-black hover:bg-red-600 hover:text-white transition">خروج</button>
+
+        <div class="flex items-center gap-2">
+            <button onclick="setLanguage(localStorage.getItem('lang') === 'en' ? 'ar' : 'en')" class="text-[9px] md:text-[10px] font-black text-gray-400 bg-white/5 px-2 md:px-3 py-2 rounded-lg border border-white/10 hover:text-white transition">
+                <span id="langLabel">English</span>
+            </button>
+            <button onclick="logout()" data-key="logout" class="bg-red-600/20 text-red-500 px-3 md:px-4 py-2 rounded-xl text-[10px] font-black hover:bg-red-600 hover:text-white transition shadow-lg">خروج</button>
+        </div>
+    </div>
+</nav>
+
+<nav class="fixed bottom-4 left-4 right-4 z-50 md:hidden">
+    <div class="glass rounded-[25px] p-2 flex justify-around items-center border border-white/10 shadow-[0_0_30px_rgba(0,0,0,0.5)]">
+        <a href="index.html" class="flex flex-col items-center gap-1 text-[10px] text-gray-400 p-2 hover:text-blue-400 transition">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+            <span data-key="nav_home">الرئيسية</span>
+        </a>
+        <a href="products.html" class="flex flex-col items-center gap-1 text-[10px] text-gray-400 p-2 hover:text-blue-400 transition">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/></svg>
+            <span data-key="nav_store">المتجر</span>
+        </a>
+        <a href="profile.html" class="flex flex-col items-center gap-1 text-[10px] text-blue-400 p-2">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span data-key="nav_profile">حسابي</span>
+        </a>
     </div>
 </nav>
 
@@ -45,40 +79,40 @@
                 <p id="userEmail" class="text-gray-500 text-[10px] mb-6">email@example.com</p>
                 
                 <div id="walletBox" class="hidden bg-white/5 p-5 rounded-3xl border border-white/5 mb-6 text-right animate-slide">
-                    <p class="text-[9px] text-blue-400 font-black mb-3 uppercase italic tracking-widest">المحفظة الذكية</p>
+                    <p class="text-[9px] text-blue-400 font-black mb-3 uppercase italic tracking-widest" data-key="smart_wallet">المحفظة الذكية</p>
                     <div class="flex justify-between items-center mb-2">
-                        <span class="text-[10px] text-gray-400">أرباحي المستحقة:</span>
+                        <span id="walletBalanceLabel" class="text-[10px] text-gray-400" data-key="my_profits">أرباحي المستحقة:</span>
                         <span id="walletBalance" class="text-lg font-black text-white">0 ج.م</span>
                     </div>
-                    <div class="flex justify-between items-center border-t border-white/5 pt-2">
-                        <span id="debtLabel" class="text-[10px] text-red-400">عمولة المنصة (10%):</span>
+                    <div id="debtRow" class="flex justify-between items-center border-t border-white/5 pt-2">
+                        <span id="debtLabel" class="text-[10px] text-red-400" data-key="platform_commission">عمولة المنصة (10%):</span>
                         <span id="walletDebt" class="text-lg font-black text-red-500">0 ج.م</span>
                     </div>
                 </div>
 
                 <div id="marketerSettings" class="hidden border-t border-white/5 pt-6 mt-4 mb-6 text-right">
-                    <p class="text-[9px] text-blue-400 font-black mb-4 uppercase italic">وسائل استلام الأرباح</p>
+                    <p class="text-[9px] text-blue-400 font-black mb-4 uppercase italic" data-key="payment_methods">وسائل استلام الأرباح</p>
                     <div class="space-y-3">
                         <input type="text" id="vodaPay" placeholder="رقم فودافون كاش" class="w-full bg-white/5 border border-white/10 p-3 rounded-xl text-xs text-white text-center font-bold outline-none focus:border-red-500">
                         <input type="text" id="etiPay" placeholder="رقم اتصالات كاش" class="w-full bg-white/5 border border-white/10 p-3 rounded-xl text-xs text-white text-center font-bold outline-none focus:border-green-500">
                         <input type="text" id="orangePay" placeholder="أورانج كاش / وي" class="w-full bg-white/5 border border-white/10 p-3 rounded-xl text-xs text-white text-center font-bold outline-none focus:border-orange-500">
                         <input type="text" id="instaPay" placeholder="عنوان InstaPay (ID)" class="w-full bg-white/5 border border-white/10 p-3 rounded-xl text-xs text-white text-center font-bold outline-none focus:border-purple-500">
                     </div>
-                    <button onclick="updateDetailedPayment()" class="w-full mt-4 bg-blue-600/20 text-blue-400 py-2 rounded-xl text-[10px] font-black hover:bg-blue-600 transition">حفظ المحافظ</button>
+                    <button onclick="updateDetailedPayment()" data-key="btn_save_wallets" class="w-full mt-4 bg-blue-600/20 text-blue-400 py-2 rounded-xl text-[10px] font-black hover:bg-blue-600 transition hover:text-white">حفظ المحافظ</button>
                 </div>
 
                 <div class="space-y-3">
-                    <button onclick="toggleSettings()" class="w-full py-3 glass rounded-2xl text-[10px] font-black border border-white/5">تعديل البروفايل</button>
+                    <button onclick="toggleSettings()" data-key="btn_edit_profile" class="w-full py-3 glass hover:bg-white/10 transition-colors rounded-2xl text-[10px] font-black border border-white/5">تعديل البروفايل</button>
                 </div>
             </div>
 
             <div class="grid grid-cols-2 gap-4">
                 <div class="glass p-6 rounded-3xl text-center shadow-lg border border-white/5">
-                    <p class="text-[9px] text-gray-500 uppercase font-black mb-1">المفضلة</p>
+                    <p class="text-[9px] text-gray-500 uppercase font-black mb-1" data-key="stat_favorites">المفضلة</p>
                     <p id="wishCount" class="text-2xl font-black text-pink-500">0</p>
                 </div>
                 <div id="marketerStatsBox" class="glass p-6 rounded-3xl text-center hidden shadow-lg border border-white/5">
-                    <p class="text-[9px] text-gray-500 uppercase font-black mb-1">منتجاتي</p>
+                    <p class="text-[9px] text-gray-500 uppercase font-black mb-1" data-key="stat_my_products">منتجاتي</p>
                     <p id="prodCount" class="text-2xl font-black text-blue-500">0</p>
                 </div>
             </div>
@@ -89,15 +123,15 @@
             <section id="insightsDashboard" class="hidden animate-slide">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="stat-box p-6 rounded-[30px] border-green-500/10 text-right">
-                        <p id="revenueTitle" class="text-[9px] text-gray-500 font-bold uppercase mb-2">إجمالي المبيعات</p>
+                        <p id="revenueTitle" class="text-[9px] text-gray-500 font-bold uppercase mb-2" data-key="stat_total_sales">إجمالي المبيعات</p>
                         <h3 id="totalRevenue" class="text-2xl font-black text-green-400">0 ج.م</h3>
                     </div>
                     <div onclick="openOrderArchive('completed')" class="stat-box p-6 rounded-[30px] border-blue-500/20 text-right">
-                        <p class="text-[9px] text-blue-400 font-bold uppercase mb-2">طلبات ناجحة</p>
+                        <p class="text-[9px] text-blue-400 font-bold uppercase mb-2" data-key="stat_success_orders">طلبات ناجحة</p>
                         <h3 id="successOrdersCount" class="text-2xl font-black text-blue-400">0</h3>
                     </div>
                     <div onclick="openOrderArchive('failed')" class="stat-box p-6 rounded-[30px] border-red-500/20 text-right">
-                        <p class="text-[9px] text-red-400 font-bold uppercase mb-2">طلبات ملغاة</p>
+                        <p class="text-[9px] text-red-400 font-bold uppercase mb-2" data-key="stat_failed_orders">طلبات ملغاة</p>
                         <h3 id="failedOrdersCount" class="text-2xl font-black text-red-400">0</h3>
                     </div>
                 </div>
@@ -105,15 +139,16 @@
 
             <section id="adminMarketerPanel" class="hidden animate-slide space-y-6">
                 <h2 class="text-2xl font-black mb-6 flex items-center gap-3 italic text-purple-400">
-                    <span class="w-2 h-6 bg-purple-500 rounded-full"></span> إدارة المسوقين والديون
+                    <span class="w-2 h-6 bg-purple-500 rounded-full"></span> <span data-key="admin_manage_marketers">إدارة المسوقين والديون</span>
                 </h2>
-                <div class="glass rounded-[30px] overflow-hidden border border-white/10">
-                    <table class="w-full text-right text-[10px] md:text-xs">
+                <div class="glass rounded-[30px] overflow-x-auto border border-white/10 no-scrollbar">
+                    <table class="w-full text-right text-[10px] md:text-xs min-w-[500px]">
                         <thead class="bg-white/5 text-gray-400 uppercase">
                             <tr>
-                                <th class="p-4">المسوق</th>
-                                <th class="p-4">المديونية (10%)</th>
-                                <th class="p-4">الإجراء</th>
+                                <th class="p-4" data-key="table_marketer">المسوق</th>
+                                <th class="p-4" data-key="table_phone">رقم الهاتف</th>
+                                <th class="p-4" data-key="table_debt">المديونية (10%)</th>
+                                <th class="p-4" data-key="table_action">الإجراء</th>
                             </tr>
                         </thead>
                         <tbody id="marketersTableBody" class="divide-y divide-white/5"></tbody>
@@ -123,22 +158,22 @@
 
             <section id="myPurchaseSection" class="animate-slide">
                 <h2 class="text-2xl font-black mb-6 flex items-center gap-3 italic text-blue-400">
-                    <span class="w-2 h-6 bg-blue-500 rounded-full"></span> تتبع طلباتي المشترية
+                    <span class="w-2 h-6 bg-blue-500 rounded-full"></span> <span data-key="my_purchases_title">تتبع طلباتي المشترية</span>
                 </h2>
-                <div id="myPurchasesList" class="space-y-4 text-gray-500 text-xs italic">جاري تحميل طلباتك...</div>
+                <div id="myPurchasesList" class="space-y-4 text-gray-500 text-xs italic" data-key="loading_orders">جاري تحميل طلباتك...</div>
             </section>
 
             <section id="ordersSection" class="hidden">
                 <h2 class="text-2xl font-black mb-6 flex items-center gap-3 italic text-yellow-500">
-                    <span class="w-2 h-6 bg-yellow-500 rounded-full"></span> إدارة الطلبات الواردة
+                    <span class="w-2 h-6 bg-yellow-500 rounded-full"></span> <span data-key="manage_incoming_orders">إدارة الطلبات الواردة</span>
                 </h2>
                 <div id="ordersList" class="space-y-4"></div>
             </section>
 
             <section id="orderArchiveSection" class="hidden glass p-8 rounded-[40px] border border-white/10 animate-slide">
                 <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-xl font-black text-white italic underline">سجل المبيعات المؤرشفة</h3>
-                    <button onclick="document.getElementById('orderArchiveSection').classList.add('hidden')" class="text-[10px] text-gray-500">إغلاق</button>
+                    <h3 class="text-xl font-black text-white italic underline" data-key="archive_title">سجل المبيعات المؤرشفة</h3>
+                    <button onclick="document.getElementById('orderArchiveSection').classList.add('hidden')" class="text-[10px] text-gray-500 hover:text-white" data-key="btn_close">إغلاق</button>
                 </div>
                 <div id="archiveList" class="space-y-4"></div>
             </section>
@@ -146,42 +181,42 @@
             <section id="requestMarketerSection" class="hidden animate-slide">
                 <div class="glass p-8 rounded-[40px] border border-blue-500/30 bg-blue-500/5">
                     <div id="requestStatic">
-                        <h3 class="text-xl font-black mb-2 italic">ابدأ الربح معنا اليوم!</h3>
-                        <p class="text-gray-400 text-sm mb-6 leading-relaxed">كن مسوقاً معتمداً وابدأ بعرض منتجاتك والحصول على دخل إضافي.</p>
-                        <button onclick="showJoinForm()" class="bg-blue-600 text-white px-8 py-3 rounded-2xl font-black text-xs">تقديم طلب انضمام</button>
+                        <h3 class="text-xl font-black mb-2 italic" data-key="join_title">ابدأ الربح معنا اليوم!</h3>
+                        <p class="text-gray-400 text-sm mb-6 leading-relaxed" data-key="join_desc">كن مسوقاً معتمداً وابدأ بعرض منتجاتك والحصول على دخل إضافي.</p>
+                        <button onclick="showJoinForm()" class="bg-blue-600 text-white px-8 py-3 rounded-2xl font-black text-xs hover:bg-blue-500 transition-colors" data-key="btn_join">تقديم طلب انضمام</button>
                     </div>
                     <div id="joinForm" class="hidden space-y-4">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <input type="text" id="reqPhone" placeholder="رقم الموبايل" class="bg-white/5 border border-white/10 p-4 rounded-2xl text-white outline-none">
-                            <input type="text" id="reqAddress" placeholder="العنوان بالتفصيل" class="bg-white/5 border border-white/10 p-4 rounded-2xl text-white outline-none">
+                            <input type="text" id="reqPhone" data-key="req_phone" placeholder="رقم الموبايل" class="bg-white/5 border border-white/10 p-4 rounded-2xl text-white outline-none">
+                            <input type="text" id="reqAddress" data-key="req_address" placeholder="العنوان بالتفصيل" class="bg-white/5 border border-white/10 p-4 rounded-2xl text-white outline-none">
                         </div>
-                        <textarea id="reqBio" placeholder="خبراتك السابقة (إن وجد)" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl h-24 text-white outline-none"></textarea>
-                        <button onclick="sendFullMarketerRequest()" class="bg-green-600 text-white px-10 py-3 rounded-2xl font-black text-xs">إرسال الطلب الآن</button>
+                        <textarea id="reqBio" data-key="req_bio" placeholder="خبراتك السابقة (إن وجد)" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl h-24 text-white outline-none"></textarea>
+                        <button onclick="sendFullMarketerRequest()" class="bg-green-600 text-white px-10 py-3 rounded-2xl font-black text-xs hover:bg-green-500 transition-colors" data-key="btn_send_req">إرسال الطلب الآن</button>
                     </div>
                 </div>
             </section>
 
             <section id="wishlistSection">
                 <h2 class="text-2xl font-black mb-6 flex items-center gap-3 italic text-pink-500">
-                    <span class="w-2 h-6 bg-pink-500 rounded-full"></span> قائمة المفضلات ❤
+                    <span class="w-2 h-6 bg-pink-500 rounded-full"></span> <span data-key="wishlist_title">قائمة المفضلات ❤</span>
                 </h2>
                 <div id="wishlistGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
             </section>
 
             <section id="myProductsSection" class="hidden">
                 <h2 class="text-2xl font-black mb-6 flex items-center gap-3 italic text-blue-400">
-                    <span class="w-2 h-6 bg-blue-500 rounded-full"></span> إدارة منتجاتي المعروضة
+                    <span class="w-2 h-6 bg-blue-500 rounded-full"></span> <span data-key="manage_my_products">إدارة منتجاتي المعروضة</span>
                 </h2>
                 <div id="myProductsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
             </section>
 
             <section id="settingsPanel" class="hidden glass p-8 rounded-[40px] animate-slide">
-                <h3 class="text-xl font-black mb-6 text-blue-400 italic underline">تحديث الملف الشخصي</h3>
+                <h3 class="text-xl font-black mb-6 text-blue-400 italic underline" data-key="update_profile">تحديث الملف الشخصي</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                    <input type="text" id="newName" placeholder="اسم جديد" class="bg-white/5 border border-white/10 p-4 rounded-2xl text-white outline-none">
-                    <input type="text" id="newImg" placeholder="رابط صورة شخصية" class="bg-white/5 border border-white/10 p-4 rounded-2xl text-white outline-none">
+                    <input type="text" id="newName" data-key="new_name" placeholder="اسم جديد" class="bg-white/5 border border-white/10 p-4 rounded-2xl text-white outline-none">
+                    <input type="text" id="newImg" data-key="new_image" placeholder="رابط صورة شخصية" class="bg-white/5 border border-white/10 p-4 rounded-2xl text-white outline-none">
                 </div>
-                <button onclick="updateProfile()" class="bg-blue-600 text-white px-10 py-3 rounded-2xl font-black text-xs shadow-lg">حفظ البيانات</button>
+                <button onclick="updateProfile()" class="bg-blue-600 text-white px-10 py-3 rounded-2xl font-black text-xs shadow-lg hover:bg-blue-500 transition" data-key="btn_save_data">حفظ البيانات</button>
             </section>
         </div>
     </div>
@@ -189,9 +224,9 @@
 
 <div id="orderFullDetailsModal" class="fixed inset-0 bg-black/95 z-[300] hidden flex items-center justify-center p-4">
     <div class="glass max-w-2xl w-full p-8 rounded-[40px] border border-blue-500/20 shadow-2xl relative overflow-y-auto max-h-[90vh]">
-        <button onclick="closeOrderModal()" class="absolute top-6 left-6 text-gray-400 hover:text-white">✕</button>
+        <button onclick="closeOrderModal()" class="absolute top-6 left-6 text-gray-400 hover:text-white text-xl">✕</button>
         <h2 class="text-2xl font-black text-blue-400 mb-8 flex items-center gap-2">
-            <span class="w-2 h-6 bg-blue-500 rounded-full"></span> تفاصيل الطلب كاملة
+            <span class="w-2 h-6 bg-blue-500 rounded-full"></span> <span data-key="order_details_full">تفاصيل الطلب كاملة</span>
         </h2>
         <div id="orderModalBody" class="grid grid-cols-1 md:grid-cols-2 gap-8 text-right"></div>
         <div id="orderModalActions" class="mt-8 pt-8 border-t border-white/5 flex gap-4"></div>
@@ -200,14 +235,14 @@
 
 <div id="receiptModal" class="fixed inset-0 bg-black/90 z-[400] flex items-center justify-center hidden p-6">
     <div class="glass max-w-lg w-full p-8 rounded-[40px] text-center relative border border-white/10">
-        <button onclick="closeReceipt()" class="absolute top-6 left-6 text-gray-500">✕</button>
-        <h3 class="text-xl font-black mb-6 text-blue-400 italic">بيانات الدفع / التحويل</h3>
+        <button onclick="closeReceipt()" class="absolute top-6 left-6 text-gray-500 text-xl hover:text-white">✕</button>
+        <h3 class="text-xl font-black mb-6 text-blue-400 italic" data-key="payment_data">بيانات الدفع / التحويل</h3>
         <div id="receiptContent" class="text-white text-sm bg-white/5 p-6 rounded-2xl font-mono mb-6 text-center break-all"></div>
-        <button onclick="closeReceipt()" class="bg-white text-black px-10 py-2 rounded-xl font-bold text-[10px]">إغلاق</button>
+        <button onclick="closeReceipt()" class="bg-white text-black px-10 py-2 rounded-xl font-bold text-[10px] hover:bg-gray-200" data-key="btn_close">إغلاق</button>
     </div>
 </div>
 
-<div id="toast" class="fixed bottom-10 right-10 glass px-8 py-4 rounded-2xl text-white font-black opacity-0 transition-all pointer-events-none z-[500] border-blue-500/50 border text-[10px]"></div>
+<div id="toast" class="fixed bottom-10 right-10 glass px-8 py-4 rounded-2xl text-white font-black opacity-0 transition-all pointer-events-none z-[500] border-blue-500/50 border text-[10px] uppercase tracking-widest text-center"></div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -221,36 +256,62 @@
 
     onAuthStateChanged(auth, async (user) => {
         if (user) {
-            myUid = user.uid;
+            // استقبال الـ uid من الرابط في حالة "زيارة الحساب"
+            const urlParams = new URLSearchParams(window.location.search);
+            const visitedUid = urlParams.get('uid');
+            myUid = visitedUid ? visitedUid : user.uid;
+            
+            // لو كان بيزور حسابه هو شخصياً يمسح الـ uid من الرابط للنظافة
+            if(visitedUid === user.uid) window.history.replaceState({}, document.title, "profile.html");
+
             const snap = await get(ref(db, 'users/' + myUid));
             if (snap.exists()) {
                 const u = snap.val();
+                // فقط الزائر أو الآدمن اللي بيتحكم في الواجهة بناءً على صلاحيات صاحب الحساب المفتوح
+                // لكننا سنحتفظ بصلاحيات المستخدم الأساسي في متغير منفصل لو لزم الأمر
+                const currentUserSnap = await get(ref(db, 'users/' + user.uid));
+                const realRole = currentUserSnap.val().role;
+                
                 myRole = u.role;
+                
                 document.getElementById('userName').innerText = u.name;
                 document.getElementById('userEmail').innerText = u.email;
                 document.getElementById('userRoleBadge').innerText = u.role.toUpperCase();
                 document.getElementById('userImg').src = u.photo || `https://ui-avatars.com/api/?name=${u.name}&background=3b82f6&color=fff`;
                 
+                // --- نظام المحفظة الذكية (الآدمن يرى أرباح المنصة فقط، المسوق يرى كل شيء) ---
                 if(u.role === 'admin') {
-                    document.getElementById('revenueTitle').innerText = "أرباح المنصة (10%)";
                     document.getElementById('adminMarketerPanel').classList.remove('hidden');
                     loadMarketersForAdmin();
+                    document.getElementById('debtRow').style.display = 'none'; // إخفاء عمولة المنصة
+                    document.getElementById('walletBalanceLabel').innerText = "أرباح المنصة (10%):";
+                    document.getElementById('walletBalanceLabel').removeAttribute('data-key');
                 }
 
                 if(u.role === 'marketer' || u.role === 'admin') {
-                    document.querySelectorAll('#marketerSettings, #ordersSection, #insightsDashboard, #walletBox, #marketerStatsBox, #myProductsSection').forEach(el => el.classList.remove('hidden'));
-                    loadPaymentDetails();
-                    onValue(ref(db, `users/${myUid}/wallet`), (s) => {
-                        const w = s.val() || { balance: 0, debt: 0 };
-                        document.getElementById('walletBalance').innerText = (w.balance || 0) + " ج.م";
-                        document.getElementById('walletDebt').innerText = (w.debt || 0) + " ج.م";
-                    });
+                    // إذا كان يزور حساب شخص آخر، نخفي الإعدادات الشخصية كالمحافظ
+                    if(user.uid === myUid || realRole === 'admin') {
+                        document.querySelectorAll('#marketerSettings, #ordersSection, #insightsDashboard, #walletBox, #marketerStatsBox, #myProductsSection').forEach(el => el.classList.remove('hidden'));
+                        loadPaymentDetails();
+                    } else {
+                        document.querySelectorAll('#insightsDashboard, #marketerStatsBox, #myProductsSection').forEach(el => el.classList.remove('hidden'));
+                    }
+
+                    if(u.role === 'marketer') {
+                        onValue(ref(db, `users/${myUid}/wallet`), (s) => {
+                            const w = s.val() || { balance: 0, debt: 0 };
+                            document.getElementById('walletBalance').innerText = (Number(w.balance) || 0).toFixed(2) + " ج.م";
+                            document.getElementById('walletDebt').innerText = (Number(w.debt) || 0).toFixed(2) + " ج.م";
+                        });
+                    }
                 } else {
-                    checkIfRequestActive();
+                    if(user.uid === myUid) checkIfRequestActive();
                 }
+                
                 loadOrders(u.role);
                 loadContent(myUid, u.wishlist || []);
             }
+            if(window.applyLanguage) applyLanguage(localStorage.getItem('lang') || 'ar');
         } else { window.location.href = "login.html"; }
     });
 
@@ -297,35 +358,51 @@
             currentOrdersData = snap.val() || {};
             const incomingList = document.getElementById('ordersList');
             const myPurchaseList = document.getElementById('myPurchasesList');
-            incomingList.innerHTML = ''; myPurchaseList.innerHTML = '';
+            if(incomingList) incomingList.innerHTML = ''; 
+            if(myPurchaseList) myPurchaseList.innerHTML = '';
             let rev = 0, succ = 0, fail = 0;
+            let adminPlatformProfit = 0; // لجمع الـ 10% الخاصة بالآدمن من كل المبيعات
 
-            Object.keys(currentOrdersData).reverse().forEach(key => {
+            const keys = Object.keys(currentOrdersData).reverse();
+            keys.forEach(key => {
                 const o = currentOrdersData[key];
                 const displayTotal = Number(o.total || o.totalPrice || 0);
 
-                if(o.customerUid === myUid) {
-                    myPurchaseList.innerHTML += `<div class="glass p-5 rounded-2xl flex justify-between items-center border border-white/5"><div><h4 class="text-[10px] font-black text-blue-400 uppercase">${o.productName}</h4><p class="text-[8px] text-gray-500 mt-1">${o.date}</p></div><span class="status-badge status-${o.status || 'pending'}">${o.status || 'pending'}</span></div>`;
+                // تتبع المشتريات (توسيع شرط الالتقاط)
+                const isMyPurchase = (o.customerUid === myUid) || (o.customerId === myUid) || (o.buyerId === myUid);
+                
+                if(isMyPurchase) {
+                    myPurchaseList.innerHTML += `<div class="glass p-5 rounded-2xl flex justify-between items-center border border-white/5 animate-slide mb-2"><div><h4 class="text-[10px] font-black text-blue-400 uppercase">${o.productName || 'طلب مشتريات'}</h4><p class="text-[8px] text-gray-500 mt-1">${o.date || ''}</p></div><span class="status-badge status-${o.status || 'pending'}">${o.status || 'pending'}</span></div>`;
                 }
+
                 if(role === 'admin' || o.marketerId === myUid) {
                     if(o.status === 'completed') {
-                        // لو آدمن احسب 10% فقط من المجموع، لو مسوق احسب المبلغ كامل
-                        rev += (role === 'admin') ? (displayTotal * 0.10) : displayTotal;
+                        rev += displayTotal;
+                        adminPlatformProfit += (displayTotal * 0.10);
                         succ++;
                     } else if(o.status === 'failed') { fail++; }
 
                     if(!o.status || o.status === 'pending') {
-                        incomingList.innerHTML += `<div class="glass p-6 rounded-3xl border border-white/10 space-y-4 animate-slide"><div class="flex justify-between items-start"><div><h4 class="font-black text-blue-400">${o.productName}</h4><p class="text-[10px] text-white">العميل: ${o.customerName}</p></div><button onclick="viewOrderDetails('${key}')" class="bg-blue-600/20 text-blue-400 px-3 py-1 rounded-lg text-[9px] font-black">تفاصيل</button></div><div class="flex justify-between items-center border-t border-white/5 pt-4"><p class="text-white font-black text-xs">المبلغ: ${displayTotal} ج.م</p><span class="status-badge status-pending">قيد الانتظار</span></div></div>`;
+                        incomingList.innerHTML += `<div class="glass p-6 rounded-3xl border border-white/10 space-y-4 animate-slide mb-3"><div class="flex justify-between items-start"><div><h4 class="font-black text-blue-400">${o.productName || 'منتج'}</h4><p class="text-[10px] text-white mt-1">العميل: ${o.customerName || 'غير معروف'}</p></div><button onclick="viewOrderDetails('${key}')" class="bg-blue-600/20 text-blue-400 px-3 py-1 rounded-lg text-[9px] font-black hover:bg-blue-600 hover:text-white transition">تفاصيل</button></div><div class="flex justify-between items-center border-t border-white/5 pt-4"><p class="text-white font-black text-xs">المبلغ: ${displayTotal} ج.م</p><span class="status-badge status-pending">قيد الانتظار</span></div></div>`;
                     }
                 }
             });
+
+            if(myPurchaseList.innerHTML === '') myPurchaseList.innerHTML = '<p class="text-[10px] text-gray-500 text-center py-4">لم تقم بأي طلبات بعد.</p>';
+            if(incomingList && incomingList.innerHTML === '') incomingList.innerHTML = '<p class="text-[10px] text-gray-500 text-center py-4">لا توجد طلبات جديدة.</p>';
+
             document.getElementById('totalRevenue').innerText = rev.toFixed(2) + " ج.م";
             document.getElementById('successOrdersCount').innerText = succ;
             document.getElementById('failedOrdersCount').innerText = fail;
+
+            // تحديث محفظة الآدمن بقيمة 10%
+            if (role === 'admin') {
+                const adminWallet = document.getElementById('walletBalance');
+                if(adminWallet) adminWallet.innerText = adminPlatformProfit.toFixed(2) + " ج.م";
+            }
         });
     }
 
-    // إدارة المسوقين للآدمن
     function loadMarketersForAdmin() {
         onValue(ref(db, 'users'), (snap) => {
             const users = snap.val();
@@ -335,7 +412,14 @@
                 const u = users[uid];
                 if(u.role === 'marketer') {
                     const debt = u.wallet?.debt || 0;
-                    tbody.innerHTML += `<tr class="hover:bg-white/5 transition"><td class="p-4 font-bold text-white">${u.name}</td><td class="p-4 text-red-500 font-black">${debt.toFixed(2)} ج.م</td><td class="p-4"><button onclick="settleDebt('${uid}')" class="bg-blue-600 text-white px-3 py-1 rounded-lg font-black hover:bg-blue-500 transition">تم الاستحقاق</button></td></tr>`;
+                    // جلب رقم الهاتف الخاص بالمسوق (من بياناته الشخصية)
+                    const phone = u.phone || u.phoneNumber || '<span class="text-gray-600">غير مسجل</span>';
+                    tbody.innerHTML += `<tr class="hover:bg-white/5 transition">
+                        <td class="p-4 font-bold text-white">${u.name}</td>
+                        <td class="p-4 text-gray-400 text-[10px] font-mono tracking-widest">${phone}</td>
+                        <td class="p-4 text-red-500 font-black">${debt.toFixed(2)} ج.م</td>
+                        <td class="p-4"><button onclick="settleDebt('${uid}')" class="bg-blue-600/20 text-blue-400 px-3 py-1.5 rounded-lg font-black hover:bg-blue-600 hover:text-white transition text-[9px]">تم الاستحقاق</button></td>
+                    </tr>`;
                 }
             });
         });
@@ -352,9 +436,10 @@
         const displayTotal = o.total || o.totalPrice || 0;
         const body = document.getElementById('orderModalBody');
         const actions = document.getElementById('orderModalActions');
-        body.innerHTML = `<div class="space-y-4"><div><label class="text-gray-500 text-[10px] block">العميل</label><p class="text-white font-bold">${o.customerName}</p></div><div><label class="text-gray-500 text-[10px] block">رقم الهاتف</label><p class="text-white font-bold">${o.phone}</p></div><div><label class="text-gray-500 text-[10px] block">العنوان</label><p class="text-white font-bold">${o.address}</p></div></div><div class="space-y-4"><div><label class="text-gray-500 text-[10px] block">المنتج</label><p class="text-blue-400 font-bold">${o.productName}</p></div><div><label class="text-gray-500 text-[10px] block">المبلغ</label><p class="text-green-400 font-black text-xl">${displayTotal} ج.م</p></div><div><button onclick="viewReceipt('${o.receipt || ''}')" class="text-blue-400 underline text-xs">عرض إثبات الدفع</button></div></div>`;
-        actions.innerHTML = `<button onclick="updateOrderStatus('${id}', 'completed', ${displayTotal})" class="flex-1 bg-green-600 text-white py-3 rounded-2xl font-black text-xs hover:bg-green-500">تم التسليم</button><button onclick="updateOrderStatus('${id}', 'failed', 0)" class="flex-1 bg-red-600/20 text-red-500 py-3 rounded-2xl font-black text-xs">إلغاء</button>`;
+        body.innerHTML = `<div class="space-y-4"><div><label class="text-gray-500 text-[10px] block" data-key="order_client_name">العميل</label><p class="text-white font-bold">${o.customerName || 'غير متوفر'}</p></div><div><label class="text-gray-500 text-[10px] block" data-key="order_client_phone">رقم الهاتف</label><p class="text-white font-bold font-mono">${o.phone || 'غير متوفر'}</p></div><div><label class="text-gray-500 text-[10px] block" data-key="order_client_address">العنوان</label><p class="text-white font-bold">${o.address || 'غير متوفر'}</p></div></div><div class="space-y-4"><div><label class="text-gray-500 text-[10px] block" data-key="order_product">المنتج</label><p class="text-blue-400 font-bold">${o.productName || 'غير متوفر'}</p></div><div><label class="text-gray-500 text-[10px] block" data-key="order_amount">المبلغ</label><p class="text-green-400 font-black text-xl">${displayTotal} ج.م</p></div><div><button onclick="viewReceipt('${o.receipt || ''}')" class="text-blue-400 underline text-xs font-bold hover:text-white transition" data-key="btn_view_receipt">عرض إثبات الدفع</button></div></div>`;
+        actions.innerHTML = `<button onclick="updateOrderStatus('${id}', 'completed', ${displayTotal})" class="flex-1 bg-green-600 text-white py-3 rounded-2xl font-black text-xs hover:bg-green-500 transition shadow-lg" data-key="btn_delivered">تم التسليم</button><button onclick="updateOrderStatus('${id}', 'failed', 0)" class="flex-1 bg-red-600/20 text-red-500 py-3 rounded-2xl font-black text-xs hover:bg-red-500 hover:text-white transition" data-key="btn_cancel">إلغاء</button>`;
         document.getElementById('orderFullDetailsModal').classList.remove('hidden');
+        if(window.applyLanguage) applyLanguage(localStorage.getItem('lang') || 'ar');
     };
 
     function loadContent(uId, wishlist) {
@@ -366,12 +451,15 @@
             let myCount = 0;
             Object.keys(prods).forEach(key => {
                 const p = prods[key];
-                const card = `<div class="glass p-4 rounded-3xl border border-white/5 flex gap-4 items-center"><img src="${p.image}" class="w-12 h-12 rounded-xl object-cover"><div class="flex-1 font-bold text-[10px]"><h4 class="text-white">${p.name}</h4><p class="text-blue-400 mt-1">${p.price} ج.م</p></div><a href="details.html?id=${key}" class="p-2 bg-blue-500/10 text-blue-400 rounded-xl text-[9px] font-black">عرض</a></div>`;
+                const card = `<div class="glass p-4 rounded-3xl border border-white/5 flex gap-4 items-center animate-slide"><img src="${p.image}" class="w-12 h-12 rounded-xl object-cover shadow-lg"><div class="flex-1 font-bold text-[10px]"><h4 class="text-white line-clamp-1">${p.name}</h4><p class="text-blue-400 mt-1">${p.price} ج.م</p></div><a href="details.html?id=${key}" class="p-2 bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white transition rounded-xl text-[9px] font-black shadow-md">عرض</a></div>`;
                 if(wishlist.includes(key)) wishGrid.innerHTML += card;
                 if(p.owner === uId) { myGrid.innerHTML += card; myCount++; }
             });
             document.getElementById('wishCount').innerText = wishlist.length;
             if(document.getElementById('prodCount')) document.getElementById('prodCount').innerText = myCount;
+            
+            if(wishlist.length === 0) wishGrid.innerHTML = '<p class="text-[10px] text-gray-500 col-span-full text-center py-4">لا توجد مفضلات حالياً.</p>';
+            if(myCount === 0) myGrid.innerHTML = '<p class="text-[10px] text-gray-500 col-span-full text-center py-4">لم تقم بنشر أي منتجات بعد.</p>';
         });
     }
 
@@ -382,17 +470,22 @@
         Object.keys(currentOrdersData).forEach(key => {
             const o = currentOrdersData[key];
             if(o.status === status && (myRole === 'admin' || o.marketerId === myUid)) {
-                list.innerHTML += `<div class="bg-white/5 p-4 rounded-2xl flex justify-between items-center text-[10px] mb-2"><div><p class="text-blue-400 font-black">${o.productName}</p><p class="text-gray-500">${o.customerName}</p></div><span class="font-bold text-white">${o.total || o.totalPrice} ج.م</span></div>`;
+                list.innerHTML += `<div class="bg-white/5 p-4 rounded-2xl flex justify-between items-center text-[10px] mb-2 animate-slide border border-white/5"><div><p class="text-blue-400 font-black">${o.productName || 'طلب'}</p><p class="text-gray-500 mt-1">${o.customerName || 'مجهول'}</p></div><span class="font-bold text-white text-xs">${o.total || o.totalPrice} ج.م</span></div>`;
             }
         });
+        if(list.innerHTML === '') list.innerHTML = '<p class="text-[10px] text-gray-500 text-center py-4">لا توجد سجلات في هذا الأرشيف.</p>';
     };
 
     window.showJoinForm = () => { document.getElementById('requestStatic').classList.add('hidden'); document.getElementById('joinForm').classList.remove('hidden'); };
     window.sendFullMarketerRequest = async () => {
         const phone = document.getElementById('reqPhone').value; const address = document.getElementById('reqAddress').value;
-        if(!phone || !address) return showToast("أكمل البيانات!");
+        if(!phone || !address) return showToast("أكمل البيانات أولاً!");
+        
+        // حفظ طلب المسوق و حفظ رقم الهاتف أيضاً في بيانات الحساب الشخصية لسهولة الوصول
         await set(ref(db, 'marketer_requests/' + myUid), { uid: myUid, name: document.getElementById('userName').innerText, email: document.getElementById('userEmail').innerText, phone, address, bio: document.getElementById('reqBio').value, date: new Date().toLocaleString('ar-EG') });
-        location.reload();
+        await update(ref(db, 'users/' + myUid), { phone: phone }); // تحديث الهاتف في حساب المستخدم
+        showToast("تم إرسال طلبك بنجاح!");
+        setTimeout(() => location.reload(), 2000);
     };
 
     async function checkIfRequestActive() {
@@ -405,15 +498,20 @@
         const u = {};
         if(document.getElementById('newName').value) u.name = document.getElementById('newName').value;
         if(document.getElementById('newImg').value) u.photo = document.getElementById('newImg').value;
-        await update(ref(db, 'users/' + myUid), u); location.reload();
+        if(Object.keys(u).length > 0) {
+            await update(ref(db, 'users/' + myUid), u); 
+            showToast("تم الحفظ بنجاح!");
+            setTimeout(() => location.reload(), 1500);
+        } else showToast("لم تقم بإدخال بيانات للتحديث!");
     };
 
     window.viewReceipt = (v) => { 
-        if(!v) return showToast("لا يوجد مرفق!");
+        if(!v) return showToast("لا يوجد إيصال مرفق!");
         if(v.startsWith('http')) window.open(v, '_blank'); 
         else { document.getElementById('receiptContent').innerText = v; document.getElementById('receiptModal').classList.remove('hidden'); } 
     };
 
+    window.setLanguage = (lang) => { localStorage.setItem('lang', lang); location.reload(); };
     window.closeOrderModal = () => document.getElementById('orderFullDetailsModal').classList.add('hidden');
     window.closeReceipt = () => document.getElementById('receiptModal').classList.add('hidden');
     window.toggleSettings = () => document.getElementById('settingsPanel').classList.toggle('hidden');

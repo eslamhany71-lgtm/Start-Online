@@ -41,14 +41,21 @@ const translations = {
         forgot_pass: "نسيت كلمة المرور؟",
         google_btn: "سجل بواسطة جوجل",
         or_via: "أو عبر",
-        // داخل translations.ar
         btn_community: "انضم لمجتمعنا",
-        logout: "خروج",
-                // أضف هذه للقسم العربي ar
+        
+        // قيم صفحة المتجر والبروفايل
         shop_title: "المتجر الذكي",
+        profile_title: "لوحة التحكم الاحترافية | Start Online",
         cart_title: "سلة المشتريات",
         cart_total: "الإجمالي:",
         btn_shopping: "استكمال التسوق",
+        cart_empty: "سلتك فارغة حالياً",
+        cat_all: "الكل",
+        cat_clothes: "ملابس",
+        cat_acc: "إكسسوارات",
+        cat_perfume: "عطور",
+        cat_beauty: "صحة وجمال",
+        cat_best: "أكثر مبيعاً",
         stat_users: "المستخدمين",
         stat_prods: "المنتجات",
         stat_marketers: "المسوقين",
@@ -68,8 +75,54 @@ const translations = {
         btn_publish: "نشر المنتج الآن",
         btn_visit: "زيارة",
         btn_details: "التفاصيل والتقييمات",
-      
-                },
+        btn_order: "اطلب",
+        debt_alert: "تنبيه: تجاوزت مديونيتك 500 ج.م. تم إيقاف صلاحية النشر مؤقتاً لحين السداد.",
+        smart_wallet: "المحفظة الذكية",
+        my_profits: "أرباحي المستحقة:",
+        platform_commission: "عمولة المنصة (10%):",
+        payment_methods: "وسائل استلام الأرباح",
+        btn_save_wallets: "حفظ المحافظ",
+        btn_edit_profile: "تعديل البروفايل",
+        stat_favorites: "المفضلة",
+        stat_my_products: "منتجاتي",
+        stat_total_sales: "إجمالي المبيعات",
+        stat_success_orders: "طلبات ناجحة",
+        stat_failed_orders: "طلبات ملغاة",
+        admin_manage_marketers: "إدارة المسوقين والديون",
+        table_marketer: "المسوق",
+        table_phone: "رقم الهاتف",
+        table_debt: "المديونية (10%)",
+        table_action: "الإجراء",
+        my_purchases_title: "تتبع طلباتي المشترية",
+        loading_orders: "جاري تحميل طلباتك...",
+        manage_incoming_orders: "إدارة الطلبات الواردة",
+        archive_title: "سجل المبيعات المؤرشفة",
+        btn_close: "إغلاق",
+        join_title: "ابدأ الربح معنا اليوم!",
+        join_desc: "كن مسوقاً معتمداً وابدأ بعرض منتجاتك والحصول على دخل إضافي.",
+        btn_join: "تقديم طلب انضمام",
+        req_phone: "رقم الموبايل",
+        req_address: "العنوان بالتفصيل",
+        req_bio: "خبراتك السابقة (إن وجد)",
+        btn_send_req: "إرسال الطلب الآن",
+        wishlist_title: "قائمة المفضلات ❤",
+        manage_my_products: "إدارة منتجاتي المعروضة",
+        update_profile: "تحديث الملف الشخصي",
+        new_name: "اسم جديد",
+        new_image: "رابط صورة شخصية",
+        btn_save_data: "حفظ البيانات",
+        order_details_full: "تفاصيل الطلب كاملة",
+        payment_data: "بيانات الدفع / التحويل",
+        order_client_name: "العميل",
+        order_client_phone: "رقم الهاتف",
+        order_client_address: "العنوان",
+        order_product: "المنتج",
+        order_amount: "المبلغ",
+        btn_view_receipt: "عرض إثبات الدفع",
+        btn_delivered: "تم التسليم",
+        btn_cancel: "إلغاء",
+        btn_accept: "قبول"
+    },
     en: {
         nav_home: "Home",
         nav_store: "Store",
@@ -112,14 +165,21 @@ const translations = {
         forgot_pass: "Forgot Password?",
         google_btn: "Sign in with Google",
         or_via: "OR VIA",
-        // داخل translations.en
         btn_community: "Join Community",
-        logout: "Logout",
-        // أضف هذه للقسم الإنجليزي en
+        
+        // Store and Profile values
         shop_title: "Smart Store",
+        profile_title: "Pro Dashboard | Start Online",
         cart_title: "Shopping Cart",
         cart_total: "Total:",
         btn_shopping: "Continue Shopping",
+        cart_empty: "Your cart is empty",
+        cat_all: "All",
+        cat_clothes: "Clothes",
+        cat_acc: "Accessories",
+        cat_perfume: "Perfumes",
+        cat_beauty: "Health & Beauty",
+        cat_best: "Best Sellers",
         stat_users: "Users",
         stat_prods: "Products",
         stat_marketers: "Marketers",
@@ -138,9 +198,56 @@ const translations = {
         p_model: "Model",
         btn_publish: "Publish Product Now",
         btn_visit: "Visit",
-        btn_details: "Details & Reviews"
-                }
-        };
+        btn_details: "Details & Reviews",
+        btn_order: "Order",
+        debt_alert: "⚠️ Alert: Your debt exceeded 500 EGP. Publishing is suspended.",
+        smart_wallet: "Smart Wallet",
+        my_profits: "My Earned Profits:",
+        platform_commission: "Platform Commission (10%):",
+        payment_methods: "Withdrawal Methods",
+        btn_save_wallets: "Save Wallets",
+        btn_edit_profile: "Edit Profile",
+        stat_favorites: "Favorites",
+        stat_my_products: "My Products",
+        stat_total_sales: "Total Sales",
+        stat_success_orders: "Successful Orders",
+        stat_failed_orders: "Canceled Orders",
+        admin_manage_marketers: "Manage Marketers & Debts",
+        table_marketer: "Marketer",
+        table_phone: "Phone Number",
+        table_debt: "Debt (10%)",
+        table_action: "Action",
+        my_purchases_title: "Track My Purchases",
+        loading_orders: "Loading your orders...",
+        manage_incoming_orders: "Manage Incoming Orders",
+        archive_title: "Archived Sales Record",
+        btn_close: "Close",
+        join_title: "Start Earning With Us Today!",
+        join_desc: "Become a certified marketer, display your products, and earn extra income.",
+        btn_join: "Submit Joining Request",
+        req_phone: "Mobile Number",
+        req_address: "Detailed Address",
+        req_bio: "Previous Experience (if any)",
+        btn_send_req: "Send Request Now",
+        wishlist_title: "My Wishlist ❤",
+        manage_my_products: "Manage My Products",
+        update_profile: "Update Profile",
+        new_name: "New Name",
+        new_image: "Profile Picture URL",
+        btn_save_data: "Save Data",
+        order_details_full: "Full Order Details",
+        payment_data: "Payment / Transfer Data",
+        order_client_name: "Client",
+        order_client_phone: "Phone Number",
+        order_client_address: "Address",
+        order_product: "Product",
+        order_amount: "Amount",
+        btn_view_receipt: "View Payment Proof",
+        btn_delivered: "Delivered",
+        btn_cancel": "Cancel",
+        btn_accept: "Accept"
+    }
+};
 
 function applyLanguage(lang) {
     const t = translations[lang];
@@ -149,8 +256,8 @@ function applyLanguage(lang) {
     document.querySelectorAll('[data-key]').forEach(el => {
         const key = el.getAttribute('data-key');
         if (t[key]) {
-            // ترجمة الـ Placeholder إذا كان العنصر Input
-            if (el.tagName === 'INPUT') {
+            // ترجمة الـ Placeholder إذا كان العنصر Input أو Textarea
+            if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
                 el.placeholder = t[key];
             } else {
                 el.innerHTML = t[key];

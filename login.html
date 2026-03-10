@@ -10,72 +10,121 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
+        /* الخلفية المبتكرة اللي بتشد الانتباه */
         body { 
-            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%); 
-            color: #f1f5f9; 
-            font-family: 'Cairo', sans-serif; 
-            min-height: 100vh; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #020617;
+            overflow: hidden;
+            font-family: 'Cairo', sans-serif;
         }
-        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.1); }
+
+        /* طبقة الألوان المتحركة */
+        .bg-animate {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(45deg, #0f172a, #1e1b4b, #581c87, #1e1b4b);
+            background-size: 400% 400%;
+            animation: meshGradient 15s ease infinite;
+        }
+
+        @keyframes meshGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* تأثير التوهج خلف الكارت */
+        .glow-overlay {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.3) 0%, transparent 70%);
+            z-index: 0;
+            filter: blur(50px);
+        }
+
+        .glass { 
+            background: rgba(15, 23, 42, 0.7); 
+            backdrop-filter: blur(25px); 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .input-focus:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
         .loader { border-top-color: #3b82f6; animation: spinner 0.6s linear infinite; }
         @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <div class="w-full max-w-md p-8 glass rounded-[40px] shadow-2xl mx-4 relative">
+    <div class="bg-animate"></div>
+    <div class="glow-overlay"></div>
+
+    <div class="w-full max-w-md p-10 glass rounded-[45px] shadow-2xl mx-4 relative z-10 border border-white/5">
         
-        <div class="flex justify-end gap-3 mb-4">
-            <button onclick="setLanguage('ar')" class="text-[10px] font-bold text-gray-400 hover:text-blue-400 transition">العربية</button>
-            <span class="text-gray-700">|</span>
-            <button onclick="setLanguage('en')" class="text-[10px] font-bold text-gray-400 hover:text-blue-400 transition">English</button>
+        <div class="flex justify-center gap-4 mb-8">
+            <button onclick="setLanguage('ar')" class="text-[11px] font-bold text-gray-400 hover:text-white transition-all bg-white/5 px-3 py-1.5 rounded-full border border-white/5">العربية</button>
+            <button onclick="setLanguage('en')" class="text-[11px] font-bold text-gray-400 hover:text-white transition-all bg-white/5 px-3 py-1.5 rounded-full border border-white/5">English</button>
         </div>
 
-        <h1 data-key="title" class="text-3xl font-black text-center mb-8 text-white tracking-tight">START<span class="text-blue-500">ONLINE</span></h1>
+        <h1 class="text-4xl font-black text-center mb-10 text-white tracking-tighter">START<span class="text-blue-500">ONLINE</span></h1>
         
-        <form id="authForm" class="space-y-4">
-            <div id="registerFields" class="hidden animate-fade-in">
+        <form id="authForm" class="space-y-5">
+            <div id="registerFields" class="hidden">
                 <input type="text" id="userName" data-key="name_placeholder" placeholder="الاسم الكامل" 
-                class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none text-sm text-white transition-all">
+                class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-sm text-white transition-all input-focus">
             </div>
 
             <input type="email" id="userEmail" required data-key="email_placeholder" placeholder="البريد الإلكتروني" 
-            class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none text-sm text-white transition-all">
+            class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-sm text-white transition-all input-focus">
             
             <div class="relative">
                 <input type="password" id="userPass" required data-key="pass_placeholder" placeholder="كلمة المرور" 
-                class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none text-sm text-white transition-all">
-                <button type="button" onclick="togglePassword()" class="absolute left-4 top-4 text-gray-400 hover:text-white">
+                class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-sm text-white transition-all input-focus">
+                <button type="button" onclick="togglePassword()" class="absolute left-4 top-4 text-gray-500 hover:text-white transition-colors">
                     <i id="eyeIcon" class="fas fa-eye text-sm"></i>
                 </button>
             </div>
 
             <div id="forgotPasswordContainer" class="text-left">
-                <button type="button" onclick="handleForgotPassword()" class="text-xs text-blue-400 hover:underline">نسيت كلمة المرور؟</button>
+                <button type="button" onclick="handleForgotPassword()" data-key="forgot_pass" class="text-xs text-blue-400 hover:text-blue-300 transition-colors">نسيت كلمة المرور؟</button>
             </div>
 
-            <button type="submit" id="mainBtn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-2xl transition-all shadow-lg flex items-center justify-center gap-2">
+            <button type="submit" id="mainBtn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-2xl transition-all shadow-lg hover:shadow-blue-500/20 flex items-center justify-center gap-2 mt-4">
                 <span id="btnText" data-key="login_btn">دخول</span>
                 <div id="btnLoader" class="hidden w-5 h-5 border-2 border-white border-t-transparent rounded-full loader"></div>
             </button>
         </form>
 
-        <div class="relative my-8 text-center">
-            <hr class="border-white/10">
-            <span class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#111827] px-4 text-xs text-gray-500">أو عبر</span>
+        <div class="relative my-10 text-center">
+            <hr class="border-white/5">
+            <span class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#0f172a] px-4 text-[10px] text-gray-500 font-bold uppercase tracking-widest" data-key="or_via">أو عبر</span>
         </div>
 
-        <button onclick="loginWithGoogle()" class="w-full bg-white/5 border border-white/10 hover:bg-white/10 text-white py-3 rounded-2xl transition-all flex items-center justify-center gap-3 text-sm font-semibold">
+        <button onclick="loginWithGoogle()" class="w-full bg-white/5 border border-white/10 hover:bg-white/10 text-white py-4 rounded-2xl transition-all flex items-center justify-center gap-3 text-sm font-bold">
             <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5" alt="Google">
-            سجل بواسطة جوجل
+            <span data-key="google_btn">سجل بواسطة جوجل</span>
         </button>
 
-        <p class="mt-8 text-center text-sm text-gray-400">
+        <p class="mt-10 text-center text-sm text-gray-400">
             <span id="toggleText" data-key="no_account">ليس لديك حساب؟</span> 
-            <button onclick="toggleAuth()" id="toggleBtn" data-key="signup_btn" class="text-blue-400 font-bold underline mr-1">إنشاء حساب</button>
+            <button onclick="toggleAuth()" id="toggleBtn" data-key="signup_link" class="text-blue-400 font-black hover:text-blue-300 ml-1 transition-colors">إنشاء حساب</button>
         </p>
     </div>
 
@@ -84,7 +133,6 @@
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        // إعدادات الفايربيز الخاصة بك
         const firebaseConfig = {
             apiKey: "AIzaSyCyypXt8LnHiVBR2Ka0Mb8ntXu6dJH9N-w",
             authDomain: "start-online-6f460.firebaseapp.com",
@@ -99,7 +147,6 @@
 
         let isLogin = true;
 
-        // 1. وظيفة إظهار/إخفاء الباسورد
         window.togglePassword = () => {
             const passInput = document.getElementById('userPass');
             const eyeIcon = document.getElementById('eyeIcon');
@@ -112,25 +159,35 @@
             }
         };
 
-        // 2. التبديل بين دخول وتسجيل
         window.toggleAuth = () => {
             isLogin = !isLogin;
-            document.getElementById('registerFields').classList.toggle('hidden');
-            document.getElementById('forgotPasswordContainer').classList.toggle('hidden');
+            const regFields = document.getElementById('registerFields');
+            const forgotPass = document.getElementById('forgotPasswordContainer');
+            const btnText = document.getElementById('btnText');
+            const toggleText = document.getElementById('toggleText');
+            const toggleBtn = document.getElementById('toggleBtn');
+
+            regFields.classList.toggle('hidden');
+            regFields.classList.add('fade-in');
+            forgotPass.classList.toggle('hidden');
             
             if (isLogin) {
-                document.getElementById('btnText').setAttribute('data-key', 'login_btn');
-                document.getElementById('toggleText').setAttribute('data-key', 'no_account');
-                document.getElementById('toggleBtn').setAttribute('data-key', 'signup_btn');
+                btnText.setAttribute('data-key', 'login_btn');
+                toggleText.setAttribute('data-key', 'no_account');
+                toggleBtn.setAttribute('data-key', 'signup_link');
             } else {
-                document.getElementById('btnText').setAttribute('data-key', 'signup_btn');
-                document.getElementById('toggleText').setAttribute('data-key', 'have_account');
-                document.getElementById('toggleBtn').setAttribute('data-key', 'login_btn');
+                btnText.setAttribute('data-key', 'signup_btn');
+                toggleText.setAttribute('data-key', 'have_account');
+                toggleBtn.setAttribute('data-key', 'login_link');
             }
-            if(window.applyLanguage) window.applyLanguage(); 
+            
+            // إعادة تطبيق الترجمة فوراً عند التبديل
+            if(window.applyLanguage) {
+                const currentLang = localStorage.getItem('lang') || 'ar';
+                window.applyLanguage(currentLang);
+            }
         };
 
-        // 3. نسيت كلمة المرور
         window.handleForgotPassword = async () => {
             const email = document.getElementById('userEmail').value;
             if (!email) { alert("من فضلك اكتب بريدك الإلكتروني أولاً"); return; }
@@ -140,11 +197,9 @@
             } catch (err) { alert("خطأ: " + err.message); }
         };
 
-        // 4. تسجيل جوجل
         window.loginWithGoogle = async () => {
             try {
                 const result = await signInWithPopup(auth, googleProvider);
-                // حفظ بيانات المستخدم لو جديد
                 await set(ref(db, 'users/' + result.user.uid), { 
                     name: result.user.displayName, 
                     email: result.user.email, 
@@ -154,7 +209,6 @@
             } catch (err) { alert("فشل تسجيل جوجل: " + err.message); }
         };
 
-        // 5. إرسال النموذج (Login / Signup)
         document.getElementById('authForm').onsubmit = async (e) => {
             e.preventDefault();
             const email = document.getElementById('userEmail').value;
@@ -162,7 +216,6 @@
             const btnText = document.getElementById('btnText');
             const btnLoader = document.getElementById('btnLoader');
 
-            // إظهار اللودر وتعطيل الزر
             btnText.classList.add('hidden');
             btnLoader.classList.remove('hidden');
 
@@ -178,14 +231,9 @@
             } catch (err) {
                 btnText.classList.remove('hidden');
                 btnLoader.classList.add('hidden');
-                
-                // ترجمة الأخطاء للعربي
-                let errorMsg = "حدث خطأ ما";
+                let errorMsg = err.message;
                 if (err.code === 'auth/wrong-password') errorMsg = "كلمة المرور غير صحيحة";
                 else if (err.code === 'auth/user-not-found') errorMsg = "هذا الحساب غير موجود";
-                else if (err.code === 'auth/email-already-in-use') errorMsg = "البريد مسجل بالفعل";
-                else errorMsg = err.message;
-                
                 alert(errorMsg);
             }
         };

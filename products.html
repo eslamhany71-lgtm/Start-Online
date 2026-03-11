@@ -417,7 +417,16 @@
             const nn = prompt("الاسم الجديد:", oldN); 
             const np = prompt("السعر الجديد:", oldP); 
             const ni = prompt("رابط الصورة الجديد:", oldI); 
-            if(nn && np) { await update(ref(db, 'products/' + id), { name: nn, price: np, image: ni }); showToast("تم التحديث!"); } 
+            const nComm = prompt("العمولة الجديدة:", oldComm !== 'undefined' ? oldComm : '');
+            if(nn && np) { 
+                await update(ref(db, 'products/' + id), { 
+                    name: nn, 
+                    price: np, 
+                    oldPrice: nComm, // السطر ده اللي بيحدث العمولة
+                    image: ni 
+                }); 
+                showToast("تم التحديث بنجاح!"); 
+            } 
         };
 
         function loadProducts() { onValue(ref(db, 'products'), (s) => { allProducts = s.val() || {}; renderGrid(allProducts); }); }

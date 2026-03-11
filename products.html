@@ -352,7 +352,6 @@
             onValue(ref(db, 'reviews'), (s) => { let c = 0; const data = s.val() || {}; Object.values(data).forEach(r => c += Object.keys(r).length); document.getElementById('totalReviews').innerText = c; });
         }
 
-        // تم التعديل لجلب الـ UID وإضافة زر الزيارة
         window.openUsersModal = (role) => {
             const m = document.getElementById('usersModal'); const l = document.getElementById('modalList');
             m.style.display = 'flex'; l.innerHTML = '';
@@ -413,16 +412,17 @@
             }
         };
 
-        window.editProduct = async (id, oldN, oldP, oldI) => { 
+        // التعديل هنا: الدالة بقت تستقبل oldComm كمعامل خامس
+        window.editProduct = async (id, oldN, oldP, oldI, oldComm) => { 
             const nn = prompt("الاسم الجديد:", oldN); 
             const np = prompt("السعر الجديد:", oldP); 
+            const nComm = prompt("العمولة الجديدة:", oldComm !== 'undefined' && oldComm !== 'null' ? oldComm : '');
             const ni = prompt("رابط الصورة الجديد:", oldI); 
-            const nComm = prompt("العمولة الجديدة:", oldComm !== 'undefined' ? oldComm : '');
             if(nn && np) { 
                 await update(ref(db, 'products/' + id), { 
                     name: nn, 
                     price: np, 
-                    oldPrice: nComm, // السطر ده اللي بيحدث العمولة
+                    oldPrice: nComm, 
                     image: ni 
                 }); 
                 showToast("تم التحديث بنجاح!"); 
@@ -461,11 +461,11 @@
                                 ${p.oldPrice ? `<span class="text-green-400 font-black text-[11px] mt-1"><span data-key="p_commission">عمولتك</span>: ${p.oldPrice} ج.م</span>` : ''}
                             </div>
                             ${canManage ? `<div class="flex gap-2">
-                                <button onclick="editProduct('${key}', '${p.name}', '${p.price}', '${p.image}')" class="text-yellow-500 text-[10px] font-bold italic border-b border-yellow-500/30">تعديل</button>
+                                <button onclick="editProduct('${key}', '${p.name.replace(/'/g, "\\'")}', '${p.price}', '${p.image}', '${p.oldPrice || ''}')" class="text-yellow-500 text-[10px] font-bold italic border-b border-yellow-500/30">تعديل</button>
                                 <button onclick="deleteProduct('${key}')" class="text-red-500 text-[10px] font-bold italic border-b border-red-500/30">حذف</button>
                             </div>` : ''}
                         </div>
-                        <button onclick="viewDetails('${key}', '${p.name}', '${p.price}', '${p.image}')" data-key="btn_details" class="w-full bg-white/5 hover:bg-blue-600 hover:text-white py-4 rounded-[20px] text-[10px] font-black uppercase transition-all shadow-xl border border-white/5 tracking-widest active:scale-95">التفاصيل والتقييمات</button>
+                        <button onclick="viewDetails('${key}', '${p.name.replace(/'/g, "\\'")}', '${p.price}', '${p.image}')" data-key="btn_details" class="w-full bg-white/5 hover:bg-blue-600 hover:text-white py-4 rounded-[20px] text-[10px] font-black uppercase transition-all shadow-xl border border-white/5 tracking-widest active:scale-95">التفاصيل والتقييمات</button>
                     </div>
                 </div>`;
             });

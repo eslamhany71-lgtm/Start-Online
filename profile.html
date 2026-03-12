@@ -87,7 +87,8 @@
                 <div id="userRoleBadge" class="absolute top-4 left-4 text-[8px] font-black bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full uppercase italic">Guest</div>
                 <img id="userImg" src="https://via.placeholder.com/150" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover border-4 border-blue-500/20 shadow-xl">
                 <h1 id="userName" class="text-2xl font-black mb-1 italic">تحميل...</h1>
-                <p id="userEmail" class="text-gray-500 text-[10px] mb-6">email@example.com</p>
+                <p id="userEmail" class="text-gray-500 text-[10px] mb-1">email@example.com</p>
+                <p id="userPhoneDisplay" class="text-blue-400 text-[11px] font-bold font-mono tracking-widest mb-6" dir="ltr"></p>
                 
                 <div id="walletBox" class="hidden bg-white/5 p-5 rounded-3xl border border-white/5 mb-6 text-right animate-slide">
                     <p class="text-[9px] text-blue-400 font-black mb-3 uppercase italic tracking-widest" data-key="smart_wallet">المحفظة الذكية</p>
@@ -224,10 +225,10 @@
             <section id="settingsPanel" class="hidden glass p-8 rounded-[40px] animate-slide">
                 <h3 class="text-xl font-black mb-6 text-blue-400 italic underline" data-key="update_profile">تحديث الملف الشخصي</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-    <input type="text" id="newName" data-key="new_name" placeholder="اسم جديد" class="bg-white/5 border border-white/10 p-4 rounded-2xl text-white outline-none">
-    <input type="text" id="newImg" data-key="new_image" placeholder="رابط صورة شخصية" class="bg-white/5 border border-white/10 p-4 rounded-2xl text-white outline-none">
-    <input type="tel" id="newPhone" placeholder="رقم الهاتف للتواصل" class="bg-white/5 border border-white/10 p-4 rounded-2xl text-white outline-none md:col-span-2">
-</div>
+                    <input type="text" id="newName" data-key="new_name" placeholder="اسم جديد" class="bg-white/5 border border-white/10 p-4 rounded-2xl text-white outline-none">
+                    <input type="text" id="newImg" data-key="new_image" placeholder="رابط صورة شخصية" class="bg-white/5 border border-white/10 p-4 rounded-2xl text-white outline-none">
+                    <input type="tel" id="newPhone" placeholder="رقم الهاتف للتواصل" class="bg-white/5 border border-white/10 p-4 rounded-2xl text-white outline-none md:col-span-2">
+                </div>
                 <button onclick="updateProfile()" class="bg-blue-600 text-white px-10 py-3 rounded-2xl font-black text-xs shadow-lg hover:bg-blue-500 transition" data-key="btn_save_data">حفظ البيانات</button>
             </section>
         </div>
@@ -288,6 +289,7 @@
                 document.getElementById('userEmail').innerText = u.email;
                 document.getElementById('userRoleBadge').innerText = u.role.toUpperCase();
                 document.getElementById('userImg').src = u.photo || `https://ui-avatars.com/api/?name=${u.name}&background=3b82f6&color=fff`;
+                document.getElementById('userPhoneDisplay').innerText = u.phone || "لم يتم تسجيل رقم هاتف";
                 
                 if(u.role === 'admin') {
                     document.getElementById('adminMarketerPanel').classList.remove('hidden');
@@ -545,11 +547,11 @@
         else document.getElementById('requestMarketerSection').classList.remove('hidden');
     }
 
-window.updateProfile = async () => {
+    window.updateProfile = async () => {
         const u = {};
         if(document.getElementById('newName').value) u.name = document.getElementById('newName').value;
         if(document.getElementById('newImg').value) u.photo = document.getElementById('newImg').value;
-        if(document.getElementById('newPhone').value) u.phone = document.getElementById('newPhone').value; // ضفنا سطر الحفظ ده
+        if(document.getElementById('newPhone').value) u.phone = document.getElementById('newPhone').value; 
         
         if(Object.keys(u).length > 0) {
             await update(ref(db, 'users/' + myUid), u); 

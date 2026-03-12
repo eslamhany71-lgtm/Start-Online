@@ -9,18 +9,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         body { 
-    /* ركز هنا: حط لينك الصورة بتاعتك مكان كلمة LINK_HERE */
-    background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.95)), url('https://softeagles.com/wp-content/uploads/2024/09/%D9%85%D8%AA%D8%A7%D8%AC%D8%B1-%D8%A7%D9%84%D9%83%D8%AA%D8%B1%D9%88%D9%86%D9%8A%D8%A9.jpg');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    color: #f1f5f9; 
-    font-family: 'Cairo', sans-serif; 
-    min-height: 100vh; 
-    margin: 0; 
-    overflow-x: hidden; 
-    scroll-behavior: smooth; 
-}
+            /* ركز هنا: حط لينك الصورة بتاعتك مكان كلمة LINK_HERE */
+            background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.95)), url('https://softeagles.com/wp-content/uploads/2024/09/%D9%85%D8%AA%D8%A7%D8%AC%D8%B1-%D8%A7%D9%84%D9%83%D8%AA%D8%B1%D9%88%D9%86%D9%8A%D8%A9.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #f1f5f9; 
+            font-family: 'Cairo', sans-serif; 
+            min-height: 100vh; 
+            margin: 0; 
+            overflow-x: hidden; 
+            scroll-behavior: smooth; 
+        }
         .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.08); }
         
         /* كود اللوجو الاحترافي */
@@ -99,12 +99,26 @@
                 <li><a href="products.html" data-key="nav_store" class="text-blue-400 font-black border-b-2 border-blue-400 pb-1">المتجر</a></li>
                 <li><a href="profile.html" data-key="nav_profile" class="hover:text-white transition">حسابي</a></li>
             </ul>
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-3">
+                <div class="relative">
+                    <button onclick="toggleNotif()" class="text-xl text-gray-400 hover:text-white transition relative pt-1">
+                        🔔
+                        <span id="notifBadge" class="absolute -top-1 -right-1 bg-red-500 text-white w-4 h-4 text-[9px] font-black rounded-full flex items-center justify-center hidden">0</span>
+                    </button>
+                    <div id="notifDropdown" class="absolute top-10 left-0 w-72 md:w-80 glass p-4 rounded-3xl shadow-2xl border border-white/10 hidden flex-col gap-2 z-[200] max-h-80 overflow-y-auto no-scrollbar text-right bg-slate-900/95">
+                        <h4 class="text-xs font-black text-blue-400 border-b border-white/10 pb-3 mb-2 flex justify-between items-center">
+                            <span>الإشعارات الحديثة</span>
+                            <button onclick="toggleNotif()" class="text-gray-500 hover:text-white">✕</button>
+                        </h4>
+                        <div id="notifList" class="space-y-2 text-[10px] text-gray-300"></div>
+                    </div>
+                </div>
+
                 <button onclick="setLanguage(localStorage.getItem('lang') === 'en' ? 'ar' : 'en')" class="text-[9px] md:text-[10px] font-black text-gray-400 hover:text-white transition bg-white/5 px-2 md:px-3 py-2 rounded-lg border border-white/10">
                     <span id="langLabel">English</span>
                 </button>
                 <div id="userInfo" class="hidden lg:block text-[10px] font-bold text-gray-300 bg-white/5 px-3 py-1 rounded-full italic tracking-widest text-center uppercase border border-white/5">تحقق...</div>
-                <button onclick="logout()" data-key="logout" class="bg-red-500/10 text-red-500 px-3 md:px-4 py-2 rounded-lg md:rounded-xl text-[10px] font-bold border border-red-500/20 hover:bg-red-500 hover:text-white transition shadow-lg">خروج</button>
+                <button onclick="logout()" data-key="logout" class="bg-red-500/10 text-red-500 px-3 md:px-4 py-2 rounded-lg md:rounded-xl text-[10px] font-bold border border-red-500/20 hover:bg-red-500 hover:text-white transition shadow-lg hidden md:block">خروج</button>
             </div>
         </div>
     </nav>
@@ -268,10 +282,58 @@
                         }
                     }
                     if(window.applyLanguage) applyLanguage(localStorage.getItem('lang') || 'ar');
+                    
+                    // --- التعديل هنا: تحميل الإشعارات للمستخدم ---
+                    loadNotifications(userRole, user.uid);
                 }
                 loadProducts(); updateCartUI();
             } else { window.location.href = "login.html"; }
         });
+
+        // --- دالة تحميل وعرض الإشعارات ---
+        function loadNotifications(role, uid) {
+            onValue(ref(db, 'orders'), (snap) => {
+                const orders = snap.val() || {};
+                let notificationsList = [];
+
+                Object.keys(orders).reverse().forEach(key => {
+                    const o = orders[key];
+                    const isMyPurchase = (o.customerUid === uid) || (o.customerId === uid) || (o.buyerId === uid);
+                    const displayTotal = Number(o.total || o.totalPrice || 0);
+
+                    if(isMyPurchase && o.status === 'completed') notificationsList.push({text: `تم تسليم طلبك: ${o.productName}`, date: o.date, color: 'text-green-400'});
+                    if(isMyPurchase && o.status === 'failed') notificationsList.push({text: `تم إلغاء طلبك: ${o.productName}`, date: o.date, color: 'text-red-400'});
+
+                    if(role === 'admin' || o.marketerId === uid) {
+                        if(!o.status || o.status === 'pending') notificationsList.push({text: `طلب جديد: ${o.productName} بـ ${displayTotal} ج.م`, date: o.date, color: 'text-yellow-400'});
+                        if(o.status === 'completed') notificationsList.push({text: `تم إضافة أرباح طلب ${o.productName} لمحفظتك`, date: o.date, color: 'text-blue-400'});
+                    }
+                });
+
+                const badge = document.getElementById('notifBadge');
+                const list = document.getElementById('notifList');
+                
+                if(notificationsList.length > 0) {
+                    badge.innerText = notificationsList.length;
+                    badge.classList.remove('hidden');
+                    list.innerHTML = notificationsList.slice(0, 15).map(n => `
+                        <div class="bg-white/5 p-3 rounded-xl border border-white/5 mb-2 hover:bg-white/10 transition">
+                            <p class="font-bold ${n.color} mb-1">${n.text}</p>
+                            <p class="text-[8px] text-gray-500">${n.date}</p>
+                        </div>
+                    `).join('');
+                } else {
+                    badge.classList.add('hidden');
+                    list.innerHTML = '<p class="text-gray-500 text-center py-4">لا توجد إشعارات حالياً.</p>';
+                }
+            });
+        }
+
+        window.toggleNotif = () => {
+            const drop = document.getElementById('notifDropdown');
+            drop.classList.toggle('hidden');
+            if(!drop.classList.contains('hidden')) document.getElementById('notifBadge').classList.add('hidden');
+        };
 
         window.toggleCart = () => document.getElementById('cartDrawer').classList.toggle('open');
         window.updateCartUI = () => {
@@ -424,7 +486,6 @@
             }
         };
 
-        // التعديل هنا: الدالة بقت تستقبل oldComm كمعامل خامس
         window.editProduct = async (id, oldN, oldP, oldI, oldComm) => { 
             const nn = prompt("الاسم الجديد:", oldN); 
             const np = prompt("السعر الجديد:", oldP); 

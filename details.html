@@ -60,9 +60,14 @@
         <div class="lg:w-1/2 space-y-8 lg:order-1 text-right">
             <nav class="flex justify-between items-center">
                 <a href="products.html" class="text-blue-400 font-black hover:text-white transition-all flex items-center gap-2 text-xs uppercase italic tracking-widest"> ← العودة للمتجر </a>
-                <div class="flex items-center gap-2 text-[10px] text-gray-400 italic font-bold">
-                    <span class="w-2.5 h-2.5 bg-green-500 rounded-full badge-live shadow-[0_0_10px_#22c55e]"></span>
-                    متاح بالمخزن
+                <div class="flex items-center gap-4">
+                    <button onclick="shareProduct()" class="flex items-center gap-1 text-[10px] bg-blue-600/20 text-blue-400 px-3 py-1.5 rounded-lg border border-blue-500/30 hover:bg-blue-600 hover:text-white transition-all font-black">
+                        🔗 مشاركة
+                    </button>
+                    <div class="flex items-center gap-2 text-[10px] text-gray-400 italic font-bold">
+                        <span class="w-2.5 h-2.5 bg-green-500 rounded-full badge-live shadow-[0_0_10px_#22c55e]"></span>
+                        متاح بالمخزن
+                    </div>
                 </div>
             </nav>
 
@@ -262,13 +267,30 @@
             });
         }
 
+        // --- التعديل هنا: دالة زرار المشاركة ---
+        window.shareProduct = () => {
+            if (navigator.share) {
+                navigator.share({
+                    title: document.getElementById('detName').innerText,
+                    text: 'شاهد هذا المنتج الرائع على Start Online!',
+                    url: window.location.href,
+                }).then(() => {
+                    showToast("تم فتح نافذة المشاركة بنجاح! 🔗");
+                }).catch(console.error);
+            } else {
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                    showToast("تم نسخ الرابط! يمكنك مشاركته الآن 🔗");
+                });
+            }
+        };
+
         window.changeQty = (v) => { quantity = Math.max(1, quantity + v); document.getElementById('qtyView').innerText = quantity; updateFinalPrice(); };
         window.updateFinalPrice = () => {
             const gov = document.getElementById('govSelect');
             const shipping = parseFloat(gov.options[gov.selectedIndex].getAttribute('data-price')) || 0;
             const total = (unitPrice * quantity) + shipping;
             document.getElementById('finalPriceView').innerText = total + " ج.م";
-           
+            
         };
 
         window.addToCart = async () => {

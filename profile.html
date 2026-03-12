@@ -224,9 +224,10 @@
             <section id="settingsPanel" class="hidden glass p-8 rounded-[40px] animate-slide">
                 <h3 class="text-xl font-black mb-6 text-blue-400 italic underline" data-key="update_profile">تحديث الملف الشخصي</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                    <input type="text" id="newName" data-key="new_name" placeholder="اسم جديد" class="bg-white/5 border border-white/10 p-4 rounded-2xl text-white outline-none">
-                    <input type="text" id="newImg" data-key="new_image" placeholder="رابط صورة شخصية" class="bg-white/5 border border-white/10 p-4 rounded-2xl text-white outline-none">
-                </div>
+    <input type="text" id="newName" data-key="new_name" placeholder="اسم جديد" class="bg-white/5 border border-white/10 p-4 rounded-2xl text-white outline-none">
+    <input type="text" id="newImg" data-key="new_image" placeholder="رابط صورة شخصية" class="bg-white/5 border border-white/10 p-4 rounded-2xl text-white outline-none">
+    <input type="tel" id="newPhone" placeholder="رقم الهاتف للتواصل" class="bg-white/5 border border-white/10 p-4 rounded-2xl text-white outline-none md:col-span-2">
+</div>
                 <button onclick="updateProfile()" class="bg-blue-600 text-white px-10 py-3 rounded-2xl font-black text-xs shadow-lg hover:bg-blue-500 transition" data-key="btn_save_data">حفظ البيانات</button>
             </section>
         </div>
@@ -544,10 +545,12 @@
         else document.getElementById('requestMarketerSection').classList.remove('hidden');
     }
 
-    window.updateProfile = async () => {
+window.updateProfile = async () => {
         const u = {};
         if(document.getElementById('newName').value) u.name = document.getElementById('newName').value;
         if(document.getElementById('newImg').value) u.photo = document.getElementById('newImg').value;
+        if(document.getElementById('newPhone').value) u.phone = document.getElementById('newPhone').value; // ضفنا سطر الحفظ ده
+        
         if(Object.keys(u).length > 0) {
             await update(ref(db, 'users/' + myUid), u); 
             showToast("تم الحفظ بنجاح!");

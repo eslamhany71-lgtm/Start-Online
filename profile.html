@@ -9,18 +9,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         body { 
-    /* ركز هنا: حط لينك الصورة بتاعتك مكان كلمة LINK_HERE */
-    background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.95)), url('https://www.albaheth.co/wp-content/uploads/2023/08/11.jpg');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    color: #f1f5f9; 
-    font-family: 'Cairo', sans-serif; 
-    min-height: 100vh; 
-    margin: 0; 
-    overflow-x: hidden; 
-    scroll-behavior: smooth; 
-}
+            background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.95)), url('https://www.albaheth.co/wp-content/uploads/2023/08/11.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #f1f5f9; 
+            font-family: 'Cairo', sans-serif; 
+            min-height: 100vh; 
+            margin: 0; 
+            overflow-x: hidden; 
+            scroll-behavior: smooth; 
+        }
         .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.08); }
         .animate-slide { animation: slideIn 0.5s ease-out forwards; }
         @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
@@ -259,7 +258,7 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getDatabase, ref, get, set, update, onValue, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    import { getDatabase, ref, get, set, update, onValue, push, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
     const firebaseConfig = { apiKey: "AIzaSyCyypXt8LnHiVBR2Ka0Mb8ntXu6dJH9N-w", authDomain: "start-online-6f460.firebaseapp.com", projectId: "start-online-6f460", databaseURL: "https://start-online-6f460-default-rtdb.firebaseio.com/" };
     const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getDatabase(app);
@@ -279,8 +278,6 @@
             const snap = await get(ref(db, 'users/' + myUid));
             if (snap.exists()) {
                 const u = snap.val();
-                // فقط الزائر أو الآدمن اللي بيتحكم في الواجهة بناءً على صلاحيات صاحب الحساب المفتوح
-                // لكننا سنحتفظ بصلاحيات المستخدم الأساسي في متغير منفصل لو لزم الأمر
                 const currentUserSnap = await get(ref(db, 'users/' + user.uid));
                 const realRole = currentUserSnap.val().role;
                 
@@ -291,17 +288,15 @@
                 document.getElementById('userRoleBadge').innerText = u.role.toUpperCase();
                 document.getElementById('userImg').src = u.photo || `https://ui-avatars.com/api/?name=${u.name}&background=3b82f6&color=fff`;
                 
-                // --- نظام المحفظة الذكية (الآدمن يرى أرباح المنصة فقط، المسوق يرى كل شيء) ---
                 if(u.role === 'admin') {
                     document.getElementById('adminMarketerPanel').classList.remove('hidden');
                     loadMarketersForAdmin();
-                    document.getElementById('debtRow').style.display = 'none'; // إخفاء عمولة المنصة
+                    document.getElementById('debtRow').style.display = 'none';
                     document.getElementById('walletBalanceLabel').innerText = "أرباح المنصة (10%):";
                     document.getElementById('walletBalanceLabel').removeAttribute('data-key');
                 }
 
                 if(u.role === 'marketer' || u.role === 'admin') {
-                    // إذا كان يزور حساب شخص آخر، نخفي الإعدادات الشخصية كالمحافظ
                     if(user.uid === myUid || realRole === 'admin') {
                         document.querySelectorAll('#marketerSettings, #ordersSection, #insightsDashboard, #walletBox, #marketerStatsBox, #myProductsSection').forEach(el => el.classList.remove('hidden'));
                         loadPaymentDetails();
@@ -373,18 +368,22 @@
             if(incomingList) incomingList.innerHTML = ''; 
             if(myPurchaseList) myPurchaseList.innerHTML = '';
             let rev = 0, succ = 0, fail = 0;
-            let adminPlatformProfit = 0; // لجمع الـ 10% الخاصة بالآدمن من كل المبيعات
+            let adminPlatformProfit = 0; 
 
             const keys = Object.keys(currentOrdersData).reverse();
             keys.forEach(key => {
                 const o = currentOrdersData[key];
                 const displayTotal = Number(o.total || o.totalPrice || 0);
 
-                // تتبع المشتريات (توسيع شرط الالتقاط)
                 const isMyPurchase = (o.customerUid === myUid) || (o.customerId === myUid) || (o.buyerId === myUid);
                 
+                let statusKey = "order_status_pending";
+                let statusText = "قيد الانتظار";
+                if(o.status === 'completed') { statusKey = "order_status_completed"; statusText = "تم التسليم"; }
+                else if(o.status === 'failed') { statusKey = "order_status_failed"; statusText = "ملغاة"; }
+
                 if(isMyPurchase) {
-                    myPurchaseList.innerHTML += `<div class="glass p-5 rounded-2xl flex justify-between items-center border border-white/5 animate-slide mb-2"><div><h4 class="text-[10px] font-black text-blue-400 uppercase">${o.productName || 'طلب مشتريات'}</h4><p class="text-[8px] text-gray-500 mt-1">${o.date || ''}</p></div><span class="status-badge status-${o.status || 'pending'}">${o.status || 'pending'}</span></div>`;
+                    myPurchaseList.innerHTML += `<div class="glass p-5 rounded-2xl flex justify-between items-center border border-white/5 animate-slide mb-2"><div><h4 class="text-[10px] font-black text-blue-400 uppercase">${o.productName || 'طلب مشتريات'}</h4><p class="text-[8px] text-gray-500 mt-1">${o.date || ''}</p></div><span class="status-badge status-${o.status || 'pending'}" data-key="${statusKey}">${statusText}</span></div>`;
                 }
 
                 if(role === 'admin' || o.marketerId === myUid) {
@@ -395,7 +394,7 @@
                     } else if(o.status === 'failed') { fail++; }
 
                     if(!o.status || o.status === 'pending') {
-                        incomingList.innerHTML += `<div class="glass p-6 rounded-3xl border border-white/10 space-y-4 animate-slide mb-3"><div class="flex justify-between items-start"><div><h4 class="font-black text-blue-400">${o.productName || 'منتج'}</h4><p class="text-[10px] text-white mt-1">العميل: ${o.customerName || 'غير معروف'}</p></div><button onclick="viewOrderDetails('${key}')" class="bg-blue-600/20 text-blue-400 px-3 py-1 rounded-lg text-[9px] font-black hover:bg-blue-600 hover:text-white transition">تفاصيل</button></div><div class="flex justify-between items-center border-t border-white/5 pt-4"><p class="text-white font-black text-xs">المبلغ: ${displayTotal} ج.م</p><span class="status-badge status-pending">قيد الانتظار</span></div></div>`;
+                        incomingList.innerHTML += `<div class="glass p-6 rounded-3xl border border-white/10 space-y-4 animate-slide mb-3"><div class="flex justify-between items-start"><div><h4 class="font-black text-blue-400">${o.productName || 'منتج'}</h4><p class="text-[10px] text-white mt-1">العميل: ${o.customerName || 'غير معروف'}</p></div><button onclick="viewOrderDetails('${key}')" data-key="order_details_btn" class="bg-blue-600/20 text-blue-400 px-3 py-1 rounded-lg text-[9px] font-black hover:bg-blue-600 hover:text-white transition">تفاصيل</button></div><div class="flex justify-between items-center border-t border-white/5 pt-4"><p class="text-white font-black text-xs">المبلغ: ${displayTotal} ج.م</p><span class="status-badge status-pending" data-key="order_status_pending">قيد الانتظار</span></div></div>`;
                     }
                 }
             });
@@ -407,11 +406,11 @@
             document.getElementById('successOrdersCount').innerText = succ;
             document.getElementById('failedOrdersCount').innerText = fail;
 
-            // تحديث محفظة الآدمن بقيمة 10%
             if (role === 'admin') {
                 const adminWallet = document.getElementById('walletBalance');
                 if(adminWallet) adminWallet.innerText = adminPlatformProfit.toFixed(2) + " ج.م";
             }
+            if(window.applyLanguage) applyLanguage(localStorage.getItem('lang') || 'ar');
         });
     }
 
@@ -424,16 +423,16 @@
                 const u = users[uid];
                 if(u.role === 'marketer') {
                     const debt = u.wallet?.debt || 0;
-                    // جلب رقم الهاتف الخاص بالمسوق (من بياناته الشخصية)
                     const phone = u.phone || u.phoneNumber || '<span class="text-gray-600">غير مسجل</span>';
                     tbody.innerHTML += `<tr class="hover:bg-white/5 transition">
                         <td class="p-4 font-bold text-white">${u.name}</td>
                         <td class="p-4 text-gray-400 text-[10px] font-mono tracking-widest">${phone}</td>
                         <td class="p-4 text-red-500 font-black">${debt.toFixed(2)} ج.م</td>
-                        <td class="p-4"><button onclick="settleDebt('${uid}')" class="bg-blue-600/20 text-blue-400 px-3 py-1.5 rounded-lg font-black hover:bg-blue-600 hover:text-white transition text-[9px]">تم الاستحقاق</button></td>
+                        <td class="p-4"><button onclick="settleDebt('${uid}')" data-key="btn_settle" class="bg-blue-600/20 text-blue-400 px-3 py-1.5 rounded-lg font-black hover:bg-blue-600 hover:text-white transition text-[9px]">تم الاستحقاق</button></td>
                     </tr>`;
                 }
             });
+            if(window.applyLanguage) applyLanguage(localStorage.getItem('lang') || 'ar');
         });
     }
 
@@ -461,12 +460,32 @@
             const myGrid = document.getElementById('myProductsGrid');
             wishGrid.innerHTML = ''; myGrid.innerHTML = '';
             let myCount = 0;
+            
             Object.keys(prods).forEach(key => {
                 const p = prods[key];
-                const card = `<div class="glass p-4 rounded-3xl border border-white/5 flex gap-4 items-center animate-slide"><img src="${p.image}" class="w-12 h-12 rounded-xl object-cover shadow-lg"><div class="flex-1 font-bold text-[10px]"><h4 class="text-white line-clamp-1">${p.name}</h4><p class="text-blue-400 mt-1">${p.price} ج.م</p></div><a href="details.html?id=${key}" class="p-2 bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white transition rounded-xl text-[9px] font-black shadow-md">عرض</a></div>`;
-                if(wishlist.includes(key)) wishGrid.innerHTML += card;
-                if(p.owner === uId) { myGrid.innerHTML += card; myCount++; }
+                
+                // كارت المفضلة
+                const wishCard = `<div class="glass p-4 rounded-3xl border border-white/5 flex gap-4 items-center animate-slide"><img src="${p.image}" class="w-12 h-12 rounded-xl object-cover shadow-lg"><div class="flex-1 font-bold text-[10px]"><h4 class="text-white line-clamp-1">${p.name}</h4><p class="text-blue-400 mt-1">${p.price} ج.م</p></div><a href="details.html?id=${key}" class="p-2 bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white transition rounded-xl text-[9px] font-black shadow-md">عرض</a></div>`;
+                
+                // كارت منتجاتي مع أزرار التحكم والعمولة
+                const myProdCard = `<div class="glass p-4 rounded-3xl border border-white/5 flex gap-4 items-center animate-slide">
+                    <img src="${p.image}" class="w-12 h-12 rounded-xl object-cover shadow-lg">
+                    <div class="flex-1 font-bold text-[10px]">
+                        <h4 class="text-white line-clamp-1">${p.name}</h4>
+                        <p class="text-blue-400 mt-1">${p.price} ج.م</p>
+                        ${p.oldPrice ? `<p class="text-green-400 mt-1">عمولتك: ${p.oldPrice} ج.م</p>` : ''}
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <a href="details.html?id=${key}" class="px-2 py-1 bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white transition rounded-lg text-[9px] font-black shadow-md text-center">عرض</a>
+                        <button onclick="editProduct('${key}', '${p.name.replace(/'/g, "\\'")}', '${p.price}', '${p.image}', '${p.oldPrice || ''}')" class="px-2 py-1 bg-yellow-500/10 text-yellow-500 hover:bg-yellow-500 hover:text-white transition rounded-lg text-[9px] font-black shadow-md">تعديل</button>
+                        <button onclick="deleteProduct('${key}')" class="px-2 py-1 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition rounded-lg text-[9px] font-black shadow-md">حذف</button>
+                    </div>
+                </div>`;
+
+                if(wishlist.includes(key)) wishGrid.innerHTML += wishCard;
+                if(p.owner === uId) { myGrid.innerHTML += myProdCard; myCount++; }
             });
+
             document.getElementById('wishCount').innerText = wishlist.length;
             if(document.getElementById('prodCount')) document.getElementById('prodCount').innerText = myCount;
             
@@ -474,6 +493,25 @@
             if(myCount === 0) myGrid.innerHTML = '<p class="text-[10px] text-gray-500 col-span-full text-center py-4">لم تقم بنشر أي منتجات بعد.</p>';
         });
     }
+
+    // دوال الحذف والتعديل المضافة لصفحة البروفايل
+    window.editProduct = async (id, oldN, oldP, oldI, oldComm) => { 
+        const nn = prompt("الاسم الجديد:", oldN); 
+        const np = prompt("السعر الجديد:", oldP); 
+        const nComm = prompt("العمولة الجديدة:", oldComm !== 'undefined' && oldComm !== 'null' ? oldComm : '');
+        const ni = prompt("رابط الصورة الجديد:", oldI); 
+        if(nn && np) { 
+            await update(ref(db, 'products/' + id), { 
+                name: nn, 
+                price: np, 
+                oldPrice: nComm, 
+                image: ni 
+            }); 
+            showToast("تم التحديث بنجاح!"); 
+        } 
+    };
+
+    window.deleteProduct = (id) => confirm("هل أنت متأكد من حذف هذا المنتج نهائياً؟") && remove(ref(db, 'products/' + id)) && showToast("تم الحذف بنجاح.");
 
     window.openOrderArchive = (status) => {
         const sect = document.getElementById('orderArchiveSection');
@@ -489,13 +527,13 @@
     };
 
     window.showJoinForm = () => { document.getElementById('requestStatic').classList.add('hidden'); document.getElementById('joinForm').classList.remove('hidden'); };
+    
     window.sendFullMarketerRequest = async () => {
         const phone = document.getElementById('reqPhone').value; const address = document.getElementById('reqAddress').value;
         if(!phone || !address) return showToast("أكمل البيانات أولاً!");
         
-        // حفظ طلب المسوق و حفظ رقم الهاتف أيضاً في بيانات الحساب الشخصية لسهولة الوصول
         await set(ref(db, 'marketer_requests/' + myUid), { uid: myUid, name: document.getElementById('userName').innerText, email: document.getElementById('userEmail').innerText, phone, address, bio: document.getElementById('reqBio').value, date: new Date().toLocaleString('ar-EG') });
-        await update(ref(db, 'users/' + myUid), { phone: phone }); // تحديث الهاتف في حساب المستخدم
+        await update(ref(db, 'users/' + myUid), { phone: phone }); 
         showToast("تم إرسال طلبك بنجاح!");
         setTimeout(() => location.reload(), 2000);
     };

@@ -5,118 +5,194 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8"><title>تأكيد الطلب | Start Online</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        body { background: #020617; color: #f1f5f9; font-family: 'Cairo', sans-serif; min-height: 100vh; padding: 20px 0; }
-        .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); }
-        .pay-card { border: 2px solid transparent; transition: 0.3s; cursor: pointer; background: rgba(255,255,255,0.03); }
-        .pay-card.active { border-color: #3b82f6; background: rgba(59, 130, 246, 0.1); transform: translateY(-5px); }
-        input, select { transition: 0.3s; }
-        input:focus { border-color: #3b82f6 !important; box-shadow: 0 0 15px rgba(59, 130, 246, 0.2); }
+        /* خلفية توحي بالدفع الرقمي والبطاقات البنكية مع لمسة داكنة فخمة */
+        body { 
+            background: linear-gradient(rgba(2, 6, 23, 0.85), rgba(15, 23, 42, 0.95)), url('https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1600');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #f1f5f9; 
+            font-family: 'Cairo', sans-serif; 
+            min-height: 100vh; 
+            padding: 40px 0; 
+        }
+        
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 10px 40px rgba(0,0,0,0.4); }
+        .glass-panel { background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01)); border: 1px solid rgba(255,255,255,0.05); }
+
+        /* ستايل الفاتورة */
+        .receipt-line { border-bottom: 1px dashed rgba(255,255,255,0.15); margin: 12px 0; }
+
+        /* كروت الدفع المتطورة */
+        .pay-card { border: 2px solid rgba(255,255,255,0.1); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; background: rgba(0,0,0,0.4); position: relative; overflow: hidden; }
+        .pay-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(45deg, transparent, rgba(255,255,255,0.05), transparent); transform: translateX(-100%); transition: 0.6s; }
+        .pay-card:hover::before { transform: translateX(100%); }
+        .pay-card:hover { border-color: rgba(59, 130, 246, 0.5); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        .pay-card.active { border-color: #3b82f6; background: rgba(59, 130, 246, 0.15); transform: translateY(-5px) scale(1.02); box-shadow: 0 0 25px rgba(59, 130, 246, 0.4); }
+        .pay-card.active .check-icon { opacity: 1; transform: scale(1); }
+        
+        .check-icon { position: absolute; top: 8px; right: 8px; width: 20px; height: 20px; background: #3b82f6; border-radius: 50%; display: flex; align-items: center; justify-content: center; opacity: 0; transform: scale(0); transition: 0.3s; }
+
+        input { transition: all 0.3s ease; background: rgba(0,0,0,0.3) !important; backdrop-filter: blur(10px); }
+        input:focus { border-color: #3b82f6 !important; box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); outline: none; background: rgba(0,0,0,0.5) !important; }
+        
+        .btn-glow { position: relative; overflow: hidden; z-index: 1; }
+        .btn-glow::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transition: 0.5s; z-index: -1; }
+        .btn-glow:hover::before { left: 100%; }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-slide { animation: slideUp 0.6s ease-out forwards; }
     </style>
 </head>
-<body class="pb-20">
+<body>
 
-<div class="max-w-6xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 gap-8">
+<div class="max-w-6xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 gap-8 relative z-10">
     
-    <div class="lg:col-span-4 space-y-6 order-2 lg:order-1">
-        <div class="glass p-6 rounded-[35px] border-blue-500/10">
-            <h2 class="text-xl font-black mb-6 text-blue-400 flex items-center gap-2">🛒 ملخص الأوردر</h2>
+    <div class="lg:col-span-4 space-y-6 order-2 lg:order-1 animate-slide">
+        <div class="glass p-8 rounded-[40px] border-t-4 border-t-blue-500 relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-blue-500/20 rounded-full blur-[40px] pointer-events-none"></div>
             
-            <div class="flex items-center gap-4 mb-6 bg-white/5 p-3 rounded-2xl">
-                <img id="invImg" src="" class="w-16 h-16 rounded-xl object-cover">
+            <h2 class="text-2xl font-black mb-8 text-white flex items-center gap-3 drop-shadow-md">
+                <span class="text-3xl">🧾</span> فاتورة الطلب
+            </h2>
+            
+            <div class="flex items-center gap-4 mb-8 bg-black/40 p-4 rounded-3xl border border-white/5 shadow-inner">
+                <img id="invImg" src="" class="w-20 h-20 rounded-2xl object-cover border border-white/10 shadow-lg">
                 <div class="overflow-hidden">
-                    <h3 id="invName" class="font-black text-white text-sm truncate">...</h3>
-                    <p id="invSpecs" class="text-[9px] text-gray-500 font-bold mt-1 uppercase"></p>
+                    <h3 id="invName" class="font-black text-blue-300 text-sm mb-1 leading-tight line-clamp-2">...</h3>
+                    <p id="invSpecs" class="text-[10px] text-gray-400 font-bold uppercase tracking-widest leading-relaxed"></p>
+                    <p id="invGov" class="text-[10px] text-green-400 font-black mt-1 uppercase tracking-widest bg-green-500/10 inline-block px-2 py-0.5 rounded-md border border-green-500/20"></p>
                 </div>
             </div>
 
-            <div class="space-y-4 text-xs font-bold">
-                <div class="flex justify-between text-gray-400"><span>سعر القطعة</span><span id="pPrice">0</span></div>
-                <div class="flex justify-between text-gray-400"><span>الكمية</span><span id="pQty">1</span></div>
-                <div class="flex justify-between text-gray-400"><span>تكلفة الشحن</span><span id="pShipping" class="text-green-400">0</span></div>
-                <div class="pt-4 border-t border-white/5 flex justify-between text-xl font-black text-white">
-                    <span>الإجمالي</span>
-                    <span id="totalPrice" class="text-blue-500">0 ج.م</span>
+            <div class="space-y-4 text-sm font-bold text-gray-300">
+                <div class="flex justify-between items-center hover:text-white transition-colors">
+                    <span class="text-xs uppercase tracking-widest">سعر القطعة</span>
+                    <span id="pPrice" class="font-black text-white">0</span>
+                </div>
+                <div class="receipt-line"></div>
+                
+                <div class="flex justify-between items-center hover:text-white transition-colors">
+                    <span class="text-xs uppercase tracking-widest">الكمية المطلوبة</span>
+                    <span id="pQty" class="font-black text-white bg-white/10 px-3 py-0.5 rounded-lg border border-white/10">1</span>
+                </div>
+                <div class="receipt-line"></div>
+                
+                <div class="flex justify-between items-center hover:text-white transition-colors">
+                    <span class="text-xs uppercase tracking-widest">تكلفة الشحن</span>
+                    <span id="pShipping" class="text-green-400 font-black drop-shadow-[0_0_5px_rgba(34,197,94,0.4)]">0</span>
+                </div>
+                
+                <div class="pt-6 mt-6 border-t-2 border-dashed border-white/20 flex justify-between items-center text-2xl font-black text-white">
+                    <span class="tracking-tighter">الإجمالي</span>
+                    <span id="totalPrice" class="text-blue-400 drop-shadow-[0_0_15px_rgba(59,130,246,0.5)]">0 ج.م</span>
                 </div>
             </div>
         </div>
 
-        <div class="glass p-6 rounded-[30px] border-yellow-500/10 text-center">
-            <p class="text-[10px] text-gray-400 font-bold mb-2">⚡ شحن سريع لجميع المحافظات</p>
-            <p class="text-[10px] text-gray-400">الاستلام خلال 48 ساعة عمل</p>
+        <div class="glass p-6 rounded-[30px] border border-green-500/20 text-center bg-gradient-to-b from-green-900/20 to-transparent">
+            <div class="text-3xl mb-2 drop-shadow-md">🚚</div>
+            <p class="text-xs text-white font-black mb-1 uppercase tracking-widest drop-shadow-md">شحن سريع ومؤمن</p>
+            <p class="text-[10px] text-gray-400 font-bold">يصلك الطلب أينما كنت خلال 48 لـ 72 ساعة عمل</p>
         </div>
     </div>
 
-    <div class="lg:col-span-8 space-y-6 order-1 lg:order-2">
-        <div class="glass p-8 rounded-[40px]">
-            <h2 class="text-2xl font-black mb-8 italic text-white flex items-center gap-3">
-                <span class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-sm not-italic">1</span>
+    <div class="lg:col-span-8 space-y-6 order-1 lg:order-2 animate-slide" style="animation-delay: 0.1s;">
+        <div class="glass p-8 md:p-10 rounded-[40px] shadow-2xl relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-64 h-64 bg-blue-600/10 rounded-full blur-[80px] pointer-events-none"></div>
+
+            <h2 class="text-3xl font-black mb-10 italic text-white flex items-center gap-4 drop-shadow-lg">
+                <span class="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-400 rounded-2xl flex items-center justify-center text-xl not-italic shadow-[0_0_20px_rgba(59,130,246,0.4)] border border-blue-400/50">1</span>
                 بيانات الاستلام
             </h2>
             
-            <form id="orderForm" class="space-y-5">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-black text-gray-500 mr-2 uppercase">الاسم بالكامل</label>
-                        <input type="text" id="custName" required placeholder="مثال: محمد أحمد علي" class="w-full bg-black/40 border border-white/10 p-4 rounded-2xl outline-none text-white text-sm">
+            <form id="orderForm" class="space-y-6 relative z-10">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-3">
+                        <label class="text-[11px] font-black text-gray-400 mr-2 uppercase tracking-widest flex items-center gap-2"><span class="text-blue-400">👤</span> الاسم بالكامل للمستلم</label>
+                        <input type="text" id="custName" required placeholder="مثال: محمد أحمد علي" class="w-full border border-white/20 p-4 md:p-5 rounded-2xl text-white text-sm shadow-inner placeholder-gray-600">
                     </div>
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-black text-gray-500 mr-2 uppercase">رقم الموبايل (أساسي)</label>
-                        <input type="tel" id="custPhone1" required placeholder="01xxxxxxxxx" class="w-full bg-black/40 border border-white/10 p-4 rounded-2xl outline-none text-white text-sm">
+                    <div class="space-y-3">
+                        <label class="text-[11px] font-black text-gray-400 mr-2 uppercase tracking-widest flex items-center gap-2"><span class="text-green-400">📱</span> رقم الموبايل للتواصل</label>
+                        <input type="tel" id="custPhone1" required placeholder="01xxxxxxxxx" class="w-full border border-white/20 p-4 md:p-5 rounded-2xl text-white text-sm shadow-inner placeholder-gray-600 text-left" dir="ltr">
                     </div>
                 </div>
 
-                <div class="space-y-2">
-                    <label class="text-[10px] font-black text-gray-500 mr-2 uppercase">العنوان التفصيلي</label>
-                    <input type="text" id="custAddress" required placeholder="المحافظة، المركز، اسم الشارع، رقم المنزل" class="w-full bg-black/40 border border-white/10 p-4 rounded-2xl outline-none text-white text-sm">
+                <div class="space-y-3">
+                    <label class="text-[11px] font-black text-gray-400 mr-2 uppercase tracking-widest flex items-center gap-2"><span class="text-yellow-400">📍</span> العنوان التفصيلي</label>
+                    <input type="text" id="custAddress" required placeholder="المحافظة، المركز، اسم الشارع، رقم العمارة/المنزل" class="w-full border border-white/20 p-4 md:p-5 rounded-2xl text-white text-sm shadow-inner placeholder-gray-600">
                 </div>
 
-                <h2 class="text-2xl font-black my-8 italic text-white flex items-center gap-3 pt-4">
-                    <span class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-sm not-italic">2</span>
-                    طريقة الدفع
+                <div class="w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent my-10"></div>
+
+                <h2 class="text-3xl font-black mb-8 italic text-white flex items-center gap-4 drop-shadow-lg">
+                    <span class="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-400 rounded-2xl flex items-center justify-center text-xl not-italic shadow-[0_0_20px_rgba(59,130,246,0.4)] border border-blue-400/50">2</span>
+                    طريقة الدفع المريحة
                 </h2>
 
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
-                    <div onclick="selectPay('vodafone')" class="pay-card p-4 rounded-2xl text-center flex flex-col items-center gap-2" id="btn-vodafone">
-                        <span class="text-2xl">🔴</span><span class="text-[10px] font-black">فودافون كاش</span>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                    <div onclick="selectPay('vodafone')" class="pay-card p-5 rounded-3xl text-center flex flex-col items-center gap-3" id="btn-vodafone">
+                        <div class="check-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4"><polyline points="20 6 9 17 4 12"/></svg></div>
+                        <img src="https://logowik.com/content/uploads/images/vodafone-cash-egypt2030.logowik.com.webp" class="h-10 object-contain drop-shadow-md brightness-110">
+                        <span class="text-[11px] font-black text-gray-300">فودافون كاش</span>
                     </div>
-                    <div onclick="selectPay('instapay')" class="pay-card p-4 rounded-2xl text-center flex flex-col items-center gap-2" id="btn-instapay">
-                        <span class="text-2xl">📱</span><span class="text-[10px] font-black">انستا باي</span>
+                    <div onclick="selectPay('instapay')" class="pay-card p-5 rounded-3xl text-center flex flex-col items-center gap-3" id="btn-instapay">
+                        <div class="check-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4"><polyline points="20 6 9 17 4 12"/></svg></div>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/InstaPay_Egypt_logo.svg/2560px-InstaPay_Egypt_logo.svg.png" class="h-10 object-contain drop-shadow-md brightness-110">
+                        <span class="text-[11px] font-black text-gray-300">انستا باي</span>
                     </div>
-                    <div onclick="selectPay('orange')" class="pay-card p-4 rounded-2xl text-center flex flex-col items-center gap-2" id="btn-orange">
-                        <span class="text-2xl">🟠</span><span class="text-[10px] font-black">أورانج كاش</span>
+                    <div onclick="selectPay('orange')" class="pay-card p-5 rounded-3xl text-center flex flex-col items-center gap-3" id="btn-orange">
+                        <div class="check-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4"><polyline points="20 6 9 17 4 12"/></svg></div>
+                        <span class="text-4xl drop-shadow-md">🟠</span>
+                        <span class="text-[11px] font-black text-gray-300">أورانج كاش</span>
                     </div>
-                    <div onclick="selectPay('etisalat')" class="pay-card p-4 rounded-2xl text-center flex flex-col items-center gap-2" id="btn-etisalat">
-                        <span class="text-2xl">🟢</span><span class="text-[10px] font-black">اتصالات كاش</span>
+                    <div onclick="selectPay('etisalat')" class="pay-card p-5 rounded-3xl text-center flex flex-col items-center gap-3" id="btn-etisalat">
+                        <div class="check-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4"><polyline points="20 6 9 17 4 12"/></svg></div>
+                        <span class="text-4xl drop-shadow-md">🟢</span>
+                        <span class="text-[11px] font-black text-gray-300">اتصالات كاش</span>
                     </div>
-                    <div onclick="selectPay('cod')" class="pay-card p-4 rounded-2xl text-center flex flex-col items-center gap-2 active" id="btn-cod">
-                        <span class="text-2xl">💵</span><span class="text-[10px] font-black">عند الاستلام</span>
+                    <div onclick="selectPay('cod')" class="pay-card p-5 rounded-3xl text-center flex flex-col items-center gap-3 active" id="btn-cod">
+                        <div class="check-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4"><polyline points="20 6 9 17 4 12"/></svg></div>
+                        <span class="text-4xl drop-shadow-md">💵</span>
+                        <span class="text-[11px] font-black text-white bg-blue-600/50 px-3 py-1 rounded-full border border-blue-500/50 shadow-inner">الدفع عند الاستلام</span>
                     </div>
                 </div>
 
-                <div id="prepaidInfo" class="hidden animate-slide bg-blue-600/5 p-6 rounded-3xl border border-blue-500/20 mt-6">
-                    <p class="text-blue-400 text-[10px] font-black mb-2 italic">بيانات تحويل المسوق:</p>
-                    <div id="payNumDisplay" class="text-3xl font-black text-white mb-4 tracking-tighter">...</div>
-                    <input type="text" id="receiptLink" placeholder="رقم العملية أو رابط صورة الإيصال" class="w-full bg-black/40 border border-white/20 p-4 rounded-2xl outline-none text-xs text-white">
+                <div id="prepaidInfo" class="hidden animate-slide bg-gradient-to-r from-blue-900/40 to-slate-900/60 p-8 rounded-[35px] border border-blue-500/30 mt-8 shadow-[0_0_30px_rgba(59,130,246,0.15)] backdrop-blur-xl">
+                    <p class="text-blue-300 text-xs font-black mb-3 uppercase tracking-widest drop-shadow-md flex items-center gap-2"><span>💳</span> يرجى التحويل على هذا الرقم/الحساب:</p>
+                    <div class="bg-black/50 p-4 rounded-2xl border border-white/10 mb-6 flex justify-between items-center group">
+                        <div id="payNumDisplay" class="text-2xl md:text-3xl font-black text-white tracking-widest font-mono" dir="ltr">...</div>
+                        <button type="button" onclick="navigator.clipboard.writeText(document.getElementById('payNumDisplay').innerText); alert('تم نسخ الرقم');" class="bg-white/10 hover:bg-white/20 text-white p-3 rounded-xl transition-colors border border-white/5 opacity-50 group-hover:opacity-100">📋 نسخ</button>
+                    </div>
+                    
+                    <p class="text-gray-400 text-[10px] font-bold mb-2 ml-2">يرجى إرفاق رقم عملية التحويل لتأكيد دفعك بسرعة:</p>
+                    <input type="text" id="receiptLink" placeholder="اكتب رقم العملية (Transaction ID) هنا..." class="w-full border border-white/20 p-4 rounded-2xl outline-none text-sm text-white font-mono placeholder-gray-600">
                 </div>
 
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-5 rounded-2xl shadow-2xl transition-all mt-8 transform hover:-translate-y-1">
-                    تأكيد طلب الأوردر الآن ✅
+                <button type="submit" class="w-full bg-gradient-to-l from-blue-600 to-blue-500 text-white font-black py-6 rounded-3xl shadow-[0_15px_30px_rgba(37,99,235,0.4)] transition-all mt-10 text-xl tracking-widest btn-glow border border-blue-400/50">
+                    تأكيد الطلب وإتمام الشراء 🔒
                 </button>
+                <p class="text-center text-[10px] text-gray-500 mt-4 font-bold flex items-center justify-center gap-1"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> بياناتك مشفرة ومحمية بالكامل</p>
             </form>
         </div>
     </div>
 </div>
 
-<div id="successBox" class="fixed inset-0 bg-black/95 z-[100] flex items-center justify-center hidden">
-    <div class="text-center p-6">
-        <div class="w-20 h-20 bg-blue-600 rounded-full mx-auto mb-6 flex items-center justify-center shadow-[0_0_30px_#2563eb]">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4"><polyline points="20 6 9 17 4 12"/></svg>
+<div id="successBox" class="fixed inset-0 bg-black/95 backdrop-blur-xl z-[200] flex items-center justify-center hidden transition-all">
+    <div class="glass max-w-lg w-full p-10 rounded-[40px] border border-blue-500/30 text-center animate-slide shadow-[0_0_100px_rgba(59,130,246,0.3)] relative overflow-hidden">
+        <div class="absolute -top-20 -left-20 w-64 h-64 bg-blue-600/20 rounded-full blur-[80px] pointer-events-none"></div>
+        <div class="absolute -bottom-20 -right-20 w-64 h-64 bg-green-500/10 rounded-full blur-[80px] pointer-events-none"></div>
+        
+        <div class="w-28 h-28 bg-gradient-to-br from-green-500 to-green-400 rounded-full mx-auto mb-8 flex items-center justify-center shadow-[0_0_40px_rgba(34,197,94,0.5)] border-4 border-black relative z-10 animate-bounce">
+            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
         </div>
-        <h2 class="text-4xl font-black text-white mb-4 tracking-tighter">طلبك قيد المراجعة!</h2>
-        <p class="text-gray-400 mb-10">تم إرسال بياناتك للمسوق وسيتواصل معك قريباً.</p>
-        <a href="products.html" class="bg-blue-600 text-white px-12 py-4 rounded-full font-black shadow-xl">العودة للرئيسية</a>
+        
+        <h2 class="text-4xl md:text-5xl font-black text-white mb-4 tracking-tighter drop-shadow-lg relative z-10">تم استلام طلبك! 🎉</h2>
+        <p class="text-gray-300 mb-10 text-sm font-bold leading-relaxed relative z-10">تم إرسال بياناتك بنجاح، فريقنا هيراجع الطلب وهيتواصل معاك في أسرع وقت لتأكيد الشحن.</p>
+        
+        <a href="products.html" class="block w-full bg-white/10 hover:bg-white/20 text-white py-5 rounded-2xl font-black shadow-xl border border-white/20 transition-all tracking-widest relative z-10">العودة للتسوق</a>
     </div>
 </div>
 
@@ -129,24 +205,31 @@
     const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getDatabase(app);
 
     const params = new URLSearchParams(window.location.search);
-    const unitPrice = parseFloat(params.get('price'));
+    const unitPrice = parseFloat(params.get('price')) || 0;
     const qty = parseInt(params.get('qty')) || 1;
     const shipping = parseFloat(params.get('shipping')) || 0;
     const marketerId = params.get('owner');
+    
+    // التعديل هنا: جلب كل البيانات بذكاء
+    const color = params.get('color') && params.get('color') !== 'null' ? params.get('color') : 'عام';
+    const size = params.get('size') && params.get('size') !== 'null' ? params.get('size') : 'عام';
+    const gov = params.get('gov') || 'لم يتم التحديد';
+
     let selectedPayMethod = 'cod';
     let buyerUid = null;
 
-    // استخراج رقم المشترى ليعمل تتبع الطلبات في حسابه
     onAuthStateChanged(auth, (user) => {
         if(user) { buyerUid = user.uid; }
     });
 
-    // تعبئة الفاتورة
+    // تعبئة الفاتورة بكل التفاصيل الفخمة
     document.getElementById('invName').innerText = params.get('name');
     document.getElementById('invImg').src = params.get('image');
-    document.getElementById('invSpecs').innerText = `اللون: ${params.get('color')} | المقاس: ${params.get('size')}`;
+    document.getElementById('invGov').innerText = `المحافظة: ${gov}`;
+    document.getElementById('invSpecs').innerText = `اللون: ${color} | المقاس: ${size}`;
+    
     document.getElementById('pPrice').innerText = unitPrice + " ج.م";
-    document.getElementById('pQty').innerText = qty;
+    document.getElementById('pQty').innerText = qty + " قطعة";
     document.getElementById('pShipping').innerText = shipping + " ج.م";
     document.getElementById('totalPrice').innerText = (unitPrice * qty + shipping) + " ج.م";
 
@@ -169,14 +252,14 @@
         displayElem.innerText = "جاري جلب بيانات الدفع...";
         
         if(!marketerId || marketerId === 'null') {
-            displayElem.innerText = "بيانات المسوق غير متوفرة";
+            displayElem.innerText = "بيانات الدفع غير متوفرة حالياً";
             return;
         }
 
         const snap = await get(ref(db, `users/${marketerId}/paymentMethods`));
         if(snap.exists()) {
             const methods = snap.val();
-            let num = "لم يحدد المسوق وسيلة دفع لهذه الطريقة";
+            let num = "لم يحدد البائع رقم لهذه المحفظة";
             
             if(selectedPayMethod === 'vodafone' && methods.vodafone) num = methods.vodafone;
             if(selectedPayMethod === 'etisalat' && methods.etisalat) num = methods.etisalat;
@@ -185,28 +268,45 @@
             
             displayElem.innerText = num;
         } else {
-            displayElem.innerText = "لم يقم المسوق بإضافة محافظ الاستلام";
+            displayElem.innerText = "البائع لم يقم بإضافة محافظ الاستلام";
         }
     }
 
     document.getElementById('orderForm').onsubmit = async (e) => {
         e.preventDefault();
+        
+        // تغيير زر التأكيد أثناء الرفع
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = "جاري تأكيد الطلب... ⏳";
+        submitBtn.disabled = true;
+
         const orderData = {
             productName: params.get('name'),
             marketerId: marketerId,
-            customerUid: buyerUid || 'guest', // ربط الطلب بحساب العميل
+            customerUid: buyerUid || 'guest', 
             customerName: document.getElementById('custName').value,
             phone: document.getElementById('custPhone1').value,
-            address: document.getElementById('custAddress').value,
+            address: `${gov} - ${document.getElementById('custAddress').value}`, // دمج المحافظة مع العنوان
             total: (unitPrice * qty + shipping),
             payMethod: selectedPayMethod,
-            receipt: document.getElementById('receiptLink').value || 'N/A',
+            receipt: document.getElementById('receiptLink') ? document.getElementById('receiptLink').value || 'N/A' : 'N/A',
+            color: color,
+            size: size,
+            qty: qty,
             status: 'pending',
             date: new Date().toLocaleString('ar-EG')
         };
 
-        await set(push(ref(db, 'orders')), orderData);
-        document.getElementById('successBox').classList.remove('hidden');
+        try {
+            await set(push(ref(db, 'orders')), orderData);
+            document.getElementById('successBox').classList.remove('hidden');
+        } catch (error) {
+            console.error(error);
+            alert("حدث خطأ أثناء إرسال الطلب، يرجى المحاولة مرة أخرى.");
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }
     };
 </script>
 </body>

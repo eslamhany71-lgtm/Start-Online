@@ -9,7 +9,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         body { 
-            /* ركز هنا: حط لينك الصورة بتاعتك مكان كلمة LINK_HERE */
             background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.95)), url('https://softeagles.com/wp-content/uploads/2024/09/%D9%85%D8%AA%D8%A7%D8%AC%D8%B1-%D8%A7%D9%84%D9%83%D8%AA%D8%B1%D9%88%D9%86%D9%8A%D8%A9.jpg');
             background-size: cover;
             background-position: center;
@@ -23,7 +22,6 @@
         }
         .glass { background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.05); }
         
-        /* كود اللوجو الاحترافي */
         .logo-brand { font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 4px; }
         .logo-box { background: #2563eb; color: white; padding: 2px 8px; border-radius: 6px; transform: skewX(-12deg); display: inline-block; box-shadow: 0 0 15px rgba(37, 99, 235, 0.4); }
 
@@ -62,6 +60,13 @@
     </style>
 </head>
 <body class="pb-24">
+
+    <script>
+        window.t = (key) => {
+            const lang = localStorage.getItem('lang') || 'ar';
+            return translations[lang][key] || key;
+        };
+    </script>
 
     <div id="debtAlert" class="hidden fixed top-24 left-4 right-4 z-[60] bg-red-900/90 border border-red-500 text-red-200 p-3 rounded-2xl text-center text-xs font-bold shadow-2xl animate-pulse backdrop-blur-md">
         ⚠️ <span data-key="debt_alert">تنبيه: تجاوزت مديونيتك 500 ج.م. تم إيقاف صلاحية النشر مؤقتاً لحين السداد.</span>
@@ -110,9 +115,9 @@
                     </button>
                     <div id="notifDropdown" class="absolute top-10 left-0 w-72 md:w-80 glass p-4 rounded-3xl shadow-2xl border border-white/10 hidden flex-col gap-2 z-[200] max-h-80 overflow-y-auto no-scrollbar text-right bg-slate-900/95">
                         <h4 class="text-xs font-black text-blue-400 border-b border-white/10 pb-3 mb-2 flex justify-between items-center">
-                            <span>الإشعارات الحديثة</span>
+                            <span data-key="recent_notifs">الإشعارات الحديثة</span>
                             <div class="flex gap-3">
-                                <button onclick="clearNotifs()" class="text-red-400 hover:text-red-300 text-[9px] font-bold transition">مسح الكل</button>
+                                <button onclick="clearNotifs()" class="text-red-400 hover:text-red-300 text-[9px] font-bold transition" data-key="clear_all">مسح الكل</button>
                                 <button onclick="toggleNotif()" class="text-gray-500 hover:text-white">✕</button>
                             </div>
                         </h4>
@@ -124,7 +129,7 @@
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="md:w-3 md:h-3"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
                     <span id="langLabel">English</span>
                 </button>
-                <div id="userInfo" class="hidden lg:block text-[10px] font-bold text-gray-300 bg-white/5 px-3 py-1.5 rounded-full italic tracking-widest text-center uppercase border border-white/5">تحقق...</div>
+                <div id="userInfo" class="hidden lg:block text-[10px] font-bold text-gray-300 bg-white/5 px-3 py-1.5 rounded-full italic tracking-widest text-center uppercase border border-white/5" data-key="checking">تحقق...</div>
                 <button onclick="logout()" data-key="logout" class="bg-red-600/20 text-red-500 px-4 py-2 md:py-3 rounded-xl md:rounded-2xl text-[10px] md:text-xs font-black hover:bg-red-600 hover:text-white transition border border-red-500/30 hidden md:block">خروج</button>
             </div>
         </div>
@@ -170,7 +175,9 @@
     </section>
 
     <section id="adminUsersPanel" class="max-w-7xl mx-auto mb-10 px-4 hidden glass rounded-[35px] p-6 border border-white/10 shadow-2xl animate-fade-in text-right">
-        <h2 class="text-xl font-black mb-6 text-gray-400 italic flex items-center gap-2" data-key="admin_panel_members">إدارة كافة الأعضاء <span class="text-[8px] bg-white/5 px-2 py-1 rounded-full uppercase italic border border-white/5">Super Admin</span></h2>
+        <h2 class="text-xl font-black mb-6 text-gray-400 italic flex items-center gap-2">
+            <span data-key="admin_panel_members">إدارة كافة الأعضاء</span> <span class="text-[8px] bg-white/5 px-2 py-1 rounded-full uppercase italic border border-white/5" data-key="super_admin">Super Admin</span>
+        </h2>
         <div id="usersList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
     </section>
 
@@ -198,33 +205,40 @@
             
             <div id="lockMessage" class="hidden glass p-8 rounded-[40px] border border-red-500/30 text-center mb-8">
                 <p class="text-red-500 font-black text-lg" data-key="lock_message">🚫 عذراً، خاصية النشر معطلة حالياً بسبب ارتفاع المديونية.</p>
-                <p class="text-gray-400 text-xs mt-2 italic">يرجى تسوية الحساب مع الإدارة لتفعيل النشر مجدداً.</p>
+                <p class="text-gray-400 text-xs mt-2 italic" data-key="lock_sub">يرجى تسوية الحساب مع الإدارة لتفعيل النشر مجدداً.</p>
             </div>
 
             <div id="publishForm">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6">
                     <input type="text" id="pName" data-key="p_name" placeholder="اسم المنتج" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white focus:border-blue-500 transition-all">
                     <select id="pCategory" class="bg-slate-800 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white cursor-pointer">
-                        <option value="الكل" data-key="cat_all">النوع الأساسي</option>
-                        <option value="ملابس" data-key="cat_clothes">ملابس</option><option value="إكسسوارات" data-key="cat_acc">إكسسوارات</option><option value="عطور" data-key="cat_perfume">عطور</option><option value="صحة وجمال" data-key="cat_beauty">صحة وجمال</option>
+                        <option value="الكل" data-key="main_type">النوع الأساسي</option>
+                        <option value="ملابس" data-key="cat_clothes">ملابس</option>
+                        <option value="إكسسوارات" data-key="cat_acc">إكسسوارات</option>
+                        <option value="عطور" data-key="cat_perfume">عطور</option>
+                        <option value="صحة وجمال" data-key="cat_beauty">صحة وجمال</option>
                     </select>
                 </div>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                    <select id="pSubCategory" class="bg-slate-800 border border-white/10 p-4 rounded-2xl outline-none text-[10px] text-white"><option value="عام">عام</option><option value="رجالي">رجالي</option><option value="حريمي">حريمي</option></select>
+                    <select id="pSubCategory" class="bg-slate-800 border border-white/10 p-4 rounded-2xl outline-none text-[10px] text-white">
+                        <option value="عام" data-key="sub_general">عام</option>
+                        <option value="رجالي" data-key="sub_men">رجالي</option>
+                        <option value="حريمي" data-key="sub_women">حريمي</option>
+                    </select>
                     <input type="number" id="pPrice" data-key="p_price" placeholder="السعر النهائي" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
                     <input type="number" id="pOldPrice" data-key="p_commission" placeholder="عمولتك" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
                     <input type="text" id="pModel" data-key="p_model" placeholder="الموديل" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <input type="text" id="pColors" placeholder="الألوان المتاحة" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
-                    <input type="text" id="pSizes" placeholder="المقاسات" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
+                    <input type="text" id="pColors" data-key="p_colors" placeholder="الألوان المتاحة" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
+                    <input type="text" id="pSizes" data-key="p_sizes" placeholder="المقاسات" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <input type="text" id="pImage" placeholder="رابط الصورة الأساسية" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
-                    <input type="text" id="pMaterial" placeholder="الماتريال" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
+                    <input type="text" id="pImage" data-key="p_image" placeholder="رابط الصورة الأساسية" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
+                    <input type="text" id="pMaterial" data-key="p_material" placeholder="الماتريال" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
                 </div>
-                <input type="text" id="pExtraImages" placeholder="روابط صور الألوان (افصل بفاصلة , )" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white mb-6">
-                <textarea id="pDesc" placeholder="الوصف الكامل للمنتج..." class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl h-32 mb-6 text-white text-xs resize-none"></textarea>
+                <input type="text" id="pExtraImages" data-key="p_extra_images" placeholder="روابط صور الألوان (افصل بفاصلة , )" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white mb-6">
+                <textarea id="pDesc" data-key="p_desc" placeholder="الوصف الكامل للمنتج..." class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl h-32 mb-6 text-white text-xs resize-none"></textarea>
                 <button onclick="saveProduct()" data-key="btn_publish" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-5 rounded-3xl shadow-xl transition-all uppercase tracking-widest italic active:scale-95 btn-glow">نشر المنتج الآن</button>
             </div>
         </div>
@@ -233,7 +247,7 @@
     <div id="requestDetailsModal" class="fixed inset-0 bg-black/95 z-[300] hidden flex items-center justify-center p-4 text-right transition-all">
         <div class="glass max-w-lg w-full p-8 rounded-[40px] border border-blue-500/20 shadow-2xl relative animate-slide">
             <button onclick="document.getElementById('requestDetailsModal').classList.add('hidden')" class="absolute top-6 left-6 text-gray-500 hover:text-white font-black text-xl transition-colors">✕</button>
-            <h2 class="text-xl font-black mb-6 text-blue-400 italic underline decoration-blue-500/30">تفاصيل طلب الانضمام</h2>
+            <h2 class="text-xl font-black mb-6 text-blue-400 italic underline decoration-blue-500/30" data-key="req_details_title">تفاصيل طلب الانضمام</h2>
             <div id="reqModalBody" class="space-y-4 mb-6"></div>
             <div id="reqModalActions" class="flex gap-2 border-t border-white/10 pt-6"></div>
         </div>
@@ -242,7 +256,7 @@
     <div id="usersModal" class="fixed inset-0 bg-black/95 z-[100] hidden items-center justify-center p-6 text-right transition-all">
         <div class="glass w-full max-w-2xl p-8 rounded-[40px] border border-white/10 shadow-2xl relative animate-slide">
             <button onclick="closeUsersModal()" class="absolute top-6 left-6 text-gray-500 hover:text-white font-black text-xl transition-colors">✕</button>
-            <h2 id="modalTitle" class="text-2xl font-black mb-6 text-blue-400 italic underline decoration-blue-500/30 uppercase tracking-tighter" data-key="stat_users">قائمة الأعضاء</h2>
+            <h2 id="modalTitle" class="text-2xl font-black mb-6 text-blue-400 italic underline decoration-blue-500/30 uppercase tracking-tighter" data-key="users_list_title">قائمة الأعضاء</h2>
             <div id="modalList" class="space-y-3 max-h-[400px] overflow-y-auto no-scrollbar pr-2"></div>
         </div>
     </div>
@@ -251,7 +265,7 @@
         <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 md:gap-10"></div>
         <div id="noResults" class="hidden text-center py-20 animate-fade-in">
             <div class="text-6xl mb-4">🔍</div>
-            <p class="text-gray-500 font-bold italic">عذراً، لم نجد ما تبحث عنه حالياً.</p>
+            <p class="text-gray-500 font-bold italic" data-key="no_search_results">عذراً، لم نجد ما تبحث عنه حالياً.</p>
         </div>
     </main>
 
@@ -283,7 +297,7 @@
                     const debt = (u.wallet && u.wallet.debt) ? Number(u.wallet.debt) : 0;
 
                     const userInfoEl = document.getElementById('userInfo');
-                    if (userInfoEl) userInfoEl.innerText = `${u.name} | ${userRole.toUpperCase()}`;
+                    if (userInfoEl) userInfoEl.innerHTML = `${u.name} | <span data-key="btn_role_${userRole}"></span>`;
                     
                     if (userRole === 'admin') {
                         document.getElementById('adminStats').classList.remove('hidden');
@@ -302,21 +316,18 @@
                     }
                     if(window.applyLanguage) applyLanguage(localStorage.getItem('lang') || 'ar');
                     
-                    // تحميل الإشعارات الذكية
                     loadNotifications(userRole, user.uid);
                 }
                 loadProducts(); updateCartUI();
             } else { window.location.href = "login.html"; }
         });
 
-        // --- دالة مسح الإشعارات ---
         window.clearNotifs = () => {
             userClearedNotifs = true;
-            document.getElementById('notifList').innerHTML = '<p class="text-[10px] text-gray-500 text-center py-4">تم مسح الإشعارات.</p>';
+            document.getElementById('notifList').innerHTML = `<p class="text-[10px] text-gray-500 text-center py-4" data-key="notifs_cleared">${window.t('notifs_cleared')}</p>`;
             document.getElementById('notifBadge').classList.add('hidden');
         };
 
-        // --- الإشعارات التفاعلية ---
         function loadNotifications(role, uid) {
             onValue(ref(db, 'orders'), (snap) => {
                 const orders = snap.val() || {};
@@ -327,19 +338,17 @@
                     const isMyPurchase = (o.customerUid === uid) || (o.customerId === uid) || (o.buyerId === uid);
                     const displayTotal = Number(o.total || o.totalPrice || 0);
 
-                    // الروابط هنا بتوجه لصفحة البروفايل عشان تتنفذ من هناك
-                    if(isMyPurchase && o.status === 'completed') notificationsList.push({text: `تم تسليم طلبك: ${o.productName}`, date: o.date, color: 'text-green-400', link: 'profile.html'});
-                    if(isMyPurchase && o.status === 'failed') notificationsList.push({text: `تم إلغاء طلبك: ${o.productName}`, date: o.date, color: 'text-red-400', link: 'profile.html'});
+                    if(isMyPurchase && o.status === 'completed') notificationsList.push({text: `${window.t('msg_order_delivered')} ${o.productName}`, date: o.date, color: 'text-green-400', link: 'profile.html'});
+                    if(isMyPurchase && o.status === 'failed') notificationsList.push({text: `${window.t('msg_order_canceled')} ${o.productName}`, date: o.date, color: 'text-red-400', link: 'profile.html'});
 
                     if(role === 'admin' || o.marketerId === uid) {
-                        if(!o.status || o.status === 'pending') notificationsList.push({text: `طلب جديد: ${o.productName} بـ ${displayTotal} ج.م`, date: o.date, color: 'text-yellow-400', link: 'profile.html'});
-                        if(o.status === 'completed') notificationsList.push({text: `تم إضافة أرباح طلب ${o.productName} لمحفظتك`, date: o.date, color: 'text-blue-400', link: 'profile.html'});
+                        if(!o.status || o.status === 'pending') notificationsList.push({text: `${window.t('msg_new_order')} ${o.productName} ${window.t('msg_with_amount')} ${displayTotal} ${window.t('currency')}`, date: o.date, color: 'text-yellow-400', link: 'profile.html'});
+                        if(o.status === 'completed') notificationsList.push({text: `${window.t('msg_profit_added')} ${o.productName} ${window.t('msg_to_wallet')}`, date: o.date, color: 'text-blue-400', link: 'profile.html'});
                     }
                 });
 
-                // تحديث الإشعارات بذكاء لو ممسوحة
                 if(notificationsList.length > currentNotifLength) {
-                    userClearedNotifs = false; // ظهر إشعار جديد، نلغي المسح
+                    userClearedNotifs = false; 
                 }
                 currentNotifLength = notificationsList.length;
 
@@ -350,7 +359,6 @@
                     if(notificationsList.length > 0) {
                         badge.innerText = notificationsList.length;
                         badge.classList.remove('hidden');
-                        // جعل الإشعار Clickable
                         list.innerHTML = notificationsList.slice(0, 15).map(n => `
                             <a href="${n.link}" class="block bg-white/5 p-3 rounded-xl border border-white/5 mb-2 hover:bg-white/10 hover:border-blue-500/30 transition cursor-pointer">
                                 <p class="font-bold ${n.color} mb-1">${n.text}</p>
@@ -359,7 +367,7 @@
                         `).join('');
                     } else {
                         badge.classList.add('hidden');
-                        list.innerHTML = '<p class="text-gray-500 text-center py-4">لا توجد إشعارات حالياً.</p>';
+                        list.innerHTML = `<p class="text-gray-500 text-center py-4" data-key="no_notifs">${window.t('no_notifs')}</p>`;
                     }
                 }
             });
@@ -391,8 +399,8 @@
                         <img src="${item.image}" class="w-16 h-16 rounded-xl object-cover">
                         <div class="flex-1 font-bold">
                             <h4 class="text-[10px] text-white line-clamp-1">${item.name}</h4>
-                            <p class="text-[8px] text-gray-500 italic">${item.color || ''} | ${item.size || ''} | س ${item.qty}</p>
-                            <p class="text-blue-400 font-black text-xs mt-1">${item.price * item.qty} ج.م</p>
+                            <p class="text-[8px] text-gray-500 italic">${item.color || ''} | ${item.size || ''} | x${item.qty}</p>
+                            <p class="text-blue-400 font-black text-xs mt-1">${item.price * item.qty} <span data-key="currency"></span></p>
                         </div>
                         <div class="flex flex-col gap-2">
                             <button onclick="removeFromCart('${key}')" class="text-red-500 hover:text-red-400 text-xs font-bold">✕</button>
@@ -400,17 +408,18 @@
                         </div>
                     </div>`;
                 });
-                if(totalEl) totalEl.innerText = total + " ج.م";
-                if(keys.length === 0 && list) list.innerHTML = '<div class="flex flex-col items-center justify-center h-40 opacity-50"><span class="text-4xl mb-2">🛒</span><p class="text-[10px]" data-key="cart_empty">سلتك فارغة حالياً</p></div>';
+                if(totalEl) totalEl.innerHTML = `${total} <span data-key="currency">${window.t('currency')}</span>`;
+                if(keys.length === 0 && list) list.innerHTML = `<div class="flex flex-col items-center justify-center h-40 opacity-50"><span class="text-4xl mb-2">🛒</span><p class="text-[10px]" data-key="cart_empty">${window.t('cart_empty')}</p></div>`;
+                if(window.applyLanguage) applyLanguage(localStorage.getItem('lang') || 'ar');
             });
         };
-        window.removeFromCart = (key) => { if(confirm("حذف المنتج من السلة؟")) remove(ref(db, `carts/${currentUser.uid}/${key}`)); };
+        window.removeFromCart = (key) => { if(confirm(window.t('msg_delete_cart'))) remove(ref(db, `carts/${currentUser.uid}/${key}`)); };
 
         const subData = {
-            clothes: [{n:'رجالي', i:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcq8MbpMpYi4h72YsWLGOu8L2bU7lNdq-3ZQ&s'}, {n:'حريمي', i:'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=100'}],
-            acc: [{n:'رجالي', i:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHE6nx5A79B-M8Ptx1axoKtJyh__8fFnVf9Q&s'}, {n:'حريمي', i:'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg_2PO3OsO5EeG2It9AcKvUkfcraT1AzfcbFuB4c_RxtgsYzAPBUico99Z2PlxYnTKx4Rd0WlhLqoI6QpHR-IVSZsEXDQPij6CZY0eaoQ-tWvUO4PQrNOyYD_9CgZpLx6kUDFLBSBlP-f97/s1600/%D8%A7%D9%83%D8%B3%D8%B3%D9%88%D8%A7%D8%B1%D8%A7%D8%AA+%D9%85%D8%B3%D8%AA%D9%88%D8%B1%D8%AF%D8%A9+%D9%85%D9%86+%D8%A7%D9%84%D8%B5%D9%8A%D9%86.jpg'}],
-            perfume: [{n:'رجالي', i:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqYTBqAT9RJHsyFI4Pbp1btFlcsx3YVcowXw&s'}, {n:'حريمي', i:'https://www.faces.eg/dw/image/v2/BJSM_PRD/on/demandware.static/-/Sites-faces-master-catalog/default/dw14914fb4/product/3614270175572/3614270175572.jpg?sw=800&sh=800'}],
-            beauty: [{n:'رجالي', i:'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=100'}, {n:'حريمي', i:'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=100'}]
+            clothes: [{n:'sub_men', i:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcq8MbpMpYi4h72YsWLGOu8L2bU7lNdq-3ZQ&s'}, {n:'sub_women', i:'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=100'}],
+            acc: [{n:'sub_men', i:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHE6nx5A79B-M8Ptx1axoKtJyh__8fFnVf9Q&s'}, {n:'sub_women', i:'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg_2PO3OsO5EeG2It9AcKvUkfcraT1AzfcbFuB4c_RxtgsYzAPBUico99Z2PlxYnTKx4Rd0WlhLqoI6QpHR-IVSZsEXDQPij6CZY0eaoQ-tWvUO4PQrNOyYD_9CgZpLx6kUDFLBSBlP-f97/s1600/%D8%A7%D9%83%D8%B3%D8%B3%D9%88%D8%A7%D8%B1%D8%A7%D8%AA+%D9%85%D8%B3%D8%AA%D9%88%D8%B1%D8%AF%D8%A9+%D9%85%D9%86+%D8%A7%D9%84%D8%B5%D9%8A%D9%86.jpg'}],
+            perfume: [{n:'sub_men', i:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqYTBqAT9RJHsyFI4Pbp1btFlcsx3YVcowXw&s'}, {n:'sub_women', i:'https://www.faces.eg/dw/image/v2/BJSM_PRD/on/demandware.static/-/Sites-faces-master-catalog/default/dw14914fb4/product/3614270175572/3614270175572.jpg?sw=800&sh=800'}],
+            beauty: [{n:'sub_men', i:'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=100'}, {n:'sub_women', i:'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=100'}]
         };
 
         window.showSubCats = (key, el) => {
@@ -420,7 +429,8 @@
             const area = document.getElementById('subCatsArea');
             if(key === 'all' || key === 'best') { area.style.display = 'none'; applyDualFilter(); return; }
             area.style.display = 'flex';
-            area.innerHTML = subData[key].map(s => `<div class="sub-cat-item" onclick="filterBySub('${s.n}', this)"><img src="${s.i}"><span>${s.n}</span></div>`).join('');
+            area.innerHTML = subData[key].map(s => `<div class="sub-cat-item" onclick="filterBySub('${window.t(s.n)}', this)"><img src="${s.i}"><span data-key="${s.n}">${window.t(s.n)}</span></div>`).join('');
+            if(window.applyLanguage) applyLanguage(localStorage.getItem('lang') || 'ar');
             applyDualFilter();
         };
 
@@ -434,8 +444,8 @@
             const searchVal = document.getElementById('searchInput').value.toLowerCase();
             Object.keys(allProducts).forEach(k => {
                 const p = allProducts[k];
-                const matchMain = (selectedMainCat === 'الكل' || p.category === selectedMainCat);
-                const matchSub = (selectedSubCat === 'الكل' || p.subCategory === selectedSubCat);
+                const matchMain = (selectedMainCat === 'الكل' || selectedMainCat === 'All' || p.category === selectedMainCat);
+                const matchSub = (selectedSubCat === 'الكل' || selectedSubCat === 'All' || p.subCategory === selectedSubCat);
                 const matchSearch = p.name.toLowerCase().includes(searchVal);
                 if(matchMain && matchSub && matchSearch) f[k] = p;
             });
@@ -470,18 +480,18 @@
                 if(role === 'all' || u.role === role) {
                     l.innerHTML += `<div class="bg-white/5 p-4 rounded-2xl border border-white/5 flex justify-between items-center text-right font-bold hover:bg-white/10 transition-colors mb-2">
                         <div>
-                            <p class="text-white text-xs uppercase tracking-tighter">${u.name} <span class="text-[9px] text-blue-400">(${u.role})</span></p>
+                            <p class="text-white text-xs uppercase tracking-tighter">${u.name} <span class="text-[9px] text-blue-400" data-key="btn_role_${u.role}">(${u.role})</span></p>
                             <p class="text-[10px] text-gray-500 mt-1 italic">${u.email}</p>
                         </div>
                         <button onclick="visitAccount('${uid}')" data-key="btn_visit" class="bg-blue-600/20 text-blue-400 px-4 py-2 rounded-xl text-[10px] font-black border border-blue-400/30 hover:bg-blue-600 hover:text-white transition-all">زيارة</button>
                     </div>`; 
                 }
             });
+            if(window.applyLanguage) applyLanguage(localStorage.getItem('lang') || 'ar');
         };
 
         window.closeUsersModal = () => document.getElementById('usersModal').style.display = 'none';
 
-        // --- تحديث قسم طلبات المسوقين بالكامل ---
         function loadMarketerRequests() { 
             onValue(ref(db, 'marketer_requests'), (snap) => { 
                 const list = document.getElementById('requestsList'); list.innerHTML = ''; 
@@ -492,40 +502,41 @@
                         list.innerHTML += `<div class="glass p-5 rounded-3xl flex flex-col md:flex-row justify-between items-center text-right font-bold animate-fade-in shadow-xl border border-white/5 gap-4">
                             <div><p class="text-sm text-white underline decoration-blue-500/30 tracking-widest">${r.name}</p><p class="text-[10px] text-gray-500">${r.email}</p></div>
                             <div class="flex gap-2 w-full md:w-auto">
-                                <button onclick="viewRequestDetails('${uid}')" class="flex-1 bg-blue-600/20 text-blue-400 px-4 py-2 rounded-xl text-[10px] font-black shadow-lg hover:bg-blue-600 hover:text-white transition-colors">التفاصيل والقرار</button>
+                                <button onclick="viewRequestDetails('${uid}')" class="flex-1 bg-blue-600/20 text-blue-400 px-4 py-2 rounded-xl text-[10px] font-black shadow-lg hover:bg-blue-600 hover:text-white transition-colors" data-key="btn_req_details">التفاصيل والقرار</button>
                             </div>
                         </div>`; 
                     });
                 } else {
-                    list.innerHTML = '<p class="text-[10px] text-gray-500">لا توجد طلبات انضمام حالياً.</p>';
+                    list.innerHTML = `<p class="text-[10px] text-gray-500" data-key="no_requests">${window.t('no_requests')}</p>`;
                 }
+                if(window.applyLanguage) applyLanguage(localStorage.getItem('lang') || 'ar');
             }); 
         }
 
-        // عرض تفاصيل الطلب في المودال الجديد
         window.viewRequestDetails = async (uid) => {
             const snap = await get(ref(db, 'marketer_requests/' + uid));
             if(snap.exists()) {
                 const r = snap.val();
                 document.getElementById('reqModalBody').innerHTML = `
                     <div class="bg-white/5 p-4 rounded-2xl border border-white/10 text-xs text-gray-300 space-y-3">
-                        <p><strong class="text-blue-400">الاسم:</strong> ${r.name}</p>
-                        <p><strong class="text-blue-400">الإيميل:</strong> ${r.email}</p>
-                        <p><strong class="text-blue-400">الموبايل:</strong> <span class="font-mono">${r.phone || 'غير مسجل'}</span></p>
-                        <p><strong class="text-blue-400">العنوان:</strong> ${r.address || 'غير مسجل'}</p>
+                        <p><strong class="text-blue-400" data-key="lbl_name">الاسم:</strong> ${r.name}</p>
+                        <p><strong class="text-blue-400" data-key="lbl_email">الإيميل:</strong> ${r.email}</p>
+                        <p><strong class="text-blue-400" data-key="lbl_phone">الموبايل:</strong> <span class="font-mono">${r.phone || `<span data-key="not_registered">${window.t('not_registered')}</span>`}</span></p>
+                        <p><strong class="text-blue-400" data-key="lbl_address">العنوان:</strong> ${r.address || `<span data-key="not_registered">${window.t('not_registered')}</span>`}</p>
                         <div class="border-t border-white/10 pt-2 mt-2">
-                            <strong class="text-blue-400 block mb-1">الخبرات السابقة:</strong>
-                            <p class="bg-black/20 p-3 rounded-xl italic">${r.bio || 'لم يكتب شيئاً'}</p>
+                            <strong class="text-blue-400 block mb-1" data-key="prev_exp">الخبرات السابقة:</strong>
+                            <p class="bg-black/20 p-3 rounded-xl italic">${r.bio || `<span data-key="no_exp">${window.t('no_exp')}</span>`}</p>
                         </div>
                     </div>
                 `;
                 
                 document.getElementById('reqModalActions').innerHTML = `
-                    <button onclick="approveMarketer('${uid}')" class="flex-1 bg-green-600 text-white py-3 rounded-xl text-[10px] font-black hover:bg-green-500 transition-colors shadow-lg btn-glow">قبول الطلب</button>
-                    <button onclick="rejectMarketer('${uid}')" class="flex-1 bg-red-600/20 text-red-500 py-3 rounded-xl text-[10px] font-black hover:bg-red-600 hover:text-white transition-colors">رفض وحذف</button>
-                    <button onclick="visitAccount('${uid}')" class="flex-1 bg-white/10 text-white py-3 rounded-xl text-[10px] font-black hover:bg-white/20 transition-colors">زيارة البروفايل</button>
+                    <button onclick="approveMarketer('${uid}')" class="flex-1 bg-green-600 text-white py-3 rounded-xl text-[10px] font-black hover:bg-green-500 transition-colors shadow-lg btn-glow" data-key="btn_accept_req">قبول الطلب</button>
+                    <button onclick="rejectMarketer('${uid}')" class="flex-1 bg-red-600/20 text-red-500 py-3 rounded-xl text-[10px] font-black hover:bg-red-600 hover:text-white transition-colors" data-key="btn_reject_req">رفض وحذف</button>
+                    <button onclick="visitAccount('${uid}')" class="flex-1 bg-white/10 text-white py-3 rounded-xl text-[10px] font-black hover:bg-white/20 transition-colors" data-key="btn_visit_profile">زيارة البروفايل</button>
                 `;
                 document.getElementById('requestDetailsModal').classList.remove('hidden');
+                if(window.applyLanguage) applyLanguage(localStorage.getItem('lang') || 'ar');
             }
         };
 
@@ -533,14 +544,14 @@
             await update(ref(db, 'users/' + uid), { role: 'marketer' }); 
             await remove(ref(db, 'marketer_requests/' + uid)); 
             document.getElementById('requestDetailsModal').classList.add('hidden');
-            showToast("تم قبول المسوق بنجاح!"); 
+            showToast(window.t('msg_accept_success')); 
         };
 
         window.rejectMarketer = async (uid) => {
-            if(confirm("هل أنت متأكد من رفض وحذف هذا الطلب؟")) {
+            if(confirm(window.t('msg_reject_confirm'))) {
                 await remove(ref(db, 'marketer_requests/' + uid));
                 document.getElementById('requestDetailsModal').classList.add('hidden');
-                showToast("تم رفض الطلب.");
+                showToast(window.t('msg_reject_success'));
             }
         };
 
@@ -562,18 +573,18 @@
                     owner: currentUser.uid, 
                     likes: 0 
                 }); 
-                showToast("تم نشر المنتج بنجاح!"); 
+                showToast(window.t('msg_publish_success')); 
                 ["pName", "pPrice", "pOldPrice", "pColors", "pSizes", "pDesc", "pImage", "pExtraImages", "pMaterial", "pModel"].forEach(id => document.getElementById(id).value = ""); 
             } else {
-                showToast("يرجى ملء الاسم والسعر على الأقل");
+                showToast(window.t('msg_fill_required'));
             }
         };
 
         window.editProduct = async (id, oldN, oldP, oldI, oldComm) => { 
-            const nn = prompt("الاسم الجديد:", oldN); 
-            const np = prompt("السعر الجديد:", oldP); 
-            const nComm = prompt("العمولة الجديدة:", oldComm !== 'undefined' && oldComm !== 'null' ? oldComm : '');
-            const ni = prompt("رابط الصورة الجديد:", oldI); 
+            const nn = prompt(window.t('prompt_new_name'), oldN); 
+            const np = prompt(window.t('prompt_new_price'), oldP); 
+            const nComm = prompt(window.t('prompt_new_comm'), oldComm !== 'undefined' && oldComm !== 'null' ? oldComm : '');
+            const ni = prompt(window.t('prompt_new_img'), oldI); 
             if(nn && np) { 
                 await update(ref(db, 'products/' + id), { 
                     name: nn, 
@@ -581,7 +592,7 @@
                     oldPrice: nComm, 
                     image: ni 
                 }); 
-                showToast("تم التحديث بنجاح!"); 
+                showToast(window.t('msg_update_success')); 
             } 
         };
 
@@ -613,12 +624,12 @@
                         <h3 class="font-black text-base md:text-lg mb-2 text-white italic tracking-tighter uppercase line-clamp-1">${p.name}</h3>
                         <div class="flex justify-between items-center mb-5">
                             <div class="flex flex-col">
-                                <span class="text-blue-400 font-black text-xl md:text-2xl tracking-tighter">${p.price} ج.م</span>
-                                ${p.oldPrice ? `<span class="text-green-400 font-black text-[11px] mt-1"><span data-key="p_commission">عمولتك</span>: ${p.oldPrice} ج.م</span>` : ''}
+                                <span class="text-blue-400 font-black text-xl md:text-2xl tracking-tighter">${p.price} <span data-key="currency"></span></span>
+                                ${p.oldPrice ? `<span class="text-green-400 font-black text-[11px] mt-1"><span data-key="p_commission"></span>: ${p.oldPrice} <span data-key="currency"></span></span>` : ''}
                             </div>
                             ${canManage ? `<div class="flex gap-2">
-                                <button onclick="editProduct('${key}', '${p.name.replace(/'/g, "\\'")}', '${p.price}', '${p.image}', '${p.oldPrice || ''}')" class="text-yellow-500 text-[10px] font-bold italic border-b border-yellow-500/30">تعديل</button>
-                                <button onclick="deleteProduct('${key}')" class="text-red-500 text-[10px] font-bold italic border-b border-red-500/30">حذف</button>
+                                <button onclick="editProduct('${key}', '${p.name.replace(/'/g, "\\'")}', '${p.price}', '${p.image}', '${p.oldPrice || ''}')" class="text-yellow-500 text-[10px] font-bold italic border-b border-yellow-500/30" data-key="btn_edit">تعديل</button>
+                                <button onclick="deleteProduct('${key}')" class="text-red-500 text-[10px] font-bold italic border-b border-red-500/30" data-key="btn_delete">حذف</button>
                             </div>` : ''}
                         </div>
                         <button onclick="viewDetails('${key}', '${p.name.replace(/'/g, "\\'")}', '${p.price}', '${p.image}')" data-key="btn_details" class="w-full bg-white/5 hover:bg-blue-600 hover:text-white py-4 rounded-[20px] text-[10px] font-black uppercase transition-all shadow-xl border border-white/5 tracking-widest active:scale-95">التفاصيل والتقييمات</button>
@@ -638,21 +649,22 @@
                     list.innerHTML += `<div class="bg-white/5 p-4 rounded-2xl border border-white/5 flex flex-col gap-3 font-bold text-right animate-slide">
                         <div class="flex justify-between items-start">
                             <p class="text-sm text-white">${u.name}</p>
-                            <span class="text-[8px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 font-black uppercase border border-blue-500/20">${u.role}</span>
+                            <span class="text-[8px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 font-black uppercase border border-blue-500/20" data-key="btn_role_${u.role}">${u.role}</span>
                         </div>
                         <div class="flex gap-1 mb-2">
-                            <button onclick="changeRole('${uid}', 'marketer')" class="flex-1 text-[8px] border border-blue-500/20 rounded-lg p-2 hover:bg-blue-500 hover:text-white text-blue-400 transition-all font-black uppercase">مسوق</button>
-                            <button onclick="changeRole('${uid}', 'admin')" class="flex-1 text-[8px] border border-yellow-500/20 rounded-lg p-2 hover:bg-yellow-500 hover:text-white text-yellow-500 transition-all font-black uppercase">أدمن</button>
-                            <button onclick="changeRole('${uid}', 'customer')" class="flex-1 text-[8px] bg-white/5 rounded-lg p-2 text-white hover:bg-white/20 transition-all font-black uppercase">عميل</button>
+                            <button onclick="changeRole('${uid}', 'marketer')" class="flex-1 text-[8px] border border-blue-500/20 rounded-lg p-2 hover:bg-blue-500 hover:text-white text-blue-400 transition-all font-black uppercase" data-key="btn_role_marketer">مسوق</button>
+                            <button onclick="changeRole('${uid}', 'admin')" class="flex-1 text-[8px] border border-yellow-500/20 rounded-lg p-2 hover:bg-yellow-500 hover:text-white text-yellow-500 transition-all font-black uppercase" data-key="btn_role_admin">أدمن</button>
+                            <button onclick="changeRole('${uid}', 'customer')" class="flex-1 text-[8px] bg-white/5 rounded-lg p-2 text-white hover:bg-white/20 transition-all font-black uppercase" data-key="btn_role_customer">عميل</button>
                         </div>
-                        <button onclick="visitAccount('${uid}')" data-key="btn_visit" class="w-full bg-blue-600/20 text-blue-400 py-2 rounded-xl text-[10px] font-black border border-blue-400/30 hover:bg-blue-600 hover:text-white transition-all shadow-xl">زيارة حساب المستخدم</button>
+                        <button onclick="visitAccount('${uid}')" data-key="btn_visit_user" class="w-full bg-blue-600/20 text-blue-400 py-2 rounded-xl text-[10px] font-black border border-blue-400/30 hover:bg-blue-600 hover:text-white transition-all shadow-xl">زيارة حساب المستخدم</button>
                     </div>`; 
                 }); 
+                if(window.applyLanguage) applyLanguage(localStorage.getItem('lang') || 'ar');
             }); 
         }
 
         window.setLanguage = (lang) => { localStorage.setItem('lang', lang); location.reload(); };
-        window.changeRole = (uid, r) => { if(confirm("تغيير الرتبة؟")) { update(ref(db, 'users/' + uid), { role: r }); showToast("تم تغيير الرتبة!"); } };
+        window.changeRole = (uid, r) => { if(confirm(window.t('msg_role_confirm'))) { update(ref(db, 'users/' + uid), { role: r }); showToast(window.t('msg_role_success')); } };
 
         window.toggleWishlist = async (id) => { 
             if(!currentUser) return;
@@ -669,16 +681,16 @@
         };
 
         window.visitAccount = (uid) => {
-            showToast("جاري توجيهك للملف الشخصي...");
+            showToast(window.t('msg_redirect_profile'));
             window.location.href = `profile.html?uid=${uid}`; 
         };
 
-        window.deleteProduct = (id) => confirm("هل أنت متأكد من حذف هذا المنتج نهائياً؟") && remove(ref(db, 'products/' + id)) && showToast("تم الحذف بنجاح.");
+        window.deleteProduct = (id) => confirm(window.t('msg_delete_confirm')) && remove(ref(db, 'products/' + id)) && showToast(window.t('msg_delete_success'));
         window.viewDetails = (id, n, p, i) => window.location.href = `details.html?id=${id}&name=${encodeURIComponent(n)}&price=${p}&image=${encodeURIComponent(i)}`;
         window.filterProducts = () => applyDualFilter();
         window.loadWishlistOnly = () => { const f = {}; Object.keys(allProducts).forEach(k => { if(userWishlist.includes(k)) f[k] = allProducts[k]; }); renderGrid(f); };
         window.showToast = (m) => { const t = document.getElementById('toast'); t.innerText = m; t.style.opacity = '1'; setTimeout(() => t.style.opacity = '0', 3000); };
-        window.logout = () => confirm("هل تود الخروج؟") && signOut(auth).then(() => window.location.href = "login.html");
+        window.logout = () => confirm(window.t('msg_logout_confirm')) && signOut(auth).then(() => window.location.href = "login.html");
     </script>
 </body>
 </html>

@@ -90,6 +90,9 @@
                     <button onclick="shareProduct()" class="flex items-center gap-1 text-[10px] bg-blue-600/30 text-blue-300 px-4 py-2 rounded-xl border border-blue-500/40 hover:bg-blue-600 hover:text-white transition-all font-black shadow-lg">
                         🔗 مشاركة
                     </button>
+                    <button onclick="setLanguage(localStorage.getItem('lang') === 'en' ? 'ar' : 'en')" class="flex items-center gap-1 text-[10px] bg-white/10 text-white px-3 py-1.5 rounded-xl border border-white/20 hover:bg-white/20 transition-all font-black shadow-lg">
+    🌐 <span id="langLabel">English</span>
+</button>
                     <div class="flex items-center gap-2 text-[10px] text-gray-200 italic font-black bg-green-500/20 px-3 py-2 rounded-xl border border-green-500/30 shadow-inner">
                         <span class="w-2.5 h-2.5 bg-green-400 rounded-full badge-live shadow-[0_0_10px_#22c55e]"></span>
                         بالمخزن

@@ -32,7 +32,6 @@
         .status-failed { color: #ef4444; background: rgba(239, 68, 68, 0.1); }
         input::placeholder, textarea::placeholder { color: rgba(255, 255, 255, 0.2); }
         
-        /* اللوجو الاحترافي */
         .logo-brand { font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 4px; }
         .logo-box { background: #2563eb; color: white; padding: 2px 8px; border-radius: 6px; transform: skewX(-12deg); display: inline-block; box-shadow: 0 0 15px rgba(37, 99, 235, 0.4); }
         .btn-glow { transition: 0.4s; box-shadow: 0 0 15px rgba(59, 130, 246, 0.3); border: 1px solid rgba(255,255,255,0.1); }
@@ -40,6 +39,13 @@
     </style>
 </head>
 <body class="pb-24 text-right">
+
+    <script>
+        window.t = (key) => {
+            const lang = localStorage.getItem('lang') || 'ar';
+            return translations[lang][key] || key;
+        };
+    </script>
 
 <nav class="fixed top-0 left-0 right-0 z-50 p-3 md:p-6">
     <div class="max-w-7xl mx-auto glass rounded-[20px] md:rounded-[35px] px-4 md:px-8 py-3 md:py-4 flex justify-between items-center shadow-2xl">
@@ -64,7 +70,7 @@
                 </button>
                 <div id="notifDropdown" class="absolute top-10 left-0 w-72 md:w-80 glass p-4 rounded-3xl shadow-2xl border border-white/10 hidden flex-col gap-2 z-[200] max-h-80 overflow-y-auto no-scrollbar text-right bg-slate-900/95">
                     <h4 class="text-xs font-black text-blue-400 border-b border-white/10 pb-3 mb-2 flex justify-between items-center">
-                        <span>الإشعارات الحديثة</span>
+                        <span data-key="recent_notifs">الإشعارات الحديثة</span>
                         <button onclick="toggleNotif()" class="text-gray-500 hover:text-white">✕</button>
                     </h4>
                     <div id="notifList" class="space-y-2 text-[10px] text-gray-300"></div>
@@ -102,38 +108,38 @@
         
         <div class="lg:col-span-1 space-y-6">
             <div id="mainSidebar" class="glass p-8 rounded-[40px] text-center border border-white/5 relative overflow-hidden shadow-2xl">
-                <div id="userRoleBadge" class="absolute top-4 left-4 text-[8px] font-black bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full uppercase italic">Guest</div>
+                <div id="userRoleBadge" class="absolute top-4 left-4 text-[8px] font-black bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full uppercase italic" data-key="guest">Guest</div>
                 <img id="userImg" src="https://via.placeholder.com/150" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover border-4 border-blue-500/20 shadow-xl">
-                <h1 id="userName" class="text-2xl font-black mb-1 italic">تحميل...</h1>
+                <h1 id="userName" class="text-2xl font-black mb-1 italic" data-key="checking">تحميل...</h1>
                 <p id="userEmail" class="text-gray-500 text-[10px] mb-1">email@example.com</p>
-                <p id="userPhoneDisplay" class="text-blue-400 text-[11px] font-bold font-mono tracking-widest mb-6" dir="ltr"></p>
+                <p id="userPhoneDisplay" class="text-blue-400 text-[11px] font-bold font-mono tracking-widest mb-6" dir="ltr" data-key="no_phone_registered">لم يتم تسجيل رقم هاتف</p>
                 
                 <div id="walletBox" class="hidden bg-white/5 p-5 rounded-3xl border border-white/5 mb-6 text-right animate-slide">
                     <p class="text-[9px] text-blue-400 font-black mb-3 uppercase italic tracking-widest" data-key="smart_wallet">المحفظة الذكية</p>
                     <div class="flex justify-between items-center mb-2">
                         <span id="walletBalanceLabel" class="text-[10px] text-gray-400" data-key="my_profits">أرباحي المستحقة:</span>
-                        <span id="walletBalance" class="text-lg font-black text-white">0 ج.م</span>
+                        <span id="walletBalance" class="text-lg font-black text-white">0 <span data-key="currency"></span></span>
                     </div>
                     <div id="debtRow" class="flex justify-between items-center border-t border-white/5 pt-2">
                         <span id="debtLabel" class="text-[10px] text-red-400" data-key="platform_commission">عمولة المنصة (10%):</span>
-                        <span id="walletDebt" class="text-lg font-black text-red-500">0 ج.م</span>
+                        <span id="walletDebt" class="text-lg font-black text-red-500">0 <span data-key="currency"></span></span>
                     </div>
                 </div>
 
                 <div id="marketerSettings" class="hidden border-t border-white/5 pt-6 mt-4 mb-6 text-right">
                     <p class="text-[9px] text-blue-400 font-black mb-4 uppercase italic" data-key="payment_methods">وسائل استلام الأرباح</p>
                     <div class="space-y-3">
-                        <input type="text" id="vodaPay" placeholder="رقم فودافون كاش" class="w-full bg-white/5 border border-white/10 p-3 rounded-xl text-xs text-white text-center font-bold outline-none focus:border-red-500 transition">
-                        <input type="text" id="etiPay" placeholder="رقم اتصالات كاش" class="w-full bg-white/5 border border-white/10 p-3 rounded-xl text-xs text-white text-center font-bold outline-none focus:border-green-500 transition">
-                        <input type="text" id="orangePay" placeholder="أورانج كاش / وي" class="w-full bg-white/5 border border-white/10 p-3 rounded-xl text-xs text-white text-center font-bold outline-none focus:border-orange-500 transition">
-                        <input type="text" id="instaPay" placeholder="عنوان InstaPay (ID)" class="w-full bg-white/5 border border-white/10 p-3 rounded-xl text-xs text-white text-center font-bold outline-none focus:border-purple-500 transition">
+                        <input type="text" id="vodaPay" data-key="voda_pay" placeholder="رقم فودافون كاش" class="w-full bg-white/5 border border-white/10 p-3 rounded-xl text-xs text-white text-center font-bold outline-none focus:border-red-500 transition">
+                        <input type="text" id="etiPay" data-key="eti_pay" placeholder="رقم اتصالات كاش" class="w-full bg-white/5 border border-white/10 p-3 rounded-xl text-xs text-white text-center font-bold outline-none focus:border-green-500 transition">
+                        <input type="text" id="orangePay" data-key="orange_pay" placeholder="أورانج كاش / وي" class="w-full bg-white/5 border border-white/10 p-3 rounded-xl text-xs text-white text-center font-bold outline-none focus:border-orange-500 transition">
+                        <input type="text" id="instaPay" data-key="insta_pay" placeholder="عنوان InstaPay (ID)" class="w-full bg-white/5 border border-white/10 p-3 rounded-xl text-xs text-white text-center font-bold outline-none focus:border-purple-500 transition">
                     </div>
                     <button onclick="updateDetailedPayment()" data-key="btn_save_wallets" class="w-full mt-4 bg-blue-600/20 text-blue-400 py-2 rounded-xl text-[10px] font-black hover:bg-blue-600 transition hover:text-white btn-glow">حفظ المحافظ</button>
                 </div>
 
                 <div class="space-y-3">
                     <button onclick="toggleSettings()" data-key="btn_edit_profile" class="w-full py-3 glass hover:bg-white/10 transition-colors rounded-2xl text-[10px] font-black border border-white/5">تعديل البروفايل</button>
-                    <button onclick="logout()" class="w-full py-3 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-colors rounded-2xl text-[10px] font-black border border-red-500/20 md:hidden">تسجيل الخروج</button>
+                    <button onclick="logout()" data-key="logout" class="w-full py-3 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-colors rounded-2xl text-[10px] font-black border border-red-500/20 md:hidden">تسجيل الخروج</button>
                 </div>
             </div>
 
@@ -155,7 +161,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="stat-box p-6 rounded-[30px] border-green-500/10 text-right">
                         <p id="revenueTitle" class="text-[9px] text-gray-500 font-bold uppercase mb-2" data-key="stat_total_sales">إجمالي المبيعات</p>
-                        <h3 id="totalRevenue" class="text-2xl font-black text-green-400">0 ج.م</h3>
+                        <h3 id="totalRevenue" class="text-2xl font-black text-green-400">0 <span data-key="currency"></span></h3>
                     </div>
                     <div onclick="openOrderArchive('completed')" class="stat-box p-6 rounded-[30px] border-blue-500/20 text-right">
                         <p class="text-[9px] text-blue-400 font-bold uppercase mb-2" data-key="stat_success_orders">طلبات ناجحة</p>
@@ -169,10 +175,10 @@
                 
                 <div class="glass p-6 rounded-[30px] border border-blue-500/10 mt-6 text-right shadow-lg bg-black/20">
                     <div class="flex justify-between items-center mb-4">
-                        <p class="text-[10px] text-gray-400 font-black uppercase italic">أداء المبيعات اليومية</p>
+                        <p class="text-[10px] text-gray-400 font-black uppercase italic" data-key="daily_sales_perf">أداء المبيعات اليومية</p>
                         <div class="bg-blue-500/10 px-3 py-1.5 rounded-lg border border-blue-500/20 shadow-inner">
-                            <span class="text-[9px] text-blue-400 font-bold">مبيعات اليوم:</span>
-                            <span id="todaySalesValue" class="text-xs font-black text-white mr-1">0 ج.م</span>
+                            <span class="text-[9px] text-blue-400 font-bold" data-key="today_sales">مبيعات اليوم:</span>
+                            <span id="todaySalesValue" class="text-xs font-black text-white mr-1">0 <span data-key="currency"></span></span>
                         </div>
                     </div>
                     <div class="w-full h-48 md:h-64">
@@ -259,7 +265,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                     <input type="text" id="newName" data-key="new_name" placeholder="اسم جديد" class="bg-white/5 border border-white/10 p-4 rounded-2xl text-white outline-none">
                     <input type="text" id="newImg" data-key="new_image" placeholder="رابط صورة شخصية" class="bg-white/5 border border-white/10 p-4 rounded-2xl text-white outline-none">
-                    <input type="tel" id="newPhone" placeholder="رقم الهاتف للتواصل" class="bg-white/5 border border-white/10 p-4 rounded-2xl text-white outline-none md:col-span-2">
+                    <input type="tel" id="newPhone" data-key="new_phone" placeholder="رقم الهاتف للتواصل" class="bg-white/5 border border-white/10 p-4 rounded-2xl text-white outline-none md:col-span-2">
                 </div>
                 <button onclick="updateProfile()" class="bg-blue-600 text-white px-10 py-3 rounded-2xl font-black text-xs shadow-lg hover:bg-blue-500 transition" data-key="btn_save_data">حفظ البيانات</button>
             </section>
@@ -318,15 +324,17 @@
                 
                 document.getElementById('userName').innerText = u.name;
                 document.getElementById('userEmail').innerText = u.email;
-                document.getElementById('userRoleBadge').innerText = u.role.toUpperCase();
+                document.getElementById('userRoleBadge').innerHTML = `<span data-key="btn_role_${u.role}">${u.role.toUpperCase()}</span>`;
                 document.getElementById('userImg').src = u.photo || `https://ui-avatars.com/api/?name=${u.name}&background=3b82f6&color=fff`;
-                document.getElementById('userPhoneDisplay').innerText = u.phone || "لم يتم تسجيل رقم هاتف";
+                if(u.phone) {
+                    document.getElementById('userPhoneDisplay').innerText = u.phone;
+                }
                 
                 if(u.role === 'admin') {
                     document.getElementById('adminMarketerPanel').classList.remove('hidden');
                     loadMarketersForAdmin();
                     document.getElementById('debtRow').style.display = 'none';
-                    document.getElementById('walletBalanceLabel').innerText = "أرباح المنصة (10%):";
+                    document.getElementById('walletBalanceLabel').innerHTML = `<span data-key="platform_profits">${window.t('platform_profits')}</span>`;
                     document.getElementById('walletBalanceLabel').removeAttribute('data-key');
                 }
 
@@ -341,8 +349,9 @@
                     if(u.role === 'marketer') {
                         onValue(ref(db, `users/${myUid}/wallet`), (s) => {
                             const w = s.val() || { balance: 0, debt: 0 };
-                            document.getElementById('walletBalance').innerText = (Number(w.balance) || 0).toFixed(2) + " ج.م";
-                            document.getElementById('walletDebt').innerText = (Number(w.debt) || 0).toFixed(2) + " ج.م";
+                            document.getElementById('walletBalance').innerHTML = `${(Number(w.balance) || 0).toFixed(2)} <span data-key="currency"></span>`;
+                            document.getElementById('walletDebt').innerHTML = `${(Number(w.debt) || 0).toFixed(2)} <span data-key="currency"></span>`;
+                            if(window.applyLanguage) applyLanguage(localStorage.getItem('lang') || 'ar');
                         });
                     }
                 } else {
@@ -369,7 +378,7 @@
 
     window.updateDetailedPayment = async () => {
         const p = { vodafone: document.getElementById('vodaPay').value, etisalat: document.getElementById('etiPay').value, orange: document.getElementById('orangePay').value, instapay: document.getElementById('instaPay').value };
-        await set(ref(db, `users/${myUid}/paymentMethods`), p); showToast("تم تحديث كافة المحافظ ✅");
+        await set(ref(db, `users/${myUid}/paymentMethods`), p); showToast(window.t('msg_wallets_updated'));
     };
 
     window.updateOrderStatus = async (orderId, status, amount) => {
@@ -390,8 +399,8 @@
                 });
             }
             await update(ref(db, 'orders/' + orderId), { status: status });
-            closeOrderModal(); showToast("تم تحديث الحالة ✅");
-        } catch (e) { showToast("خطأ في الاتصال!"); }
+            closeOrderModal(); showToast(window.t('msg_status_updated'));
+        } catch (e) { showToast(window.t('msg_error_conn')); }
     };
 
     function loadOrders(role) {
@@ -400,7 +409,6 @@
             const incomingList = document.getElementById('ordersList');
             const myPurchaseList = document.getElementById('myPurchasesList');
             
-            // تنظيف القوائم قبل التحميل لحل مشكلة "جاري التحميل"
             if(incomingList) incomingList.innerHTML = ''; 
             if(myPurchaseList) myPurchaseList.innerHTML = '';
             
@@ -410,7 +418,7 @@
             let dailyRevData = {}; 
             let notificationsList = []; 
 
-            let todayStr = new Date().toLocaleString('ar-EG').split(',')[0];
+            let todayStr = new Date().toLocaleString('en-US').split(',')[0]; 
 
             const keys = Object.keys(currentOrdersData).reverse();
             keys.forEach(key => {
@@ -419,21 +427,21 @@
                 const isMyPurchase = (o.customerUid === myUid) || (o.customerId === myUid) || (o.buyerId === myUid) || (o.userId === myUid) || (o.uid === myUid);
                 const dateStr = o.date ? o.date.split(',')[0] : 'أخرى'; 
                 
-                let statusKey = "order_status_pending";
+                let statusKey = "status_pending";
                 let statusText = "قيد الانتظار";
-                if(o.status === 'completed') { statusKey = "order_status_completed"; statusText = "تم التسليم"; }
-                else if(o.status === 'failed') { statusKey = "order_status_failed"; statusText = "ملغاة"; }
+                if(o.status === 'completed') { statusKey = "status_completed"; statusText = "تم التسليم"; }
+                else if(o.status === 'failed') { statusKey = "status_failed"; statusText = "ملغاة"; }
 
-                if(isMyPurchase && o.status === 'completed') notificationsList.push({text: `تم تسليم طلبك: ${o.productName}`, date: o.date, color: 'text-green-400'});
-                if(isMyPurchase && o.status === 'failed') notificationsList.push({text: `تم إلغاء طلبك: ${o.productName}`, date: o.date, color: 'text-red-400'});
+                if(isMyPurchase && o.status === 'completed') notificationsList.push({text: `${window.t('msg_order_delivered')} ${o.productName}`, date: o.date, color: 'text-green-400'});
+                if(isMyPurchase && o.status === 'failed') notificationsList.push({text: `${window.t('msg_order_canceled')} ${o.productName}`, date: o.date, color: 'text-red-400'});
 
                 if(isMyPurchase) {
-                    myPurchaseList.innerHTML += `<div class="glass p-5 rounded-2xl flex justify-between items-center border border-white/5 animate-slide mb-2"><div><h4 class="text-[10px] font-black text-blue-400 uppercase">${o.productName || 'طلب مشتريات'}</h4><p class="text-[8px] text-gray-500 mt-1">${o.date || ''}</p></div><span class="status-badge status-${o.status || 'pending'}" data-key="${statusKey}">${statusText}</span></div>`;
+                    myPurchaseList.innerHTML += `<div class="glass p-5 rounded-2xl flex justify-between items-center border border-white/5 animate-slide mb-2"><div><h4 class="text-[10px] font-black text-blue-400 uppercase">${o.productName || 'طلب مشتريات'}</h4><p class="text-[8px] text-gray-500 mt-1">${o.date || ''}</p></div><span class="status-badge status-${o.status || 'pending'}" data-key="${statusKey}">${window.t(statusKey)}</span></div>`;
                 }
 
                 if(role === 'admin' || o.marketerId === myUid) {
-                    if(!o.status || o.status === 'pending') notificationsList.push({text: `طلب جديد: ${o.productName} بـ ${displayTotal} ج.م`, date: o.date, color: 'text-yellow-400'});
-                    if(o.status === 'completed') notificationsList.push({text: `تم إضافة أرباح طلب ${o.productName} لمحفظتك`, date: o.date, color: 'text-blue-400'});
+                    if(!o.status || o.status === 'pending') notificationsList.push({text: `${window.t('msg_new_order')} ${o.productName} ${window.t('msg_with_amount')} ${displayTotal} ${window.t('currency')}`, date: o.date, color: 'text-yellow-400'});
+                    if(o.status === 'completed') notificationsList.push({text: `${window.t('msg_profit_added')} ${o.productName} ${window.t('msg_to_wallet')}`, date: o.date, color: 'text-blue-400'});
 
                     if(o.status === 'completed') {
                         rev += displayTotal;
@@ -444,45 +452,44 @@
                     } else if(o.status === 'failed') { fail++; }
 
                     if(!o.status || o.status === 'pending') {
-                        // إضافة زرار عرض المنتج داخل كارت الطلب الوارد مباشرة
                         incomingList.innerHTML += `
                         <div class="glass p-6 rounded-3xl border border-white/10 space-y-4 animate-slide mb-3">
                             <div class="flex justify-between items-start">
                                 <div>
                                     <h4 class="font-black text-blue-400">${o.productName || 'منتج'}</h4>
-                                    <p class="text-[10px] text-white mt-1">العميل: ${o.customerName || 'غير معروف'} | الكمية: ${o.qty || o.quantity || 1}</p>
+                                    <p class="text-[10px] text-white mt-1"><span data-key="order_client_name">العميل</span>: ${o.customerName || `<span data-key="lbl_unknown">${window.t('lbl_unknown')}</span>`} | <span data-key="lbl_qty">الكمية</span>: ${o.qty || o.quantity || 1}</p>
                                 </div>
                                 <div class="flex flex-col gap-2">
-                                    <button onclick="viewOrderDetails('${key}')" class="bg-blue-600/20 text-blue-400 px-3 py-1.5 rounded-lg text-[9px] font-black hover:bg-blue-600 hover:text-white transition">تفاصيل الطلب</button>
-                                    <a href="details.html?id=${o.productId || o.id || ''}" class="text-center bg-white/10 text-white px-3 py-1.5 rounded-lg text-[9px] font-black hover:bg-white/20 transition">عرض المنتج</a>
+                                    <button onclick="viewOrderDetails('${key}')" class="bg-blue-600/20 text-blue-400 px-3 py-1.5 rounded-lg text-[9px] font-black hover:bg-blue-600 hover:text-white transition" data-key="btn_order_details">تفاصيل الطلب</button>
+                                    <a href="details.html?id=${o.productId || o.id || ''}" class="text-center bg-white/10 text-white px-3 py-1.5 rounded-lg text-[9px] font-black hover:bg-white/20 transition" data-key="btn_view_product">عرض المنتج</a>
                                 </div>
                             </div>
                             <div class="flex justify-between items-center border-t border-white/5 pt-4">
-                                <p class="text-white font-black text-xs">المبلغ: ${displayTotal} ج.م</p>
-                                <span class="status-badge status-pending" data-key="order_status_pending">قيد الانتظار</span>
+                                <p class="text-white font-black text-xs"><span data-key="order_amount">المبلغ</span>: ${displayTotal} <span data-key="currency"></span></p>
+                                <span class="status-badge status-pending" data-key="status_pending">قيد الانتظار</span>
                             </div>
                         </div>`;
                     }
                 }
             });
 
-            if(myPurchaseList.innerHTML === '') myPurchaseList.innerHTML = '<p class="text-[10px] text-gray-500 text-center py-4">لم تقم بأي طلبات بعد.</p>';
-            if(incomingList && incomingList.innerHTML === '') incomingList.innerHTML = '<p class="text-[10px] text-gray-500 text-center py-4">لا توجد طلبات جديدة.</p>';
+            if(myPurchaseList.innerHTML === '') myPurchaseList.innerHTML = `<p class="text-[10px] text-gray-500 text-center py-4" data-key="no_my_orders">${window.t('no_my_orders')}</p>`;
+            if(incomingList && incomingList.innerHTML === '') incomingList.innerHTML = `<p class="text-[10px] text-gray-500 text-center py-4" data-key="no_new_orders">${window.t('no_new_orders')}</p>`;
 
-            document.getElementById('totalRevenue').innerText = rev.toFixed(2) + " ج.م";
+            document.getElementById('totalRevenue').innerHTML = `${rev.toFixed(2)} <span data-key="currency"></span>`;
             document.getElementById('successOrdersCount').innerText = succ;
             document.getElementById('failedOrdersCount').innerText = fail;
 
             if (role === 'admin') {
                 const adminWallet = document.getElementById('walletBalance');
-                if(adminWallet) adminWallet.innerText = adminPlatformProfit.toFixed(2) + " ج.م";
+                if(adminWallet) adminWallet.innerHTML = `${adminPlatformProfit.toFixed(2)} <span data-key="currency"></span>`;
             }
             
             updateNotificationsUI(notificationsList);
             
             if(role === 'admin' || role === 'marketer') {
                 let todayTotal = dailyRevData[todayStr] || 0;
-                document.getElementById('todaySalesValue').innerText = todayTotal + " ج.م";
+                document.getElementById('todaySalesValue').innerHTML = `${todayTotal} <span data-key="currency"></span>`;
                 renderSalesChart(dailyRevData);
             }
 
@@ -505,7 +512,7 @@
             `).join('');
         } else {
             badge.classList.add('hidden');
-            list.innerHTML = '<p class="text-gray-500 text-center py-4">لا توجد إشعارات حالياً.</p>';
+            list.innerHTML = `<p class="text-gray-500 text-center py-4" data-key="no_notifs">${window.t('no_notifs')}</p>`;
         }
     }
 
@@ -524,18 +531,17 @@
         const labels = Object.keys(data).reverse(); 
         const values = Object.values(data).reverse(); 
 
-        // إضافة نقطة وهمية لـ "أمس" عشان يرسم خط احترافي بدل النقطة لو كان يوم واحد
         if(labels.length === 1) {
-            labels.unshift("أمس");
+            labels.unshift("...");
             values.unshift(0);
         }
 
         salesChartInstance = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: labels.length ? labels : ['لا توجد داتا'],
+                labels: labels.length ? labels : ['0'],
                 datasets: [{
-                    label: 'المبيعات (ج.م)',
+                    label: '',
                     data: values.length ? values : [0],
                     borderColor: '#3b82f6',
                     backgroundColor: 'rgba(59, 130, 246, 0.2)',
@@ -569,11 +575,11 @@
                 const u = users[uid];
                 if(u.role === 'marketer') {
                     const debt = u.wallet?.debt || 0;
-                    const phone = u.phone || u.phoneNumber || '<span class="text-gray-600">غير مسجل</span>';
+                    const phone = u.phone || u.phoneNumber || `<span class="text-gray-600" data-key="not_registered">${window.t('not_registered')}</span>`;
                     tbody.innerHTML += `<tr class="hover:bg-white/5 transition">
                         <td class="p-4 font-bold text-white">${u.name}</td>
                         <td class="p-4 text-gray-400 text-[10px] font-mono tracking-widest">${phone}</td>
-                        <td class="p-4 text-red-500 font-black">${debt.toFixed(2)} ج.م</td>
+                        <td class="p-4 text-red-500 font-black">${debt.toFixed(2)} <span data-key="currency"></span></td>
                         <td class="p-4"><button onclick="settleDebt('${uid}')" data-key="btn_settle" class="bg-blue-600/20 text-blue-400 px-3 py-1.5 rounded-lg font-black hover:bg-blue-600 hover:text-white transition text-[9px]">تم الاستحقاق</button></td>
                     </tr>`;
                 }
@@ -583,8 +589,8 @@
     }
 
     window.settleDebt = async (marketerUid) => {
-        if(confirm("هل استلمت المستحقات من المسوق؟ تصفير الدين سيتيح له النشر مجدداً.")) {
-            try { await update(ref(db, `users/${marketerUid}/wallet`), { debt: 0 }); showToast("تم تصفير المديونية ✅"); } catch(e) { showToast("فشل!"); }
+        if(confirm(window.t('msg_settle_confirm'))) {
+            try { await update(ref(db, `users/${marketerUid}/wallet`), { debt: 0 }); showToast(window.t('msg_debt_zeroed')); } catch(e) { showToast(window.t('msg_failed')); }
         }
     };
 
@@ -594,23 +600,22 @@
         const body = document.getElementById('orderModalBody');
         const actions = document.getElementById('orderModalActions');
         
-        // تعديل الـ Modal لعرض التفاصيل الكاملة باحترافية
         body.innerHTML = `
         <div class="space-y-4">
-            <div><label class="text-gray-500 text-[10px] block" data-key="order_client_name">العميل</label><p class="text-white font-bold">${o.customerName || 'غير متوفر'}</p></div>
-            <div><label class="text-gray-500 text-[10px] block" data-key="order_client_phone">رقم الهاتف</label><p class="text-white font-bold font-mono">${o.phone || 'غير متوفر'}</p></div>
-            <div><label class="text-gray-500 text-[10px] block" data-key="order_client_address">العنوان</label><p class="text-white font-bold">${o.address || 'غير متوفر'}</p></div>
+            <div><label class="text-gray-500 text-[10px] block" data-key="order_client_name">العميل</label><p class="text-white font-bold">${o.customerName || `<span data-key="val_unavailable">${window.t('val_unavailable')}</span>`}</p></div>
+            <div><label class="text-gray-500 text-[10px] block" data-key="order_client_phone">رقم الهاتف</label><p class="text-white font-bold font-mono">${o.phone || `<span data-key="val_unavailable">${window.t('val_unavailable')}</span>`}</p></div>
+            <div><label class="text-gray-500 text-[10px] block" data-key="order_client_address">العنوان</label><p class="text-white font-bold">${o.address || `<span data-key="val_unavailable">${window.t('val_unavailable')}</span>`}</p></div>
         </div>
         <div class="space-y-4">
-            <div><label class="text-gray-500 text-[10px] block" data-key="order_product">المنتج</label><p class="text-blue-400 font-bold">${o.productName || 'غير متوفر'}</p></div>
+            <div><label class="text-gray-500 text-[10px] block" data-key="order_product">المنتج</label><p class="text-blue-400 font-bold">${o.productName || `<span data-key="val_unavailable">${window.t('val_unavailable')}</span>`}</p></div>
             
             <div class="grid grid-cols-3 gap-2 bg-white/5 p-3 rounded-xl border border-white/5 text-center">
-                <div><label class="text-gray-500 text-[9px] block">اللون</label><p class="text-white font-black text-xs">${o.color || 'افتراضي'}</p></div>
-                <div><label class="text-gray-500 text-[9px] block">المقاس</label><p class="text-white font-black text-xs">${o.size || 'افتراضي'}</p></div>
-                <div><label class="text-gray-500 text-[9px] block">العدد</label><p class="text-white font-black text-xs">${o.qty || o.quantity || 1}</p></div>
+                <div><label class="text-gray-500 text-[9px] block" data-key="lbl_color">اللون</label><p class="text-white font-black text-xs">${o.color || `<span data-key="val_default">${window.t('val_default')}</span>`}</p></div>
+                <div><label class="text-gray-500 text-[9px] block" data-key="lbl_size">المقاس</label><p class="text-white font-black text-xs">${o.size || `<span data-key="val_default">${window.t('val_default')}</span>`}</p></div>
+                <div><label class="text-gray-500 text-[9px] block" data-key="lbl_qty">العدد</label><p class="text-white font-black text-xs">${o.qty || o.quantity || 1}</p></div>
             </div>
 
-            <div><label class="text-gray-500 text-[10px] block" data-key="order_amount">المبلغ النهائي</label><p class="text-green-400 font-black text-xl">${displayTotal} ج.م</p></div>
+            <div><label class="text-gray-500 text-[10px] block" data-key="order_amount">المبلغ النهائي</label><p class="text-green-400 font-black text-xl">${displayTotal} <span data-key="currency"></span></p></div>
             <div><button onclick="viewReceipt('${o.receipt || ''}')" class="text-blue-400 underline text-xs font-bold hover:text-white transition" data-key="btn_view_receipt">عرض إثبات الدفع</button></div>
         </div>`;
         
@@ -630,19 +635,19 @@
             Object.keys(prods).forEach(key => {
                 const p = prods[key];
                 
-                const wishCard = `<div class="glass p-4 rounded-3xl border border-white/5 flex gap-4 items-center animate-slide"><img src="${p.image}" class="w-12 h-12 rounded-xl object-cover shadow-lg"><div class="flex-1 font-bold text-[10px]"><h4 class="text-white line-clamp-1">${p.name}</h4><p class="text-blue-400 mt-1">${p.price} ج.م</p></div><a href="details.html?id=${key}" class="p-2 bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white transition rounded-xl text-[9px] font-black shadow-md">عرض</a></div>`;
+                const wishCard = `<div class="glass p-4 rounded-3xl border border-white/5 flex gap-4 items-center animate-slide"><img src="${p.image}" class="w-12 h-12 rounded-xl object-cover shadow-lg"><div class="flex-1 font-bold text-[10px]"><h4 class="text-white line-clamp-1">${p.name}</h4><p class="text-blue-400 mt-1">${p.price} <span data-key="currency"></span></p></div><a href="details.html?id=${key}" class="p-2 bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white transition rounded-xl text-[9px] font-black shadow-md" data-key="btn_visit_product">عرض</a></div>`;
                 
                 const myProdCard = `<div class="glass p-4 rounded-3xl border border-white/5 flex gap-4 items-center animate-slide">
                     <img src="${p.image}" class="w-12 h-12 rounded-xl object-cover shadow-lg">
                     <div class="flex-1 font-bold text-[10px]">
                         <h4 class="text-white line-clamp-1">${p.name}</h4>
-                        <p class="text-blue-400 mt-1">${p.price} ج.م</p>
-                        ${p.oldPrice ? `<p class="text-green-400 mt-1">عمولتك: ${p.oldPrice} ج.م</p>` : ''}
+                        <p class="text-blue-400 mt-1">${p.price} <span data-key="currency"></span></p>
+                        ${p.oldPrice ? `<p class="text-green-400 mt-1"><span data-key="p_commission"></span>: ${p.oldPrice} <span data-key="currency"></span></p>` : ''}
                     </div>
                     <div class="flex flex-col gap-1">
-                        <a href="details.html?id=${key}" class="px-2 py-1 bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white transition rounded-lg text-[9px] font-black shadow-md text-center">عرض</a>
-                        <button onclick="editProduct('${key}', '${p.name.replace(/'/g, "\\'")}', '${p.price}', '${p.image}', '${p.oldPrice || ''}')" class="px-2 py-1 bg-yellow-500/10 text-yellow-500 hover:bg-yellow-500 hover:text-white transition rounded-lg text-[9px] font-black shadow-md">تعديل</button>
-                        <button onclick="deleteProduct('${key}')" class="px-2 py-1 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition rounded-lg text-[9px] font-black shadow-md">حذف</button>
+                        <a href="details.html?id=${key}" class="px-2 py-1 bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white transition rounded-lg text-[9px] font-black shadow-md text-center" data-key="btn_visit_product">عرض</a>
+                        <button onclick="editProduct('${key}', '${p.name.replace(/'/g, "\\'")}', '${p.price}', '${p.image}', '${p.oldPrice || ''}')" class="px-2 py-1 bg-yellow-500/10 text-yellow-500 hover:bg-yellow-500 hover:text-white transition rounded-lg text-[9px] font-black shadow-md" data-key="btn_edit">تعديل</button>
+                        <button onclick="deleteProduct('${key}')" class="px-2 py-1 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition rounded-lg text-[9px] font-black shadow-md" data-key="btn_delete">حذف</button>
                     </div>
                 </div>`;
 
@@ -653,16 +658,17 @@
             document.getElementById('wishCount').innerText = wishlist.length;
             if(document.getElementById('prodCount')) document.getElementById('prodCount').innerText = myCount;
             
-            if(wishlist.length === 0) wishGrid.innerHTML = '<p class="text-[10px] text-gray-500 col-span-full text-center py-4">لا توجد مفضلات حالياً.</p>';
-            if(myCount === 0) myGrid.innerHTML = '<p class="text-[10px] text-gray-500 col-span-full text-center py-4">لم تقم بنشر أي منتجات بعد.</p>';
+            if(wishlist.length === 0) wishGrid.innerHTML = `<p class="text-[10px] text-gray-500 col-span-full text-center py-4" data-key="no_favorites">${window.t('no_favorites')}</p>`;
+            if(myCount === 0) myGrid.innerHTML = `<p class="text-[10px] text-gray-500 col-span-full text-center py-4" data-key="no_my_products">${window.t('no_my_products')}</p>`;
+            if(window.applyLanguage) applyLanguage(localStorage.getItem('lang') || 'ar');
         });
     }
 
     window.editProduct = async (id, oldN, oldP, oldI, oldComm) => { 
-        const nn = prompt("الاسم الجديد:", oldN); 
-        const np = prompt("السعر الجديد:", oldP); 
-        const nComm = prompt("العمولة الجديدة:", oldComm !== 'undefined' && oldComm !== 'null' ? oldComm : '');
-        const ni = prompt("رابط الصورة الجديد:", oldI); 
+        const nn = prompt(window.t('prompt_new_name'), oldN); 
+        const np = prompt(window.t('prompt_new_price'), oldP); 
+        const nComm = prompt(window.t('prompt_new_comm'), oldComm !== 'undefined' && oldComm !== 'null' ? oldComm : '');
+        const ni = prompt(window.t('prompt_new_img'), oldI); 
         if(nn && np) { 
             await update(ref(db, 'products/' + id), { 
                 name: nn, 
@@ -670,11 +676,11 @@
                 oldPrice: nComm, 
                 image: ni 
             }); 
-            showToast("تم التحديث بنجاح!"); 
+            showToast(window.t('msg_update_success')); 
         } 
     };
 
-    window.deleteProduct = (id) => confirm("هل أنت متأكد من حذف هذا المنتج نهائياً؟") && remove(ref(db, 'products/' + id)) && showToast("تم الحذف بنجاح.");
+    window.deleteProduct = (id) => confirm(window.t('msg_delete_confirm')) && remove(ref(db, 'products/' + id)) && showToast(window.t('msg_delete_success'));
 
     window.openOrderArchive = (status) => {
         const sect = document.getElementById('orderArchiveSection');
@@ -683,21 +689,22 @@
         Object.keys(currentOrdersData).forEach(key => {
             const o = currentOrdersData[key];
             if(o.status === status && (myRole === 'admin' || o.marketerId === myUid)) {
-                list.innerHTML += `<div class="bg-white/5 p-4 rounded-2xl flex justify-between items-center text-[10px] mb-2 animate-slide border border-white/5"><div><p class="text-blue-400 font-black">${o.productName || 'طلب'}</p><p class="text-gray-500 mt-1">${o.customerName || 'مجهول'}</p></div><span class="font-bold text-white text-xs">${o.total || o.totalPrice} ج.م</span></div>`;
+                list.innerHTML += `<div class="bg-white/5 p-4 rounded-2xl flex justify-between items-center text-[10px] mb-2 animate-slide border border-white/5"><div><p class="text-blue-400 font-black">${o.productName || 'طلب'}</p><p class="text-gray-500 mt-1">${o.customerName || `<span data-key="lbl_unknown">${window.t('lbl_unknown')}</span>`}</p></div><span class="font-bold text-white text-xs">${o.total || o.totalPrice} <span data-key="currency"></span></span></div>`;
             }
         });
-        if(list.innerHTML === '') list.innerHTML = '<p class="text-[10px] text-gray-500 text-center py-4">لا توجد سجلات في هذا الأرشيف.</p>';
+        if(list.innerHTML === '') list.innerHTML = `<p class="text-[10px] text-gray-500 text-center py-4" data-key="no_archive_records">${window.t('no_archive_records')}</p>`;
+        if(window.applyLanguage) applyLanguage(localStorage.getItem('lang') || 'ar');
     };
 
     window.showJoinForm = () => { document.getElementById('requestStatic').classList.add('hidden'); document.getElementById('joinForm').classList.remove('hidden'); };
     
     window.sendFullMarketerRequest = async () => {
         const phone = document.getElementById('reqPhone').value; const address = document.getElementById('reqAddress').value;
-        if(!phone || !address) return showToast("أكمل البيانات أولاً!");
+        if(!phone || !address) return showToast(window.t('msg_data_incomplete'));
         
-        await set(ref(db, 'marketer_requests/' + myUid), { uid: myUid, name: document.getElementById('userName').innerText, email: document.getElementById('userEmail').innerText, phone, address, bio: document.getElementById('reqBio').value, date: new Date().toLocaleString('ar-EG') });
+        await set(ref(db, 'marketer_requests/' + myUid), { uid: myUid, name: document.getElementById('userName').innerText, email: document.getElementById('userEmail').innerText, phone, address, bio: document.getElementById('reqBio').value, date: new Date().toLocaleString('en-US') });
         await update(ref(db, 'users/' + myUid), { phone: phone }); 
-        showToast("تم إرسال طلبك بنجاح!");
+        showToast(window.t('msg_req_sent_success'));
         setTimeout(() => location.reload(), 2000);
     };
 
@@ -715,13 +722,13 @@
         
         if(Object.keys(u).length > 0) {
             await update(ref(db, 'users/' + myUid), u); 
-            showToast("تم الحفظ بنجاح!");
+            showToast(window.t('msg_update_success'));
             setTimeout(() => location.reload(), 1500);
-        } else showToast("لم تقم بإدخال بيانات للتحديث!");
+        } else showToast(window.t('msg_no_data_update'));
     };
 
     window.viewReceipt = (v) => { 
-        if(!v) return showToast("لا يوجد إيصال مرفق!");
+        if(!v) return showToast(window.t('msg_no_receipt'));
         if(v.startsWith('http')) window.open(v, '_blank'); 
         else { document.getElementById('receiptContent').innerText = v; document.getElementById('receiptModal').classList.remove('hidden'); } 
     };
@@ -731,7 +738,7 @@
     window.closeReceipt = () => document.getElementById('receiptModal').classList.add('hidden');
     window.toggleSettings = () => document.getElementById('settingsPanel').classList.toggle('hidden');
     window.showToast = (m) => { const t = document.getElementById('toast'); t.innerText = m; t.style.opacity = '1'; setTimeout(() => t.style.opacity = '0', 3000); };
-    window.logout = () => signOut(auth).then(() => window.location.href = "login.html");
+    window.logout = () => confirm(window.t('msg_logout_confirm')) && signOut(auth).then(() => window.location.href = "login.html");
 </script>
 </body>
 </html>

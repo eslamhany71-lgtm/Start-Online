@@ -8,92 +8,131 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        body { background: #020617; color: #f1f5f9; font-family: 'Cairo', sans-serif; min-height: 100vh; margin: 0; scroll-behavior: smooth; }
-        .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); }
-        .spec-btn { border: 1px solid rgba(255,255,255,0.1); transition: 0.3s; cursor: pointer; padding: 10px 20px; border-radius: 15px; font-size: 12px; font-weight: bold; text-align: center; color: #94a3b8; }
-        .spec-btn.active { border-color: #3b82f6; background: rgba(59, 130, 246, 0.2); color: white; box-shadow: 0 0 15px rgba(59, 130, 246, 0.3); }
-        .thumb-img { width: 70px; height: 70px; object-fit: cover; border-radius: 12px; cursor: pointer; border: 2px solid transparent; transition: 0.3s; opacity: 0.6; }
-        .thumb-img.active { border-color: #3b82f6; opacity: 1; transform: scale(1.05); }
-        .timer-unit { background: #000; padding: 10px; border-radius: 12px; min-width: 60px; text-align: center; border: 1px solid rgba(59, 130, 246, 0.3); }
-        .badge-live { animation: pulse 2s infinite; }
-        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.7; } }
+        /* الخلفية العصرية والدلع */
+        body { 
+            background-color: #020617;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.12), transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.12), transparent 50%);
+            color: #f1f5f9; 
+            font-family: 'Cairo', sans-serif; 
+            min-height: 100vh; 
+            margin: 0; 
+            scroll-behavior: smooth;
+            background-attachment: fixed;
+        }
         
+        .bg-grid { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px); background-size: 30px 30px; z-index: -1; pointer-events: none; mask-image: radial-gradient(circle at center, black, transparent 80%); }
+
+        .glass { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .glass-panel { background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)); backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.05); }
+
+        .hero-title { background: linear-gradient(to left, #ffffff, #93c5fd); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 4px 10px rgba(59, 130, 246, 0.2)); }
+
+        .spec-btn { border: 1px solid rgba(255,255,255,0.1); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; padding: 10px 22px; border-radius: 16px; font-size: 12px; font-weight: 900; text-align: center; color: #94a3b8; background: rgba(255,255,255,0.02); }
+        .spec-btn:hover { border-color: rgba(59, 130, 246, 0.5); background: rgba(59, 130, 246, 0.1); color: #fff; transform: translateY(-2px); }
+        .spec-btn.active { border-color: #3b82f6; background: rgba(59, 130, 246, 0.2); color: white; box-shadow: 0 0 20px rgba(59, 130, 246, 0.4); }
+        
+        .thumb-img { width: 75px; height: 75px; object-fit: cover; border-radius: 16px; cursor: pointer; border: 2px solid transparent; transition: 0.4s; opacity: 0.5; }
+        .thumb-img:hover { opacity: 0.8; transform: translateY(-2px); }
+        .thumb-img.active { border-color: #3b82f6; opacity: 1; transform: scale(1.05); box-shadow: 0 0 15px rgba(59, 130, 246, 0.4); }
+        
+        .timer-unit { background: rgba(0,0,0,0.4); padding: 12px; border-radius: 16px; min-width: 65px; text-align: center; border: 1px solid rgba(59, 130, 246, 0.2); backdrop-filter: blur(10px); }
+        .badge-live { animation: pulse 2s infinite cubic-bezier(0.4, 0, 0.6, 1); }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.7); } 50% { transform: scale(1.05); opacity: 0.8; box-shadow: 0 0 0 6px rgba(37, 99, 235, 0); } }
+        
+        .btn-glow { transition: 0.4s; position: relative; overflow: hidden; }
+        .btn-glow::after { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 60%); opacity: 0; transition: 0.5s; transform: scale(0.5); }
+        .btn-glow:hover::after { opacity: 1; transform: scale(1); }
+        .btn-glow:hover { box-shadow: 0 0 25px rgba(59, 130, 246, 0.6); transform: translateY(-3px); }
+
         /* نجوم التقييم */
         .star-rating { direction: ltr; display: inline-flex; }
         .star-rating input { display: none; }
-        .star-rating label { font-size: 2rem; color: #1e293b; cursor: pointer; transition: 0.2s; }
-        .star-rating input:checked ~ label { color: #f59e0b; }
-        .star-rating label:hover, .star-rating label:hover ~ label { color: #fbbf24; }
+        .star-rating label { font-size: 2.2rem; color: rgba(255,255,255,0.1); cursor: pointer; transition: 0.3s; text-shadow: 0 0 10px rgba(0,0,0,0.5); }
+        .star-rating input:checked ~ label { color: #f59e0b; text-shadow: 0 0 15px rgba(245, 158, 11, 0.6); }
+        .star-rating label:hover, .star-rating label:hover ~ label { color: #fbbf24; text-shadow: 0 0 15px rgba(251, 191, 36, 0.8); }
 
-        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body class="p-4 md:p-10 pb-32">
+<body class="p-4 md:p-8 lg:p-12 pb-32">
+    
+    <div class="bg-grid"></div>
 
-    <div class="max-w-7xl mx-auto flex flex-col lg:flex-row gap-12">
+    <div class="max-w-7xl mx-auto flex flex-col lg:flex-row gap-12 relative z-10">
         
         <div class="lg:w-1/2 space-y-6 lg:order-2">
-            <div class="rounded-[40px] overflow-hidden shadow-2xl border border-white/5 bg-black/40 relative group">
-                <img id="mainImg" src="https://via.placeholder.com/600x800?text=Loading..." class="w-full h-[450px] md:h-[600px] object-contain transition-all duration-700 group-hover:scale-110">
-                <div class="absolute top-4 right-4 bg-blue-600 text-white text-[10px] font-black px-4 py-1.5 rounded-full badge-live uppercase tracking-widest shadow-lg">Premium Quality</div>
+            <div class="rounded-[40px] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/10 bg-gradient-to-b from-white/5 to-black/60 relative group backdrop-blur-sm">
+                <img id="mainImg" src="https://via.placeholder.com/600x800?text=Loading..." class="w-full h-[450px] md:h-[650px] object-contain transition-transform duration-700 ease-out group-hover:scale-105 p-4">
+                <div class="absolute top-6 right-6 bg-gradient-to-r from-blue-600 to-blue-400 text-white text-[11px] font-black px-5 py-2 rounded-full badge-live uppercase tracking-widest shadow-lg border border-blue-400/50">Premium Quality</div>
             </div>
             
-            <div id="thumbList" class="flex gap-3 overflow-x-auto pb-2 no-scrollbar"></div>
+            <div id="thumbList" class="flex gap-4 overflow-x-auto pb-4 pt-2 no-scrollbar justify-start md:justify-center"></div>
 
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 pt-6 border-t border-white/5">
-                <div class="glass p-4 rounded-2xl flex items-center gap-3 border border-white/5">
-                    <span class="text-2xl">🧵</span>
-                    <div><p class="text-[9px] text-gray-500 uppercase font-bold tracking-tighter">الماتريال</p><p id="detMat" class="text-xs font-black text-white">-</p></div>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 pt-4">
+                <div class="glass-panel p-4 rounded-3xl flex flex-col md:flex-row items-center gap-3 text-center md:text-right hover:bg-white/5 transition-colors">
+                    <span class="text-3xl drop-shadow-md">🧵</span>
+                    <div><p class="text-[9px] text-gray-400 uppercase font-black tracking-widest mb-1">الماتريال</p><p id="detMat" class="text-xs font-black text-white">-</p></div>
                 </div>
-                <div class="glass p-4 rounded-2xl flex items-center gap-3 border border-white/5">
-                    <span class="text-2xl">🏷</span>
-                    <div><p class="text-[9px] text-gray-500 uppercase font-bold tracking-tighter">الموديل</p><p id="detMod" class="text-xs font-black text-white">-</p></div>
+                <div class="glass-panel p-4 rounded-3xl flex flex-col md:flex-row items-center gap-3 text-center md:text-right hover:bg-white/5 transition-colors">
+                    <span class="text-3xl drop-shadow-md">🏷</span>
+                    <div><p class="text-[9px] text-gray-400 uppercase font-black tracking-widest mb-1">الموديل</p><p id="detMod" class="text-xs font-black text-white">-</p></div>
                 </div>
-                <div class="glass p-4 rounded-2xl flex items-center gap-3 border border-white/5">
-                    <span class="text-2xl">📦</span>
-                    <div><p class="text-[9px] text-gray-500 uppercase font-bold tracking-tighter">المعاينة</p><p class="text-xs font-black text-green-400">متاحة قبل الاستلام</p></div>
+                <div class="glass-panel p-4 rounded-3xl flex flex-col md:flex-row items-center gap-3 text-center md:text-right hover:bg-white/5 transition-colors col-span-2 md:col-span-1">
+                    <span class="text-3xl drop-shadow-md">📦</span>
+                    <div><p class="text-[9px] text-gray-400 uppercase font-black tracking-widest mb-1">المعاينة</p><p class="text-[11px] font-black text-green-400">متاحة قبل الاستلام</p></div>
                 </div>
             </div>
         </div>
 
-        <div class="lg:w-1/2 space-y-8 lg:order-1 text-right">
-            <nav class="flex justify-between items-center">
-                <a href="products.html" class="text-blue-400 font-black hover:text-white transition-all flex items-center gap-2 text-xs uppercase italic tracking-widest"> ← العودة للمتجر </a>
+        <div class="lg:w-1/2 space-y-8 lg:order-1 text-right mt-4 lg:mt-0">
+            <nav class="flex justify-between items-center bg-black/20 p-4 rounded-3xl border border-white/5 backdrop-blur-md">
+                <a href="products.html" class="text-blue-400 font-black hover:text-white transition-all flex items-center gap-2 text-xs uppercase italic tracking-widest bg-white/5 px-4 py-2 rounded-xl hover:bg-white/10"> ← المتجر </a>
                 <div class="flex items-center gap-4">
-                    <button onclick="shareProduct()" class="flex items-center gap-1 text-[10px] bg-blue-600/20 text-blue-400 px-3 py-1.5 rounded-lg border border-blue-500/30 hover:bg-blue-600 hover:text-white transition-all font-black">
+                    <button onclick="shareProduct()" class="flex items-center gap-1 text-[10px] bg-blue-600/20 text-blue-400 px-4 py-2 rounded-xl border border-blue-500/30 hover:bg-blue-600 hover:text-white transition-all font-black shadow-lg">
                         🔗 مشاركة
                     </button>
-                    <div class="flex items-center gap-2 text-[10px] text-gray-400 italic font-bold">
+                    <div class="flex items-center gap-2 text-[10px] text-gray-300 italic font-black bg-green-500/10 px-3 py-2 rounded-xl border border-green-500/20">
                         <span class="w-2.5 h-2.5 bg-green-500 rounded-full badge-live shadow-[0_0_10px_#22c55e]"></span>
-                        متاح بالمخزن
+                        بالمخزن
                     </div>
                 </div>
             </nav>
 
             <div class="animate-slide">
-                <h1 id="detName" class="text-4xl md:text-6xl font-black mb-4 tracking-tighter text-white italic">...</h1>
-                <div class="flex items-center gap-6 justify-end">
-                    <span id="detOldPrice" class="text-gray-700 line-through text-2xl font-bold italic"></span>
-                    <span id="detPriceView" class="text-blue-500 font-black text-5xl md:text-6xl tracking-tighter">0 ج.م</span>
+                <h1 id="detName" class="text-5xl md:text-7xl font-black mb-6 tracking-tighter hero-title italic leading-tight">...</h1>
+                <div class="flex flex-col md:flex-row md:items-center gap-4 md:gap-8 justify-end">
+                    <div id="detOldPriceContainer" class="hidden bg-green-500/10 border border-green-500/30 px-5 py-2 rounded-2xl shadow-[0_0_15px_rgba(34,197,94,0.1)]">
+                        <span class="text-gray-400 text-[10px] font-black uppercase tracking-widest block mb-1">عمولتك كمسوق:</span>
+                        <span id="detOldPrice" class="text-green-400 text-2xl font-black italic"></span>
+                    </div>
+                    <div class="text-left md:text-right">
+                        <p class="text-gray-500 text-[10px] font-black uppercase tracking-widest mb-1">السعر النهائي:</p>
+                        <span id="detPriceView" class="text-blue-400 font-black text-6xl md:text-7xl tracking-tighter drop-shadow-[0_0_15px_rgba(59,130,246,0.3)]">0 ج.م</span>
+                    </div>
                 </div>
             </div>
 
-            <div class="space-y-8 glass p-8 rounded-[40px] border border-white/5 shadow-2xl relative overflow-hidden">
-                <div id="colorSection" class="hidden text-right">
-                    <p class="text-xs text-gray-500 mb-4 font-black uppercase tracking-widest italic">اختر اللون المفضل:</p>
+            <div class="space-y-8 glass p-8 md:p-10 rounded-[40px] border border-white/10 shadow-2xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-[50px] pointer-events-none"></div>
+
+                <div id="colorSection" class="hidden text-right relative z-10">
+                    <p class="text-xs text-gray-400 mb-4 font-black uppercase tracking-widest italic flex items-center justify-end gap-2"><span class="w-2 h-2 rounded-full bg-blue-500"></span> اختر اللون:</p>
                     <div id="colorsList" class="flex gap-3 flex-wrap justify-end"></div>
                 </div>
 
-                <div id="sizeSection" class="hidden text-right">
-                    <p class="text-xs text-gray-500 mb-4 font-black uppercase tracking-widest italic">المقاس المتاح:</p>
+                <div id="sizeSection" class="hidden text-right relative z-10">
+                    <p class="text-xs text-gray-400 mb-4 font-black uppercase tracking-widest italic flex items-center justify-end gap-2"><span class="w-2 h-2 rounded-full bg-purple-500"></span> المقاس المتاح:</p>
                     <div id="sizesList" class="flex gap-3 flex-wrap justify-end"></div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6 border-t border-white/5">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-8 border-t border-white/10 relative z-10">
                     <div class="space-y-3 order-2 md:order-1">
-                        <p class="text-[10px] text-gray-500 font-black uppercase tracking-widest text-right">المحافظة (الشحن):</p>
-                        <select id="govSelect" onchange="updateFinalPrice()" class="w-full bg-slate-900 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white font-bold cursor-pointer focus:border-blue-500 transition-all">
+                        <p class="text-[10px] text-gray-400 font-black uppercase tracking-widest text-right">المحافظة (الشحن):</p>
+                        <select id="govSelect" onchange="updateFinalPrice()" class="w-full bg-slate-900/80 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white font-bold cursor-pointer focus:border-blue-500 transition-all shadow-inner backdrop-blur-md">
                             <option value="0" data-price="0">اختر المحافظة لتقدير الشحن</option>
                             <option value="القاهرة" data-price="50">القاهرة (50 ج.م)</option>
                             <option value="الجيزة" data-price="50">الجيزة (50 ج.م)</option>
@@ -101,56 +140,60 @@
                         </select>
                     </div>
                     <div class="space-y-3 order-1 md:order-2">
-                        <p class="text-[10px] text-gray-500 font-black uppercase tracking-widest">الكمية:</p>
-                        <div class="flex items-center justify-between bg-black/40 p-2 rounded-2xl border border-white/10">
-                            <button onclick="changeQty(-1)" class="w-10 h-10 bg-white/5 rounded-xl hover:bg-white/10 font-bold">-</button>
-                            <span id="qtyView" class="font-black text-xl">1</span>
-                            <button onclick="changeQty(1)" class="w-10 h-10 bg-blue-600 rounded-xl hover:bg-blue-500 font-bold">+</button>
+                        <p class="text-[10px] text-gray-400 font-black uppercase tracking-widest">الكمية:</p>
+                        <div class="flex items-center justify-between bg-black/40 p-2 rounded-2xl border border-white/10 shadow-inner">
+                            <button onclick="changeQty(-1)" class="w-12 h-12 bg-white/5 rounded-xl hover:bg-white/10 font-bold text-lg transition-colors">-</button>
+                            <span id="qtyView" class="font-black text-2xl text-white">1</span>
+                            <button onclick="changeQty(1)" class="w-12 h-12 bg-blue-600 rounded-xl hover:bg-blue-500 font-bold text-lg transition-colors shadow-lg shadow-blue-500/30">+</button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="flex justify-between items-center bg-blue-600/10 p-8 rounded-[40px] border border-blue-500/20">
-                <div class="text-right">
-                    <p class="text-[10px] text-blue-400 font-black uppercase mb-1 italic">الإجمالي النهائي:</p>
-                    <h3 id="finalPriceView" class="text-4xl font-black text-white tracking-tighter">0 ج.م</h3>
+            <div class="flex flex-col md:flex-row justify-between items-center bg-gradient-to-r from-blue-900/40 to-slate-900/80 p-8 rounded-[40px] border border-blue-500/30 shadow-[0_0_30px_rgba(59,130,246,0.15)] backdrop-blur-xl">
+                <div class="text-right w-full md:w-auto mb-6 md:mb-0">
+                    <p class="text-[11px] text-blue-300 font-black uppercase mb-1 tracking-widest">الإجمالي النهائي للعميل:</p>
+                    <h3 id="finalPriceView" class="text-5xl font-black text-white tracking-tighter drop-shadow-md">0 ج.م</h3>
                 </div>
-             
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <button onclick="addToCart()" class="w-full bg-white/5 border border-white/10 py-5 rounded-2xl font-black text-sm hover:bg-white/10 transition-all">🛒 إضافة للسلة</button>
-                <button onclick="goToOrder()" class="w-full bg-blue-600 text-white py-5 rounded-2xl font-black text-sm hover:bg-blue-500 shadow-2xl transition-all">إتمام الشراء الآن</button>
-            </div>
-
-            <div class="glass p-6 rounded-3xl border border-blue-500/10">
-                <div class="flex justify-center gap-3 mb-4">
-                    <div class="timer-unit"><span id="hours" class="text-xl font-black">00</span><p class="text-[8px]">ساعة</p></div>
-                    <div class="timer-unit"><span id="minutes" class="text-xl font-black">00</span><p class="text-[8px]">دقيقة</p></div>
-                    <div class="timer-unit"><span id="seconds" class="text-xl font-black">00</span><p class="text-[8px]">ثانية</p></div>
+                <div class="w-full md:w-auto flex flex-col gap-3">
+                    <button onclick="goToOrder()" class="w-full md:w-64 bg-blue-600 text-white py-4 rounded-2xl font-black text-sm transition-all shadow-lg shadow-blue-600/30 btn-glow tracking-widest">إتمام الشراء الآن 🚀</button>
+                    <button onclick="addToCart()" class="w-full md:w-64 bg-white/5 border border-white/10 py-4 rounded-2xl font-black text-xs hover:bg-white/10 transition-all text-gray-300 hover:text-white">🛒 إضافة للسلة</button>
                 </div>
-                <p class="text-[10px] text-gray-500 font-bold"><span class="text-red-500">●</span> يشاهده الآن <span id="live-viewers" class="text-white">...</span> عملاء</p>
             </div>
 
-            <div class="pt-10 border-t border-white/5">
-                <h4 class="text-2xl font-black mb-6 text-blue-400 italic">آراء المبدعين (التقييمات):</h4>
+            <div class="glass-panel p-6 md:p-8 rounded-[35px] border border-blue-500/10 flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="flex justify-center gap-3">
+                    <div class="timer-unit"><span id="hours" class="text-2xl font-black text-white drop-shadow-md">00</span><p class="text-[9px] text-gray-400 mt-1 uppercase tracking-widest">ساعة</p></div>
+                    <div class="text-2xl font-black text-gray-600 self-start mt-2">:</div>
+                    <div class="timer-unit"><span id="minutes" class="text-2xl font-black text-white drop-shadow-md">00</span><p class="text-[9px] text-gray-400 mt-1 uppercase tracking-widest">دقيقة</p></div>
+                    <div class="text-2xl font-black text-gray-600 self-start mt-2">:</div>
+                    <div class="timer-unit"><span id="seconds" class="text-2xl font-black text-blue-400 drop-shadow-md">00</span><p class="text-[9px] text-gray-400 mt-1 uppercase tracking-widest">ثانية</p></div>
+                </div>
+                <div class="text-center md:text-right">
+                    <p class="text-[11px] text-gray-400 font-bold uppercase tracking-widest mb-1">ينتهي العرض قريباً</p>
+                    <p class="text-xs text-white font-bold bg-white/5 px-4 py-2 rounded-xl border border-white/10"><span class="text-red-500 animate-pulse inline-block mr-1">●</span> يشاهده الآن <span id="live-viewers" class="text-blue-400 font-black text-sm">...</span> عملاء</p>
+                </div>
+            </div>
+
+            <div class="pt-12 border-t border-white/10">
+                <h4 class="text-3xl font-black mb-8 text-white italic hero-title">آراء المبدعين (التقييمات):</h4>
                 
-                <div class="glass p-6 rounded-[30px] mb-8 border border-white/5">
-                    <p class="text-xs font-bold text-gray-400 mb-2">اترك تقييمك وتجربتك:</p>
-                    <div class="star-rating mb-4">
+                <div class="glass p-8 rounded-[35px] mb-10 border border-white/10 shadow-xl relative overflow-hidden">
+                    <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-purple-500/10 rounded-full blur-[50px] pointer-events-none"></div>
+                    <p class="text-xs font-black text-gray-300 mb-4 tracking-widest uppercase">اترك تقييمك وتجربتك:</p>
+                    <div class="star-rating mb-6 bg-black/30 inline-block px-6 py-2 rounded-2xl border border-white/5">
                         <input type="radio" name="star" id="s5" value="5"><label for="s5">★</label>
                         <input type="radio" name="star" id="s4" value="4"><label for="s4">★</label>
                         <input type="radio" name="star" id="s3" value="3"><label for="s3">★</label>
                         <input type="radio" name="star" id="s2" value="2"><label for="s2">★</label>
                         <input type="radio" name="star" id="s1" value="1"><label for="s1">★</label>
                     </div>
-                    <textarea id="revText" class="w-full bg-black/40 border border-white/10 p-4 rounded-2xl text-xs text-white h-24 mb-4 outline-none focus:border-blue-500" placeholder="اكتب رأيك هنا بكل صراحة..."></textarea>
-                    <button onclick="submitReview()" class="bg-blue-600 text-white px-8 py-3 rounded-xl font-black text-xs hover:bg-blue-500 transition-all">نشر التقييم</button>
+                    <textarea id="revText" class="w-full bg-slate-900/60 border border-white/10 p-5 rounded-2xl text-sm text-white h-28 mb-6 outline-none focus:border-blue-500 transition-colors resize-none shadow-inner backdrop-blur-sm" placeholder="اكتب رأيك هنا بكل صراحة..."></textarea>
+                    <button onclick="submitReview()" class="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-10 py-4 rounded-2xl font-black text-xs hover:scale-105 transition-all shadow-lg shadow-blue-500/20 tracking-widest">نشر التقييم</button>
                 </div>
 
                 <div id="reviewsContainer" class="space-y-4">
-                    <p class="text-gray-500 italic text-sm">جاري تحميل التقييمات...</p>
+                    <p class="text-gray-500 italic text-sm text-center py-10 bg-white/5 rounded-3xl border border-white/5">جاري تحميل التقييمات...</p>
                 </div>
             </div>
         </div>
@@ -186,17 +229,23 @@
                 unitPrice = parseFloat(p.price); productOwnerId = p.owner; mainImgUrl = p.image;
                 document.getElementById('detName').innerText = p.name;
                 document.getElementById('detPriceView').innerText = unitPrice + " ج.م";
-                if(p.oldPrice) document.getElementById('detOldPrice').innerText = p.oldPrice + " ج.م";
+                
+                // التعديل هنا: إظهار العمولة بدل السعر القديم
+                if(p.oldPrice && p.oldPrice.trim() !== '') {
+                    document.getElementById('detOldPriceContainer').classList.remove('hidden');
+                    document.getElementById('detOldPrice').innerText = p.oldPrice + " ج.م";
+                }
+
                 document.getElementById('mainImg').src = p.image;
                 document.getElementById('detMat').innerText = p.material || "خامة ممتازة";
                 document.getElementById('detMod').innerText = p.model || "2024";
 
-                // الصور المصغرة
                 const thumbs = document.getElementById('thumbList');
                 const images = [p.image]; if(p.extraImages) images.push(...p.extraImages.split(','));
                 images.forEach((url, i) => {
+                    if(!url.trim()) return;
                     const img = document.createElement('img'); img.src = url.trim();
-                    img.className = `thumb-img ${i === 0 ? 'active' : ''}`;
+                    img.className = `thumb-img shadow-lg ${i === 0 ? 'active' : ''}`;
                     img.onclick = () => {
                         document.getElementById('mainImg').src = img.src;
                         thumbs.querySelectorAll('.thumb-img').forEach(t => t.classList.remove('active'));
@@ -205,7 +254,6 @@
                     thumbs.appendChild(img);
                 });
 
-                // الألوان والمقاسات
                 if(p.colors) buildSpecs(p.colors, 'colorsList', (v) => selectedColor = v);
                 if(p.sizes) buildSpecs(p.sizes, 'sizesList', (v) => selectedSize = v);
 
@@ -217,18 +265,19 @@
         function buildSpecs(data, containerId, callback) {
             document.getElementById(containerId).parentElement.classList.remove('hidden');
             const arr = data.includes('،') ? data.split('،') : data.split(',');
-            arr.forEach(item => {
-                const btn = document.createElement('button'); btn.className='spec-btn'; btn.innerText=item.trim();
+            arr.forEach((item, index) => {
+                if(!item.trim()) return;
+                const btn = document.createElement('button'); btn.className = `spec-btn ${index === 0 ? 'active' : ''}`; btn.innerText=item.trim();
+                if(index === 0) callback(item.trim()); // اختيار أول عنصر كافتراضي
                 btn.onclick=() => { callback(item.trim()); btn.parentElement.querySelectorAll('.spec-btn').forEach(x=>x.classList.remove('active')); btn.classList.add('active'); };
                 document.getElementById(containerId).appendChild(btn);
             });
         }
 
-        // --- نظام التقييمات ---
         window.submitReview = async () => {
             const star = document.querySelector('input[name="star"]:checked');
             const text = document.getElementById('revText').value;
-            if(!star) return showToast("يرجى اختيار عدد النجوم!");
+            if(!star) return showToast("يرجى اختيار عدد النجوم! ⭐");
             if(!text.trim()) return showToast("يرجى كتابة تعليق!");
 
             const reviewData = {
@@ -242,6 +291,7 @@
             await push(ref(db, `reviews/${prodId}`), reviewData);
             showToast("شكراً لتقييمك الرائع! ⭐");
             document.getElementById('revText').value = "";
+            document.querySelector('input[name="star"]:checked').checked = false;
         };
 
         function loadReviews() {
@@ -252,22 +302,25 @@
                 if(data) {
                     Object.values(data).reverse().forEach(r => {
                         container.innerHTML += `
-                            <div class="glass p-5 rounded-2xl border border-white/5 animate-fade-in">
-                                <div class="flex justify-between items-center mb-2">
-                                    <span class="text-blue-400 font-black text-xs">${r.userName}</span>
-                                    <span class="text-yellow-500 text-xs">${"★".repeat(r.rating)}</span>
+                            <div class="glass p-6 rounded-[25px] border border-white/5 animate-fade-in hover:bg-white/5 transition-colors">
+                                <div class="flex justify-between items-center mb-3">
+                                    <span class="text-blue-300 font-black text-xs bg-blue-500/10 px-3 py-1 rounded-full border border-blue-500/20">${r.userName}</span>
+                                    <span class="text-yellow-500 text-sm tracking-widest drop-shadow-[0_0_5px_rgba(234,179,8,0.5)]">${"★".repeat(r.rating)}<span class="text-gray-600">${"★".repeat(5-r.rating)}</span></span>
                                 </div>
-                                <p class="text-gray-300 text-xs italic">${r.comment}</p>
-                                <p class="text-[8px] text-gray-600 mt-2 text-left">${r.date}</p>
+                                <p class="text-gray-300 text-sm italic leading-relaxed">${r.comment}</p>
+                                <p class="text-[9px] text-gray-500 mt-3 text-left font-bold">${r.date}</p>
                             </div>`;
                     });
                 } else {
-                    container.innerHTML = "<p class='text-gray-600 text-xs'>كن أول من يقيم هذا المنتج!</p>";
+                    container.innerHTML = `
+                    <div class="text-center py-10 bg-white/5 rounded-3xl border border-white/5">
+                        <span class="text-4xl block mb-3 opacity-50">✨</span>
+                        <p class='text-gray-400 font-bold text-xs uppercase tracking-widest'>كن أول من يقيم هذا الإبداع!</p>
+                    </div>`;
                 }
             });
         }
 
-        // --- التعديل هنا: دالة زرار المشاركة ---
         window.shareProduct = () => {
             if (navigator.share) {
                 navigator.share({
@@ -296,12 +349,12 @@
         window.addToCart = async () => {
             const item = { id: prodId, name: document.getElementById('detName').innerText, price: unitPrice, qty: quantity, color: selectedColor, size: selectedSize, image: mainImgUrl };
             await push(ref(db, `carts/${auth.currentUser.uid}`), item);
-            showToast("تمت الإضافة للسلة! 🛒");
+            showToast("تمت الإضافة للسلة بنجاح! 🛒");
         };
 
         window.goToOrder = () => {
             const gov = document.getElementById('govSelect').value;
-            if(gov === "0") return showToast("اختر المحافظة أولاً!");
+            if(gov === "0") return showToast("يرجى اختيار المحافظة أولاً لتقدير الشحن 🚚");
             const shipping = document.getElementById('govSelect').options[document.getElementById('govSelect').selectedIndex].getAttribute('data-price');
             const total = document.getElementById('finalPriceView').innerText.replace(" ج.م", "");
             window.location.href = `order.html?id=${prodId}&name=${encodeURIComponent(document.getElementById('detName').innerText)}&price=${unitPrice}&qty=${quantity}&color=${encodeURIComponent(selectedColor)}&size=${encodeURIComponent(selectedSize)}&gov=${gov}&shipping=${shipping}&total=${total}&image=${encodeURIComponent(mainImgUrl)}&owner=${productOwnerId}`;
@@ -317,7 +370,7 @@
             }, 1000);
         }
 
-        window.showToast = (m) => { const t = document.getElementById('toast'); t.innerText = m; t.style.opacity = '1'; setTimeout(() => t.style.opacity = '0', 3000); };
+        window.showToast = (m) => { const t = document.getElementById('toast'); t.innerText = m; t.style.opacity = '1'; t.style.transform = 'translate(-50%, -20px)'; setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translate(-50%, 0)'; }, 3000); };
         setInterval(() => { document.getElementById('live-viewers').innerText = Math.floor(Math.random() * 40) + 60; }, 3000);
     </script>
 </body>

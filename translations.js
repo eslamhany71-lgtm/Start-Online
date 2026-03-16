@@ -1,6 +1,9 @@
 const translations = {
     ar: {
         // --- Navigation & Global ---
+        index_title: "Start Online | ابدأ عالمك الرقمي", // <-- تمت الإضافة
+        nav_start: "ابدأ الآن", // <-- تمت الإضافة
+        dashboard: "لوحة التحكم", // <-- تمت الإضافة
         nav_home: "الرئيسية",
         nav_store: "المتجر",
         nav_profile: "حسابي",
@@ -15,6 +18,13 @@ const translations = {
         checking: "تحقق...",
         guest: "زائر",
         
+        // --- Index Page (index.html) ---
+        hero_title_1: "مستقبلك الرقمي", // <-- تمت الإضافة
+        hero_title_2: "يبدأ بلمسة", // <-- تمت الإضافة
+        hero_desc: "انضم لأكبر منصة عربية لعرض وبيع المنتجات الرقمية. نحن نوفر لك البيئة المثالية للإبداع والربح من أول يوم.", // <-- تمت الإضافة
+        btn_browse: "تصفح المتجر", // <-- تمت الإضافة
+        btn_community: "انضم لمجتمعنا", // <-- تمت الإضافة
+
         // --- Store Page (products.html) ---
         shop_title: "المتجر الذكي | Start Online",
         debt_alert: "تنبيه: تجاوزت مديونيتك 500 ج.م. تم إيقاف صلاحية النشر مؤقتاً لحين السداد.",
@@ -192,6 +202,9 @@ const translations = {
     },
     en: {
         // --- Navigation & Global ---
+        index_title: "Start Online | Start Your Digital World", // <-- Added
+        nav_start: "Start Now", // <-- Added
+        dashboard: "Dashboard", // <-- Added
         nav_home: "Home",
         nav_store: "Store",
         nav_profile: "Profile",
@@ -206,6 +219,13 @@ const translations = {
         checking: "Checking...",
         guest: "Guest",
         
+        // --- Index Page (index.html) ---
+        hero_title_1: "Your Digital Future", // <-- Added
+        hero_title_2: "Starts with a Touch", // <-- Added
+        hero_desc: "Join the largest Arab platform for showcasing and selling digital products. We provide the ideal environment to create and earn from day one.", // <-- Added
+        btn_browse: "Browse Store", // <-- Added
+        btn_community: "Join Our Community", // <-- Added
+
         // --- Store Page (products.html) ---
         shop_title: "Smart Store | Start Online",
         debt_alert: "Alert: Your debt exceeded 500 EGP. Publishing is temporarily suspended until settled.",

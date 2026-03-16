@@ -4,7 +4,7 @@
     <script src="translations.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Start Online | ابدأ عالمك الرقمي</title>
+    <title data-key="index_title">Start Online | ابدأ عالمك الرقمي</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     
@@ -96,8 +96,8 @@
                     <span id="langLabel">English</span>
                 </button>
 
-                <a href="login.html" id="navBtn" data-key="nav_start" class="bg-blue-600 text-white px-4 md:px-8 py-2 md:py-3 rounded-xl md:rounded-2xl text-[10px] md:text-xs font-black btn-glow transition-all relative overflow-hidden group">
-                    <span class="relative z-10">ابدأ الآن</span>
+                <a href="login.html" id="navBtn" class="bg-blue-600 text-white px-4 md:px-8 py-2 md:py-3 rounded-xl md:rounded-2xl text-[10px] md:text-xs font-black btn-glow transition-all relative overflow-hidden group">
+                    <span class="relative z-10" data-key="nav_start">ابدأ الآن</span>
                     <div class="absolute inset-0 h-full w-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
                 </a>
             </div>
@@ -123,19 +123,20 @@
 
     <section class="min-h-screen flex flex-col justify-center items-center text-center px-6 md:px-8 pt-20 relative z-10">
         <div class="animate-[fadeIn_1s_ease-out]">
-            <h1 data-key="hero_title" class="text-6xl md:text-9xl font-black mb-6 md:mb-8 leading-[1.1] tracking-tighter hero-gradient-text">
-                مستقبلك الرقمي <br> <span class="italic text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">يبدأ بلمسة</span>
+            <h1 class="text-6xl md:text-9xl font-black mb-6 md:mb-8 leading-[1.1] tracking-tighter hero-gradient-text">
+                <span data-key="hero_title_1">مستقبلك الرقمي</span> <br> 
+                <span class="italic text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500" data-key="hero_title_2">يبدأ بلمسة</span>
             </h1>
             <p data-key="hero_desc" class="text-gray-300 text-sm md:text-xl max-w-2xl mx-auto mb-10 md:mb-14 leading-relaxed font-bold opacity-90 drop-shadow-md">
                 انضم لأكبر منصة عربية لعرض وبيع المنتجات الرقمية. نحن نوفر لك البيئة المثالية للإبداع والربح من أول يوم.
             </p>
             
             <div class="flex flex-col md:flex-row justify-center gap-4 md:gap-6 w-full md:w-auto">
-                <a href="products.html" data-key="btn_browse" class="bg-white text-slate-950 px-10 md:px-14 py-4 md:py-5 rounded-[20px] md:rounded-[22px] font-black btn-glow text-sm md:text-lg transition-all flex items-center justify-center gap-2">
-                    <span>🛍️</span> تصفح المتجر
+                <a href="products.html" class="bg-white text-slate-950 px-10 md:px-14 py-4 md:py-5 rounded-[20px] md:rounded-[22px] font-black btn-glow text-sm md:text-lg transition-all flex items-center justify-center gap-2">
+                    <span>🛍️</span> <span data-key="btn_browse">تصفح المتجر</span>
                 </a>
-                <a href="login.html" id="marketerBtn" data-key="btn_community" class="glass text-white px-10 md:px-14 py-4 md:py-5 rounded-[20px] md:rounded-[22px] font-bold text-sm md:text-lg hover:bg-white/10 transition-all border border-white/10 hover:border-blue-500/50 hover:shadow-[0_0_20px_rgba(59,130,246,0.3)] flex items-center justify-center gap-2">
-                    <span>🚀</span> انضم لمجتمعنا
+                <a href="login.html" id="marketerBtn" class="glass text-white px-10 md:px-14 py-4 md:py-5 rounded-[20px] md:rounded-[22px] font-bold text-sm md:text-lg hover:bg-white/10 transition-all border border-white/10 hover:border-blue-500/50 hover:shadow-[0_0_20px_rgba(59,130,246,0.3)] flex items-center justify-center gap-2">
+                    <span>🚀</span> <span data-key="btn_community">انضم لمجتمعنا</span>
                 </a>
             </div>
         </div>
@@ -155,8 +156,8 @@
         onAuthStateChanged(auth, async (user) => {
             const navBtn = document.getElementById('navBtn');
             if (user) {
-                // تحويل الزر العلوي لزر خروج
-                navBtn.innerHTML = `<span class="relative z-10">${localStorage.getItem('lang') === 'en' ? 'Logout' : 'خروج'}</span>`;
+                // تحويل الزر العلوي لزر خروج وإضافة data-key
+                navBtn.innerHTML = `<span class="relative z-10" data-key="logout">خروج</span>`;
                 navBtn.classList.replace('bg-blue-600', 'bg-red-600/20');
                 navBtn.classList.add('text-red-500', 'border', 'border-red-600/30', 'hover:bg-red-600', 'hover:text-white');
                 navBtn.classList.remove('btn-glow');
@@ -169,9 +170,12 @@
                 const snapshot = await get(ref(db, 'users/' + user.uid));
                 if (snapshot.exists()) {
                     const marketerBtn = document.getElementById('marketerBtn');
-                    marketerBtn.innerHTML = `<span>📊</span> ${localStorage.getItem('lang') === 'en' ? 'Dashboard' : 'لوحة التحكم'}`;
+                    marketerBtn.innerHTML = `<span>📊</span> <span data-key="dashboard">لوحة التحكم</span>`;
                     marketerBtn.href = "profile.html";
                 }
+                
+                // إعادة تشغيل الترجمة عشان تترجم الأزرار الجديدة
+                if(window.applyLanguage) applyLanguage(localStorage.getItem('lang') || 'ar');
             }
         });
 
@@ -188,6 +192,9 @@
         const currentLang = localStorage.getItem('lang') || 'ar';
         const langLabel = document.getElementById('langLabel');
         if(langLabel) langLabel.innerText = currentLang === 'ar' ? 'English' : 'العربية';
+        
+        // تشغيل الترجمة بمجرد فتح الصفحة
+        if(window.applyLanguage) applyLanguage(currentLang);
     </script>
 </body>
 </html>

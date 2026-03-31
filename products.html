@@ -161,11 +161,12 @@
         <div id="subCatsArea" class="sub-cats-area glass p-4 rounded-3xl border border-white/5"></div>
     </section>
 
-    <section id="adminStats" class="max-w-7xl mx-auto px-4 mb-10 hidden grid grid-cols-2 md:grid-cols-5 gap-4 animate-fade-in">
-        <div class="stat-card p-5 rounded-3xl text-center shadow-lg" onclick="openUsersModal('all')"><p class="text-[9px] text-gray-500 uppercase font-black" data-key="stat_users">المستخدمين</p><h3 id="totalUsers" class="text-xl font-black text-blue-400 italic">0</h3></div>
+    <section id="adminStats" class="max-w-7xl mx-auto px-4 mb-10 hidden grid grid-cols-2 md:grid-cols-6 gap-4 animate-fade-in">
+        <div class="stat-card p-5 rounded-3xl text-center shadow-lg" onclick="openUsersModal('all')"><p class="text-[9px] text-gray-500 uppercase font-black" data-key="stat_users">الكل</p><h3 id="totalUsers" class="text-xl font-black text-blue-400 italic">0</h3></div>
         <div class="stat-card p-5 rounded-3xl text-center shadow-lg"><p class="text-[9px] text-gray-500 uppercase font-black" data-key="stat_prods">المنتجات</p><h3 id="totalProducts" class="text-xl font-black text-green-400 italic">0</h3></div>
+        <div class="stat-card p-5 rounded-3xl text-center shadow-lg" onclick="openUsersModal('merchant')"><p class="text-[9px] text-gray-500 uppercase font-black">التجار</p><h3 id="totalMerchants" class="text-xl font-black text-orange-400 italic">0</h3></div>
         <div class="stat-card p-5 rounded-3xl text-center shadow-lg" onclick="openUsersModal('marketer')"><p class="text-[9px] text-gray-500 uppercase font-black" data-key="stat_marketers">المسوقين</p><h3 id="totalMarketers" class="text-xl font-black text-purple-400 italic">0</h3></div>
-        <div class="stat-card p-5 rounded-3xl text-center shadow-lg" onclick="openUsersModal('customer')"><p class="text-[9px] text-gray-500 uppercase font-black" data-key="stat_customers">العملاء</p><h3 id="totalCustomers" class="text-xl font-black text-pink-400 italic">0</h3></div>
+        <div class="stat-card p-5 rounded-3xl text-center shadow-lg" onclick="openUsersModal('user')"><p class="text-[9px] text-gray-500 uppercase font-black">الزوار</p><h3 id="totalNormalUsers" class="text-xl font-black text-pink-400 italic">0</h3></div>
         <div class="stat-card p-5 rounded-3xl text-center shadow-lg"><p class="text-[9px] text-gray-500 uppercase font-black" data-key="stat_reviews">التقييمات</p><h3 id="totalReviews" class="text-xl font-black text-yellow-400 italic">0</h3></div>
     </section>
 
@@ -265,7 +266,8 @@
         const firebaseConfig = { apiKey: "AIzaSyCyypXt8LnHiVBR2Ka0Mb8ntXu6dJH9N-w", authDomain: "start-online-6f460.firebaseapp.com", projectId: "start-online-6f460", databaseURL: "https://start-online-6f460-default-rtdb.firebaseio.com/" };
         const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getDatabase(app);
 
-        let currentUser = null, userRole = 'customer', allProducts = {}, allUsers = {}, userWishlist = [];
+        // هنا خلينا الرتبة الافتراضية user
+        let currentUser = null, userRole = 'user', allProducts = {}, allUsers = {}, userWishlist = [];
         let selectedMainCat = 'الكل', selectedSubCat = 'الكل';
         const DEBT_LIMIT = 500;
         
@@ -278,7 +280,7 @@
                 const userSnap = await get(ref(db, 'users/' + user.uid));
                 if (userSnap.exists()) {
                     const u = userSnap.val(); 
-                    userRole = u.role; 
+                    userRole = u.role || 'user'; 
                     userWishlist = u.wishlist || [];
                     const debt = (u.wallet && u.wallet.debt) ? Number(u.wallet.debt) : 0;
 
@@ -292,9 +294,10 @@
                         loadAdminDashboard(); loadMarketerRequests(); loadUsers();
                     }
 
-                    if (userRole === 'marketer' || userRole === 'admin') { 
+                    // هنا التاجر والأدمن بس اللي بيضيفوا منتجات
+                    if (userRole === 'merchant' || userRole === 'admin') { 
                         document.getElementById('controlPanel').classList.remove('hidden'); 
-                        if(userRole === 'marketer' && debt > DEBT_LIMIT) {
+                        if(userRole === 'merchant' && debt > DEBT_LIMIT) {
                             document.getElementById('debtAlert').classList.remove('hidden');
                             document.getElementById('publishForm').classList.add('hidden');
                             document.getElementById('lockMessage').classList.remove('hidden');
@@ -302,21 +305,18 @@
                     }
                     if(window.applyLanguage) applyLanguage(localStorage.getItem('lang') || 'ar');
                     
-                    // تحميل الإشعارات الذكية
                     loadNotifications(userRole, user.uid);
                 }
                 loadProducts(); updateCartUI();
             } else { window.location.href = "login.html"; }
         });
 
-        // --- دالة مسح الإشعارات ---
         window.clearNotifs = () => {
             userClearedNotifs = true;
             document.getElementById('notifList').innerHTML = '<p class="text-[10px] text-gray-500 text-center py-4">تم مسح الإشعارات.</p>';
             document.getElementById('notifBadge').classList.add('hidden');
         };
 
-        // --- الإشعارات التفاعلية ---
         function loadNotifications(role, uid) {
             onValue(ref(db, 'orders'), (snap) => {
                 const orders = snap.val() || {};
@@ -327,7 +327,6 @@
                     const isMyPurchase = (o.customerUid === uid) || (o.customerId === uid) || (o.buyerId === uid);
                     const displayTotal = Number(o.total || o.totalPrice || 0);
 
-                    // الروابط هنا بتوجه لصفحة البروفايل عشان تتنفذ من هناك
                     if(isMyPurchase && o.status === 'completed') notificationsList.push({text: `تم تسليم طلبك: ${o.productName}`, date: o.date, color: 'text-green-400', link: 'profile.html'});
                     if(isMyPurchase && o.status === 'failed') notificationsList.push({text: `تم إلغاء طلبك: ${o.productName}`, date: o.date, color: 'text-red-400', link: 'profile.html'});
 
@@ -337,10 +336,7 @@
                     }
                 });
 
-                // تحديث الإشعارات بذكاء لو ممسوحة
-                if(notificationsList.length > currentNotifLength) {
-                    userClearedNotifs = false; // ظهر إشعار جديد، نلغي المسح
-                }
+                if(notificationsList.length > currentNotifLength) { userClearedNotifs = false; }
                 currentNotifLength = notificationsList.length;
 
                 if(!userClearedNotifs) {
@@ -350,7 +346,6 @@
                     if(notificationsList.length > 0) {
                         badge.innerText = notificationsList.length;
                         badge.classList.remove('hidden');
-                        // جعل الإشعار Clickable
                         list.innerHTML = notificationsList.slice(0, 15).map(n => `
                             <a href="${n.link}" class="block bg-white/5 p-3 rounded-xl border border-white/5 mb-2 hover:bg-white/10 hover:border-blue-500/30 transition cursor-pointer">
                                 <p class="font-bold ${n.color} mb-1">${n.text}</p>
@@ -451,12 +446,14 @@
             renderGrid(allProducts);
         };
 
+        // تعديل الاحصائيات عشان تجيب كل الرتب صح
         function loadAdminDashboard() {
             onValue(ref(db, 'users'), (snap) => {
                 allUsers = snap.val() || {}; const uArr = Object.values(allUsers);
                 document.getElementById('totalUsers').innerText = uArr.length;
+                document.getElementById('totalMerchants').innerText = uArr.filter(u => u.role === 'merchant').length;
                 document.getElementById('totalMarketers').innerText = uArr.filter(u => u.role === 'marketer').length;
-                document.getElementById('totalCustomers').innerText = uArr.filter(u => u.role === 'customer').length;
+                document.getElementById('totalNormalUsers').innerText = uArr.filter(u => u.role === 'user' || u.role === 'customer').length;
             });
             onValue(ref(db, 'products'), (s) => document.getElementById('totalProducts').innerText = Object.keys(s.val() || {}).length);
             onValue(ref(db, 'reviews'), (s) => { let c = 0; const data = s.val() || {}; Object.values(data).forEach(r => c += Object.keys(r).length); document.getElementById('totalReviews').innerText = c; });
@@ -467,7 +464,7 @@
             m.style.display = 'flex'; l.innerHTML = '';
             Object.keys(allUsers).forEach(uid => { 
                 const u = allUsers[uid];
-                if(role === 'all' || u.role === role) {
+                if(role === 'all' || u.role === role || (role === 'user' && u.role === 'customer')) {
                     l.innerHTML += `<div class="bg-white/5 p-4 rounded-2xl border border-white/5 flex justify-between items-center text-right font-bold hover:bg-white/10 transition-colors mb-2">
                         <div>
                             <p class="text-white text-xs uppercase tracking-tighter">${u.name} <span class="text-[9px] text-blue-400">(${u.role})</span></p>
@@ -481,7 +478,6 @@
 
         window.closeUsersModal = () => document.getElementById('usersModal').style.display = 'none';
 
-        // --- تحديث قسم طلبات المسوقين بالكامل ---
         function loadMarketerRequests() { 
             onValue(ref(db, 'marketer_requests'), (snap) => { 
                 const list = document.getElementById('requestsList'); list.innerHTML = ''; 
@@ -502,7 +498,6 @@
             }); 
         }
 
-        // عرض تفاصيل الطلب في المودال الجديد
         window.viewRequestDetails = async (uid) => {
             const snap = await get(ref(db, 'marketer_requests/' + uid));
             if(snap.exists()) {
@@ -598,7 +593,8 @@
 
             keys.forEach(key => {
                 const p = products[key], isSaved = userWishlist.includes(key);
-                const canManage = (userRole === 'admin') || (userRole === 'marketer' && p.owner === currentUser.uid);
+                // التعديل هنا: التاجر بس اللي بيعدل في منتجاته والأدمن في كله
+                const canManage = (userRole === 'admin') || (userRole === 'merchant' && p.owner === currentUser.uid);
                 grid.innerHTML += `<div class="product-card glass p-5 rounded-[35px] animate-fade-in shadow-xl text-right flex flex-col justify-between h-full">
                     <div class="relative">
                         <div class="absolute top-0 left-0 flex flex-col items-center gap-1 z-10">
@@ -628,6 +624,7 @@
             if(window.applyLanguage) applyLanguage(localStorage.getItem('lang') || 'ar');
         }
 
+        // التعديل الرهيب هنا للزراير
         function loadUsers() { 
             onValue(ref(db, 'users'), (snapshot) => { 
                 const users = snapshot.val(); const list = document.getElementById('usersList'); 
@@ -640,10 +637,11 @@
                             <p class="text-sm text-white">${u.name}</p>
                             <span class="text-[8px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 font-black uppercase border border-blue-500/20">${u.role}</span>
                         </div>
-                        <div class="flex gap-1 mb-2">
-                            <button onclick="changeRole('${uid}', 'marketer')" class="flex-1 text-[8px] border border-blue-500/20 rounded-lg p-2 hover:bg-blue-500 hover:text-white text-blue-400 transition-all font-black uppercase">مسوق</button>
-                            <button onclick="changeRole('${uid}', 'admin')" class="flex-1 text-[8px] border border-yellow-500/20 rounded-lg p-2 hover:bg-yellow-500 hover:text-white text-yellow-500 transition-all font-black uppercase">أدمن</button>
-                            <button onclick="changeRole('${uid}', 'customer')" class="flex-1 text-[8px] bg-white/5 rounded-lg p-2 text-white hover:bg-white/20 transition-all font-black uppercase">عميل</button>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-2">
+                            <button onclick="changeRole('${uid}', 'merchant')" class="w-full text-[8px] border border-green-500/20 rounded-lg p-2 hover:bg-green-500 hover:text-white text-green-400 transition-all font-black uppercase">تاجر</button>
+                            <button onclick="changeRole('${uid}', 'marketer')" class="w-full text-[8px] border border-blue-500/20 rounded-lg p-2 hover:bg-blue-500 hover:text-white text-blue-400 transition-all font-black uppercase">مسوق</button>
+                            <button onclick="changeRole('${uid}', 'admin')" class="w-full text-[8px] border border-yellow-500/20 rounded-lg p-2 hover:bg-yellow-500 hover:text-white text-yellow-500 transition-all font-black uppercase">أدمن</button>
+                            <button onclick="changeRole('${uid}', 'user')" class="w-full text-[8px] bg-white/5 rounded-lg p-2 text-white hover:bg-white/20 transition-all font-black uppercase">زائر</button>
                         </div>
                         <button onclick="visitAccount('${uid}')" data-key="btn_visit" class="w-full bg-blue-600/20 text-blue-400 py-2 rounded-xl text-[10px] font-black border border-blue-400/30 hover:bg-blue-600 hover:text-white transition-all shadow-xl">زيارة حساب المستخدم</button>
                     </div>`; 
@@ -652,7 +650,7 @@
         }
 
         window.setLanguage = (lang) => { localStorage.setItem('lang', lang); location.reload(); };
-        window.changeRole = (uid, r) => { if(confirm("تغيير الرتبة؟")) { update(ref(db, 'users/' + uid), { role: r }); showToast("تم تغيير الرتبة!"); } };
+        window.changeRole = (uid, r) => { if(confirm("تغيير الرتبة؟")) { update(ref(db, 'users/' + uid), { role: r }); showToast("تم تغيير الرتبة بنجاح!"); } };
 
         window.toggleWishlist = async (id) => { 
             if(!currentUser) return;

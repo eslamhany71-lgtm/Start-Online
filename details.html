@@ -8,7 +8,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        /* الخلفية الجديدة الفاتحة والمبهجة اللي بتوحي بالتسوق */
         body { 
             background: linear-gradient(rgba(15, 23, 42, 0.35), rgba(15, 23, 42, 0.85)), url('https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1600');
             background-size: cover;
@@ -116,6 +115,15 @@
                         <span id="detPriceView" class="text-blue-400 font-black text-6xl md:text-7xl tracking-tighter drop-shadow-[0_0_20px_rgba(59,130,246,0.4)]">0 ج.م</span>
                     </div>
                 </div>
+            </div>
+
+            <div class="glass p-6 md:p-8 rounded-3xl border border-white/10 shadow-inner mt-6 text-right">
+                <h4 class="text-blue-400 font-black text-sm mb-3 flex items-center justify-end gap-2">
+                    <span data-key="desc_title">وصف المنتج</span> 📝
+                </h4>
+                <p id="detDesc" class="text-gray-200 text-sm leading-relaxed font-bold whitespace-pre-line drop-shadow-sm">
+                    جاري تحميل الوصف...
+                </p>
             </div>
 
             <div class="space-y-8 glass p-8 md:p-10 rounded-[40px] border border-white/20 shadow-2xl relative overflow-hidden">
@@ -231,7 +239,6 @@
         const prodId = params.get('id');
         let unitPrice = 0, quantity = 1, productOwnerId = "", selectedColor = "عام", selectedSize = "عام", mainImgUrl = "", userData = {};
 
-        // تشغيل اللغة
         if(window.applyLanguage) applyLanguage(localStorage.getItem('lang') || 'ar');
         window.setLanguage = (lang) => { localStorage.setItem('lang', lang); location.reload(); };
 
@@ -251,6 +258,9 @@
                 unitPrice = parseFloat(p.price); productOwnerId = p.owner; mainImgUrl = p.image;
                 document.getElementById('detName').innerText = p.name;
                 document.getElementById('detPriceView').innerText = unitPrice + " ج.م";
+                
+                // هنا ضفنا الوصف عشان يتعرض في المربع الجديد
+                document.getElementById('detDesc').innerText = p.desc || "لا يوجد وصف إضافي متاح لهذا المنتج.";
                 
                 if(p.oldPrice && p.oldPrice.trim() !== '') {
                     document.getElementById('detOldPriceContainer').classList.remove('hidden');
@@ -318,11 +328,11 @@
         function loadReviews() {
             onValue(ref(db, `reviews/${prodId}`), (snap) => {
                 const container = document.getElementById('reviewsContainer');
-                container.innerHTML = "";
                 const data = snap.val();
                 if(data) {
+                    let revHtml = '';
                     Object.values(data).reverse().forEach(r => {
-                        container.innerHTML += `
+                        revHtml += `
                             <div class="glass p-6 rounded-[25px] border border-white/10 animate-fade-in hover:bg-white/10 transition-colors shadow-lg">
                                 <div class="flex justify-between items-center mb-4">
                                     <span class="text-blue-200 font-black text-xs bg-blue-600/30 px-4 py-1.5 rounded-full border border-blue-500/40 shadow-inner">${r.userName}</span>
@@ -332,6 +342,7 @@
                                 <p class="text-[9px] text-gray-400 mt-4 text-left font-bold tracking-widest">${r.date}</p>
                             </div>`;
                     });
+                    container.innerHTML = revHtml;
                 } else {
                     container.innerHTML = `
                     <div class="text-center py-12 bg-black/30 rounded-3xl border border-white/10 shadow-inner backdrop-blur-md">

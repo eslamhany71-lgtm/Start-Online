@@ -582,7 +582,7 @@
 
         function loadProducts() { onValue(ref(db, 'products'), (s) => { allProducts = s.val() || {}; renderGrid(allProducts); }); }
 
-        function renderGrid(products) {
+       function renderGrid(products) {
             const grid = document.getElementById('productsGrid'); 
             const noRes = document.getElementById('noResults');
             if(!grid) return;
@@ -593,8 +593,11 @@
 
             keys.forEach(key => {
                 const p = products[key], isSaved = userWishlist.includes(key);
-                // التعديل هنا: التاجر بس اللي بيعدل في منتجاته والأدمن في كله
                 const canManage = (userRole === 'admin') || (userRole === 'merchant' && p.owner === currentUser.uid);
+                
+                // 👇 الحل السحري هنا: تنظيف اسم المنتج من أي علامات تنصيص أو مسافات تضرب الكود
+                const safeName = (p.name || '').replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, ' ');
+
                 grid.innerHTML += `<div class="product-card glass p-5 rounded-[35px] animate-fade-in shadow-xl text-right flex flex-col justify-between h-full">
                     <div class="relative">
                         <div class="absolute top-0 left-0 flex flex-col items-center gap-1 z-10">
@@ -613,11 +616,11 @@
                                 ${p.oldPrice ? `<span class="text-green-400 font-black text-[11px] mt-1"><span data-key="p_commission">عمولتك</span>: ${p.oldPrice} ج.م</span>` : ''}
                             </div>
                             ${canManage ? `<div class="flex gap-2">
-                                <button onclick="editProduct('${key}', '${p.name.replace(/'/g, "\\'")}', '${p.price}', '${p.image}', '${p.oldPrice || ''}')" class="text-yellow-500 text-[10px] font-bold italic border-b border-yellow-500/30">تعديل</button>
+                                <button onclick="editProduct('${key}', '${safeName}', '${p.price}', '${p.image}', '${p.oldPrice || ''}')" class="text-yellow-500 text-[10px] font-bold italic border-b border-yellow-500/30">تعديل</button>
                                 <button onclick="deleteProduct('${key}')" class="text-red-500 text-[10px] font-bold italic border-b border-red-500/30">حذف</button>
                             </div>` : ''}
                         </div>
-                        <button onclick="viewDetails('${key}', '${p.name.replace(/'/g, "\\'")}', '${p.price}', '${p.image}')" data-key="btn_details" class="w-full bg-white/5 hover:bg-blue-600 hover:text-white py-4 rounded-[20px] text-[10px] font-black uppercase transition-all shadow-xl border border-white/5 tracking-widest active:scale-95">التفاصيل والتقييمات</button>
+                        <button onclick="viewDetails('${key}', '${safeName}', '${p.price}', '${p.image}')" data-key="btn_details" class="w-full bg-white/5 hover:bg-blue-600 hover:text-white py-4 rounded-[20px] text-[10px] font-black uppercase transition-all shadow-xl border border-white/5 tracking-widest active:scale-95">التفاصيل والتقييمات</button>
                     </div>
                 </div>`;
             });

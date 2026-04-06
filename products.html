@@ -9,7 +9,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         body { 
-            /* ركز هنا: حط لينك الصورة بتاعتك مكان كلمة LINK_HERE */
             background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.95)), url('https://softeagles.com/wp-content/uploads/2024/09/%D9%85%D8%AA%D8%A7%D8%AC%D8%B1-%D8%A7%D9%84%D9%83%D8%AA%D8%B1%D9%88%D9%86%D9%8A%D8%A9.jpg');
             background-size: cover;
             background-position: center;
@@ -23,7 +22,6 @@
         }
         .glass { background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.05); }
         
-        /* كود اللوجو الاحترافي */
         .logo-brand { font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 4px; }
         .logo-box { background: #2563eb; color: white; padding: 2px 8px; border-radius: 6px; transform: skewX(-12deg); display: inline-block; box-shadow: 0 0 15px rgba(37, 99, 235, 0.4); }
 
@@ -266,7 +264,6 @@
         const firebaseConfig = { apiKey: "AIzaSyCyypXt8LnHiVBR2Ka0Mb8ntXu6dJH9N-w", authDomain: "start-online-6f460.firebaseapp.com", projectId: "start-online-6f460", databaseURL: "https://start-online-6f460-default-rtdb.firebaseio.com/" };
         const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getDatabase(app);
 
-        // هنا خلينا الرتبة الافتراضية user
         let currentUser = null, userRole = 'user', allProducts = {}, allUsers = {}, userWishlist = [];
         let selectedMainCat = 'الكل', selectedSubCat = 'الكل';
         const DEBT_LIMIT = 500;
@@ -294,7 +291,6 @@
                         loadAdminDashboard(); loadMarketerRequests(); loadUsers();
                     }
 
-                    // هنا التاجر والأدمن بس اللي بيضيفوا منتجات
                     if (userRole === 'merchant' || userRole === 'admin') { 
                         document.getElementById('controlPanel').classList.remove('hidden'); 
                         if(userRole === 'merchant' && debt > DEBT_LIMIT) {
@@ -346,12 +342,15 @@
                     if(notificationsList.length > 0) {
                         badge.innerText = notificationsList.length;
                         badge.classList.remove('hidden');
-                        list.innerHTML = notificationsList.slice(0, 15).map(n => `
+                        let notifsHtml = '';
+                        notificationsList.slice(0, 15).forEach(n => {
+                            notifsHtml += `
                             <a href="${n.link}" class="block bg-white/5 p-3 rounded-xl border border-white/5 mb-2 hover:bg-white/10 hover:border-blue-500/30 transition cursor-pointer">
                                 <p class="font-bold ${n.color} mb-1">${n.text}</p>
                                 <p class="text-[8px] text-gray-500">${n.date}</p>
-                            </a>
-                        `).join('');
+                            </a>`;
+                        });
+                        list.innerHTML = notifsHtml;
                     } else {
                         badge.classList.add('hidden');
                         list.innerHTML = '<p class="text-gray-500 text-center py-4">لا توجد إشعارات حالياً.</p>';
@@ -377,12 +376,12 @@
                 const totalEl = document.getElementById('cartTotal');
                 const keys = Object.keys(data);
                 if(badge) badge.innerText = keys.length; 
-                if(list) list.innerHTML = ''; 
                 let total = 0;
+                let cartHtml = '';
                 keys.forEach((key) => {
                     const item = data[key];
                     total += Number(item.price) * Number(item.qty);
-                    if(list) list.innerHTML += `<div class="glass p-3 rounded-2xl flex gap-3 items-center border border-white/5 animate-slide mb-3 text-right group">
+                    cartHtml += `<div class="glass p-3 rounded-2xl flex gap-3 items-center border border-white/5 animate-slide mb-3 text-right group">
                         <img src="${item.image}" class="w-16 h-16 rounded-xl object-cover">
                         <div class="flex-1 font-bold">
                             <h4 class="text-[10px] text-white line-clamp-1">${item.name}</h4>
@@ -395,6 +394,7 @@
                         </div>
                     </div>`;
                 });
+                if(list) list.innerHTML = cartHtml;
                 if(totalEl) totalEl.innerText = total + " ج.م";
                 if(keys.length === 0 && list) list.innerHTML = '<div class="flex flex-col items-center justify-center h-40 opacity-50"><span class="text-4xl mb-2">🛒</span><p class="text-[10px]" data-key="cart_empty">سلتك فارغة حالياً</p></div>';
             });
@@ -446,7 +446,6 @@
             renderGrid(allProducts);
         };
 
-        // تعديل الاحصائيات عشان تجيب كل الرتب صح
         function loadAdminDashboard() {
             onValue(ref(db, 'users'), (snap) => {
                 allUsers = snap.val() || {}; const uArr = Object.values(allUsers);
@@ -461,11 +460,12 @@
 
         window.openUsersModal = (role) => {
             const m = document.getElementById('usersModal'); const l = document.getElementById('modalList');
-            m.style.display = 'flex'; l.innerHTML = '';
+            m.style.display = 'flex'; 
+            let modalHtml = '';
             Object.keys(allUsers).forEach(uid => { 
                 const u = allUsers[uid];
                 if(role === 'all' || u.role === role || (role === 'user' && u.role === 'customer')) {
-                    l.innerHTML += `<div class="bg-white/5 p-4 rounded-2xl border border-white/5 flex justify-between items-center text-right font-bold hover:bg-white/10 transition-colors mb-2">
+                    modalHtml += `<div class="bg-white/5 p-4 rounded-2xl border border-white/5 flex justify-between items-center text-right font-bold hover:bg-white/10 transition-colors mb-2">
                         <div>
                             <p class="text-white text-xs uppercase tracking-tighter">${u.name} <span class="text-[9px] text-blue-400">(${u.role})</span></p>
                             <p class="text-[10px] text-gray-500 mt-1 italic">${u.email}</p>
@@ -474,24 +474,27 @@
                     </div>`; 
                 }
             });
+            l.innerHTML = modalHtml;
         };
 
         window.closeUsersModal = () => document.getElementById('usersModal').style.display = 'none';
 
         function loadMarketerRequests() { 
             onValue(ref(db, 'marketer_requests'), (snap) => { 
-                const list = document.getElementById('requestsList'); list.innerHTML = ''; 
+                const list = document.getElementById('requestsList'); 
                 const data = snap.val(); 
                 if(data) {
+                    let reqHtml = '';
                     Object.keys(data).forEach(uid => { 
                         const r = data[uid]; 
-                        list.innerHTML += `<div class="glass p-5 rounded-3xl flex flex-col md:flex-row justify-between items-center text-right font-bold animate-fade-in shadow-xl border border-white/5 gap-4">
+                        reqHtml += `<div class="glass p-5 rounded-3xl flex flex-col md:flex-row justify-between items-center text-right font-bold animate-fade-in shadow-xl border border-white/5 gap-4">
                             <div><p class="text-sm text-white underline decoration-blue-500/30 tracking-widest">${r.name}</p><p class="text-[10px] text-gray-500">${r.email}</p></div>
                             <div class="flex gap-2 w-full md:w-auto">
                                 <button onclick="viewRequestDetails('${uid}')" class="flex-1 bg-blue-600/20 text-blue-400 px-4 py-2 rounded-xl text-[10px] font-black shadow-lg hover:bg-blue-600 hover:text-white transition-colors">التفاصيل والقرار</button>
                             </div>
                         </div>`; 
                     });
+                    list.innerHTML = reqHtml;
                 } else {
                     list.innerHTML = '<p class="text-[10px] text-gray-500">لا توجد طلبات انضمام حالياً.</p>';
                 }
@@ -582,23 +585,22 @@
 
         function loadProducts() { onValue(ref(db, 'products'), (s) => { allProducts = s.val() || {}; renderGrid(allProducts); }); }
 
-       function renderGrid(products) {
+        function renderGrid(products) {
             const grid = document.getElementById('productsGrid'); 
             const noRes = document.getElementById('noResults');
             if(!grid) return;
-            grid.innerHTML = '';
             const keys = Object.keys(products);
-            if(keys.length === 0) { noRes.classList.remove('hidden'); return; }
+            if(keys.length === 0) { noRes.classList.remove('hidden'); grid.innerHTML = ''; return; }
             noRes.classList.add('hidden');
 
+            // سرعة خيالية هنا: تجميع الأكواد ورميها مرة واحدة
+            let gridHtml = '';
             keys.forEach(key => {
                 const p = products[key], isSaved = userWishlist.includes(key);
                 const canManage = (userRole === 'admin') || (userRole === 'merchant' && p.owner === currentUser.uid);
-                
-                // 👇 الحل السحري هنا: تنظيف اسم المنتج من أي علامات تنصيص أو مسافات تضرب الكود
                 const safeName = (p.name || '').replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, ' ');
 
-                grid.innerHTML += `<div class="product-card glass p-5 rounded-[35px] animate-fade-in shadow-xl text-right flex flex-col justify-between h-full">
+                gridHtml += `<div class="product-card glass p-5 rounded-[35px] animate-fade-in shadow-xl text-right flex flex-col justify-between h-full">
                     <div class="relative">
                         <div class="absolute top-0 left-0 flex flex-col items-center gap-1 z-10">
                             <button onclick="toggleWishlist('${key}')" class="p-2.5 rounded-full backdrop-blur-md ${isSaved ? 'text-pink-500 bg-pink-500/20' : 'text-gray-400 bg-black/30'} transition-all hover:scale-110 active:scale-90">❤</button>
@@ -624,18 +626,18 @@
                     </div>
                 </div>`;
             });
+            grid.innerHTML = gridHtml;
             if(window.applyLanguage) applyLanguage(localStorage.getItem('lang') || 'ar');
         }
 
-        // التعديل الرهيب هنا للزراير
-        function loadUsers() { 
+        window.loadUsers = function() { 
             onValue(ref(db, 'users'), (snapshot) => { 
                 const users = snapshot.val(); const list = document.getElementById('usersList'); 
                 if(!list) return;
-                list.innerHTML = ''; 
+                let usersHtml = ''; 
                 if(users) Object.keys(users).forEach(uid => { 
                     const u = users[uid]; 
-                    list.innerHTML += `<div class="bg-white/5 p-4 rounded-2xl border border-white/5 flex flex-col gap-3 font-bold text-right animate-slide">
+                    usersHtml += `<div class="bg-white/5 p-4 rounded-2xl border border-white/5 flex flex-col gap-3 font-bold text-right animate-slide">
                         <div class="flex justify-between items-start">
                             <p class="text-sm text-white">${u.name}</p>
                             <span class="text-[8px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 font-black uppercase border border-blue-500/20">${u.role}</span>
@@ -649,6 +651,7 @@
                         <button onclick="visitAccount('${uid}')" data-key="btn_visit" class="w-full bg-blue-600/20 text-blue-400 py-2 rounded-xl text-[10px] font-black border border-blue-400/30 hover:bg-blue-600 hover:text-white transition-all shadow-xl">زيارة حساب المستخدم</button>
                     </div>`; 
                 }); 
+                list.innerHTML = usersHtml;
             }); 
         }
 

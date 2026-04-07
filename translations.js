@@ -18,14 +18,14 @@ const translations = {
         checking: "تحقق...",
         guest: "زائر",
         
-        // --- Index Page (index.html) ---
+        // --- Index Page ---
         hero_title_1: "مستقبلك الرقمي",
         hero_title_2: "يبدأ بلمسة",
         hero_desc: "انضم لأكبر منصة عربية لعرض وبيع المنتجات الرقمية. نحن نوفر لك البيئة المثالية للإبداع والربح من أول يوم.",
         btn_browse: "تصفح المتجر",
         btn_community: "انضم لمجتمعنا",
 
-        // --- Store Page (products.html) ---
+        // --- Store Page ---
         shop_title: "المتجر الذكي | Start Online",
         debt_alert: "تنبيه: تجاوزت مديونيتك 500 ج.م. تم إيقاف صلاحية النشر مؤقتاً لحين السداد.",
         cart_title: "سلة المشتريات",
@@ -77,7 +77,7 @@ const translations = {
         notifs_cleared: "تم مسح الإشعارات.",
         no_notifs: "لا توجد إشعارات حالياً.",
 
-        // --- Profile Page (profile.html) ---
+        // --- Profile Page ---
         profile_title: "لوحة التحكم الاحترافية | Start Online",
         no_phone_registered: "لم يتم تسجيل رقم هاتف",
         smart_wallet: "المحفظة الذكية",
@@ -97,10 +97,10 @@ const translations = {
         stat_failed_orders: "طلبات ملغاة",
         daily_sales_perf: "أداء المبيعات اليومية",
         today_sales: "مبيعات اليوم:",
-        admin_manage_marketers: "إدارة المسوقين والديون",
-        table_marketer: "المسوق",
-        table_phone: "رقم الهاتف",
-        table_debt: "المديونية (10%)",
+        admin_manage_marketers: "إدارة التجار والديون",
+        table_marketer: "المسوق/التاجر",
+        table_phone: "رقم الهاتف / وسائل الدفع",
+        table_debt: "المديونية الحالية",
         table_action: "الإجراء",
         btn_settle: "تم الاستحقاق",
         my_purchases_title: "تتبع طلباتي المشترية",
@@ -134,6 +134,68 @@ const translations = {
         btn_delivered: "تم التسليم",
         btn_cancel: "إلغاء",
         payment_data: "بيانات الدفع / التحويل",
+
+        // --- Login Page ---
+        name_placeholder: "الاسم الكامل",
+        email_placeholder: "البريد الإلكتروني",
+        pass_placeholder: "كلمة المرور",
+        forgot_pass: "نسيت كلمة المرور؟",
+        login_btn: "دخول",
+        signup_btn: "إنشاء حساب",
+        or_via: "أو عبر",
+        google_btn: "سجل بواسطة جوجل",
+        no_account: "ليس لديك حساب؟",
+        have_account: "لديك حساب بالفعل؟",
+        signup_link: "إنشاء حساب جديد",
+        login_link: "تسجيل الدخول",
+
+        // --- Order Page ---
+        order_title: "تأكيد الطلب | Start Online",
+        invoice_title: "فاتورة الطلب",
+        piece_price: "سعر القطعة",
+        req_qty: "الكمية المطلوبة",
+        shipping_cost: "تكلفة الشحن",
+        total: "الإجمالي",
+        fast_shipping: "شحن سريع ومؤمن",
+        shipping_desc: "يصلك الطلب أينما كنت خلال 48 لـ 72 ساعة عمل",
+        delivery_data: "بيانات الاستلام",
+        full_name: "الاسم بالكامل للمستلم",
+        phone_num: "رقم الموبايل للتواصل",
+        full_address: "العنوان التفصيلي",
+        pay_method: "طريقة الدفع المريحة",
+        vodafone_cash: "فودافون كاش",
+        instapay: "انستا باي",
+        orange_cash: "أورانج كاش",
+        etisalat_cash: "اتصالات كاش",
+        cod: "الدفع عند الاستلام",
+        transfer_to: "يجب التحويل على هذا الرقم:",
+        attach_receipt: "رقم عملية التحويل لتأكيد دفعك:",
+        confirm_order: "تأكيد الطلب وإتمام الشراء 🔒",
+        secure_data: "بياناتك مشفرة ومحمية بالكامل",
+        success_title: "تم استلام طلبك! 🎉",
+        success_desc: "تم إرسال بياناتك بنجاح، هنتواصل معاك قريباً.",
+        back_to_shop: "العودة للتسوق",
+        copy: "📋 نسخ",
+
+        // --- Wallet & Admin Pages ---
+        wallet_title: "المحفظة المالية",
+        back_to_profile: "العودة لحسابي",
+        current_profits: "أرباحك الحالية",
+        ready_to_withdraw: "جاهزة للسحب",
+        platform_dues: "مستحقات المنصة (عمولة)",
+        settle_account: "تصفية الحساب الآن ←",
+        recent_transactions: "سجل العمليات الأخيرة",
+        settle_debt_title: "تصفية المديونية",
+        settle_debt_desc: "قم بتحويل المبلغ المستحق على رقم حساب المنصة ثم قم برفع صورة الإيصال.",
+        upload_receipt: "📸 اختر صورة الإيصال للرفع",
+        cancel_close: "إلغاء وإغلاق",
+        admin_debt_title: "إدارة ديون التجار",
+        admin_debt_desc: "تصفية مستحقات المنصة (10%)",
+        table_merchant: "التاجر",
+        table_phone_pay: "رقم الموبايل / وسائل الدفع",
+        table_current_debt: "المديونية الحالية",
+        loading_merchants: "جاري تحميل بيانات التجار... ⏳",
+        no_registered_merchants: "لا يوجد تجار مسجلين حالياً.",
 
         // --- JavaScript Dynamic Messages ---
         msg_order_delivered: "تم تسليم طلبك:",
@@ -199,7 +261,6 @@ const translations = {
         msg_req_sent_success: "تم إرسال طلبك بنجاح!",
         msg_no_data_update: "لم تقم بإدخال بيانات للتحديث!",
         msg_no_receipt: "لا يوجد إيصال مرفق!",
-        // --- كلمات إضافية لباقي الملفات ---
         msg_select_stars: "يرجى اختيار عدد النجوم! ⭐",
         msg_write_comment: "يرجى كتابة تعليق!",
         msg_review_thanks: "شكراً لتقييمك الرائع! ⭐",
@@ -222,7 +283,8 @@ const translations = {
         msg_user_not_found: "هذا الحساب غير موجود",
         no_extra_desc: "لا يوجد وصف إضافي متاح لهذا المنتج.",
         excellent_material: "خامة ممتازة",
-        not_specified: "لم يتم التحديد"
+        not_specified: "لم يتم التحديد",
+        be_first_review: "كن أول من يقيم هذا الإبداع!"
     },
     en: {
         // --- Navigation & Global ---
@@ -243,14 +305,14 @@ const translations = {
         checking: "Checking...",
         guest: "Guest",
         
-        // --- Index Page (index.html) ---
+        // --- Index Page ---
         hero_title_1: "Your Digital Future",
         hero_title_2: "Starts with a Touch",
         hero_desc: "Join the largest Arab platform for showcasing and selling digital products. We provide the ideal environment to create and earn from day one.",
         btn_browse: "Browse Store",
         btn_community: "Join Our Community",
 
-        // --- Store Page (products.html) ---
+        // --- Store Page ---
         shop_title: "Smart Store | Start Online",
         debt_alert: "Alert: Your debt exceeded 500 EGP. Publishing is temporarily suspended until settled.",
         cart_title: "Shopping Cart",
@@ -302,7 +364,7 @@ const translations = {
         notifs_cleared: "Notifications cleared.",
         no_notifs: "No notifications currently.",
 
-        // --- Profile Page (profile.html) ---
+        // --- Profile Page ---
         profile_title: "Pro Dashboard | Start Online",
         no_phone_registered: "No phone registered",
         smart_wallet: "Smart Wallet",
@@ -322,10 +384,10 @@ const translations = {
         stat_failed_orders: "Canceled Orders",
         daily_sales_perf: "Daily Sales Performance",
         today_sales: "Today's Sales:",
-        admin_manage_marketers: "Manage Marketers & Debts",
-        table_marketer: "Marketer",
-        table_phone: "Phone",
-        table_debt: "Debt (10%)",
+        admin_manage_marketers: "Manage Merchants & Debts",
+        table_marketer: "Merchant",
+        table_phone: "Phone / Payment",
+        table_debt: "Current Debt",
         table_action: "Action",
         btn_settle: "Settle Debt",
         my_purchases_title: "Track My Purchases",
@@ -359,6 +421,68 @@ const translations = {
         btn_delivered: "Delivered",
         btn_cancel: "Cancel",
         payment_data: "Payment / Transfer Data",
+
+        // --- Login Page ---
+        name_placeholder: "Full Name",
+        email_placeholder: "Email Address",
+        pass_placeholder: "Password",
+        forgot_pass: "Forgot Password?",
+        login_btn: "Login",
+        signup_btn: "Sign Up",
+        or_via: "Or via",
+        google_btn: "Sign in with Google",
+        no_account: "Don't have an account?",
+        have_account: "Already have an account?",
+        signup_link: "Create an account",
+        login_link: "Login",
+
+        // --- Order Page ---
+        order_title: "Confirm Order | Start Online",
+        invoice_title: "Order Invoice",
+        piece_price: "Piece Price",
+        req_qty: "Required Quantity",
+        shipping_cost: "Shipping Cost",
+        total: "Total",
+        fast_shipping: "Fast & Secured Shipping",
+        shipping_desc: "Your order arrives anywhere within 48 to 72 business hours",
+        delivery_data: "Delivery Data",
+        full_name: "Receiver's Full Name",
+        phone_num: "Contact Mobile Number",
+        full_address: "Detailed Address",
+        pay_method: "Convenient Payment Method",
+        vodafone_cash: "Vodafone Cash",
+        instapay: "InstaPay",
+        orange_cash: "Orange Cash",
+        etisalat_cash: "Etisalat Cash",
+        cod: "Cash on Delivery",
+        transfer_to: "You must transfer to this number:",
+        attach_receipt: "Transfer reference number to confirm payment:",
+        confirm_order: "Confirm Order & Checkout 🔒",
+        secure_data: "Your data is fully encrypted and secured",
+        success_title: "Order Received! 🎉",
+        success_desc: "Your data has been sent successfully, we will contact you shortly.",
+        back_to_shop: "Back to Shop",
+        copy: "📋 Copy",
+
+        // --- Wallet & Admin Pages ---
+        wallet_title: "Financial Wallet",
+        back_to_profile: "Back to Profile",
+        current_profits: "Your Current Profits",
+        ready_to_withdraw: "Ready to withdraw",
+        platform_dues: "Platform Dues (Commission)",
+        settle_account: "Settle Account Now ←",
+        recent_transactions: "Recent Transactions",
+        settle_debt_title: "Settle Debt",
+        settle_debt_desc: "Transfer the due amount to the platform's account number, then upload the receipt image.",
+        upload_receipt: "📸 Choose Receipt Image to Upload",
+        cancel_close: "Cancel & Close",
+        admin_debt_title: "Manage Merchants Debts",
+        admin_debt_desc: "Settle platform dues (10%)",
+        table_merchant: "Merchant",
+        table_phone_pay: "Phone / Payment Methods",
+        table_current_debt: "Current Debt",
+        loading_merchants: "Loading merchants data... ⏳",
+        no_registered_merchants: "No registered merchants currently.",
 
         // --- JavaScript Dynamic Messages ---
         msg_order_delivered: "Your order delivered:",
@@ -424,7 +548,6 @@ const translations = {
         msg_req_sent_success: "Your request sent successfully!",
         msg_no_data_update: "You didn't enter data to update!",
         msg_no_receipt: "No receipt attached!",
-        // --- Extra words for remaining files ---
         msg_select_stars: "Please select the number of stars! ⭐",
         msg_write_comment: "Please write a comment!",
         msg_review_thanks: "Thank you for your great review! ⭐",
@@ -448,21 +571,19 @@ const translations = {
         no_extra_desc: "No extra description available for this product.",
         excellent_material: "Excellent material",
         not_specified: "Not specified",
+        be_first_review: "Be the first to review this creation!"
     }
 };
 
-// تحديد اللغة الحالية مرة واحدة لتسريع الأداء
 const currentLang = localStorage.getItem('lang') || 'ar';
 
-// 👇 دي الدالة السحرية الجديدة اللي هتخلينا نترجم فوراً جوه الجافاسكريبت 👇
 window.t = function(key) {
     if (translations[currentLang] && translations[currentLang][key]) {
         return translations[currentLang][key];
     }
-    return key; // لو الكلمة مش موجودة، يرجعها زي ما هي
+    return key; 
 };
 
-// دالة تطبيق الترجمة على العناصر الثابتة في الـ HTML
 window.applyLanguage = function(lang) {
     const tData = translations[lang];
     if (!tData) return;
@@ -486,11 +607,6 @@ window.applyLanguage = function(lang) {
 
     const langLabel = document.getElementById('langLabel');
     if (langLabel) langLabel.innerText = tData.lang_btn;
-};
-
-window.setLanguage = (lang) => {
-    localStorage.setItem('lang', lang);
-    location.reload();
 };
 
 document.addEventListener('DOMContentLoaded', () => {

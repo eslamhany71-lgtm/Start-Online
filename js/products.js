@@ -127,7 +127,7 @@ window.updateCartUI = () => {
                 </div>
                 <div class="flex flex-col gap-2">
                     <button onclick="removeFromCart('${key}')" class="text-red-500 hover:text-red-400 text-xs font-bold">✕</button>
-                    <a href="order.html?id=${item.id}&name=${encodeURIComponent(item.name)}&price=${item.price}&qty=${item.qty}&color=${encodeURIComponent(item.color || '')}&size=${encodeURIComponent(item.size || '')}&image=${encodeURIComponent(item.image)}&owner=null" class="text-[8px] bg-blue-600 text-white p-1 rounded-lg text-center font-black hover:bg-blue-500 transition-colors">${t('btn_order')}</a>
+                    <a href="order.html?id=${item.id}&name=${encodeURIComponent(item.name)}&price=${item.price}&qty=${item.qty}&color=${encodeURIComponent(item.color || '')}&size=${encodeURIComponent(item.size || '')}&image=${encodeURIComponent(item.image)}&owner=${item.owner || 'null'}" class="text-[8px] bg-blue-600 text-white p-1 rounded-lg text-center font-black hover:bg-blue-500 transition-colors">${t('btn_order')}</a>
                 </div>
             </div>`;
         });
@@ -139,21 +139,39 @@ window.updateCartUI = () => {
 
 window.removeFromCart = (key) => { if(confirm(t('msg_delete_cart'))) remove(ref(db, `carts/${currentUser.uid}/${key}`)); };
 
+/* 👇 التعديل السحري لفصل الداتا بيز عن الترجمة 👇 */
+// دي الكلمات اللي الفلتر هيستخدمها عشان يبحث في الداتا بيز (ثابتة بالعربي زي ما اتسجلت)
+const dbCategories = {
+    'all': 'الكل',
+    'clothes': 'ملابس',
+    'acc': 'إكسسوارات',
+    'perfume': 'عطور',
+    'beauty': 'صحة وجمال',
+    'best': 'أكثر مبيعاً'
+};
+
+// هنا ربطنا الداتا بيز (dbVal) بمفتاح الترجمة (tKey) عشان تظهر مترجمة
 const subData = {
-    clothes: [{n:'رجالي', i:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcq8MbpMpYi4h72YsWLGOu8L2bU7lNdq-3ZQ&s'}, {n:'حريمي', i:'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=100'}],
-    acc: [{n:'رجالي', i:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHE6nx5A79B-M8Ptx1axoKtJyh__8fFnVf9Q&s'}, {n:'حريمي', i:'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg_2PO3OsO5EeG2It9AcKvUkfcraT1AzfcbFuB4c_RxtgsYzAPBUico99Z2PlxYnTKx4Rd0WlhLqoI6QpHR-IVSZsEXDQPij6CZY0eaoQ-tWvUO4PQrNOyYD_9CgZpLx6kUDFLBSBlP-f97/s1600/%D8%A7%D9%83%D8%B3%D8%B3%D9%88%D8%A7%D8%B1%D8%A7%D8%AA+%D9%85%D8%B3%D8%AA%D9%88%D8%B1%D8%AF%D8%A9+%D9%85%D9%86+%D8%A7%D9%84%D8%B5%D9%8A%D9%86.jpg'}],
-    perfume: [{n:'رجالي', i:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqYTBqAT9RJHsyFI4Pbp1btFlcsx3YVcowXw&s'}, {n:'حريمي', i:'https://www.faces.eg/dw/image/v2/BJSM_PRD/on/demandware.static/-/Sites-faces-master-catalog/default/dw14914fb4/product/3614270175572/3614270175572.jpg?sw=800&sh=800'}],
-    beauty: [{n:'رجالي', i:'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=100'}, {n:'حريمي', i:'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=100'}]
+    clothes: [{dbVal:'رجالي', tKey:'sub_men', i:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcq8MbpMpYi4h72YsWLGOu8L2bU7lNdq-3ZQ&s'}, {dbVal:'حريمي', tKey:'sub_women', i:'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=100'}],
+    acc: [{dbVal:'رجالي', tKey:'sub_men', i:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHE6nx5A79B-M8Ptx1axoKtJyh__8fFnVf9Q&s'}, {dbVal:'حريمي', tKey:'sub_women', i:'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg_2PO3OsO5EeG2It9AcKvUkfcraT1AzfcbFuB4c_RxtgsYzAPBUico99Z2PlxYnTKx4Rd0WlhLqoI6QpHR-IVSZsEXDQPij6CZY0eaoQ-tWvUO4PQrNOyYD_9CgZpLx6kUDFLBSBlP-f97/s1600/%D8%A7%D9%83%D8%B3%D8%B3%D9%88%D8%A7%D8%B1%D8%A7%D8%AA+%D9%85%D8%B3%D8%AA%D9%88%D8%B1%D8%AF%D8%A9+%D9%85%D9%86+%D8%A7%D9%84%D8%B5%D9%8A%D9%86.jpg'}],
+    perfume: [{dbVal:'رجالي', tKey:'sub_men', i:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqYTBqAT9RJHsyFI4Pbp1btFlcsx3YVcowXw&s'}, {dbVal:'حريمي', tKey:'sub_women', i:'https://www.faces.eg/dw/image/v2/BJSM_PRD/on/demandware.static/-/Sites-faces-master-catalog/default/dw14914fb4/product/3614270175572/3614270175572.jpg?sw=800&sh=800'}],
+    beauty: [{dbVal:'رجالي', tKey:'sub_men', i:'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=100'}, {dbVal:'حريمي', tKey:'sub_women', i:'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=100'}]
 };
 
 window.showSubCats = (key, el) => {
     document.querySelectorAll('.category-item').forEach(i => i.classList.remove('active')); el.classList.add('active');
-    selectedMainCat = el.querySelector('span').innerText.trim(); 
-    selectedSubCat = 'الكل'; // ممكن نغير دي كمان لو حبينا نترجمها، بس هنخليها كده مؤقتاً
+    
+    // بناخد القيمة الثابتة بتاعت الداتا بيز بدل ما نقرأ النص المترجم اللي على الشاشة
+    selectedMainCat = dbCategories[key] || 'الكل'; 
+    selectedSubCat = 'الكل'; 
+    
     const area = document.getElementById('subCatsArea');
     if(key === 'all' || key === 'best') { area.style.display = 'none'; applyDualFilter(); return; }
+    
     area.style.display = 'flex';
-    area.innerHTML = subData[key].map(s => `<div class="sub-cat-item" onclick="filterBySub('${s.n}', this)"><img src="${s.i}" loading="lazy"><span>${s.n}</span></div>`).join('');
+    // بنرسم الأقسام الفرعية وبنستخدم t(s.tKey) للترجمة، ولما الزبون يدوس بنبعت s.dbVal للفلتر
+    area.innerHTML = subData[key].map(s => `<div class="sub-cat-item" onclick="filterBySub('${s.dbVal}', this)"><img src="${s.i}" loading="lazy"><span>${t(s.tKey)}</span></div>`).join('');
+    
     applyDualFilter();
 };
 
@@ -361,7 +379,6 @@ function renderGrid(products) {
         </div>`;
     });
     grid.innerHTML = gridHtml;
-    // مسحنا من هنا سطر الـ applyLanguage القديم عشان خلاص الـ t() قايمة بالواجب
 }
 
 window.loadUsers = function() { 

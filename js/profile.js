@@ -23,15 +23,16 @@ onAuthStateChanged(auth, async (user) => {
             
             document.getElementById('userName').innerText = u.name;
             document.getElementById('userEmail').innerText = u.email;
-            document.getElementById('userRoleBadge').innerText = myRole.toUpperCase();
+            document.getElementById('userRoleBadge').innerText = t('btn_role_' + myRole) || myRole.toUpperCase();
             document.getElementById('userImg').src = u.photo || `https://ui-avatars.com/api/?name=${u.name}&background=3b82f6&color=fff`;
-            document.getElementById('userPhoneDisplay').innerText = u.phone || "لم يتم تسجيل رقم هاتف";
+            // استخدام القاموس للترجمة
+            document.getElementById('userPhoneDisplay').innerText = u.phone || t('no_phone_registered');
             
             if(myRole === 'admin') {
                 document.getElementById('adminMarketerPanel').classList.remove('hidden');
                 loadMarketersForAdmin();
                 document.getElementById('debtRow').style.display = 'none';
-                document.getElementById('walletBalanceLabel').innerText = "أرباح المنصة (10%):";
+                document.getElementById('walletBalanceLabel').innerText = t('platform_profits');
                 document.getElementById('walletBalanceLabel').removeAttribute('data-key');
             }
 
@@ -54,8 +55,8 @@ onAuthStateChanged(auth, async (user) => {
                 if(['merchant', 'marketer'].includes(myRole)) {
                     onValue(ref(db, `users/${myUid}/wallet`), (s) => {
                         const w = s.val() || { balance: 0, debt: 0 };
-                        document.getElementById('walletBalance').innerText = (Number(w.balance) || 0).toFixed(2) + " ج.م";
-                        document.getElementById('walletDebt').innerText = (Number(w.debt) || 0).toFixed(2) + " ج.م";
+                        document.getElementById('walletBalance').innerText = (Number(w.balance) || 0).toFixed(2) + " " + t('currency');
+                        document.getElementById('walletDebt').innerText = (Number(w.debt) || 0).toFixed(2) + " " + t('currency');
                     });
                 }
             } else {
@@ -65,7 +66,6 @@ onAuthStateChanged(auth, async (user) => {
             loadOrders(myRole);
             loadContent(myUid, u.wishlist || []);
         }
-        if(window.applyLanguage) applyLanguage(localStorage.getItem('lang') || 'ar');
     } else { window.location.href = "login.html"; }
 });
 
@@ -82,7 +82,7 @@ async function loadPaymentDetails() {
 
 window.updateDetailedPayment = async () => {
     const p = { vodafone: document.getElementById('vodaPay').value, etisalat: document.getElementById('etiPay').value, orange: document.getElementById('orangePay').value, instapay: document.getElementById('instaPay').value };
-    await set(ref(db, `users/${myUid}/paymentMethods`), p); showToast("تم تحديث كافة المحافظ ✅");
+    await set(ref(db, `users/${myUid}/paymentMethods`), p); showToast(t('msg_wallets_updated'));
 };
 
 window.updateOrderStatus = async (orderId, status, amount) => {
@@ -103,8 +103,8 @@ window.updateOrderStatus = async (orderId, status, amount) => {
             });
         }
         await update(ref(db, 'orders/' + orderId), { status: status });
-        closeOrderModal(); showToast("تم تحديث الحالة ✅");
-    } catch (e) { showToast("خطأ في الاتصال!"); }
+        closeOrderModal(); showToast(t('msg_status_updated'));
+    } catch (e) { showToast(t('msg_error_conn')); }
 };
 
 function loadOrders(role) {
@@ -131,21 +131,21 @@ function loadOrders(role) {
             const isMyPurchase = (o.customerUid === myUid) || (o.customerId === myUid) || (o.buyerId === myUid) || (o.userId === myUid) || (o.uid === myUid);
             const dateStr = o.date ? o.date.split(',')[0] : 'أخرى'; 
             
-            let statusKey = "order_status_pending";
-            let statusText = "قيد الانتظار";
-            if(o.status === 'completed') { statusKey = "order_status_completed"; statusText = "تم التسليم"; }
-            else if(o.status === 'failed') { statusKey = "order_status_failed"; statusText = "ملغاة"; }
+            let statusText = t('status_pending');
+            let badgeClass = "status-pending";
+            if(o.status === 'completed') { statusText = t('status_completed'); badgeClass = "status-completed"; }
+            else if(o.status === 'failed') { statusText = t('status_failed'); badgeClass = "status-failed"; }
 
-            if(isMyPurchase && o.status === 'completed') { notificationsHtml += `<div class="bg-white/5 p-3 rounded-xl border border-white/5 mb-2 hover:bg-white/10 transition"><p class="font-bold text-green-400 mb-1">تم تسليم طلبك: ${o.productName}</p><p class="text-[8px] text-gray-500">${o.date}</p></div>`; notifCount++; }
-            if(isMyPurchase && o.status === 'failed') { notificationsHtml += `<div class="bg-white/5 p-3 rounded-xl border border-white/5 mb-2 hover:bg-white/10 transition"><p class="font-bold text-red-400 mb-1">تم إلغاء طلبك: ${o.productName}</p><p class="text-[8px] text-gray-500">${o.date}</p></div>`; notifCount++; }
+            if(isMyPurchase && o.status === 'completed') { notificationsHtml += `<div class="bg-white/5 p-3 rounded-xl border border-white/5 mb-2 hover:bg-white/10 transition"><p class="font-bold text-green-400 mb-1">${t('msg_order_delivered')} ${o.productName}</p><p class="text-[8px] text-gray-500">${o.date}</p></div>`; notifCount++; }
+            if(isMyPurchase && o.status === 'failed') { notificationsHtml += `<div class="bg-white/5 p-3 rounded-xl border border-white/5 mb-2 hover:bg-white/10 transition"><p class="font-bold text-red-400 mb-1">${t('msg_order_canceled')} ${o.productName}</p><p class="text-[8px] text-gray-500">${o.date}</p></div>`; notifCount++; }
 
             if(isMyPurchase) {
-                myPurchaseHtml += `<div class="glass p-5 rounded-2xl flex justify-between items-center border border-white/5 animate-slide mb-2 list-item-fast"><div><h4 class="text-[10px] font-black text-blue-400 uppercase">${o.productName || 'طلب مشتريات'}</h4><p class="text-[8px] text-gray-500 mt-1">${o.date || ''}</p></div><span class="status-badge status-${o.status || 'pending'}" data-key="${statusKey}">${statusText}</span></div>`;
+                myPurchaseHtml += `<div class="glass p-5 rounded-2xl flex justify-between items-center border border-white/5 animate-slide mb-2 list-item-fast"><div><h4 class="text-[10px] font-black text-blue-400 uppercase">${o.productName || t('order_product')}</h4><p class="text-[8px] text-gray-500 mt-1">${o.date || ''}</p></div><span class="status-badge ${badgeClass}">${statusText}</span></div>`;
             }
 
             if(role === 'admin' || o.marketerId === myUid || o.ownerId === myUid) {
-                if(!o.status || o.status === 'pending') { notificationsHtml += `<div class="bg-white/5 p-3 rounded-xl border border-white/5 mb-2 hover:bg-white/10 transition"><p class="font-bold text-yellow-400 mb-1">طلب جديد: ${o.productName} بـ ${displayTotal} ج.م</p><p class="text-[8px] text-gray-500">${o.date}</p></div>`; notifCount++; }
-                if(o.status === 'completed') { notificationsHtml += `<div class="bg-white/5 p-3 rounded-xl border border-white/5 mb-2 hover:bg-white/10 transition"><p class="font-bold text-blue-400 mb-1">تم إضافة أرباح طلب ${o.productName}</p><p class="text-[8px] text-gray-500">${o.date}</p></div>`; notifCount++; }
+                if(!o.status || o.status === 'pending') { notificationsHtml += `<div class="bg-white/5 p-3 rounded-xl border border-white/5 mb-2 hover:bg-white/10 transition"><p class="font-bold text-yellow-400 mb-1">${t('msg_new_order')} ${o.productName} ${t('msg_with_amount')} ${displayTotal} ${t('currency')}</p><p class="text-[8px] text-gray-500">${o.date}</p></div>`; notifCount++; }
+                if(o.status === 'completed') { notificationsHtml += `<div class="bg-white/5 p-3 rounded-xl border border-white/5 mb-2 hover:bg-white/10 transition"><p class="font-bold text-blue-400 mb-1">${t('msg_profit_added')} ${o.productName}</p><p class="text-[8px] text-gray-500">${o.date}</p></div>`; notifCount++; }
 
                 if(o.status === 'completed') {
                     rev += displayTotal;
@@ -161,17 +161,17 @@ function loadOrders(role) {
                         <div class="glass p-6 rounded-3xl border border-white/10 space-y-4 animate-slide mb-3 list-item-fast">
                             <div class="flex justify-between items-start">
                                 <div>
-                                    <h4 class="font-black text-blue-400">${o.productName || 'منتج'}</h4>
-                                    <p class="text-[10px] text-white mt-1">العميل: ${o.customerName || 'غير معروف'} | الكمية: ${o.qty || o.quantity || 1}</p>
+                                    <h4 class="font-black text-blue-400">${o.productName || t('order_product')}</h4>
+                                    <p class="text-[10px] text-white mt-1">${t('order_client_name')}: ${o.customerName || t('lbl_unknown')} | ${t('lbl_qty')}: ${o.qty || o.quantity || 1}</p>
                                 </div>
                                 <div class="flex flex-col gap-2">
-                                    <button onclick="viewOrderDetails('${key}')" class="bg-blue-600/20 text-blue-400 px-3 py-1.5 rounded-lg text-[9px] font-black hover:bg-blue-600 hover:text-white transition">تفاصيل الطلب</button>
-                                    <a href="details.html?id=${o.productId || o.id || ''}" class="text-center bg-white/10 text-white px-3 py-1.5 rounded-lg text-[9px] font-black hover:bg-white/20 transition">عرض المنتج</a>
+                                    <button onclick="viewOrderDetails('${key}')" class="bg-blue-600/20 text-blue-400 px-3 py-1.5 rounded-lg text-[9px] font-black hover:bg-blue-600 hover:text-white transition">${t('btn_order_details')}</button>
+                                    <a href="details.html?id=${o.productId || o.id || ''}" class="text-center bg-white/10 text-white px-3 py-1.5 rounded-lg text-[9px] font-black hover:bg-white/20 transition">${t('btn_view_product')}</a>
                                 </div>
                             </div>
                             <div class="flex justify-between items-center border-t border-white/5 pt-4">
-                                <p class="text-white font-black text-xs">المبلغ: ${displayTotal} ج.م</p>
-                                <span class="status-badge status-pending" data-key="order_status_pending">قيد الانتظار</span>
+                                <p class="text-white font-black text-xs">${t('order_amount')}: ${displayTotal} ${t('currency')}</p>
+                                <span class="status-badge status-pending">${t('status_pending')}</span>
                             </div>
                         </div>`;
                     }
@@ -179,16 +179,16 @@ function loadOrders(role) {
             }
         });
 
-        if(myPurchaseList) myPurchaseList.innerHTML = myPurchaseHtml || '<p class="text-[10px] text-gray-500 text-center py-4">لم تقم بأي طلبات بعد.</p>';
-        if(incomingList) incomingList.innerHTML = incomingHtml || '<p class="text-[10px] text-gray-500 text-center py-4">لا توجد طلبات جديدة.</p>';
+        if(myPurchaseList) myPurchaseList.innerHTML = myPurchaseHtml || `<p class="text-[10px] text-gray-500 text-center py-4">${t('no_my_orders')}</p>`;
+        if(incomingList) incomingList.innerHTML = incomingHtml || `<p class="text-[10px] text-gray-500 text-center py-4">${t('no_new_orders')}</p>`;
 
-        document.getElementById('totalRevenue').innerText = rev.toFixed(2) + " ج.م";
+        document.getElementById('totalRevenue').innerText = rev.toFixed(2) + " " + t('currency');
         document.getElementById('successOrdersCount').innerText = succ;
         document.getElementById('failedOrdersCount').innerText = fail;
 
         if (role === 'admin') {
             const adminWallet = document.getElementById('walletBalance');
-            if(adminWallet) adminWallet.innerText = adminPlatformProfit.toFixed(2) + " ج.م";
+            if(adminWallet) adminWallet.innerText = adminPlatformProfit.toFixed(2) + " " + t('currency');
         }
         
         const badge = document.getElementById('notifBadge');
@@ -199,16 +199,14 @@ function loadOrders(role) {
             list.innerHTML = notificationsHtml;
         } else {
             badge.classList.add('hidden');
-            list.innerHTML = '<p class="text-gray-500 text-center py-4">لا توجد إشعارات حالياً.</p>';
+            list.innerHTML = `<p class="text-gray-500 text-center py-4">${t('no_notifs')}</p>`;
         }
         
         if(['admin', 'merchant', 'marketer'].includes(role)) {
             let todayTotal = dailyRevData[todayStr] || 0;
-            document.getElementById('todaySalesValue').innerText = todayTotal + " ج.م";
+            document.getElementById('todaySalesValue').innerText = todayTotal + " " + t('currency');
             renderSalesChart(dailyRevData);
         }
-
-        if(window.applyLanguage) applyLanguage(localStorage.getItem('lang') || 'ar');
     });
 }
 
@@ -231,9 +229,9 @@ function renderSalesChart(data) {
     salesChartInstance = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: labels.length ? labels : ['لا توجد داتا'],
+            labels: labels.length ? labels : [t('val_unavailable')],
             datasets: [{
-                label: 'المبيعات (ج.م)',
+                label: t('stat_total_sales'),
                 data: values.length ? values : [0],
                 borderColor: '#3b82f6',
                 backgroundColor: 'rgba(59, 130, 246, 0.2)',
@@ -268,23 +266,22 @@ function loadMarketersForAdmin() {
             const u = users[uid];
             if(u.role === 'merchant') {
                 const debt = u.wallet?.debt || 0;
-                const phone = u.phone || u.phoneNumber || '<span class="text-gray-600">غير مسجل</span>';
+                const phone = u.phone || u.phoneNumber || `<span class="text-gray-600">${t('not_registered')}</span>`;
                 tableHtml += `<tr class="hover:bg-white/5 transition list-item-fast">
                     <td class="p-4 font-bold text-white">${u.name}</td>
                     <td class="p-4 text-gray-400 text-[10px] font-mono tracking-widest">${phone}</td>
-                    <td class="p-4 text-red-500 font-black">${debt.toFixed(2)} ج.م</td>
-                    <td class="p-4"><button onclick="settleDebt('${uid}')" data-key="btn_settle" class="bg-blue-600/20 text-blue-400 px-3 py-1.5 rounded-lg font-black hover:bg-blue-600 hover:text-white transition text-[9px]">تم الاستحقاق</button></td>
+                    <td class="p-4 text-red-500 font-black">${debt.toFixed(2)} ${t('currency')}</td>
+                    <td class="p-4"><button onclick="settleDebt('${uid}')" class="bg-blue-600/20 text-blue-400 px-3 py-1.5 rounded-lg font-black hover:bg-blue-600 hover:text-white transition text-[9px]">${t('btn_settle')}</button></td>
                 </tr>`;
             }
         });
-        tbody.innerHTML = tableHtml || `<tr><td colspan="4" class="text-center p-4 text-gray-500 text-[10px]">لا يوجد تجار حالياً</td></tr>`;
-        if(window.applyLanguage) applyLanguage(localStorage.getItem('lang') || 'ar');
+        tbody.innerHTML = tableHtml || `<tr><td colspan="4" class="text-center p-4 text-gray-500 text-[10px]">${t('val_unavailable')}</td></tr>`;
     });
 }
 
 window.settleDebt = async (merchantUid) => {
-    if(confirm("هل استلمت المستحقات من التاجر؟ تصفير الدين سيتيح له النشر مجدداً.")) {
-        try { await update(ref(db, `users/${merchantUid}/wallet`), { debt: 0 }); showToast("تم تصفير المديونية ✅"); } catch(e) { showToast("فشل!"); }
+    if(confirm(t('msg_settle_confirm'))) {
+        try { await update(ref(db, `users/${merchantUid}/wallet`), { debt: 0 }); showToast(t('msg_debt_zeroed')); } catch(e) { showToast(t('msg_failed')); }
     }
 };
 
@@ -296,24 +293,23 @@ window.viewOrderDetails = (id) => {
     
     body.innerHTML = `
     <div class="space-y-4">
-        <div><label class="text-gray-500 text-[10px] block" data-key="order_client_name">العميل</label><p class="text-white font-bold">${o.customerName || 'غير متوفر'}</p></div>
-        <div><label class="text-gray-500 text-[10px] block" data-key="order_client_phone">رقم الهاتف</label><p class="text-white font-bold font-mono">${o.phone || 'غير متوفر'}</p></div>
-        <div><label class="text-gray-500 text-[10px] block" data-key="order_client_address">العنوان</label><p class="text-white font-bold">${o.address || 'غير متوفر'}</p></div>
+        <div><label class="text-gray-500 text-[10px] block">${t('order_client_name')}</label><p class="text-white font-bold">${o.customerName || t('val_unavailable')}</p></div>
+        <div><label class="text-gray-500 text-[10px] block">${t('order_client_phone')}</label><p class="text-white font-bold font-mono">${o.phone || t('val_unavailable')}</p></div>
+        <div><label class="text-gray-500 text-[10px] block">${t('order_client_address')}</label><p class="text-white font-bold">${o.address || t('val_unavailable')}</p></div>
     </div>
     <div class="space-y-4">
-        <div><label class="text-gray-500 text-[10px] block" data-key="order_product">المنتج</label><p class="text-blue-400 font-bold">${o.productName || 'غير متوفر'}</p></div>
+        <div><label class="text-gray-500 text-[10px] block">${t('order_product')}</label><p class="text-blue-400 font-bold">${o.productName || t('val_unavailable')}</p></div>
         <div class="grid grid-cols-3 gap-2 bg-white/5 p-3 rounded-xl border border-white/5 text-center">
-            <div><label class="text-gray-500 text-[9px] block">اللون</label><p class="text-white font-black text-xs">${o.color || 'افتراضي'}</p></div>
-            <div><label class="text-gray-500 text-[9px] block">المقاس</label><p class="text-white font-black text-xs">${o.size || 'افتراضي'}</p></div>
-            <div><label class="text-gray-500 text-[9px] block">العدد</label><p class="text-white font-black text-xs">${o.qty || o.quantity || 1}</p></div>
+            <div><label class="text-gray-500 text-[9px] block">${t('lbl_color')}</label><p class="text-white font-black text-xs">${o.color || t('val_default')}</p></div>
+            <div><label class="text-gray-500 text-[9px] block">${t('lbl_size')}</label><p class="text-white font-black text-xs">${o.size || t('val_default')}</p></div>
+            <div><label class="text-gray-500 text-[9px] block">${t('lbl_qty')}</label><p class="text-white font-black text-xs">${o.qty || o.quantity || 1}</p></div>
         </div>
-        <div><label class="text-gray-500 text-[10px] block" data-key="order_amount">المبلغ النهائي</label><p class="text-green-400 font-black text-xl">${displayTotal} ج.م</p></div>
-        <div><button onclick="viewReceipt('${o.receipt || ''}')" class="text-blue-400 underline text-xs font-bold hover:text-white transition" data-key="btn_view_receipt">عرض إثبات الدفع</button></div>
+        <div><label class="text-gray-500 text-[10px] block">${t('order_amount')}</label><p class="text-green-400 font-black text-xl">${displayTotal} ${t('currency')}</p></div>
+        <div><button onclick="viewReceipt('${o.receipt || ''}')" class="text-blue-400 underline text-xs font-bold hover:text-white transition">${t('btn_view_receipt')}</button></div>
     </div>`;
     
-    actions.innerHTML = `<button onclick="updateOrderStatus('${id}', 'completed', ${displayTotal})" class="flex-1 bg-green-600 text-white py-3 rounded-2xl font-black text-xs hover:bg-green-500 transition shadow-lg btn-glow" data-key="btn_delivered">تم التسليم</button><button onclick="updateOrderStatus('${id}', 'failed', 0)" class="flex-1 bg-red-600/20 text-red-500 py-3 rounded-2xl font-black text-xs hover:bg-red-500 hover:text-white transition" data-key="btn_cancel">إلغاء</button>`;
+    actions.innerHTML = `<button onclick="updateOrderStatus('${id}', 'completed', ${displayTotal})" class="flex-1 bg-green-600 text-white py-3 rounded-2xl font-black text-xs hover:bg-green-500 transition shadow-lg btn-glow">${t('btn_delivered')}</button><button onclick="updateOrderStatus('${id}', 'failed', 0)" class="flex-1 bg-red-600/20 text-red-500 py-3 rounded-2xl font-black text-xs hover:bg-red-500 hover:text-white transition">${t('btn_cancel')}</button>`;
     document.getElementById('orderFullDetailsModal').classList.remove('hidden');
-    if(window.applyLanguage) applyLanguage(localStorage.getItem('lang') || 'ar');
 };
 
 function loadContent(uId, wishlist) {
@@ -329,47 +325,46 @@ function loadContent(uId, wishlist) {
         Object.keys(prods).forEach(key => {
             const p = prods[key];
             if(wishlist.includes(key)) {
-                wishHtml += `<div class="glass p-4 rounded-3xl border border-white/5 flex gap-4 items-center animate-slide list-item-fast"><img src="${p.image}" loading="lazy" class="w-12 h-12 rounded-xl object-cover shadow-lg"><div class="flex-1 font-bold text-[10px]"><h4 class="text-white line-clamp-1">${p.name}</h4><p class="text-blue-400 mt-1">${p.price} ج.م</p></div><a href="details.html?id=${key}" class="p-2 bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white transition rounded-xl text-[9px] font-black shadow-md" data-key="btn_details">عرض</a></div>`;
+                wishHtml += `<div class="glass p-4 rounded-3xl border border-white/5 flex gap-4 items-center animate-slide list-item-fast"><img src="${p.image}" loading="lazy" class="w-12 h-12 rounded-xl object-cover shadow-lg"><div class="flex-1 font-bold text-[10px]"><h4 class="text-white line-clamp-1">${p.name}</h4><p class="text-blue-400 mt-1">${p.price} ${t('currency')}</p></div><a href="details.html?id=${key}" class="p-2 bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white transition rounded-xl text-[9px] font-black shadow-md">${t('btn_details')}</a></div>`;
             }
             if(p.owner === uId) { 
                 myHtml += `<div class="glass p-4 rounded-3xl border border-white/5 flex gap-4 items-center animate-slide list-item-fast">
                     <img src="${p.image}" loading="lazy" class="w-12 h-12 rounded-xl object-cover shadow-lg">
                     <div class="flex-1 font-bold text-[10px]">
                         <h4 class="text-white line-clamp-1">${p.name}</h4>
-                        <p class="text-blue-400 mt-1">${p.price} ج.م</p>
-                        ${p.oldPrice ? `<p class="text-green-400 mt-1">عمولتك: ${p.oldPrice} ج.م</p>` : ''}
+                        <p class="text-blue-400 mt-1">${p.price} ${t('currency')}</p>
+                        ${p.oldPrice ? `<p class="text-green-400 mt-1">${t('p_commission')}: ${p.oldPrice} ${t('currency')}</p>` : ''}
                     </div>
                     <div class="flex flex-col gap-1">
-                        <a href="details.html?id=${key}" class="px-2 py-1 bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white transition rounded-lg text-[9px] font-black shadow-md text-center" data-key="btn_details">عرض</a>
-                        <button onclick="editProduct('${key}', '${p.name.replace(/'/g, "\\'")}', '${p.price}', '${p.image}', '${p.oldPrice || ''}')" class="px-2 py-1 bg-yellow-500/10 text-yellow-500 hover:bg-yellow-500 hover:text-white transition rounded-lg text-[9px] font-black shadow-md" data-key="btn_edit">تعديل</button>
-                        <button onclick="deleteProduct('${key}')" class="px-2 py-1 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition rounded-lg text-[9px] font-black shadow-md" data-key="btn_delete">حذف</button>
+                        <a href="details.html?id=${key}" class="px-2 py-1 bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white transition rounded-lg text-[9px] font-black shadow-md text-center">${t('btn_details')}</a>
+                        <button onclick="editProduct('${key}', '${p.name.replace(/'/g, "\\'")}', '${p.price}', '${p.image}', '${p.oldPrice || ''}')" class="px-2 py-1 bg-yellow-500/10 text-yellow-500 hover:bg-yellow-500 hover:text-white transition rounded-lg text-[9px] font-black shadow-md">${t('btn_edit')}</button>
+                        <button onclick="deleteProduct('${key}')" class="px-2 py-1 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition rounded-lg text-[9px] font-black shadow-md">${t('btn_delete')}</button>
                     </div>
                 </div>`;
                 myCount++; 
             }
         });
 
-        wishGrid.innerHTML = wishHtml || '<p class="text-[10px] text-gray-500 col-span-full text-center py-4">لا توجد مفضلات حالياً.</p>';
-        if(myGrid) myGrid.innerHTML = myHtml || '<p class="text-[10px] text-gray-500 col-span-full text-center py-4">لم تقم بنشر أي منتجات بعد.</p>';
+        wishGrid.innerHTML = wishHtml || `<p class="text-[10px] text-gray-500 col-span-full text-center py-4">${t('no_favorites')}</p>`;
+        if(myGrid) myGrid.innerHTML = myHtml || `<p class="text-[10px] text-gray-500 col-span-full text-center py-4">${t('no_my_products')}</p>`;
         
         document.getElementById('wishCount').innerText = wishlist.length;
         if(document.getElementById('prodCount')) document.getElementById('prodCount').innerText = myCount;
-        if(window.applyLanguage) applyLanguage(localStorage.getItem('lang') || 'ar');
     });
 }
 
 window.editProduct = async (id, oldN, oldP, oldI, oldComm) => { 
-    const nn = prompt("الاسم الجديد:", oldN); 
-    const np = prompt("السعر الجديد:", oldP); 
-    const nComm = prompt("العمولة الجديدة:", oldComm !== 'undefined' && oldComm !== 'null' ? oldComm : '');
-    const ni = prompt("رابط الصورة الجديد:", oldI); 
+    const nn = prompt(t('prompt_new_name'), oldN); 
+    const np = prompt(t('prompt_new_price'), oldP); 
+    const nComm = prompt(t('prompt_new_comm'), oldComm !== 'undefined' && oldComm !== 'null' ? oldComm : '');
+    const ni = prompt(t('prompt_new_img'), oldI); 
     if(nn && np) { 
         await update(ref(db, 'products/' + id), { name: nn, price: np, oldPrice: nComm, image: ni }); 
-        showToast("تم التحديث بنجاح!"); 
+        showToast(t('msg_update_success')); 
     } 
 };
 
-window.deleteProduct = (id) => confirm("هل أنت متأكد من حذف هذا المنتج نهائياً؟") && remove(ref(db, 'products/' + id)) && showToast("تم الحذف بنجاح.");
+window.deleteProduct = (id) => confirm(t('msg_delete_confirm')) && remove(ref(db, 'products/' + id)) && showToast(t('msg_delete_success'));
 
 window.openOrderArchive = (status) => {
     const sect = document.getElementById('orderArchiveSection');
@@ -379,21 +374,21 @@ window.openOrderArchive = (status) => {
     Object.keys(currentOrdersData).forEach(key => {
         const o = currentOrdersData[key];
         if(o.status === status && (myRole === 'admin' || o.marketerId === myUid || o.ownerId === myUid)) {
-            archiveHtml += `<div class="bg-white/5 p-4 rounded-2xl flex justify-between items-center text-[10px] mb-2 animate-slide border border-white/5 list-item-fast"><div><p class="text-blue-400 font-black">${o.productName || 'طلب'}</p><p class="text-gray-500 mt-1">${o.customerName || 'مجهول'}</p></div><span class="font-bold text-white text-xs">${o.total || o.totalPrice} ج.م</span></div>`;
+            archiveHtml += `<div class="bg-white/5 p-4 rounded-2xl flex justify-between items-center text-[10px] mb-2 animate-slide border border-white/5 list-item-fast"><div><p class="text-blue-400 font-black">${o.productName || t('order_product')}</p><p class="text-gray-500 mt-1">${o.customerName || t('lbl_unknown')}</p></div><span class="font-bold text-white text-xs">${o.total || o.totalPrice} ${t('currency')}</span></div>`;
         }
     });
-    list.innerHTML = archiveHtml || '<p class="text-[10px] text-gray-500 text-center py-4">لا توجد سجلات في هذا الأرشيف.</p>';
+    list.innerHTML = archiveHtml || `<p class="text-[10px] text-gray-500 text-center py-4">${t('no_archive_records')}</p>`;
 };
 
 window.showJoinForm = () => { document.getElementById('requestStatic').classList.add('hidden'); document.getElementById('joinForm').classList.remove('hidden'); };
 
 window.sendFullMarketerRequest = async () => {
     const phone = document.getElementById('reqPhone').value; const address = document.getElementById('reqAddress').value;
-    if(!phone || !address) return showToast("أكمل البيانات أولاً!");
+    if(!phone || !address) return showToast(t('msg_data_incomplete'));
     
     await set(ref(db, 'marketer_requests/' + myUid), { uid: myUid, name: document.getElementById('userName').innerText, email: document.getElementById('userEmail').innerText, phone, address, bio: document.getElementById('reqBio').value, date: new Date().toLocaleString('ar-EG') });
     await update(ref(db, 'users/' + myUid), { phone: phone }); 
-    showToast("تم إرسال طلبك بنجاح!");
+    showToast(t('msg_req_sent_success'));
     setTimeout(() => location.reload(), 2000);
 };
 
@@ -411,13 +406,13 @@ window.updateProfile = async () => {
     
     if(Object.keys(u).length > 0) {
         await update(ref(db, 'users/' + myUid), u); 
-        showToast("تم الحفظ بنجاح!");
+        showToast(t('msg_update_success'));
         setTimeout(() => location.reload(), 1500);
-    } else showToast("لم تقم بإدخال بيانات للتحديث!");
+    } else showToast(t('msg_no_data_update'));
 };
 
 window.viewReceipt = (v) => { 
-    if(!v) return showToast("لا يوجد إيصال مرفق!");
+    if(!v) return showToast(t('msg_no_receipt'));
     if(v.startsWith('http')) window.open(v, '_blank'); 
     else { document.getElementById('receiptContent').innerText = v; document.getElementById('receiptModal').classList.remove('hidden'); } 
 };
@@ -427,4 +422,4 @@ window.closeOrderModal = () => document.getElementById('orderFullDetailsModal').
 window.closeReceipt = () => document.getElementById('receiptModal').classList.add('hidden');
 window.toggleSettings = () => document.getElementById('settingsPanel').classList.toggle('hidden');
 window.showToast = (m) => { const t = document.getElementById('toast'); t.innerText = m; t.style.opacity = '1'; setTimeout(() => t.style.opacity = '0', 3000); };
-window.logout = () => signOut(auth).then(() => window.location.href = "login.html");
+window.logout = () => confirm(t('msg_logout_confirm')) && signOut(auth).then(() => window.location.href = "login.html");

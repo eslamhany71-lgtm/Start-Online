@@ -1,75 +1,23 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://www.gstatic.com">
+    <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js">
+    <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js">
+    <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js">
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>دخول | Start Online</title>
     <script src="translations.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
+    
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <style>
-        /* الخلفية المبتكرة اللي بتشد الانتباه */
-        body { 
-            margin: 0;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #020617;
-            overflow: hidden;
-            font-family: 'Cairo', sans-serif;
-        }
-
-        /* طبقة الألوان المتحركة */
-        .bg-animate {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            background: linear-gradient(45deg, #0f172a, #1e1b4b, #581c87, #1e1b4b);
-            background-size: 400% 400%;
-            animation: meshGradient 15s ease infinite;
-        }
-
-        @keyframes meshGradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* تأثير التوهج خلف الكارت */
-        .glow-overlay {
-            position: absolute;
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(59, 130, 246, 0.3) 0%, transparent 70%);
-            z-index: 0;
-            filter: blur(50px);
-        }
-
-        .glass { 
-            background: rgba(15, 23, 42, 0.7); 
-            backdrop-filter: blur(25px); 
-            border: 1px solid rgba(255, 255, 255, 0.1); 
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-        }
-
-        .input-focus:focus {
-            border-color: #3b82f6;
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
-            background: rgba(255, 255, 255, 0.08);
-        }
-
-        .loader { border-top-color: #3b82f6; animation: spinner 0.6s linear infinite; }
-        @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
-        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    </style>
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/login.css">
 </head>
 <body>
 
@@ -118,7 +66,7 @@
         </div>
 
         <button onclick="loginWithGoogle()" class="w-full bg-white/5 border border-white/10 hover:bg-white/10 text-white py-4 rounded-2xl transition-all flex items-center justify-center gap-3 text-sm font-bold">
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5" alt="Google">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" loading="lazy" class="w-5 h-5" alt="Google">
             <span data-key="google_btn">سجل بواسطة جوجل</span>
         </button>
 
@@ -128,117 +76,7 @@
         </p>
     </div>
 
-   <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyCyypXt8LnHiVBR2Ka0Mb8ntXu6dJH9N-w",
-            authDomain: "start-online-6f460.firebaseapp.com",
-            projectId: "start-online-6f460",
-            databaseURL: "https://start-online-6f460-default-rtdb.firebaseio.com/"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getDatabase(app);
-        const googleProvider = new GoogleAuthProvider();
-
-        let isLogin = true;
-
-        window.togglePassword = () => {
-            const passInput = document.getElementById('userPass');
-            const eyeIcon = document.getElementById('eyeIcon');
-            if (passInput.type === 'password') {
-                passInput.type = 'text';
-                eyeIcon.classList.replace('fa-eye', 'fa-eye-slash');
-            } else {
-                passInput.type = 'password';
-                eyeIcon.classList.replace('fa-eye-slash', 'fa-eye');
-            }
-        };
-
-        window.toggleAuth = () => {
-            isLogin = !isLogin;
-            const regFields = document.getElementById('registerFields');
-            const forgotPass = document.getElementById('forgotPasswordContainer');
-            const btnText = document.getElementById('btnText');
-            const toggleText = document.getElementById('toggleText');
-            const toggleBtn = document.getElementById('toggleBtn');
-
-            regFields.classList.toggle('hidden');
-            regFields.classList.add('fade-in');
-            forgotPass.classList.toggle('hidden');
-            
-            if (isLogin) {
-                btnText.setAttribute('data-key', 'login_btn');
-                toggleText.setAttribute('data-key', 'no_account');
-                toggleBtn.setAttribute('data-key', 'signup_link');
-            } else {
-                btnText.setAttribute('data-key', 'signup_btn');
-                toggleText.setAttribute('data-key', 'have_account');
-                toggleBtn.setAttribute('data-key', 'login_link');
-            }
-            
-            // إعادة تطبيق الترجمة فوراً عند التبديل
-            if(window.applyLanguage) {
-                const currentLang = localStorage.getItem('lang') || 'ar';
-                window.applyLanguage(currentLang);
-            }
-        };
-
-        window.handleForgotPassword = async () => {
-            const email = document.getElementById('userEmail').value;
-            if (!email) { alert("من فضلك اكتب بريدك الإلكتروني أولاً"); return; }
-            try {
-                await sendPasswordResetEmail(auth, email);
-                alert("تم إرسال رابط استعادة كلمة المرور لبريدك");
-            } catch (err) { alert("خطأ: " + err.message); }
-        };
-
-        window.loginWithGoogle = async () => {
-            try {
-                const result = await signInWithPopup(auth, googleProvider);
-                // 👇 التعديل الأول هنا: تسجيل جوجل بيخلي الرتبة user
-                await set(ref(db, 'users/' + result.user.uid), { 
-                    name: result.user.displayName, 
-                    email: result.user.email, 
-                    role: 'user' 
-                });
-                window.location.href = "index.html";
-            } catch (err) { alert("فشل تسجيل جوجل: " + err.message); }
-        };
-
-        document.getElementById('authForm').onsubmit = async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('userEmail').value;
-            const pass = document.getElementById('userPass').value;
-            const btnText = document.getElementById('btnText');
-            const btnLoader = document.getElementById('btnLoader');
-
-            btnText.classList.add('hidden');
-            btnLoader.classList.remove('hidden');
-
-            try {
-                if (!isLogin) {
-                    const res = await createUserWithEmailAndPassword(auth, email, pass);
-                    const name = document.getElementById('userName').value;
-                    // 👇 التعديل التاني هنا: التسجيل العادي بيخلي الرتبة user
-                    await set(ref(db, 'users/' + res.user.uid), { name, email, role: 'user' });
-                } else {
-                    await signInWithEmailAndPassword(auth, email, pass);
-                }
-                window.location.href = "index.html";
-            } catch (err) {
-                btnText.classList.remove('hidden');
-                btnLoader.classList.add('hidden');
-                let errorMsg = err.message;
-                if (err.code === 'auth/wrong-password') errorMsg = "كلمة المرور غير صحيحة";
-                else if (err.code === 'auth/user-not-found') errorMsg = "هذا الحساب غير موجود";
-                alert(errorMsg);
-            }
-        };
-    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module" src="js/login.js"></script>
 </body>
 </html>

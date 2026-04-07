@@ -1,44 +1,21 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://www.gstatic.com">
+    <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js">
+    <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js">
+    <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js">
+
     <script src="translations.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta charset="UTF-8"><title data-key="order_title">تأكيد الطلب | Start Online</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <title data-key="order_title">تأكيد الطلب | Start Online</title>
+    
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
-    <style>
-        /* الخلفية واضحة أكتر وتوحي بالدفع الرقمي */
-        body { 
-            background: linear-gradient(rgba(2, 6, 23, 0.4), rgba(15, 23, 42, 0.8)), url('https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1600');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            color: #f1f5f9; 
-            font-family: 'Cairo', sans-serif; 
-            min-height: 100vh; 
-            padding: 40px 0; 
-        }
-        
-        .glass { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 10px 40px rgba(0,0,0,0.4); }
-        .receipt-line { border-bottom: 1px dashed rgba(255,255,255,0.15); margin: 12px 0; }
-
-        .pay-card { border: 2px solid rgba(255,255,255,0.1); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; background: rgba(0,0,0,0.4); position: relative; overflow: hidden; }
-        .pay-card:hover { border-color: rgba(59, 130, 246, 0.5); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
-        .pay-card.active { border-color: #3b82f6; background: rgba(59, 130, 246, 0.15); transform: translateY(-5px) scale(1.02); box-shadow: 0 0 25px rgba(59, 130, 246, 0.4); }
-        .pay-card.active .check-icon { opacity: 1; transform: scale(1); }
-        
-        .check-icon { position: absolute; top: 8px; right: 8px; width: 20px; height: 20px; background: #3b82f6; border-radius: 50%; display: flex; align-items: center; justify-content: center; opacity: 0; transform: scale(0); transition: 0.3s; }
-
-        input { transition: all 0.3s ease; background: rgba(0,0,0,0.3) !important; backdrop-filter: blur(10px); }
-        input:focus { border-color: #3b82f6 !important; box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); outline: none; background: rgba(0,0,0,0.5) !important; }
-        
-        .btn-glow { position: relative; overflow: hidden; z-index: 1; }
-        .btn-glow::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transition: 0.5s; z-index: -1; }
-        .btn-glow:hover::before { left: 100%; }
-
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .animate-slide { animation: slideUp 0.6s ease-out forwards; }
-    </style>
+    
+    <link rel="stylesheet" href="css/order.css">
 </head>
 <body>
 
@@ -55,7 +32,7 @@
             </h2>
             
             <div class="flex items-center gap-4 mb-8 bg-black/40 p-4 rounded-3xl border border-white/5 shadow-inner">
-                <img id="invImg" src="" class="w-20 h-20 rounded-2xl object-cover border border-white/10 shadow-lg">
+                <img id="invImg" src="" loading="lazy" class="w-20 h-20 rounded-2xl object-cover border border-white/10 shadow-lg">
                 <div class="overflow-hidden">
                     <h3 id="invName" class="font-black text-blue-300 text-sm mb-1 leading-tight line-clamp-2">...</h3>
                     <p id="invSpecs" class="text-[10px] text-gray-400 font-bold uppercase tracking-widest leading-relaxed"></p>
@@ -127,22 +104,22 @@
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                     <div onclick="selectPay('vodafone')" class="pay-card p-5 rounded-3xl text-center flex flex-col items-center gap-3" id="btn-vodafone">
                         <div class="check-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4"><polyline points="20 6 9 17 4 12"/></svg></div>
-                        <img src="https://www.clipartmax.com/png/small/151-1517812_vodafone-logo-vodafone-group-plc.png" class="h-10 object-contain drop-shadow-md">
+                        <img src="https://www.clipartmax.com/png/small/151-1517812_vodafone-logo-vodafone-group-plc.png" loading="lazy" class="h-10 object-contain drop-shadow-md">
                         <span class="text-[11px] font-black text-gray-300" data-key="vodafone_cash">فودافون كاش</span>
                     </div>
                     <div onclick="selectPay('instapay')" class="pay-card p-5 rounded-3xl text-center flex flex-col items-center gap-3" id="btn-instapay">
                         <div class="check-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4"><polyline points="20 6 9 17 4 12"/></svg></div>
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/2/20/InstaPay_Logo.png" class="h-10 object-contain drop-shadow-md">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/2/20/InstaPay_Logo.png" loading="lazy" class="h-10 object-contain drop-shadow-md">
                         <span class="text-[11px] font-black text-gray-300" data-key="instapay">انستا باي</span>
                     </div>
                     <div onclick="selectPay('orange')" class="pay-card p-5 rounded-3xl text-center flex flex-col items-center gap-3" id="btn-orange">
                         <div class="check-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4"><polyline points="20 6 9 17 4 12"/></svg></div>
-                        <img src="https://media.egyin.com//ArticleUpload/2025/8/27/d348ecefc59798c34d2b_1816_120113.jpg" class="h-10 object-contain drop-shadow-md">
+                        <img src="https://media.egyin.com//ArticleUpload/2025/8/27/d348ecefc59798c34d2b_1816_120113.jpg" loading="lazy" class="h-10 object-contain drop-shadow-md">
                         <span class="text-[11px] font-black text-gray-300" data-key="orange_cash">أورانج كاش</span>
                     </div>
                     <div onclick="selectPay('etisalat')" class="pay-card p-5 rounded-3xl text-center flex flex-col items-center gap-3" id="btn-etisalat">
                         <div class="check-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4"><polyline points="20 6 9 17 4 12"/></svg></div>
-                        <img src="https://khwarizmiworld.com/img/payment/etisalat.png" class="h-10 object-contain drop-shadow-md">
+                        <img src="https://khwarizmiworld.com/img/payment/etisalat.png" loading="lazy" class="h-10 object-contain drop-shadow-md">
                         <span class="text-[11px] font-black text-gray-300" data-key="etisalat_cash">اتصالات كاش</span>
                     </div>
                     <div onclick="selectPay('cod')" class="pay-card p-5 rounded-3xl text-center flex flex-col items-center gap-3 active" id="btn-cod">
@@ -186,91 +163,8 @@
     </div>
 </div>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getDatabase, ref, get, push, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+<script src="https://cdn.tailwindcss.com"></script>
+<script type="module" src="js/order.js"></script>
 
-    const firebaseConfig = { apiKey: "AIzaSyCyypXt8LnHiVBR2Ka0Mb8ntXu6dJH9N-w", authDomain: "start-online-6f460.firebaseapp.com", projectId: "start-online-6f460", databaseURL: "https://start-online-6f460-default-rtdb.firebaseio.com/" };
-    const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getDatabase(app);
-
-    const params = new URLSearchParams(window.location.search);
-    const unitPrice = parseFloat(params.get('price')) || 0;
-    const qty = parseInt(params.get('qty')) || 1;
-    const shipping = parseFloat(params.get('shipping')) || 0;
-    const marketerId = params.get('owner');
-    
-    const color = params.get('color') && params.get('color') !== 'null' ? params.get('color') : 'عام';
-    const size = params.get('size') && params.get('size') !== 'null' ? params.get('size') : 'عام';
-    const gov = params.get('gov') || 'لم يتم التحديد';
-
-    let selectedPayMethod = 'cod';
-    let buyerUid = null;
-
-    onAuthStateChanged(auth, (user) => { if(user) buyerUid = user.uid; });
-
-    document.getElementById('invName').innerText = params.get('name');
-    document.getElementById('invImg').src = params.get('image');
-    document.getElementById('invGov').innerText = `المحافظة: ${gov}`;
-    document.getElementById('invSpecs').innerText = `اللون: ${color} | المقاس: ${size}`;
-    
-    document.getElementById('pPrice').innerText = unitPrice + " ج.م";
-    document.getElementById('pQty').innerText = qty + " قطعة";
-    document.getElementById('pShipping').innerText = shipping + " ج.م";
-    document.getElementById('totalPrice').innerText = (unitPrice * qty + shipping) + " ج.م";
-
-    // تفعيل اللغة
-    if(window.applyLanguage) applyLanguage(localStorage.getItem('lang') || 'ar');
-    window.setLanguage = (lang) => { localStorage.setItem('lang', lang); location.reload(); };
-
-    window.selectPay = (method) => {
-        selectedPayMethod = method;
-        document.querySelectorAll('.pay-card').forEach(c => c.classList.remove('active'));
-        document.getElementById('btn-' + method).classList.add('active');
-        
-        const prepaidInfo = document.getElementById('prepaidInfo');
-        if(method === 'cod') { prepaidInfo.classList.add('hidden'); } 
-        else { prepaidInfo.classList.remove('hidden'); fetchMarketerDetails(); }
-    };
-
-    async function fetchMarketerDetails() {
-        const displayElem = document.getElementById('payNumDisplay');
-        displayElem.innerText = "...";
-        if(!marketerId || marketerId === 'null') return;
-        const snap = await get(ref(db, `users/${marketerId}/paymentMethods`));
-        if(snap.exists()) {
-            const methods = snap.val();
-            let num = "غير متوفر";
-            if(selectedPayMethod === 'vodafone' && methods.vodafone) num = methods.vodafone;
-            if(selectedPayMethod === 'etisalat' && methods.etisalat) num = methods.etisalat;
-            if(selectedPayMethod === 'orange' && methods.orange) num = methods.orange;
-            if(selectedPayMethod === 'instapay' && methods.instapay) num = methods.instapay;
-            displayElem.innerText = num;
-        }
-    }
-
-    document.getElementById('orderForm').onsubmit = async (e) => {
-        e.preventDefault();
-        const submitBtn = e.target.querySelector('button[type="submit"]');
-        submitBtn.innerHTML = "جاري تأكيد الطلب... ⏳";
-        submitBtn.disabled = true;
-
-        const orderData = {
-            productName: params.get('name'), marketerId: marketerId, customerUid: buyerUid || 'guest', 
-            customerName: document.getElementById('custName').value, phone: document.getElementById('custPhone1').value,
-            address: `${gov} - ${document.getElementById('custAddress').value}`,
-            total: (unitPrice * qty + shipping), payMethod: selectedPayMethod,
-            receipt: document.getElementById('receiptLink') ? document.getElementById('receiptLink').value || 'N/A' : 'N/A',
-            color: color, size: size, qty: qty, status: 'pending', date: new Date().toLocaleString('ar-EG')
-        };
-        try {
-            await set(push(ref(db, 'orders')), orderData);
-            document.getElementById('successBox').classList.remove('hidden');
-        } catch (error) {
-            alert("حدث خطأ، يرجى المحاولة مرة أخرى.");
-            submitBtn.innerHTML = "تأكيد الطلب 🔒"; submitBtn.disabled = false;
-        }
-    };
-</script>
 </body>
 </html>

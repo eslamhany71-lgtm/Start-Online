@@ -1,29 +1,3 @@
-body { 
-    background-color: #020617;
-    color: #f1f5f9; 
-    font-family: 'Cairo', sans-serif; 
-    min-height: 100vh; 
-    margin: 0; 
-    overflow-x: hidden; 
-    scroll-behavior: smooth; 
-}
-
-/* طبقة الخلفية السريعة */
-body::before {
-    content: "";
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.95)), url('https://www.albaheth.co/wp-content/uploads/2023/08/11.jpg');
-    background-size: cover;
-    background-position: center;
-    z-index: -1;
-    transform: translateZ(0);
-}
-
-.glass { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); }
-.animate-slide { animation: slideIn 0.4s ease-out forwards; will-change: transform, opacity; transform: translateZ(0); }
-@keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
-
 .stat-box { background: rgba(59, 130, 246, 0.05); border: 1px solid rgba(59, 130, 246, 0.1); cursor: pointer; transition: 0.3s; transform: translateZ(0); }
 .stat-box:hover { background: rgba(59, 130, 246, 0.15); transform: translateY(-5px); border-color: rgba(59, 130, 246, 0.4); }
 .status-badge { padding: 4px 10px; border-radius: 12px; font-size: 10px; font-weight: 900; }
@@ -31,13 +5,3 @@ body::before {
 .status-completed { color: #22c55e; background: rgba(34, 197, 94, 0.1); }
 .status-failed { color: #ef4444; background: rgba(239, 68, 68, 0.1); }
 input::placeholder, textarea::placeholder { color: rgba(255, 255, 255, 0.2); }
-
-.logo-brand { font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 4px; }
-.logo-box { background: #2563eb; color: white; padding: 2px 8px; border-radius: 6px; transform: skewX(-12deg); display: inline-block; box-shadow: 0 0 15px rgba(37, 99, 235, 0.4); }
-.btn-glow { transition: 0.3s; box-shadow: 0 0 15px rgba(59, 130, 246, 0.3); border: 1px solid rgba(255,255,255,0.1); }
-.btn-glow:hover { box-shadow: 0 0 30px rgba(59, 130, 246, 0.6); transform: translateY(-2px); }
-
-.list-item-fast { content-visibility: auto; contain-intrinsic-size: 80px; }
-::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
-.no-scrollbar::-webkit-scrollbar { display: none; }

@@ -1,1 +1,35 @@
+/* طبقة الخلفية السريعة المخصصة لصفحة التفاصيل */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(rgba(15, 23, 42, 0.35), rgba(15, 23, 42, 0.85)), url('https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1600');
+    background-size: cover;
+    background-position: center;
+    z-index: -1;
+    transform: translateZ(0);
+}
 
+.glass { background: rgba(15, 23, 42, 0.45); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.15); box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
+.glass-panel { background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.02)); backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.15); }
+
+.hero-title { background: linear-gradient(to left, #ffffff, #93c5fd); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 4px 10px rgba(59, 130, 246, 0.3)); }
+
+.spec-btn { border: 1px solid rgba(255,255,255,0.2); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; padding: 10px 22px; border-radius: 16px; font-size: 12px; font-weight: 900; text-align: center; color: #cbd5e1; background: rgba(255,255,255,0.05); }
+.spec-btn:hover { border-color: rgba(59, 130, 246, 0.6); background: rgba(59, 130, 246, 0.15); color: #fff; transform: translateY(-2px); }
+.spec-btn.active { border-color: #3b82f6; background: rgba(59, 130, 246, 0.3); color: white; box-shadow: 0 0 20px rgba(59, 130, 246, 0.5); }
+
+.thumb-img { width: 75px; height: 75px; object-fit: cover; border-radius: 16px; cursor: pointer; border: 2px solid transparent; transition: 0.4s; opacity: 0.6; }
+.thumb-img:hover { opacity: 0.9; transform: translateY(-2px); }
+.thumb-img.active { border-color: #3b82f6; opacity: 1; transform: scale(1.05); box-shadow: 0 0 15px rgba(59, 130, 246, 0.5); }
+
+.timer-unit { background: rgba(0,0,0,0.3); padding: 12px; border-radius: 16px; min-width: 65px; text-align: center; border: 1px solid rgba(59, 130, 246, 0.3); backdrop-filter: blur(15px); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+.badge-live { animation: pulse 2s infinite cubic-bezier(0.4, 0, 0.6, 1); }
+@keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.7); } 50% { transform: scale(1.05); opacity: 0.8; box-shadow: 0 0 0 6px rgba(37, 99, 235, 0); } }
+
+/* نجوم التقييم */
+.star-rating { direction: ltr; display: inline-flex; }
+.star-rating input { display: none; }
+.star-rating label { font-size: 2.2rem; color: rgba(255,255,255,0.2); cursor: pointer; transition: 0.3s; text-shadow: 0 0 10px rgba(0,0,0,0.5); }
+.star-rating input:checked ~ label { color: #f59e0b; text-shadow: 0 0 15px rgba(245, 158, 11, 0.7); }
+.star-rating label:hover, .star-rating label:hover ~ label { color: #fbbf24; text-shadow: 0 0 15px rgba(251, 191, 36, 0.9); }

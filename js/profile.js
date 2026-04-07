@@ -329,11 +329,11 @@ function loadContent(uId, wishlist) {
         Object.keys(prods).forEach(key => {
             const p = prods[key];
             if(wishlist.includes(key)) {
-                wishHtml += `<div class="glass p-4 rounded-3xl border border-white/5 flex gap-4 items-center animate-slide list-item-fast"><img src="${p.image}" class="w-12 h-12 rounded-xl object-cover shadow-lg"><div class="flex-1 font-bold text-[10px]"><h4 class="text-white line-clamp-1">${p.name}</h4><p class="text-blue-400 mt-1">${p.price} ج.م</p></div><a href="details.html?id=${key}" class="p-2 bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white transition rounded-xl text-[9px] font-black shadow-md" data-key="btn_details">عرض</a></div>`;
+                wishHtml += `<div class="glass p-4 rounded-3xl border border-white/5 flex gap-4 items-center animate-slide list-item-fast"><img src="${p.image}" loading="lazy" class="w-12 h-12 rounded-xl object-cover shadow-lg"><div class="flex-1 font-bold text-[10px]"><h4 class="text-white line-clamp-1">${p.name}</h4><p class="text-blue-400 mt-1">${p.price} ج.م</p></div><a href="details.html?id=${key}" class="p-2 bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white transition rounded-xl text-[9px] font-black shadow-md" data-key="btn_details">عرض</a></div>`;
             }
             if(p.owner === uId) { 
                 myHtml += `<div class="glass p-4 rounded-3xl border border-white/5 flex gap-4 items-center animate-slide list-item-fast">
-                    <img src="${p.image}" class="w-12 h-12 rounded-xl object-cover shadow-lg">
+                    <img src="${p.image}" loading="lazy" class="w-12 h-12 rounded-xl object-cover shadow-lg">
                     <div class="flex-1 font-bold text-[10px]">
                         <h4 class="text-white line-clamp-1">${p.name}</h4>
                         <p class="text-blue-400 mt-1">${p.price} ج.م</p>

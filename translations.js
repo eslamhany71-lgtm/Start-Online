@@ -1,9 +1,9 @@
 const translations = {
     ar: {
         // --- Navigation & Global ---
-        index_title: "Start Online | ابدأ عالمك الرقمي", // <-- تمت الإضافة
-        nav_start: "ابدأ الآن", // <-- تمت الإضافة
-        dashboard: "لوحة التحكم", // <-- تمت الإضافة
+        index_title: "Start Online | ابدأ عالمك الرقمي",
+        nav_start: "ابدأ الآن",
+        dashboard: "لوحة التحكم",
         nav_home: "الرئيسية",
         nav_store: "المتجر",
         nav_profile: "حسابي",
@@ -19,11 +19,11 @@ const translations = {
         guest: "زائر",
         
         // --- Index Page (index.html) ---
-        hero_title_1: "مستقبلك الرقمي", // <-- تمت الإضافة
-        hero_title_2: "يبدأ بلمسة", // <-- تمت الإضافة
-        hero_desc: "انضم لأكبر منصة عربية لعرض وبيع المنتجات الرقمية. نحن نوفر لك البيئة المثالية للإبداع والربح من أول يوم.", // <-- تمت الإضافة
-        btn_browse: "تصفح المتجر", // <-- تمت الإضافة
-        btn_community: "انضم لمجتمعنا", // <-- تمت الإضافة
+        hero_title_1: "مستقبلك الرقمي",
+        hero_title_2: "يبدأ بلمسة",
+        hero_desc: "انضم لأكبر منصة عربية لعرض وبيع المنتجات الرقمية. نحن نوفر لك البيئة المثالية للإبداع والربح من أول يوم.",
+        btn_browse: "تصفح المتجر",
+        btn_community: "انضم لمجتمعنا",
 
         // --- Store Page (products.html) ---
         shop_title: "المتجر الذكي | Start Online",
@@ -202,9 +202,9 @@ const translations = {
     },
     en: {
         // --- Navigation & Global ---
-        index_title: "Start Online | Start Your Digital World", // <-- Added
-        nav_start: "Start Now", // <-- Added
-        dashboard: "Dashboard", // <-- Added
+        index_title: "Start Online | Start Your Digital World",
+        nav_start: "Start Now",
+        dashboard: "Dashboard",
         nav_home: "Home",
         nav_store: "Store",
         nav_profile: "Profile",
@@ -220,11 +220,11 @@ const translations = {
         guest: "Guest",
         
         // --- Index Page (index.html) ---
-        hero_title_1: "Your Digital Future", // <-- Added
-        hero_title_2: "Starts with a Touch", // <-- Added
-        hero_desc: "Join the largest Arab platform for showcasing and selling digital products. We provide the ideal environment to create and earn from day one.", // <-- Added
-        btn_browse: "Browse Store", // <-- Added
-        btn_community: "Join Our Community", // <-- Added
+        hero_title_1: "Your Digital Future",
+        hero_title_2: "Starts with a Touch",
+        hero_desc: "Join the largest Arab platform for showcasing and selling digital products. We provide the ideal environment to create and earn from day one.",
+        btn_browse: "Browse Store",
+        btn_community: "Join Our Community",
 
         // --- Store Page (products.html) ---
         shop_title: "Smart Store | Start Online",
@@ -403,30 +403,42 @@ const translations = {
     }
 };
 
-function applyLanguage(lang) {
-    const t = translations[lang];
-    if (!t) return;
+// تحديد اللغة الحالية مرة واحدة لتسريع الأداء
+const currentLang = localStorage.getItem('lang') || 'ar';
+
+// 👇 دي الدالة السحرية الجديدة اللي هتخلينا نترجم فوراً جوه الجافاسكريبت 👇
+window.t = function(key) {
+    if (translations[currentLang] && translations[currentLang][key]) {
+        return translations[currentLang][key];
+    }
+    return key; // لو الكلمة مش موجودة، يرجعها زي ما هي
+};
+
+// دالة تطبيق الترجمة على العناصر الثابتة في الـ HTML
+window.applyLanguage = function(lang) {
+    const tData = translations[lang];
+    if (!tData) return;
 
     document.querySelectorAll('[data-key]').forEach(el => {
         const key = el.getAttribute('data-key');
-        if (t[key]) {
+        if (tData[key]) {
             if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-                el.placeholder = t[key];
+                el.placeholder = tData[key];
             } else if (el.tagName === 'TITLE') {
-                document.title = t[key];
+                document.title = tData[key];
             } else {
-                el.innerHTML = t[key];
+                el.innerHTML = tData[key];
             }
         }
     });
 
-    document.documentElement.dir = t.dir;
+    document.documentElement.dir = tData.dir;
     document.documentElement.lang = lang;
-    document.body.style.fontFamily = t.font;
+    document.body.style.fontFamily = tData.font;
 
     const langLabel = document.getElementById('langLabel');
-    if (langLabel) langLabel.innerText = t.lang_btn;
-}
+    if (langLabel) langLabel.innerText = tData.lang_btn;
+};
 
 window.setLanguage = (lang) => {
     localStorage.setItem('lang', lang);
@@ -434,6 +446,5 @@ window.setLanguage = (lang) => {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-    const savedLang = localStorage.getItem('lang') || 'ar';
-    applyLanguage(savedLang);
+    applyLanguage(currentLang);
 });

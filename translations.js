@@ -77,6 +77,42 @@ const translations = {
         notifs_cleared: "تم مسح الإشعارات.",
         no_notifs: "لا توجد إشعارات حالياً.",
 
+        // --- Details Page (تم إضافتها بالكامل) ---
+        details_title: "تفاصيل المنتج | Start Online",
+        material: "الماتريال",
+        model: "الموديل",
+        preview: "المعاينة",
+        preview_avail: "متاحة قبل الاستلام",
+        back_to_store: "← العودة للمتجر",
+        share: "مشاركة",
+        in_stock: "بالمخزن",
+        your_commission: "عمولتك كمسوق:",
+        final_price: "السعر النهائي:",
+        desc_title: "وصف المنتج",
+        choose_color: "اختر اللون المفضل:",
+        avail_size: "المقاس المتاح:",
+        gov_shipping: "المحافظة (الشحن):",
+        choose_gov: "اختر المحافظة لتقدير الشحن",
+        cairo: "القاهرة (50 ج.م)",
+        giza: "الجيزة (50 ج.م)",
+        alex: "الإسكندرية (100 ج.م)",
+        qty: "الكمية:",
+        total_client: "الإجمالي النهائي للعميل:",
+        buy_now: "إتمام الشراء الآن 🚀",
+        add_cart: "🛒 إضافة للسلة",
+        hour: "ساعة",
+        minute: "دقيقة",
+        second: "ثانية",
+        offer_ends: "ينتهي العرض قريباً",
+        viewing_now: "يشاهده الآن",
+        clients: "عملاء",
+        creators_reviews: "آراء المبدعين (التقييمات):",
+        leave_review: "اترك تقييمك وتجربتك:",
+        write_opinion: "اكتب رأيك هنا بكل صراحة...",
+        publish_review: "نشر التقييم",
+        loading_reviews: "جاري تحميل التقييمات...",
+        be_first_review: "كن أول من يقيم هذا الإبداع!",
+
         // --- Profile Page ---
         profile_title: "لوحة التحكم الاحترافية | Start Online",
         no_phone_registered: "لم يتم تسجيل رقم هاتف",
@@ -283,8 +319,7 @@ const translations = {
         msg_user_not_found: "هذا الحساب غير موجود",
         no_extra_desc: "لا يوجد وصف إضافي متاح لهذا المنتج.",
         excellent_material: "خامة ممتازة",
-        not_specified: "لم يتم التحديد",
-        be_first_review: "كن أول من يقيم هذا الإبداع!"
+        not_specified: "لم يتم التحديد"
     },
     en: {
         // --- Navigation & Global ---
@@ -363,6 +398,42 @@ const translations = {
         cart_empty: "Your cart is currently empty",
         notifs_cleared: "Notifications cleared.",
         no_notifs: "No notifications currently.",
+
+        // --- Details Page (تم إضافتها بالكامل) ---
+        details_title: "Product Details | Start Online",
+        material: "Material",
+        model: "Model",
+        preview: "Preview",
+        preview_avail: "Available before receiving",
+        back_to_store: "← Back to Store",
+        share: "Share",
+        in_stock: "In Stock",
+        your_commission: "Your Commission:",
+        final_price: "Final Price:",
+        desc_title: "Product Description",
+        choose_color: "Choose your color:",
+        avail_size: "Available size:",
+        gov_shipping: "Governorate (Shipping):",
+        choose_gov: "Select governorate for shipping",
+        cairo: "Cairo (50 EGP)",
+        giza: "Giza (50 EGP)",
+        alex: "Alexandria (100 EGP)",
+        qty: "Quantity:",
+        total_client: "Total for Client:",
+        buy_now: "Buy Now 🚀",
+        add_cart: "🛒 Add to Cart",
+        hour: "Hour",
+        minute: "Minute",
+        second: "Second",
+        offer_ends: "Offer ends soon",
+        viewing_now: "Viewing now",
+        clients: "clients",
+        creators_reviews: "Creators Reviews:",
+        leave_review: "Leave your review:",
+        write_opinion: "Write your honest opinion here...",
+        publish_review: "Publish Review",
+        loading_reviews: "Loading reviews...",
+        be_first_review: "Be the first to review this creation!",
 
         // --- Profile Page ---
         profile_title: "Pro Dashboard | Start Online",
@@ -575,8 +646,10 @@ const translations = {
     }
 };
 
+// تحديد اللغة الحالية مرة واحدة لتسريع الأداء
 const currentLang = localStorage.getItem('lang') || 'ar';
 
+// الدالة السحرية للترجمة الفورية في الجافاسكريبت
 window.t = function(key) {
     if (translations[currentLang] && translations[currentLang][key]) {
         return translations[currentLang][key];
@@ -584,6 +657,7 @@ window.t = function(key) {
     return key; 
 };
 
+// دالة تطبيق الترجمة على العناصر الثابتة في الـ HTML
 window.applyLanguage = function(lang) {
     const tData = translations[lang];
     if (!tData) return;
@@ -607,6 +681,11 @@ window.applyLanguage = function(lang) {
 
     const langLabel = document.getElementById('langLabel');
     if (langLabel) langLabel.innerText = tData.lang_btn;
+};
+
+window.setLanguage = (lang) => {
+    localStorage.setItem('lang', lang);
+    location.reload();
 };
 
 document.addEventListener('DOMContentLoaded', () => {

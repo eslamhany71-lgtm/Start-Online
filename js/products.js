@@ -37,7 +37,6 @@ onAuthStateChanged(auth, async (user) => {
                     document.getElementById('lockMessage').classList.remove('hidden');
                 }
             }
-            if(window.applyLanguage) applyLanguage(localStorage.getItem('lang') || 'ar');
             
             loadNotifications(userRole, user.uid);
         }
@@ -47,7 +46,7 @@ onAuthStateChanged(auth, async (user) => {
 
 window.clearNotifs = () => {
     userClearedNotifs = true;
-    document.getElementById('notifList').innerHTML = '<p class="text-[10px] text-gray-500 text-center py-4">تم مسح الإشعارات.</p>';
+    document.getElementById('notifList').innerHTML = `<p class="text-[10px] text-gray-500 text-center py-4">${t('notifs_cleared')}</p>`;
     document.getElementById('notifBadge').classList.add('hidden');
 };
 
@@ -61,12 +60,12 @@ function loadNotifications(role, uid) {
             const isMyPurchase = (o.customerUid === uid) || (o.customerId === uid) || (o.buyerId === uid);
             const displayTotal = Number(o.total || o.totalPrice || 0);
 
-            if(isMyPurchase && o.status === 'completed') notificationsList.push({text: `تم تسليم طلبك: ${o.productName}`, date: o.date, color: 'text-green-400', link: 'profile.html'});
-            if(isMyPurchase && o.status === 'failed') notificationsList.push({text: `تم إلغاء طلبك: ${o.productName}`, date: o.date, color: 'text-red-400', link: 'profile.html'});
+            if(isMyPurchase && o.status === 'completed') notificationsList.push({text: `${t('msg_order_delivered')} ${o.productName}`, date: o.date, color: 'text-green-400', link: 'profile.html'});
+            if(isMyPurchase && o.status === 'failed') notificationsList.push({text: `${t('msg_order_canceled')} ${o.productName}`, date: o.date, color: 'text-red-400', link: 'profile.html'});
 
             if(role === 'admin' || o.marketerId === uid) {
-                if(!o.status || o.status === 'pending') notificationsList.push({text: `طلب جديد: ${o.productName} بـ ${displayTotal} ج.م`, date: o.date, color: 'text-yellow-400', link: 'profile.html'});
-                if(o.status === 'completed') notificationsList.push({text: `تم إضافة أرباح طلب ${o.productName} لمحفظتك`, date: o.date, color: 'text-blue-400', link: 'profile.html'});
+                if(!o.status || o.status === 'pending') notificationsList.push({text: `${t('msg_new_order')} ${o.productName} ${t('msg_with_amount')} ${displayTotal} ${t('currency')}`, date: o.date, color: 'text-yellow-400', link: 'profile.html'});
+                if(o.status === 'completed') notificationsList.push({text: `${t('msg_profit_added')} ${o.productName} ${t('msg_to_wallet')}`, date: o.date, color: 'text-blue-400', link: 'profile.html'});
             }
         });
 
@@ -91,7 +90,7 @@ function loadNotifications(role, uid) {
                 list.innerHTML = notifsHtml;
             } else {
                 badge.classList.add('hidden');
-                list.innerHTML = '<p class="text-gray-500 text-center py-4">لا توجد إشعارات حالياً.</p>';
+                list.innerHTML = `<p class="text-gray-500 text-center py-4">${t('no_notifs')}</p>`;
             }
         }
     });
@@ -120,24 +119,25 @@ window.updateCartUI = () => {
             const item = data[key];
             total += Number(item.price) * Number(item.qty);
             cartHtml += `<div class="glass p-3 rounded-2xl flex gap-3 items-center border border-white/5 animate-slide mb-3 text-right group">
-                <img src="${item.image}" class="w-16 h-16 rounded-xl object-cover" loading="lazy">
+                <img src="${item.image}" class="w-16 h-16 rounded-xl object-cover">
                 <div class="flex-1 font-bold">
                     <h4 class="text-[10px] text-white line-clamp-1">${item.name}</h4>
                     <p class="text-[8px] text-gray-500 italic">${item.color || ''} | ${item.size || ''} | س ${item.qty}</p>
-                    <p class="text-blue-400 font-black text-xs mt-1">${item.price * item.qty} ج.م</p>
+                    <p class="text-blue-400 font-black text-xs mt-1">${item.price * item.qty} ${t('currency')}</p>
                 </div>
                 <div class="flex flex-col gap-2">
                     <button onclick="removeFromCart('${key}')" class="text-red-500 hover:text-red-400 text-xs font-bold">✕</button>
-                    <a href="order.html?id=${item.id}&name=${encodeURIComponent(item.name)}&price=${item.price}&qty=${item.qty}&color=${encodeURIComponent(item.color || '')}&size=${encodeURIComponent(item.size || '')}&image=${encodeURIComponent(item.image)}&owner=null" data-key="btn_order" class="text-[8px] bg-blue-600 text-white p-1 rounded-lg text-center font-black hover:bg-blue-500 transition-colors">اطلب</a>
+                    <a href="order.html?id=${item.id}&name=${encodeURIComponent(item.name)}&price=${item.price}&qty=${item.qty}&color=${encodeURIComponent(item.color || '')}&size=${encodeURIComponent(item.size || '')}&image=${encodeURIComponent(item.image)}&owner=null" class="text-[8px] bg-blue-600 text-white p-1 rounded-lg text-center font-black hover:bg-blue-500 transition-colors">${t('btn_order')}</a>
                 </div>
             </div>`;
         });
         if(list) list.innerHTML = cartHtml;
-        if(totalEl) totalEl.innerText = total + " ج.م";
-        if(keys.length === 0 && list) list.innerHTML = '<div class="flex flex-col items-center justify-center h-40 opacity-50"><span class="text-4xl mb-2">🛒</span><p class="text-[10px]" data-key="cart_empty">سلتك فارغة حالياً</p></div>';
+        if(totalEl) totalEl.innerText = total + " " + t('currency');
+        if(keys.length === 0 && list) list.innerHTML = `<div class="flex flex-col items-center justify-center h-40 opacity-50"><span class="text-4xl mb-2">🛒</span><p class="text-[10px]">${t('cart_empty')}</p></div>`;
     });
 };
-window.removeFromCart = (key) => { if(confirm("حذف المنتج من السلة؟")) remove(ref(db, `carts/${currentUser.uid}/${key}`)); };
+
+window.removeFromCart = (key) => { if(confirm(t('msg_delete_cart'))) remove(ref(db, `carts/${currentUser.uid}/${key}`)); };
 
 const subData = {
     clothes: [{n:'رجالي', i:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcq8MbpMpYi4h72YsWLGOu8L2bU7lNdq-3ZQ&s'}, {n:'حريمي', i:'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=100'}],
@@ -149,7 +149,7 @@ const subData = {
 window.showSubCats = (key, el) => {
     document.querySelectorAll('.category-item').forEach(i => i.classList.remove('active')); el.classList.add('active');
     selectedMainCat = el.querySelector('span').innerText.trim(); 
-    selectedSubCat = 'الكل';
+    selectedSubCat = 'الكل'; // ممكن نغير دي كمان لو حبينا نترجمها، بس هنخليها كده مؤقتاً
     const area = document.getElementById('subCatsArea');
     if(key === 'all' || key === 'best') { area.style.display = 'none'; applyDualFilter(); return; }
     area.style.display = 'flex';
@@ -210,7 +210,7 @@ window.openUsersModal = (role) => {
                     <p class="text-white text-xs uppercase tracking-tighter">${u.name} <span class="text-[9px] text-blue-400">(${u.role})</span></p>
                     <p class="text-[10px] text-gray-500 mt-1 italic">${u.email}</p>
                 </div>
-                <button onclick="visitAccount('${uid}')" data-key="btn_visit" class="bg-blue-600/20 text-blue-400 px-4 py-2 rounded-xl text-[10px] font-black border border-blue-400/30 hover:bg-blue-600 hover:text-white transition-all">زيارة</button>
+                <button onclick="visitAccount('${uid}')" class="bg-blue-600/20 text-blue-400 px-4 py-2 rounded-xl text-[10px] font-black border border-blue-400/30 hover:bg-blue-600 hover:text-white transition-all">${t('btn_visit')}</button>
             </div>`; 
         }
     });
@@ -230,13 +230,13 @@ function loadMarketerRequests() {
                 reqHtml += `<div class="glass p-5 rounded-3xl flex flex-col md:flex-row justify-between items-center text-right font-bold animate-fade-in shadow-xl border border-white/5 gap-4">
                     <div><p class="text-sm text-white underline decoration-blue-500/30 tracking-widest">${r.name}</p><p class="text-[10px] text-gray-500">${r.email}</p></div>
                     <div class="flex gap-2 w-full md:w-auto">
-                        <button onclick="viewRequestDetails('${uid}')" class="flex-1 bg-blue-600/20 text-blue-400 px-4 py-2 rounded-xl text-[10px] font-black shadow-lg hover:bg-blue-600 hover:text-white transition-colors">التفاصيل والقرار</button>
+                        <button onclick="viewRequestDetails('${uid}')" class="flex-1 bg-blue-600/20 text-blue-400 px-4 py-2 rounded-xl text-[10px] font-black shadow-lg hover:bg-blue-600 hover:text-white transition-colors">${t('btn_req_details')}</button>
                     </div>
                 </div>`; 
             });
             list.innerHTML = reqHtml;
         } else {
-            list.innerHTML = '<p class="text-[10px] text-gray-500">لا توجد طلبات انضمام حالياً.</p>';
+            list.innerHTML = `<p class="text-[10px] text-gray-500">${t('no_requests')}</p>`;
         }
     }); 
 }
@@ -247,21 +247,21 @@ window.viewRequestDetails = async (uid) => {
         const r = snap.val();
         document.getElementById('reqModalBody').innerHTML = `
             <div class="bg-white/5 p-4 rounded-2xl border border-white/10 text-xs text-gray-300 space-y-3">
-                <p><strong class="text-blue-400">الاسم:</strong> ${r.name}</p>
-                <p><strong class="text-blue-400">الإيميل:</strong> ${r.email}</p>
-                <p><strong class="text-blue-400">الموبايل:</strong> <span class="font-mono">${r.phone || 'غير مسجل'}</span></p>
-                <p><strong class="text-blue-400">العنوان:</strong> ${r.address || 'غير مسجل'}</p>
+                <p><strong class="text-blue-400">${t('lbl_name')}</strong> ${r.name}</p>
+                <p><strong class="text-blue-400">${t('lbl_email')}</strong> ${r.email}</p>
+                <p><strong class="text-blue-400">${t('lbl_phone')}</strong> <span class="font-mono">${r.phone || t('not_registered')}</span></p>
+                <p><strong class="text-blue-400">${t('lbl_address')}</strong> ${r.address || t('not_registered')}</p>
                 <div class="border-t border-white/10 pt-2 mt-2">
-                    <strong class="text-blue-400 block mb-1">الخبرات السابقة:</strong>
-                    <p class="bg-black/20 p-3 rounded-xl italic">${r.bio || 'لم يكتب شيئاً'}</p>
+                    <strong class="text-blue-400 block mb-1">${t('prev_exp')}</strong>
+                    <p class="bg-black/20 p-3 rounded-xl italic">${r.bio || t('no_exp')}</p>
                 </div>
             </div>
         `;
         
         document.getElementById('reqModalActions').innerHTML = `
-            <button onclick="approveMarketer('${uid}')" class="flex-1 bg-green-600 text-white py-3 rounded-xl text-[10px] font-black hover:bg-green-500 transition-colors shadow-lg btn-glow">قبول الطلب</button>
-            <button onclick="rejectMarketer('${uid}')" class="flex-1 bg-red-600/20 text-red-500 py-3 rounded-xl text-[10px] font-black hover:bg-red-600 hover:text-white transition-colors">رفض وحذف</button>
-            <button onclick="visitAccount('${uid}')" class="flex-1 bg-white/10 text-white py-3 rounded-xl text-[10px] font-black hover:bg-white/20 transition-colors">زيارة البروفايل</button>
+            <button onclick="approveMarketer('${uid}')" class="flex-1 bg-green-600 text-white py-3 rounded-xl text-[10px] font-black hover:bg-green-500 transition-colors shadow-lg btn-glow">${t('btn_accept_req')}</button>
+            <button onclick="rejectMarketer('${uid}')" class="flex-1 bg-red-600/20 text-red-500 py-3 rounded-xl text-[10px] font-black hover:bg-red-600 hover:text-white transition-colors">${t('btn_reject_req')}</button>
+            <button onclick="visitAccount('${uid}')" class="flex-1 bg-white/10 text-white py-3 rounded-xl text-[10px] font-black hover:bg-white/20 transition-colors">${t('btn_visit_profile')}</button>
         `;
         document.getElementById('requestDetailsModal').classList.remove('hidden');
     }
@@ -271,14 +271,14 @@ window.approveMarketer = async (uid) => {
     await update(ref(db, 'users/' + uid), { role: 'marketer' }); 
     await remove(ref(db, 'marketer_requests/' + uid)); 
     document.getElementById('requestDetailsModal').classList.add('hidden');
-    showToast("تم قبول المسوق بنجاح!"); 
+    showToast(t('msg_accept_success')); 
 };
 
 window.rejectMarketer = async (uid) => {
-    if(confirm("هل أنت متأكد من رفض وحذف هذا الطلب؟")) {
+    if(confirm(t('msg_reject_confirm'))) {
         await remove(ref(db, 'marketer_requests/' + uid));
         document.getElementById('requestDetailsModal').classList.add('hidden');
-        showToast("تم رفض الطلب.");
+        showToast(t('msg_reject_success'));
     }
 };
 
@@ -300,21 +300,21 @@ window.saveProduct = () => {
             owner: currentUser.uid, 
             likes: 0 
         }); 
-        showToast("تم نشر المنتج بنجاح!"); 
+        showToast(t('msg_publish_success')); 
         ["pName", "pPrice", "pOldPrice", "pColors", "pSizes", "pDesc", "pImage", "pExtraImages", "pMaterial", "pModel"].forEach(id => document.getElementById(id).value = ""); 
     } else {
-        showToast("يرجى ملء الاسم والسعر على الأقل");
+        showToast(t('msg_fill_required'));
     }
 };
 
 window.editProduct = async (id, oldN, oldP, oldI, oldComm) => { 
-    const nn = prompt("الاسم الجديد:", oldN); 
-    const np = prompt("السعر الجديد:", oldP); 
-    const nComm = prompt("العمولة الجديدة:", oldComm !== 'undefined' && oldComm !== 'null' ? oldComm : '');
-    const ni = prompt("رابط الصورة الجديد:", oldI); 
+    const nn = prompt(t('prompt_new_name'), oldN); 
+    const np = prompt(t('prompt_new_price'), oldP); 
+    const nComm = prompt(t('prompt_new_comm'), oldComm !== 'undefined' && oldComm !== 'null' ? oldComm : '');
+    const ni = prompt(t('prompt_new_img'), oldI); 
     if(nn && np) { 
         await update(ref(db, 'products/' + id), { name: nn, price: np, oldPrice: nComm, image: ni }); 
-        showToast("تم التحديث بنجاح!"); 
+        showToast(t('msg_update_success')); 
     } 
 };
 
@@ -348,20 +348,20 @@ function renderGrid(products) {
                 <h3 class="font-black text-base md:text-lg mb-2 text-white italic tracking-tighter uppercase line-clamp-1">${p.name}</h3>
                 <div class="flex justify-between items-center mb-5">
                     <div class="flex flex-col">
-                        <span class="text-blue-400 font-black text-xl md:text-2xl tracking-tighter">${p.price} ج.م</span>
-                        ${p.oldPrice ? `<span class="text-green-400 font-black text-[11px] mt-1"><span data-key="p_commission">عمولتك</span>: ${p.oldPrice} ج.م</span>` : ''}
+                        <span class="text-blue-400 font-black text-xl md:text-2xl tracking-tighter">${p.price} ${t('currency')}</span>
+                        ${p.oldPrice ? `<span class="text-green-400 font-black text-[11px] mt-1"><span>${t('p_commission')}</span>: ${p.oldPrice} ${t('currency')}</span>` : ''}
                     </div>
                     ${canManage ? `<div class="flex gap-2">
-                        <button onclick="editProduct('${key}', '${safeName}', '${p.price}', '${p.image}', '${p.oldPrice || ''}')" class="text-yellow-500 text-[10px] font-bold italic border-b border-yellow-500/30">تعديل</button>
-                        <button onclick="deleteProduct('${key}')" class="text-red-500 text-[10px] font-bold italic border-b border-red-500/30">حذف</button>
+                        <button onclick="editProduct('${key}', '${safeName}', '${p.price}', '${p.image}', '${p.oldPrice || ''}')" class="text-yellow-500 text-[10px] font-bold italic border-b border-yellow-500/30">${t('btn_edit')}</button>
+                        <button onclick="deleteProduct('${key}')" class="text-red-500 text-[10px] font-bold italic border-b border-red-500/30">${t('btn_delete')}</button>
                     </div>` : ''}
                 </div>
-                <button onclick="viewDetails('${key}', '${safeName}', '${p.price}', '${p.image}')" data-key="btn_details" class="w-full bg-white/5 hover:bg-blue-600 hover:text-white py-4 rounded-[20px] text-[10px] font-black uppercase transition-all shadow-xl border border-white/5 tracking-widest active:scale-95">التفاصيل والتقييمات</button>
+                <button onclick="viewDetails('${key}', '${safeName}', '${p.price}', '${p.image}')" class="w-full bg-white/5 hover:bg-blue-600 hover:text-white py-4 rounded-[20px] text-[10px] font-black uppercase transition-all shadow-xl border border-white/5 tracking-widest active:scale-95">${t('btn_details')}</button>
             </div>
         </div>`;
     });
     grid.innerHTML = gridHtml;
-    if(window.applyLanguage) applyLanguage(localStorage.getItem('lang') || 'ar');
+    // مسحنا من هنا سطر الـ applyLanguage القديم عشان خلاص الـ t() قايمة بالواجب
 }
 
 window.loadUsers = function() { 
@@ -378,11 +378,11 @@ window.loadUsers = function() {
                 </div>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-2">
                     <button onclick="changeRole('${uid}', 'merchant')" class="w-full text-[8px] border border-green-500/20 rounded-lg p-2 hover:bg-green-500 hover:text-white text-green-400 transition-all font-black uppercase">تاجر</button>
-                    <button onclick="changeRole('${uid}', 'marketer')" class="w-full text-[8px] border border-blue-500/20 rounded-lg p-2 hover:bg-blue-500 hover:text-white text-blue-400 transition-all font-black uppercase">مسوق</button>
-                    <button onclick="changeRole('${uid}', 'admin')" class="w-full text-[8px] border border-yellow-500/20 rounded-lg p-2 hover:bg-yellow-500 hover:text-white text-yellow-500 transition-all font-black uppercase">أدمن</button>
-                    <button onclick="changeRole('${uid}', 'user')" class="w-full text-[8px] bg-white/5 rounded-lg p-2 text-white hover:bg-white/20 transition-all font-black uppercase">زائر</button>
+                    <button onclick="changeRole('${uid}', 'marketer')" class="w-full text-[8px] border border-blue-500/20 rounded-lg p-2 hover:bg-blue-500 hover:text-white text-blue-400 transition-all font-black uppercase">${t('btn_role_marketer')}</button>
+                    <button onclick="changeRole('${uid}', 'admin')" class="w-full text-[8px] border border-yellow-500/20 rounded-lg p-2 hover:bg-yellow-500 hover:text-white text-yellow-500 transition-all font-black uppercase">${t('btn_role_admin')}</button>
+                    <button onclick="changeRole('${uid}', 'user')" class="w-full text-[8px] bg-white/5 rounded-lg p-2 text-white hover:bg-white/20 transition-all font-black uppercase">${t('guest')}</button>
                 </div>
-                <button onclick="visitAccount('${uid}')" data-key="btn_visit" class="w-full bg-blue-600/20 text-blue-400 py-2 rounded-xl text-[10px] font-black border border-blue-400/30 hover:bg-blue-600 hover:text-white transition-all shadow-xl">زيارة حساب المستخدم</button>
+                <button onclick="visitAccount('${uid}')" class="w-full bg-blue-600/20 text-blue-400 py-2 rounded-xl text-[10px] font-black border border-blue-400/30 hover:bg-blue-600 hover:text-white transition-all shadow-xl">${t('btn_visit_user')}</button>
             </div>`; 
         }); 
         list.innerHTML = usersHtml;
@@ -390,7 +390,7 @@ window.loadUsers = function() {
 }
 
 window.setLanguage = (lang) => { localStorage.setItem('lang', lang); location.reload(); };
-window.changeRole = (uid, r) => { if(confirm("تغيير الرتبة؟")) { update(ref(db, 'users/' + uid), { role: r }); showToast("تم تغيير الرتبة بنجاح!"); } };
+window.changeRole = (uid, r) => { if(confirm(t('msg_role_confirm'))) { update(ref(db, 'users/' + uid), { role: r }); showToast(t('msg_role_success')); } };
 
 window.toggleWishlist = async (id) => { 
     if(!currentUser) return;
@@ -407,12 +407,12 @@ window.toggleWishlist = async (id) => {
 };
 
 window.visitAccount = (uid) => {
-    showToast("جاري توجيهك للملف الشخصي...");
+    showToast(t('msg_redirect_profile'));
     window.location.href = `profile.html?uid=${uid}`; 
 };
 
-window.deleteProduct = (id) => confirm("هل أنت متأكد من حذف هذا المنتج نهائياً؟") && remove(ref(db, 'products/' + id)) && showToast("تم الحذف بنجاح.");
+window.deleteProduct = (id) => confirm(t('msg_delete_confirm')) && remove(ref(db, 'products/' + id)) && showToast(t('msg_delete_success'));
 window.viewDetails = (id, n, p, i) => window.location.href = `details.html?id=${id}&name=${encodeURIComponent(n)}&price=${p}&image=${encodeURIComponent(i)}`;
 window.loadWishlistOnly = () => { const f = {}; Object.keys(allProducts).forEach(k => { if(userWishlist.includes(k)) f[k] = allProducts[k]; }); renderGrid(f); };
-window.showToast = (m) => { const t = document.getElementById('toast'); t.innerText = m; t.style.opacity = '1'; setTimeout(() => t.style.opacity = '0', 3000); };
-window.logout = () => confirm("هل تود الخروج؟") && signOut(auth).then(() => window.location.href = "login.html");
+window.showToast = (m) => { const tst = document.getElementById('toast'); tst.innerText = m; tst.style.opacity = '1'; setTimeout(() => tst.style.opacity = '0', 3000); };
+window.logout = () => confirm(t('msg_logout_confirm')) && signOut(auth).then(() => window.location.href = "login.html");

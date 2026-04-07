@@ -7,14 +7,14 @@
     <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js">
     <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js">
     <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='25' fill='%23020617'/%3E%3Cpath d='M50 20v35m0-35L35 35m15-15l15 15M30 75a30 30 0 0 0 40 0' stroke='%233b82f6' stroke-width='8' stroke-linecap='round' fill='none'/%3E%3C/svg%3E">
+    <script src="translations.js"></script>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة تحكم الإدارة | تصفية الحسابات</title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='25' fill='%23020617'/%3E%3Cpath d='M50 20v35m0-35L35 35m15-15l15 15M30 75a30 30 0 0 0 40 0' stroke='%233b82f6' stroke-width='8' stroke-linecap='round' fill='none'/%3E%3C/svg%3E">
+    <title data-key="admin_debt_title">لوحة تحكم الإدارة | تصفية الحسابات</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/admin.css">
 </head>
@@ -23,25 +23,25 @@
 <div class="max-w-6xl mx-auto animate-slide">
     <div class="flex justify-between items-center mb-8 border-b border-white/10 pb-6">
         <div>
-            <h1 class="text-3xl font-black text-blue-400 italic drop-shadow-md">إدارة ديون التجار</h1>
-            <p class="text-xs text-gray-400 mt-2 font-bold uppercase tracking-widest">تصفية مستحقات المنصة (10%)</p>
+            <h1 class="text-3xl font-black text-blue-400 italic drop-shadow-md" data-key="admin_debt_title">إدارة ديون التجار</h1>
+            <p class="text-xs text-gray-400 mt-2 font-bold uppercase tracking-widest" data-key="admin_debt_desc">تصفية مستحقات المنصة (10%)</p>
         </div>
-        <a href="profile.html" class="bg-white/5 hover:bg-white/10 text-white px-5 py-2.5 rounded-xl text-xs font-black transition-colors border border-white/10 shadow-lg">← العودة للبروفايل</a>
+        <a href="profile.html" class="bg-white/5 hover:bg-white/10 text-white px-5 py-2.5 rounded-xl text-xs font-black transition-colors border border-white/10 shadow-lg" data-key="back_to_profile">← العودة للبروفايل</a>
     </div>
     
     <div class="glass overflow-x-auto shadow-[0_0_40px_rgba(59,130,246,0.15)] rounded-[35px] border border-blue-500/20 no-scrollbar">
         <table class="w-full text-right admin-card min-w-[600px]">
             <thead class="bg-blue-600/20 text-blue-400 text-[11px] uppercase tracking-widest">
                 <tr>
-                    <th class="p-6 rounded-tr-[35px]">التاجر</th>
-                    <th class="p-6">رقم الموبايل / وسائل الدفع</th>
-                    <th class="p-6 text-red-400">المديونية الحالية</th>
-                    <th class="p-6 rounded-tl-[35px]">الإجراء</th>
+                    <th class="p-6 rounded-tr-[35px]" data-key="table_merchant">التاجر</th>
+                    <th class="p-6" data-key="table_phone_pay">رقم الموبايل / وسائل الدفع</th>
+                    <th class="p-6 text-red-400" data-key="table_current_debt">المديونية الحالية</th>
+                    <th class="p-6 rounded-tl-[35px]" data-key="table_action">الإجراء</th>
                 </tr>
             </thead>
             <tbody id="adminUsersList" class="divide-y divide-white/5">
                 <tr>
-                    <td colspan="4" class="text-center p-10 text-gray-500 text-sm italic">جاري تحميل بيانات التجار... ⏳</td>
+                    <td colspan="4" class="text-center p-10 text-gray-500 text-sm italic" data-key="loading_merchants">جاري تحميل بيانات التجار... ⏳</td>
                 </tr>
             </tbody>
         </table>

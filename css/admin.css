@@ -1,0 +1,21 @@
+/* الستايلات المخصصة لجدول لوحة الإدارة */
+.admin-card { 
+    background: rgba(255, 255, 255, 0.02); 
+    border-collapse: separate; 
+    border-spacing: 0;
+}
+
+.admin-card tbody tr:hover {
+    background: rgba(59, 130, 246, 0.05);
+}
+
+.pay-info-box {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    display: inline-block;
+    font-family: monospace;
+    font-size: 10px;
+    color: #94a3b8;
+}

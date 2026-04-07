@@ -1,45 +1,10 @@
-/* فصل الخلفية في طبقة منفصلة عشان نلغي الـ background-attachment: fixed اللي بيموت السكرول */
-body { 
-    background-color: #020617;
-    color: #f1f5f9; 
-    font-family: 'Cairo', sans-serif; 
-    min-height: 100vh; 
-    margin: 0; 
-    overflow-x: hidden; 
-    scroll-behavior: smooth; 
-}
-
-/* طبقة الخلفية الثابتة السريعة */
-body::before {
-    content: "";
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.95)), url('https://softeagles.com/wp-content/uploads/2024/09/%D9%85%D8%AA%D8%A7%D8%AC%D8%B1-%D8%A7%D9%84%D9%83%D8%AA%D8%B1%D9%88%D9%86%D9%8A%D8%A9.jpg');
-    background-size: cover;
-    background-position: center;
-    z-index: -1;
-    transform: translateZ(0);
-}
-
-/* تخفيف التغبيش شوية لتسريع الريندر */
-.glass { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); }
-
-.logo-brand { font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 4px; }
-.logo-box { background: #2563eb; color: white; padding: 2px 8px; border-radius: 6px; transform: skewX(-12deg); display: inline-block; box-shadow: 0 0 15px rgba(37, 99, 235, 0.4); }
-
-.btn-glow { transition: 0.3s; box-shadow: 0 0 15px rgba(59, 130, 246, 0.3); border: 1px solid rgba(255,255,255,0.1); }
-.btn-glow:hover { box-shadow: 0 0 30px rgba(59, 130, 246, 0.6); transform: translateY(-2px); }
-
-/* 👇 الحلول السحرية كلها هنا 👇 */
 .product-card { 
     transition: transform 0.4s ease, box-shadow 0.4s ease, background-color 0.4s ease; 
     position: relative; 
     overflow: hidden; 
     border: 1px solid rgba(255, 255, 255, 0.05); 
-    /* السر السحري الأول: إخفاء العناصر البعيدة عن الشاشة */
     content-visibility: auto;
     contain-intrinsic-size: 350px; 
-    /* السر السحري التاني: التسريع العتادي بكارت الشاشة */
     transform: translateZ(0);
     will-change: transform, opacity;
 }
@@ -49,7 +14,6 @@ body::before {
     border-color: rgba(59, 130, 246, 0.5); 
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(59, 130, 246, 0.2); 
 }
-/* تبسيط حركة الصور لتخفيف الحمل */
 .product-card img { transition: transform 0.5s ease; will-change: transform; }
 .product-card:hover img { transform: scale(1.1); }
 
@@ -73,9 +37,3 @@ body::before {
 
 .stat-card { background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(255, 255, 255, 0.02)); border: 1px solid rgba(255,255,255,0.05); transition: 0.3s; cursor: pointer; transform: translateZ(0); }
 .stat-card:hover { transform: translateY(-5px); border-color: #3b82f6; background: rgba(59, 130, 246, 0.15); }
-
-@keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-.animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
-::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
-.no-scrollbar::-webkit-scrollbar { display: none; }

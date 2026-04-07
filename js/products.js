@@ -120,7 +120,7 @@ window.updateCartUI = () => {
             const item = data[key];
             total += Number(item.price) * Number(item.qty);
             cartHtml += `<div class="glass p-3 rounded-2xl flex gap-3 items-center border border-white/5 animate-slide mb-3 text-right group">
-                <img src="${item.image}" class="w-16 h-16 rounded-xl object-cover">
+                <img src="${item.image}" class="w-16 h-16 rounded-xl object-cover" loading="lazy">
                 <div class="flex-1 font-bold">
                     <h4 class="text-[10px] text-white line-clamp-1">${item.name}</h4>
                     <p class="text-[8px] text-gray-500 italic">${item.color || ''} | ${item.size || ''} | س ${item.qty}</p>
@@ -153,7 +153,7 @@ window.showSubCats = (key, el) => {
     const area = document.getElementById('subCatsArea');
     if(key === 'all' || key === 'best') { area.style.display = 'none'; applyDualFilter(); return; }
     area.style.display = 'flex';
-    area.innerHTML = subData[key].map(s => `<div class="sub-cat-item" onclick="filterBySub('${s.n}', this)"><img src="${s.i}"><span>${s.n}</span></div>`).join('');
+    area.innerHTML = subData[key].map(s => `<div class="sub-cat-item" onclick="filterBySub('${s.n}', this)"><img src="${s.i}" loading="lazy"><span>${s.n}</span></div>`).join('');
     applyDualFilter();
 };
 
@@ -341,7 +341,7 @@ function renderGrid(products) {
                     <span class="text-[10px] font-black text-gray-400">${p.likes || 0}</span>
                 </div>
                 <div class="w-full h-48 md:h-52 rounded-[25px] overflow-hidden mb-5 shadow-2xl border border-white/5">
-                    <img src="${p.image}" class="w-full h-full object-cover" loading="lazy">
+                    <img src="${p.image}" class="w-full h-full object-cover" loading="lazy" alt="${safeName}">
                 </div>
             </div>
             <div>

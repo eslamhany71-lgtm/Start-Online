@@ -15,6 +15,12 @@ const gov = params.get('gov') || t('not_specified');
 let selectedPayMethod = 'cod';
 let buyerUid = null;
 
+// دالة تغيير اللغة
+window.setLanguage = (lang) => { 
+    localStorage.setItem('lang', lang); 
+    location.reload(); 
+};
+
 onAuthStateChanged(auth, (user) => { if(user) buyerUid = user.uid; });
 
 document.getElementById('invName').innerText = params.get('name');
@@ -67,12 +73,13 @@ document.getElementById('orderForm').onsubmit = async (e) => {
         receipt: document.getElementById('receiptLink') ? document.getElementById('receiptLink').value || 'N/A' : 'N/A',
         color: color, size: size, qty: qty, status: 'pending', date: new Date().toLocaleString('ar-EG')
     };
+    
     try {
         await set(push(ref(db, 'orders')), orderData);
         document.getElementById('successBox').classList.remove('hidden');
     } catch (error) {
         alert(t('msg_order_error'));
-        submitBtn.innerHTML = t('btn_confirm_order'); 
+        submitBtn.innerHTML = t('confirm_order'); 
         submitBtn.disabled = false;
     }
 };

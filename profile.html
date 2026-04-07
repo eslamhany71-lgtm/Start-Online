@@ -8,11 +8,12 @@
     <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js">
     <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js">
 
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='25' fill='%23020617'/%3E%3Cpath d='M50 20v35m0-35L35 35m15-15l15 15M30 75a30 30 0 0 0 40 0' stroke='%233b82f6' stroke-width='8' stroke-linecap='round' fill='none'/%3E%3C/svg%3E">
+
     <script src="translations.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta charset="UTF-8">
     <title data-key="profile_title">لوحة التحكم الاحترافية | Start Online</title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='25' fill='%23020617'/%3E%3Cpath d='M50 20v35m0-35L35 35m15-15l15 15M30 75a30 30 0 0 0 40 0' stroke='%233b82f6' stroke-width='8' stroke-linecap='round' fill='none'/%3E%3C/svg%3E">
     
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
@@ -84,8 +85,8 @@
         <div class="lg:col-span-1 space-y-6">
             <div id="mainSidebar" class="glass p-8 rounded-[40px] text-center border border-white/5 relative overflow-hidden shadow-2xl">
                 <div id="userRoleBadge" class="absolute top-4 left-4 text-[8px] font-black bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full uppercase italic">GUEST</div>
-                <img id="userImg" src="https://via.placeholder.com/150" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover border-4 border-blue-500/20 shadow-xl" loading="lazy">
-                <h1 id="userName" class="text-2xl font-black mb-1 italic">تحميل...</h1>
+                <img id="userImg" src="https://via.placeholder.com/150" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover border-4 border-blue-500/20 shadow-xl">
+                <h1 id="userName" class="text-2xl font-black mb-1 italic" data-key="checking">تحميل...</h1>
                 <p id="userEmail" class="text-gray-500 text-[10px] mb-1">email@example.com</p>
                 <p id="userPhoneDisplay" class="text-blue-400 text-[11px] font-bold font-mono tracking-widest mb-6" dir="ltr"></p>
                 
@@ -104,17 +105,17 @@
                 <div id="marketerSettings" class="hidden border-t border-white/5 pt-6 mt-4 mb-6 text-right">
                     <p class="text-[9px] text-blue-400 font-black mb-4 uppercase italic" data-key="payment_methods">وسائل استلام الأرباح</p>
                     <div class="space-y-3">
-                        <input type="text" id="vodaPay" placeholder="رقم فودافون كاش" class="w-full bg-white/5 border border-white/10 p-3 rounded-xl text-xs text-white text-center font-bold outline-none focus:border-red-500 transition">
-                        <input type="text" id="etiPay" placeholder="رقم اتصالات كاش" class="w-full bg-white/5 border border-white/10 p-3 rounded-xl text-xs text-white text-center font-bold outline-none focus:border-green-500 transition">
-                        <input type="text" id="orangePay" placeholder="أورانج كاش / وي" class="w-full bg-white/5 border border-white/10 p-3 rounded-xl text-xs text-white text-center font-bold outline-none focus:border-orange-500 transition">
-                        <input type="text" id="instaPay" placeholder="عنوان InstaPay (ID)" class="w-full bg-white/5 border border-white/10 p-3 rounded-xl text-xs text-white text-center font-bold outline-none focus:border-purple-500 transition">
+                        <input type="text" id="vodaPay" data-key="voda_pay" placeholder="رقم فودافون كاش" class="w-full bg-white/5 border border-white/10 p-3 rounded-xl text-xs text-white text-center font-bold outline-none focus:border-red-500 transition">
+                        <input type="text" id="etiPay" data-key="eti_pay" placeholder="رقم اتصالات كاش" class="w-full bg-white/5 border border-white/10 p-3 rounded-xl text-xs text-white text-center font-bold outline-none focus:border-green-500 transition">
+                        <input type="text" id="orangePay" data-key="orange_pay" placeholder="أورانج كاش / وي" class="w-full bg-white/5 border border-white/10 p-3 rounded-xl text-xs text-white text-center font-bold outline-none focus:border-orange-500 transition">
+                        <input type="text" id="instaPay" data-key="insta_pay" placeholder="عنوان InstaPay (ID)" class="w-full bg-white/5 border border-white/10 p-3 rounded-xl text-xs text-white text-center font-bold outline-none focus:border-purple-500 transition">
                     </div>
                     <button onclick="updateDetailedPayment()" data-key="btn_save_wallets" class="w-full mt-4 bg-blue-600/20 text-blue-400 py-2 rounded-xl text-[10px] font-black hover:bg-blue-600 transition hover:text-white btn-glow">حفظ المحافظ</button>
                 </div>
 
                 <div class="space-y-3">
                     <button onclick="toggleSettings()" data-key="btn_edit_profile" class="w-full py-3 glass hover:bg-white/10 transition-colors rounded-2xl text-[10px] font-black border border-white/5">تعديل البروفايل</button>
-                    <button onclick="logout()" class="w-full py-3 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-colors rounded-2xl text-[10px] font-black border border-red-500/20 md:hidden">تسجيل الخروج</button>
+                    <button onclick="logout()" data-key="logout" class="w-full py-3 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-colors rounded-2xl text-[10px] font-black border border-red-500/20 md:hidden">تسجيل الخروج</button>
                 </div>
             </div>
 
@@ -150,9 +151,9 @@
                 
                 <div class="glass p-6 rounded-[30px] border border-blue-500/10 mt-6 text-right shadow-lg bg-black/20">
                     <div class="flex justify-between items-center mb-4">
-                        <p class="text-[10px] text-gray-400 font-black uppercase italic">أداء المبيعات اليومية</p>
+                        <p class="text-[10px] text-gray-400 font-black uppercase italic" data-key="daily_sales_perf">أداء المبيعات اليومية</p>
                         <div class="bg-blue-500/10 px-3 py-1.5 rounded-lg border border-blue-500/20 shadow-inner">
-                            <span class="text-[9px] text-blue-400 font-bold">مبيعات اليوم:</span>
+                            <span class="text-[9px] text-blue-400 font-bold" data-key="today_sales">مبيعات اليوم:</span>
                             <span id="todaySalesValue" class="text-xs font-black text-white mr-1">0 ج.م</span>
                         </div>
                     </div>
@@ -164,7 +165,7 @@
 
             <section id="adminMarketerPanel" class="hidden animate-slide space-y-6">
                 <h2 class="text-2xl font-black mb-6 flex items-center gap-3 italic text-purple-400">
-                    <span class="w-2 h-6 bg-purple-500 rounded-full"></span> <span>إدارة التجار والديون</span>
+                    <span class="w-2 h-6 bg-purple-500 rounded-full"></span> <span data-key="admin_manage_marketers">إدارة التجار والديون</span>
                 </h2>
                 <div class="glass rounded-[30px] overflow-x-auto border border-white/10 no-scrollbar">
                     <table class="w-full text-right text-[10px] md:text-xs min-w-[500px]">
@@ -240,7 +241,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                     <input type="text" id="newName" data-key="new_name" placeholder="اسم جديد" class="bg-white/5 border border-white/10 p-4 rounded-2xl text-white outline-none">
                     <input type="text" id="newImg" data-key="new_image" placeholder="رابط صورة شخصية" class="bg-white/5 border border-white/10 p-4 rounded-2xl text-white outline-none">
-                    <input type="tel" id="newPhone" placeholder="رقم الهاتف للتواصل" class="bg-white/5 border border-white/10 p-4 rounded-2xl text-white outline-none md:col-span-2">
+                    <input type="tel" id="newPhone" data-key="new_phone" placeholder="رقم الهاتف للتواصل" class="bg-white/5 border border-white/10 p-4 rounded-2xl text-white outline-none md:col-span-2">
                 </div>
                 <button onclick="updateProfile()" class="bg-blue-600 text-white px-10 py-3 rounded-2xl font-black text-xs shadow-lg hover:bg-blue-500 transition" data-key="btn_save_data">حفظ البيانات</button>
             </section>

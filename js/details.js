@@ -6,6 +6,12 @@ const params = new URLSearchParams(window.location.search);
 const prodId = params.get('id');
 let unitPrice = 0, quantity = 1, productOwnerId = "", selectedColor = t('sub_general'), selectedSize = t('sub_general'), mainImgUrl = "", userData = {};
 
+// دالة تغيير اللغة
+window.setLanguage = (lang) => { 
+    localStorage.setItem('lang', lang); 
+    location.reload(); 
+};
+
 onAuthStateChanged(auth, async (user) => { 
     if (user) { 
         const uSnap = await get(ref(db, 'users/' + user.uid));
@@ -104,7 +110,7 @@ function loadReviews() {
             container.innerHTML = `
             <div class="text-center py-12 bg-black/30 rounded-3xl border border-white/10 shadow-inner backdrop-blur-md">
                 <span class="text-5xl block mb-4 opacity-70 drop-shadow-md">✨</span>
-                <p class='text-gray-300 font-black text-xs uppercase tracking-widest drop-shadow-sm'>${t('be_first_review') || 'Be the first!'}</p>
+                <p class='text-gray-300 font-black text-xs uppercase tracking-widest drop-shadow-sm'>${t('be_first_review')}</p>
             </div>`;
         }
     });
@@ -120,6 +126,7 @@ window.shareProduct = () => {
 };
 
 window.changeQty = (v) => { quantity = Math.max(1, quantity + v); document.getElementById('qtyView').innerText = quantity; updateFinalPrice(); };
+
 window.updateFinalPrice = () => {
     const gov = document.getElementById('govSelect');
     const shipping = parseFloat(gov.options[gov.selectedIndex].getAttribute('data-price')) || 0;
@@ -151,5 +158,16 @@ function startCountdown() {
     }, 1000);
 }
 
-window.showToast = (m) => { const tst = document.getElementById('toast'); tst.innerText = m; tst.style.opacity = '1'; tst.style.transform = 'translate(-50%, -20px)'; setTimeout(() => { tst.style.opacity = '0'; tst.style.transform = 'translate(-50%, 0)'; }, 3000); };
+window.showToast = (m) => { 
+    const tst = document.getElementById('toast'); 
+    tst.innerText = m; 
+    tst.style.opacity = '1'; 
+    tst.style.transform = 'translate(-50%, -20px)'; 
+    setTimeout(() => { 
+        tst.style.opacity = '0'; 
+        tst.style.transform = 'translate(-50%, 0)'; 
+    }, 3000); 
+};
+
+// تشغيل العداد الوهمي للمشاهدات
 setInterval(() => { document.getElementById('live-viewers').innerText = Math.floor(Math.random() * 40) + 60; }, 3000);

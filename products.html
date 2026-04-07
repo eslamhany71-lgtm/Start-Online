@@ -1,11 +1,18 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://www.gstatic.com">
+    <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js">
+    <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js">
+    <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js">
+
     <script src="translations.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title data-key="shop_title">المتجر الذكي | Start Online</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="css/global.css">
@@ -101,12 +108,12 @@
 
     <section class="max-w-7xl mx-auto px-4 mb-10">
         <div class="flex gap-6 overflow-x-auto no-scrollbar pb-4 justify-start md:justify-center">
-            <div class="category-item active" data-cat="all" onclick="showSubCats('all', this)"><img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200"><span data-key="cat_all">الكل</span></div>
-            <div class="category-item" data-cat="ملابس" onclick="showSubCats('clothes', this)"><img src="https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=200"><span data-key="cat_clothes">ملابس</span></div>
-            <div class="category-item" data-cat="إكسسوارات" onclick="showSubCats('acc', this)"><img src="https://jlood.com/cdn/shop/files/Men_Accessories_in_Egypt2_large.jpg"><span data-key="cat_acc">إكسسوارات</span></div>
-            <div class="category-item" data-cat="عطور" onclick="showSubCats('perfume', this)"><img src="https://images.unsplash.com/photo-1541643600914-78b084683601?w=200"><span data-key="cat_perfume">عطور</span></div>
-            <div class="category-item" data-cat="صحة وجمال" onclick="showSubCats('beauty', this)"><img src="https://cdn.youcan.shop/stores/0dc0cbcb1b32177428c303a8e891bc1e/products/ekcrAIzCdbM7DYOPYwqrxERfMKBM01UitNaY2FfO_md.png"><span data-key="cat_beauty">صحة وجمال</span></div>
-            <div class="category-item" data-cat="أكثر مبيعاً" onclick="showSubCats('best', this)"><img src="https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?w=200"><span data-key="cat_best">أكثر مبيعاً</span></div>
+            <div class="category-item active" data-cat="all" onclick="showSubCats('all', this)"><img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200" loading="lazy"><span data-key="cat_all">الكل</span></div>
+            <div class="category-item" data-cat="ملابس" onclick="showSubCats('clothes', this)"><img src="https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=200" loading="lazy"><span data-key="cat_clothes">ملابس</span></div>
+            <div class="category-item" data-cat="إكسسوارات" onclick="showSubCats('acc', this)"><img src="https://jlood.com/cdn/shop/files/Men_Accessories_in_Egypt2_large.jpg" loading="lazy"><span data-key="cat_acc">إكسسوارات</span></div>
+            <div class="category-item" data-cat="عطور" onclick="showSubCats('perfume', this)"><img src="https://images.unsplash.com/photo-1541643600914-78b084683601?w=200" loading="lazy"><span data-key="cat_perfume">عطور</span></div>
+            <div class="category-item" data-cat="صحة وجمال" onclick="showSubCats('beauty', this)"><img src="https://cdn.youcan.shop/stores/0dc0cbcb1b32177428c303a8e891bc1e/products/ekcrAIzCdbM7DYOPYwqrxERfMKBM01UitNaY2FfO_md.png" loading="lazy"><span data-key="cat_beauty">صحة وجمال</span></div>
+            <div class="category-item" data-cat="أكثر مبيعاً" onclick="showSubCats('best', this)"><img src="https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?w=200" loading="lazy"><span data-key="cat_best">أكثر مبيعاً</span></div>
         </div>
         <div id="subCatsArea" class="sub-cats-area glass p-4 rounded-3xl border border-white/5"></div>
     </section>
@@ -208,6 +215,7 @@
 
     <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 glass px-10 py-5 rounded-full text-white font-black shadow-2xl opacity-0 transition-all pointer-events-none z-[500] border-blue-500 border text-xs tracking-widest uppercase italic text-center"></div>
 
+    <script src="https://cdn.tailwindcss.com"></script>
     <script type="module" src="js/products.js"></script>
 </body>
 </html>

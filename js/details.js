@@ -4,15 +4,12 @@ import { ref, get, push, onValue } from "https://www.gstatic.com/firebasejs/10.7
 
 const params = new URLSearchParams(window.location.search);
 const prodId = params.get('id');
-let unitPrice = 0, quantity = 1, productOwnerId = "", selectedColor = "عام", selectedSize = "عام", mainImgUrl = "", userData = {};
-
-if(window.applyLanguage) applyLanguage(localStorage.getItem('lang') || 'ar');
-window.setLanguage = (lang) => { localStorage.setItem('lang', lang); location.reload(); };
+let unitPrice = 0, quantity = 1, productOwnerId = "", selectedColor = t('sub_general'), selectedSize = t('sub_general'), mainImgUrl = "", userData = {};
 
 onAuthStateChanged(auth, async (user) => { 
     if (user) { 
         const uSnap = await get(ref(db, 'users/' + user.uid));
-        userData = uSnap.exists() ? uSnap.val() : { name: "مستخدم" };
+        userData = uSnap.exists() ? uSnap.val() : { name: t('guest') };
         init(); 
         loadReviews();
     } else { window.location.href = "login.html"; } 
@@ -24,17 +21,17 @@ async function init() {
         const p = snap.val();
         unitPrice = parseFloat(p.price); productOwnerId = p.owner; mainImgUrl = p.image;
         document.getElementById('detName').innerText = p.name;
-        document.getElementById('detPriceView').innerText = unitPrice + " ج.م";
+        document.getElementById('detPriceView').innerText = unitPrice + " " + t('currency');
         
-        document.getElementById('detDesc').innerText = p.desc || "لا يوجد وصف إضافي متاح لهذا المنتج.";
+        document.getElementById('detDesc').innerText = p.desc || t('no_extra_desc');
         
         if(p.oldPrice && p.oldPrice.trim() !== '') {
             document.getElementById('detOldPriceContainer').classList.remove('hidden');
-            document.getElementById('detOldPrice').innerText = p.oldPrice + " ج.م";
+            document.getElementById('detOldPrice').innerText = p.oldPrice + " " + t('currency');
         }
 
         document.getElementById('mainImg').src = p.image;
-        document.getElementById('detMat').innerText = p.material || "خامة ممتازة";
+        document.getElementById('detMat').innerText = p.material || t('excellent_material');
         document.getElementById('detMod').innerText = p.model || "2024";
 
         const thumbs = document.getElementById('thumbList');
@@ -43,10 +40,10 @@ async function init() {
             if(!url.trim()) return;
             const img = document.createElement('img'); img.src = url.trim();
             img.className = `thumb-img shadow-xl ${i === 0 ? 'active' : ''}`;
-            img.loading = "lazy"; // كبسولة السرعة للصور المصغرة
+            img.loading = "lazy";
             img.onclick = () => {
                 document.getElementById('mainImg').src = img.src;
-                thumbs.querySelectorAll('.thumb-img').forEach(t => t.classList.remove('active'));
+                thumbs.querySelectorAll('.thumb-img').forEach(x => x.classList.remove('active'));
                 img.classList.add('active');
             };
             thumbs.appendChild(img);
@@ -75,19 +72,12 @@ function buildSpecs(data, containerId, callback) {
 window.submitReview = async () => {
     const star = document.querySelector('input[name="star"]:checked');
     const text = document.getElementById('revText').value;
-    if(!star) return showToast("يرجى اختيار عدد النجوم! ⭐");
-    if(!text.trim()) return showToast("يرجى كتابة تعليق!");
+    if(!star) return showToast(t('msg_select_stars'));
+    if(!text.trim()) return showToast(t('msg_write_comment'));
 
-    const reviewData = {
-        uid: auth.currentUser.uid,
-        userName: userData.name,
-        rating: star.value,
-        comment: text,
-        date: new Date().toLocaleDateString('ar-EG')
-    };
-
+    const reviewData = { uid: auth.currentUser.uid, userName: userData.name, rating: star.value, comment: text, date: new Date().toLocaleDateString('ar-EG') };
     await push(ref(db, `reviews/${prodId}`), reviewData);
-    showToast("شكراً لتقييمك الرائع! ⭐");
+    showToast(t('msg_review_thanks'));
     document.getElementById('revText').value = "";
     document.querySelector('input[name="star"]:checked').checked = false;
 };
@@ -114,7 +104,7 @@ function loadReviews() {
             container.innerHTML = `
             <div class="text-center py-12 bg-black/30 rounded-3xl border border-white/10 shadow-inner backdrop-blur-md">
                 <span class="text-5xl block mb-4 opacity-70 drop-shadow-md">✨</span>
-                <p class='text-gray-300 font-black text-xs uppercase tracking-widest drop-shadow-sm' data-key="be_first_review">كن أول من يقيم هذا الإبداع!</p>
+                <p class='text-gray-300 font-black text-xs uppercase tracking-widest drop-shadow-sm'>${t('be_first_review') || 'Be the first!'}</p>
             </div>`;
         }
     });
@@ -122,17 +112,10 @@ function loadReviews() {
 
 window.shareProduct = () => {
     if (navigator.share) {
-        navigator.share({
-            title: document.getElementById('detName').innerText,
-            text: 'شاهد هذا المنتج الرائع على Start Online!',
-            url: window.location.href,
-        }).then(() => {
-            showToast("تم فتح نافذة المشاركة بنجاح! 🔗");
-        }).catch(console.error);
+        navigator.share({ title: document.getElementById('detName').innerText, url: window.location.href })
+        .then(() => showToast(t('msg_share_opened'))).catch(console.error);
     } else {
-        navigator.clipboard.writeText(window.location.href).then(() => {
-            showToast("تم نسخ الرابط! يمكنك مشاركته الآن 🔗");
-        });
+        navigator.clipboard.writeText(window.location.href).then(() => showToast(t('msg_link_copied')));
     }
 };
 
@@ -141,20 +124,20 @@ window.updateFinalPrice = () => {
     const gov = document.getElementById('govSelect');
     const shipping = parseFloat(gov.options[gov.selectedIndex].getAttribute('data-price')) || 0;
     const total = (unitPrice * quantity) + shipping;
-    document.getElementById('finalPriceView').innerText = total + " ج.م";
+    document.getElementById('finalPriceView').innerText = total + " " + t('currency');
 };
 
 window.addToCart = async () => {
     const item = { id: prodId, name: document.getElementById('detName').innerText, price: unitPrice, qty: quantity, color: selectedColor, size: selectedSize, image: mainImgUrl };
     await push(ref(db, `carts/${auth.currentUser.uid}`), item);
-    showToast("تمت الإضافة للسلة بنجاح! 🛒");
+    showToast(t('msg_added_cart'));
 };
 
 window.goToOrder = () => {
     const gov = document.getElementById('govSelect').value;
-    if(gov === "0") return showToast("يرجى اختيار المحافظة أولاً لتقدير الشحن 🚚");
+    if(gov === "0") return showToast(t('msg_select_gov_first'));
     const shipping = document.getElementById('govSelect').options[document.getElementById('govSelect').selectedIndex].getAttribute('data-price');
-    const total = document.getElementById('finalPriceView').innerText.replace(" ج.م", "");
+    const total = document.getElementById('finalPriceView').innerText.replace(` ${t('currency')}`, "");
     window.location.href = `order.html?id=${prodId}&name=${encodeURIComponent(document.getElementById('detName').innerText)}&price=${unitPrice}&qty=${quantity}&color=${encodeURIComponent(selectedColor)}&size=${encodeURIComponent(selectedSize)}&gov=${gov}&shipping=${shipping}&total=${total}&image=${encodeURIComponent(mainImgUrl)}&owner=${productOwnerId}`;
 };
 
@@ -168,5 +151,5 @@ function startCountdown() {
     }, 1000);
 }
 
-window.showToast = (m) => { const t = document.getElementById('toast'); t.innerText = m; t.style.opacity = '1'; t.style.transform = 'translate(-50%, -20px)'; setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translate(-50%, 0)'; }, 3000); };
+window.showToast = (m) => { const tst = document.getElementById('toast'); tst.innerText = m; tst.style.opacity = '1'; tst.style.transform = 'translate(-50%, -20px)'; setTimeout(() => { tst.style.opacity = '0'; tst.style.transform = 'translate(-50%, 0)'; }, 3000); };
 setInterval(() => { document.getElementById('live-viewers').innerText = Math.floor(Math.random() * 40) + 60; }, 3000);

@@ -4,6 +4,7 @@ import { ref, onValue, update, get } from "https://www.gstatic.com/firebasejs/10
 
 const listContainer = document.getElementById('adminUsersList');
 
+// التحقق من إن اللي فاتح أدمن الأول قبل جلب الداتا
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         const uSnap = await get(ref(db, 'users/' + user.uid));
@@ -18,6 +19,7 @@ onAuthStateChanged(auth, async (user) => {
     }
 });
 
+// وظيفة جلب ديون التجار
 function loadMerchantsDebts() {
     onValue(ref(db, 'users'), (snapshot) => {
         listContainer.innerHTML = '';
@@ -56,7 +58,7 @@ function loadMerchantsDebts() {
                             ${debtNum.toFixed(2)} <span class="text-xs">${t('currency')}</span>
                         </td>
                         <td class="p-6">
-                            <button ${isZeroDebt ? 'disabled' : ''} onclick="clearDebt('${id}', '${user.name}')" class="px-5 py-2.5 rounded-xl text-[10px] font-black transition-all border border-transparent ${isZeroDebt ? '' : 'border-green-500/30'} ${btnClass}">
+                            <button ${isZeroDebt ? 'disabled' : ''} onclick="clearDebt('${id}', '${user.name.replace(/'/g, "\\'")}')" class="px-5 py-2.5 rounded-xl text-[10px] font-black transition-all border border-transparent ${isZeroDebt ? '' : 'border-green-500/30'} ${btnClass}">
                                 ${isZeroDebt ? t('no_debt') : t('confirm_collection')}
                             </button>
                         </td>
@@ -71,6 +73,7 @@ function loadMerchantsDebts() {
     });
 }
 
+// وظيفة تصفير المديونية مربوطة بالـ window عشان الـ onclick
 window.clearDebt = async (userId, userName) => {
     if(confirm(`${t('msg_settle_confirm')} "${userName}" ?`)) {
         try {
@@ -82,7 +85,14 @@ window.clearDebt = async (userId, userName) => {
     }
 };
 
+// وظيفة التنبيهات
 window.showToast = (m) => { 
-    const tst = document.getElementById('toast'); tst.innerText = m; tst.style.opacity = '1'; tst.style.transform = 'translateY(-10px)';
-    setTimeout(() => { tst.style.opacity = '0'; tst.style.transform = 'translateY(0)'; }, 3000); 
+    const tst = document.getElementById('toast'); 
+    tst.innerText = m; 
+    tst.style.opacity = '1'; 
+    tst.style.transform = 'translateY(-10px)';
+    setTimeout(() => { 
+        tst.style.opacity = '0'; 
+        tst.style.transform = 'translateY(0)';
+    }, 3000); 
 };

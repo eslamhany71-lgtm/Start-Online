@@ -6,8 +6,8 @@ import { ref, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-dat
 onAuthStateChanged(auth, async (user) => {
     const navBtn = document.getElementById('navBtn');
     if (user) {
-        // تحويل الزر العلوي لزر خروج وإضافة data-key
-        navBtn.innerHTML = `<span class="relative z-10" data-key="logout">خروج</span>`;
+        // تحويل الزر العلوي لزر خروج وإعطائه القيمة المترجمة فوراً
+        navBtn.innerHTML = `<span class="relative z-10">${t('logout')}</span>`;
         navBtn.classList.replace('bg-blue-600', 'bg-red-600/20');
         navBtn.classList.add('text-red-500', 'border', 'border-red-600/30', 'hover:bg-red-600', 'hover:text-white');
         navBtn.classList.remove('btn-glow');
@@ -17,16 +17,13 @@ onAuthStateChanged(auth, async (user) => {
             signOut(auth).then(() => location.reload());
         };
 
-        // تحديث زر المجتمع ليكون "لوحة التحكم"
+        // تحديث زر المجتمع ليكون "لوحة التحكم" ومترجم
         const snapshot = await get(ref(db, 'users/' + user.uid));
         if (snapshot.exists()) {
             const marketerBtn = document.getElementById('marketerBtn');
-            marketerBtn.innerHTML = `<span>📊</span> <span data-key="dashboard">لوحة التحكم</span>`;
+            marketerBtn.innerHTML = `<span>📊</span> <span>${t('dashboard')}</span>`;
             marketerBtn.href = "profile.html";
         }
-        
-        // إعادة تشغيل الترجمة عشان تترجم الأزرار الجديدة
-        if(window.applyLanguage) applyLanguage(localStorage.getItem('lang') || 'ar');
     }
 });
 
@@ -39,14 +36,7 @@ window.addEventListener('mousemove', (e) => {
     });
 });
 
-// لغة وافتراضيات
-const currentLang = localStorage.getItem('lang') || 'ar';
-const langLabel = document.getElementById('langLabel');
-if(langLabel) langLabel.innerText = currentLang === 'ar' ? 'English' : 'العربية';
-
-// تشغيل الترجمة بمجرد فتح الصفحة
-if(window.applyLanguage) applyLanguage(currentLang);
-
+// تغيير اللغة من الرئيسية
 window.setLanguage = (lang) => { 
     localStorage.setItem('lang', lang); 
     location.reload(); 

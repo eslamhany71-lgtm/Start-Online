@@ -1,1 +1,33 @@
+/* الخلفية المبتكرة اللي بتشد الانتباه */
+body { 
+    margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center; 
+    background: #020617; overflow: hidden; font-family: 'Cairo', sans-serif;
+}
 
+/* طبقة الألوان المتحركة */
+.bg-animate {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+    background: linear-gradient(45deg, #0f172a, #1e1b4b, #581c87, #1e1b4b);
+    background-size: 400% 400%; animation: meshGradient 15s ease infinite;
+}
+@keyframes meshGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* تأثير التوهج خلف الكارت */
+.glow-overlay {
+    position: absolute; width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.3) 0%, transparent 70%);
+    z-index: 0; filter: blur(50px);
+}
+
+.input-focus:focus {
+    border-color: #3b82f6; box-shadow: 0 0 15px rgba(59, 130, 246, 0.3); background: rgba(255, 255, 255, 0.08);
+}
+
+.loader { border-top-color: #3b82f6; animation: spinner 0.6s linear infinite; }
+@keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+.fade-in { animation: fadeIn 0.4s ease-out forwards; }

@@ -5,6 +5,7 @@ import { ref, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-dat
 const googleProvider = new GoogleAuthProvider();
 let isLogin = true;
 
+// دالة لتغيير اللغة من صفحة الدخول
 window.setLanguage = (lang) => {
     localStorage.setItem('lang', lang);
     if(window.applyLanguage) window.applyLanguage(lang);
@@ -54,11 +55,11 @@ window.toggleAuth = () => {
 
 window.handleForgotPassword = async () => {
     const email = document.getElementById('userEmail').value;
-    if (!email) { alert("من فضلك اكتب بريدك الإلكتروني أولاً"); return; }
+    if (!email) { alert(t('msg_enter_email_first')); return; }
     try {
         await sendPasswordResetEmail(auth, email);
-        alert("تم إرسال رابط استعادة كلمة المرور لبريدك");
-    } catch (err) { alert("خطأ: " + err.message); }
+        alert(t('msg_reset_sent'));
+    } catch (err) { alert("Error: " + err.message); }
 };
 
 window.loginWithGoogle = async () => {
@@ -70,7 +71,7 @@ window.loginWithGoogle = async () => {
             role: 'user' 
         });
         window.location.href = "index.html";
-    } catch (err) { alert("فشل تسجيل جوجل: " + err.message); }
+    } catch (err) { alert(t('msg_google_fail') + err.message); }
 };
 
 document.getElementById('authForm').onsubmit = async (e) => {
@@ -96,8 +97,8 @@ document.getElementById('authForm').onsubmit = async (e) => {
         btnText.classList.remove('hidden');
         btnLoader.classList.add('hidden');
         let errorMsg = err.message;
-        if (err.code === 'auth/wrong-password') errorMsg = "كلمة المرور غير صحيحة";
-        else if (err.code === 'auth/user-not-found') errorMsg = "هذا الحساب غير موجود";
+        if (err.code === 'auth/wrong-password') errorMsg = t('msg_invalid_pass');
+        else if (err.code === 'auth/user-not-found') errorMsg = t('msg_user_not_found');
         alert(errorMsg);
     }
 };

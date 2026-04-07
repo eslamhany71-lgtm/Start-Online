@@ -8,9 +8,9 @@ const qty = parseInt(params.get('qty')) || 1;
 const shipping = parseFloat(params.get('shipping')) || 0;
 const marketerId = params.get('owner');
 
-const color = params.get('color') && params.get('color') !== 'null' ? params.get('color') : 'عام';
-const size = params.get('size') && params.get('size') !== 'null' ? params.get('size') : 'عام';
-const gov = params.get('gov') || 'لم يتم التحديد';
+const color = params.get('color') && params.get('color') !== 'null' ? params.get('color') : t('sub_general');
+const size = params.get('size') && params.get('size') !== 'null' ? params.get('size') : t('sub_general');
+const gov = params.get('gov') || t('not_specified');
 
 let selectedPayMethod = 'cod';
 let buyerUid = null;
@@ -19,16 +19,13 @@ onAuthStateChanged(auth, (user) => { if(user) buyerUid = user.uid; });
 
 document.getElementById('invName').innerText = params.get('name');
 document.getElementById('invImg').src = params.get('image');
-document.getElementById('invGov').innerText = `المحافظة: ${gov}`;
-document.getElementById('invSpecs').innerText = `اللون: ${color} | المقاس: ${size}`;
+document.getElementById('invGov').innerText = `${t('gov_shipping')} ${gov}`;
+document.getElementById('invSpecs').innerText = `${t('lbl_color')}: ${color} | ${t('lbl_size')}: ${size}`;
 
-document.getElementById('pPrice').innerText = unitPrice + " ج.م";
-document.getElementById('pQty').innerText = qty + " قطعة";
-document.getElementById('pShipping').innerText = shipping + " ج.م";
-document.getElementById('totalPrice').innerText = (unitPrice * qty + shipping) + " ج.م";
-
-if(window.applyLanguage) applyLanguage(localStorage.getItem('lang') || 'ar');
-window.setLanguage = (lang) => { localStorage.setItem('lang', lang); location.reload(); };
+document.getElementById('pPrice').innerText = unitPrice + " " + t('currency');
+document.getElementById('pQty').innerText = qty + " " + (t('piece') || 'قطعة');
+document.getElementById('pShipping').innerText = shipping + " " + t('currency');
+document.getElementById('totalPrice').innerText = (unitPrice * qty + shipping) + " " + t('currency');
 
 window.selectPay = (method) => {
     selectedPayMethod = method;
@@ -47,7 +44,7 @@ async function fetchMarketerDetails() {
     const snap = await get(ref(db, `users/${marketerId}/paymentMethods`));
     if(snap.exists()) {
         const methods = snap.val();
-        let num = "غير متوفر";
+        let num = t('val_unavailable');
         if(selectedPayMethod === 'vodafone' && methods.vodafone) num = methods.vodafone;
         if(selectedPayMethod === 'etisalat' && methods.etisalat) num = methods.etisalat;
         if(selectedPayMethod === 'orange' && methods.orange) num = methods.orange;
@@ -59,7 +56,7 @@ async function fetchMarketerDetails() {
 document.getElementById('orderForm').onsubmit = async (e) => {
     e.preventDefault();
     const submitBtn = e.target.querySelector('button[type="submit"]');
-    submitBtn.innerHTML = "جاري تأكيد الطلب... ⏳";
+    submitBtn.innerHTML = t('msg_order_confirming');
     submitBtn.disabled = true;
 
     const orderData = {
@@ -74,7 +71,8 @@ document.getElementById('orderForm').onsubmit = async (e) => {
         await set(push(ref(db, 'orders')), orderData);
         document.getElementById('successBox').classList.remove('hidden');
     } catch (error) {
-        alert("حدث خطأ، يرجى المحاولة مرة أخرى.");
-        submitBtn.innerHTML = "تأكيد الطلب 🔒"; submitBtn.disabled = false;
+        alert(t('msg_order_error'));
+        submitBtn.innerHTML = t('btn_confirm_order'); 
+        submitBtn.disabled = false;
     }
 };

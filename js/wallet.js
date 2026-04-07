@@ -4,6 +4,7 @@ import { ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase
 
 onAuthStateChanged(auth, (user) => {
     if (user) {
+        // جلب بيانات الرصيد
         onValue(ref(db, `users/${user.uid}/wallet`), (snap) => {
             const data = snap.val() || { balance: 0, debt: 0 };
             const balanceNum = Number(data.balance) || 0;
@@ -12,6 +13,7 @@ onAuthStateChanged(auth, (user) => {
             document.getElementById('platformDebt').innerHTML = `${debtNum.toFixed(2)} <span class="text-sm text-white">${t('currency')}</span>`;
         });
 
+        // جلب سجل العمليات
         onValue(ref(db, `transactions/${user.uid}`), (snap) => {
             const list = document.getElementById('transList');
             list.innerHTML = ""; 
@@ -49,10 +51,13 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
+// دوال التحكم في نافذة الدفع
 window.openPayModal = () => {
     const modal = document.getElementById('payModal');
     modal.classList.remove('hidden');
     modal.querySelector('.glass').style.animation = 'slideIn 0.4s ease-out forwards';
 };
 
-window.closePayModal = () => document.getElementById('payModal').classList.add('hidden');
+window.closePayModal = () => {
+    document.getElementById('payModal').classList.add('hidden');
+};

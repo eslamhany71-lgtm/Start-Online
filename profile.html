@@ -171,6 +171,14 @@
                 <div id="ordersList" class="space-y-4"></div>
             </section>
 
+            <section id="orderArchiveSection" class="hidden glass p-8 rounded-[40px] border border-white/10 animate-slide">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-black text-white italic underline" data-key="archive_title">سجل المبيعات المؤرشفة</h3>
+                    <button onclick="document.getElementById('orderArchiveSection').classList.add('hidden')" class="text-[10px] text-gray-500 hover:text-white" data-key="btn_close">إغلاق</button>
+                </div>
+                <div id="archiveList" class="space-y-4"></div>
+            </section>
+
             <section id="requestMarketerSection" class="hidden animate-slide">
                 <div class="glass p-8 rounded-[40px] border border-blue-500/30 bg-blue-500/5">
                     <div id="requestStatic">

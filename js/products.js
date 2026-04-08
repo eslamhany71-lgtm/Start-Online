@@ -4,11 +4,46 @@ import { ref, set, push, onValue, remove, update, get, runTransaction } from "ht
 
 let currentUser = null, userRole = 'user', allProducts = {}, allUsers = {}, userWishlist = [];
 let selectedMainCat = 'الكل', selectedSubCat = 'الكل';
-let currentEditId = null; // تخزين آي دي المنتج اللي بيتعدل
+let currentEditId = null; 
 const DEBT_LIMIT = 500;
 
 let currentNotifLength = 0;
 let userClearedNotifs = false;
+
+window.newPublishBase64 = null;
+window.newEditBase64 = null;
+
+// دالة ضغط الصورة السحرية للمنتجات
+window.processImageUpload = (event, previewId, callback) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (e) => {
+        const img = new Image();
+        img.src = e.target.result;
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const MAX_WIDTH = 600; 
+            const MAX_HEIGHT = 600;
+            let width = img.width;
+            let height = img.height;
+
+            if (width > height) { if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } } 
+            else { if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; } }
+
+            canvas.width = width; canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+            const previewElem = document.getElementById(previewId);
+            if(previewElem) { previewElem.src = dataUrl; previewElem.classList.remove('hidden'); }
+            callback(dataUrl);
+        };
+    };
+};
 
 onAuthStateChanged(auth, async (user) => {
     if (user) {
@@ -140,9 +175,7 @@ window.updateCartUI = () => {
 
 window.removeFromCart = (key) => { if(confirm(t('msg_delete_cart'))) remove(ref(db, `carts/${currentUser.uid}/${key}`)); };
 
-const dbCategories = {
-    'all': 'الكل', 'clothes': 'ملابس', 'acc': 'إكسسوارات', 'perfume': 'عطور', 'beauty': 'صحة وجمال', 'best': 'أكثر مبيعاً', 'electronics': 'إلكترونيات'
-};
+const dbCategories = { 'all': 'الكل', 'clothes': 'ملابس', 'acc': 'إكسسوارات', 'perfume': 'عطور', 'beauty': 'صحة وجمال', 'best': 'أكثر مبيعاً', 'electronics': 'إلكترونيات' };
 
 const subData = {
     clothes: [{dbVal:'رجالي', tKey:'sub_men', i:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcq8MbpMpYi4h72YsWLGOu8L2bU7lNdq-3ZQ&s'}, {dbVal:'حريمي', tKey:'sub_women', i:'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=100'}],
@@ -153,12 +186,9 @@ const subData = {
 
 window.showSubCats = (key, el) => {
     document.querySelectorAll('.category-item').forEach(i => i.classList.remove('active')); el.classList.add('active');
-    selectedMainCat = dbCategories[key] || 'الكل'; 
-    selectedSubCat = 'الكل'; 
-    
+    selectedMainCat = dbCategories[key] || 'الكل'; selectedSubCat = 'الكل'; 
     const area = document.getElementById('subCatsArea');
     if(key === 'all' || key === 'best' || key === 'electronics') { area.style.display = 'none'; applyDualFilter(); return; }
-    
     area.style.display = 'flex';
     area.innerHTML = subData[key].map(s => `<div class="sub-cat-item" onclick="filterBySub('${s.dbVal}', this)"><img src="${s.i}" loading="lazy"><span>${t(s.tKey)}</span></div>`).join('');
     applyDualFilter();
@@ -264,7 +294,6 @@ window.viewRequestDetails = async (uid) => {
                 </div>
             </div>
         `;
-        
         document.getElementById('reqModalActions').innerHTML = `
             <button onclick="approveMarketer('${uid}')" class="flex-1 bg-green-600 text-white py-3 rounded-xl text-[10px] font-black hover:bg-green-500 transition-colors shadow-lg btn-glow">${t('btn_accept_req')}</button>
             <button onclick="rejectMarketer('${uid}')" class="flex-1 bg-red-600/20 text-red-500 py-3 rounded-xl text-[10px] font-black hover:bg-red-600 hover:text-white transition-colors">${t('btn_reject_req')}</button>
@@ -291,6 +320,9 @@ window.rejectMarketer = async (uid) => {
 
 window.saveProduct = () => {
     const name = document.getElementById('pName').value, price = document.getElementById('pPrice').value;
+    const defaultImg = 'https://placehold.co/400x400/1e293b/3b82f6?text=Start+Online';
+    const finalImage = window.newPublishBase64 || document.getElementById('eImage')?.value || defaultImg;
+
     if(name && price) { 
         push(ref(db, 'products'), { 
             name, price, 
@@ -302,13 +334,15 @@ window.saveProduct = () => {
             colors: document.getElementById('pColors').value, 
             sizes: document.getElementById('pSizes').value, 
             desc: document.getElementById('pDesc').value, 
-            image: document.getElementById('pImage').value || 'https://placehold.co/400x400/1e293b/3b82f6?text=Start+Online', 
+            image: finalImage, 
             extraImages: document.getElementById('pExtraImages').value, 
             owner: currentUser.uid, 
             likes: 0 
         }); 
         showToast(t('msg_publish_success')); 
-        ["pName", "pPrice", "pOldPrice", "pColors", "pSizes", "pDesc", "pImage", "pExtraImages", "pMaterial", "pModel"].forEach(id => document.getElementById(id).value = ""); 
+        ["pName", "pPrice", "pOldPrice", "pColors", "pSizes", "pDesc", "pExtraImages", "pMaterial", "pModel"].forEach(id => document.getElementById(id).value = ""); 
+        window.newPublishBase64 = null;
+        document.getElementById('publishImgPreview').classList.add('hidden');
     } else {
         showToast(t('msg_fill_required'));
     }
@@ -324,7 +358,6 @@ function renderGrid(products) {
     if(keys.length === 0) { noRes.classList.remove('hidden'); grid.innerHTML = ''; return; }
     noRes.classList.add('hidden');
 
-    // ترتيب المنتجات حسب العمولة الأعلى (oldPrice)
     const sortedKeys = keys.sort((a, b) => {
         const commA = Number(products[a].oldPrice) || 0;
         const commB = Number(products[b].oldPrice) || 0;
@@ -366,7 +399,6 @@ function renderGrid(products) {
     grid.innerHTML = gridHtml;
 }
 
-// === أكواد التعديل الشامل للمنتج ===
 window.openEditModal = (id) => {
     const p = allProducts[id];
     if(!p) return;
@@ -380,9 +412,14 @@ window.openEditModal = (id) => {
     document.getElementById('eMaterial').value = p.material || '';
     document.getElementById('eColors').value = p.colors || '';
     document.getElementById('eSizes').value = p.sizes || '';
-    document.getElementById('eImage').value = p.image || '';
     document.getElementById('eExtraImages').value = p.extraImages || '';
     document.getElementById('eDesc').value = p.desc || '';
+    
+    // صورة القديمة للمنتج
+    const editImgPreview = document.getElementById('editImgPreview');
+    editImgPreview.src = p.image || 'https://via.placeholder.com/150';
+    editImgPreview.classList.remove('hidden');
+    window.newEditBase64 = null; // تصفير عشان لو معدلش الصورة تفضل القديمة
     
     document.getElementById('editProductModal').classList.remove('hidden');
 };
@@ -391,6 +428,8 @@ window.closeEditModal = () => document.getElementById('editProductModal').classL
 
 window.saveEditedProduct = async () => {
     if(!currentEditId) return;
+    const p = allProducts[currentEditId];
+    
     const updatedData = {
         name: document.getElementById('eName').value,
         category: document.getElementById('eCategory').value,
@@ -401,7 +440,7 @@ window.saveEditedProduct = async () => {
         material: document.getElementById('eMaterial').value,
         colors: document.getElementById('eColors').value,
         sizes: document.getElementById('eSizes').value,
-        image: document.getElementById('eImage').value,
+        image: window.newEditBase64 || p.image, // لو اختار صورة جديدة ارفعها، لو لأ سيب القديمة
         extraImages: document.getElementById('eExtraImages').value,
         desc: document.getElementById('eDesc').value
     };

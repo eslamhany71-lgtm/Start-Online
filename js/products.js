@@ -496,3 +496,25 @@ window.viewDetails = (id, n, p, i) => window.location.href = `details.html?id=${
 window.loadWishlistOnly = () => { const f = {}; Object.keys(allProducts).forEach(k => { if(userWishlist.includes(k)) f[k] = allProducts[k]; }); renderGrid(f); };
 window.showToast = (m) => { const tst = document.getElementById('toast'); tst.innerText = m; tst.style.opacity = '1'; setTimeout(() => tst.style.opacity = '0', 3000); };
 window.logout = () => confirm(t('msg_logout_confirm')) && signOut(auth).then(() => window.location.href = "login.html");
+
+// ==========================================
+// سحر إغلاق النوافذ عند الضغط في أي مكان فاضي
+// ==========================================
+window.addEventListener('click', (e) => {
+    // 1. إغلاق النوافذ المنبثقة (Modals)
+    // الكود بيتعرف على الخلفية السودة من خلال كلاسات التيلويند (fixed inset-0)
+    if (e.target.classList.contains('fixed') && e.target.classList.contains('inset-0')) {
+        e.target.classList.add('hidden');
+    }
+    
+    // 2. إغلاق قائمة الإشعارات لو ضغطت براها (بونص شياكة)
+    const notifDropdown = document.getElementById('notifDropdown');
+    const clickedOnNotifBtn = e.target.closest('button[onclick="toggleNotif()"]');
+    
+    if (notifDropdown && !notifDropdown.classList.contains('hidden')) {
+        // لو الضغطة مكانتش جوه القائمة، ومكانتش على زرار الجرس نفسه.. اخفي القائمة
+        if (!notifDropdown.contains(e.target) && !clickedOnNotifBtn) {
+            notifDropdown.classList.add('hidden');
+        }
+    }
+});

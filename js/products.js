@@ -4,6 +4,7 @@ import { ref, set, push, onValue, remove, update, get, runTransaction } from "ht
 
 let currentUser = null, userRole = 'user', allProducts = {}, allUsers = {}, userWishlist = [];
 let selectedMainCat = 'الكل', selectedSubCat = 'الكل';
+let currentEditId = null; // تخزين آي دي المنتج اللي بيتعدل
 const DEBT_LIMIT = 500;
 
 let currentNotifLength = 0;
@@ -20,7 +21,7 @@ onAuthStateChanged(auth, async (user) => {
             const debt = (u.wallet && u.wallet.debt) ? Number(u.wallet.debt) : 0;
 
             const userInfoEl = document.getElementById('userInfo');
-            if (userInfoEl) userInfoEl.innerText = `${u.name} | ${userRole.toUpperCase()}`;
+            if (userInfoEl) userInfoEl.innerText = `${u.name} | ${t('btn_role_'+userRole) || userRole.toUpperCase()}`;
             
             if (userRole === 'admin') {
                 document.getElementById('adminStats').classList.remove('hidden');
@@ -139,18 +140,10 @@ window.updateCartUI = () => {
 
 window.removeFromCart = (key) => { if(confirm(t('msg_delete_cart'))) remove(ref(db, `carts/${currentUser.uid}/${key}`)); };
 
-/* 👇 التعديل السحري لفصل الداتا بيز عن الترجمة 👇 */
-// دي الكلمات اللي الفلتر هيستخدمها عشان يبحث في الداتا بيز (ثابتة بالعربي زي ما اتسجلت)
 const dbCategories = {
-    'all': 'الكل',
-    'clothes': 'ملابس',
-    'acc': 'إكسسوارات',
-    'perfume': 'عطور',
-    'beauty': 'صحة وجمال',
-    'best': 'أكثر مبيعاً'
+    'all': 'الكل', 'clothes': 'ملابس', 'acc': 'إكسسوارات', 'perfume': 'عطور', 'beauty': 'صحة وجمال', 'best': 'أكثر مبيعاً', 'electronics': 'إلكترونيات'
 };
 
-// هنا ربطنا الداتا بيز (dbVal) بمفتاح الترجمة (tKey) عشان تظهر مترجمة
 const subData = {
     clothes: [{dbVal:'رجالي', tKey:'sub_men', i:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcq8MbpMpYi4h72YsWLGOu8L2bU7lNdq-3ZQ&s'}, {dbVal:'حريمي', tKey:'sub_women', i:'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=100'}],
     acc: [{dbVal:'رجالي', tKey:'sub_men', i:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHE6nx5A79B-M8Ptx1axoKtJyh__8fFnVf9Q&s'}, {dbVal:'حريمي', tKey:'sub_women', i:'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg_2PO3OsO5EeG2It9AcKvUkfcraT1AzfcbFuB4c_RxtgsYzAPBUico99Z2PlxYnTKx4Rd0WlhLqoI6QpHR-IVSZsEXDQPij6CZY0eaoQ-tWvUO4PQrNOyYD_9CgZpLx6kUDFLBSBlP-f97/s1600/%D8%A7%D9%83%D8%B3%D8%B3%D9%88%D8%A7%D8%B1%D8%A7%D8%AA+%D9%85%D8%B3%D8%AA%D9%88%D8%B1%D8%AF%D8%A9+%D9%85%D9%86+%D8%A7%D9%84%D8%B5%D9%8A%D9%86.jpg'}],
@@ -160,18 +153,14 @@ const subData = {
 
 window.showSubCats = (key, el) => {
     document.querySelectorAll('.category-item').forEach(i => i.classList.remove('active')); el.classList.add('active');
-    
-    // بناخد القيمة الثابتة بتاعت الداتا بيز بدل ما نقرأ النص المترجم اللي على الشاشة
     selectedMainCat = dbCategories[key] || 'الكل'; 
     selectedSubCat = 'الكل'; 
     
     const area = document.getElementById('subCatsArea');
-    if(key === 'all' || key === 'best') { area.style.display = 'none'; applyDualFilter(); return; }
+    if(key === 'all' || key === 'best' || key === 'electronics') { area.style.display = 'none'; applyDualFilter(); return; }
     
     area.style.display = 'flex';
-    // بنرسم الأقسام الفرعية وبنستخدم t(s.tKey) للترجمة، ولما الزبون يدوس بنبعت s.dbVal للفلتر
     area.innerHTML = subData[key].map(s => `<div class="sub-cat-item" onclick="filterBySub('${s.dbVal}', this)"><img src="${s.i}" loading="lazy"><span>${t(s.tKey)}</span></div>`).join('');
-    
     applyDualFilter();
 };
 
@@ -325,17 +314,6 @@ window.saveProduct = () => {
     }
 };
 
-window.editProduct = async (id, oldN, oldP, oldI, oldComm) => { 
-    const nn = prompt(t('prompt_new_name'), oldN); 
-    const np = prompt(t('prompt_new_price'), oldP); 
-    const nComm = prompt(t('prompt_new_comm'), oldComm !== 'undefined' && oldComm !== 'null' ? oldComm : '');
-    const ni = prompt(t('prompt_new_img'), oldI); 
-    if(nn && np) { 
-        await update(ref(db, 'products/' + id), { name: nn, price: np, oldPrice: nComm, image: ni }); 
-        showToast(t('msg_update_success')); 
-    } 
-};
-
 function loadProducts() { onValue(ref(db, 'products'), (s) => { allProducts = s.val() || {}; renderGrid(allProducts); }); }
 
 function renderGrid(products) {
@@ -346,8 +324,15 @@ function renderGrid(products) {
     if(keys.length === 0) { noRes.classList.remove('hidden'); grid.innerHTML = ''; return; }
     noRes.classList.add('hidden');
 
+    // ترتيب المنتجات حسب العمولة الأعلى (oldPrice)
+    const sortedKeys = keys.sort((a, b) => {
+        const commA = Number(products[a].oldPrice) || 0;
+        const commB = Number(products[b].oldPrice) || 0;
+        return commB - commA; 
+    });
+
     let gridHtml = '';
-    keys.forEach(key => {
+    sortedKeys.forEach(key => {
         const p = products[key], isSaved = userWishlist.includes(key);
         const canManage = (userRole === 'admin') || (userRole === 'merchant' && p.owner === currentUser.uid);
         const safeName = (p.name || '').replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, ' ');
@@ -370,7 +355,7 @@ function renderGrid(products) {
                         ${p.oldPrice ? `<span class="text-green-400 font-black text-[11px] mt-1"><span>${t('p_commission')}</span>: ${p.oldPrice} ${t('currency')}</span>` : ''}
                     </div>
                     ${canManage ? `<div class="flex gap-2">
-                        <button onclick="editProduct('${key}', '${safeName}', '${p.price}', '${p.image}', '${p.oldPrice || ''}')" class="text-yellow-500 text-[10px] font-bold italic border-b border-yellow-500/30">${t('btn_edit')}</button>
+                        <button onclick="openEditModal('${key}')" class="text-yellow-500 text-[10px] font-bold italic border-b border-yellow-500/30">${t('btn_edit')}</button>
                         <button onclick="deleteProduct('${key}')" class="text-red-500 text-[10px] font-bold italic border-b border-red-500/30">${t('btn_delete')}</button>
                     </div>` : ''}
                 </div>
@@ -380,6 +365,55 @@ function renderGrid(products) {
     });
     grid.innerHTML = gridHtml;
 }
+
+// === أكواد التعديل الشامل للمنتج ===
+window.openEditModal = (id) => {
+    const p = allProducts[id];
+    if(!p) return;
+    currentEditId = id;
+    document.getElementById('eName').value = p.name || '';
+    document.getElementById('eCategory').value = p.category || 'الكل';
+    document.getElementById('eSubCategory').value = p.subCategory || 'عام';
+    document.getElementById('ePrice').value = p.price || '';
+    document.getElementById('eOldPrice').value = p.oldPrice || '';
+    document.getElementById('eModel').value = p.model || '';
+    document.getElementById('eMaterial').value = p.material || '';
+    document.getElementById('eColors').value = p.colors || '';
+    document.getElementById('eSizes').value = p.sizes || '';
+    document.getElementById('eImage').value = p.image || '';
+    document.getElementById('eExtraImages').value = p.extraImages || '';
+    document.getElementById('eDesc').value = p.desc || '';
+    
+    document.getElementById('editProductModal').classList.remove('hidden');
+};
+
+window.closeEditModal = () => document.getElementById('editProductModal').classList.add('hidden');
+
+window.saveEditedProduct = async () => {
+    if(!currentEditId) return;
+    const updatedData = {
+        name: document.getElementById('eName').value,
+        category: document.getElementById('eCategory').value,
+        subCategory: document.getElementById('eSubCategory').value,
+        price: document.getElementById('ePrice').value,
+        oldPrice: document.getElementById('eOldPrice').value,
+        model: document.getElementById('eModel').value,
+        material: document.getElementById('eMaterial').value,
+        colors: document.getElementById('eColors').value,
+        sizes: document.getElementById('eSizes').value,
+        image: document.getElementById('eImage').value,
+        extraImages: document.getElementById('eExtraImages').value,
+        desc: document.getElementById('eDesc').value
+    };
+    
+    try {
+        await update(ref(db, 'products/' + currentEditId), updatedData);
+        showToast(t('msg_update_success'));
+        closeEditModal();
+    } catch (e) {
+        showToast(t('msg_error_conn'));
+    }
+};
 
 window.loadUsers = function() { 
     onValue(ref(db, 'users'), (snapshot) => { 

@@ -4,8 +4,47 @@ import { ref, get, set, update, onValue, push, remove } from "https://www.gstati
 
 let myUid = null; let myRole = 'user'; let currentOrdersData = {};
 let salesChartInstance = null; 
-let allProducts = {}; // لتخزين المنتجات والتعديل عليها
-let currentEditId = null;
+
+window.newProfileBase64 = null;
+
+// دالة ضغط الصورة للبروفايل
+window.processImageUpload = (event, previewId, callback) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (e) => {
+        const img = new Image();
+        img.src = e.target.result;
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const MAX_WIDTH = 500; const MAX_HEIGHT = 500;
+            let width = img.width; let height = img.height;
+
+            if (width > height) { if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } } 
+            else { if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; } }
+
+            canvas.width = width; canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+            const previewElem = document.getElementById(previewId);
+            if(previewElem) { previewElem.src = dataUrl; previewElem.classList.remove('hidden'); }
+            callback(dataUrl);
+        };
+    };
+};
+
+// وظيفة الأكورديون للداش بورد
+window.toggleDashboardTab = (tabId) => {
+    ['salesChartContainer', 'successOrdersContainer', 'failedOrdersContainer'].forEach(id => {
+        const el = document.getElementById(id);
+        if(id === tabId) el.classList.remove('hidden');
+        else el.classList.add('hidden');
+    });
+};
 
 onAuthStateChanged(auth, async (user) => {
     if (user) {
@@ -113,6 +152,8 @@ function loadOrders(role) {
         currentOrdersData = snap.val() || {};
         const incomingList = document.getElementById('ordersList');
         const myPurchaseList = document.getElementById('myPurchasesList');
+        const successListInner = document.getElementById('successListInner');
+        const failedListInner = document.getElementById('failedListInner');
         
         let rev = 0, succ = 0, fail = 0;
         let adminPlatformProfit = 0; 
@@ -122,6 +163,8 @@ function loadOrders(role) {
 
         let myPurchaseHtml = '';
         let incomingHtml = '';
+        let successHtml = '';
+        let failedHtml = '';
 
         let todayStr = new Date().toLocaleString('ar-EG').split(',')[0];
         const keys = Object.keys(currentOrdersData).reverse();
@@ -130,6 +173,7 @@ function loadOrders(role) {
             const o = currentOrdersData[key];
             const displayTotal = Number(o.total || o.totalPrice || 0);
             const isMyPurchase = (o.customerUid === myUid) || (o.customerId === myUid) || (o.buyerId === myUid) || (o.userId === myUid) || (o.uid === myUid);
+            const isMySale = (role === 'admin' || o.marketerId === myUid || o.ownerId === myUid);
             const dateStr = o.date ? o.date.split(',')[0] : 'أخرى'; 
             
             let statusText = t('status_pending');
@@ -144,7 +188,7 @@ function loadOrders(role) {
                 myPurchaseHtml += `<div class="glass p-5 rounded-2xl flex justify-between items-center border border-white/5 animate-slide mb-2 list-item-fast"><div><h4 class="text-[10px] font-black text-blue-400 uppercase">${o.productName || t('order_product')}</h4><p class="text-[8px] text-gray-500 mt-1">${o.date || ''}</p></div><span class="status-badge ${badgeClass}">${statusText}</span></div>`;
             }
 
-            if(role === 'admin' || o.marketerId === myUid || o.ownerId === myUid) {
+            if(isMySale) {
                 if(!o.status || o.status === 'pending') { notificationsHtml += `<div class="bg-white/5 p-3 rounded-xl border border-white/5 mb-2 hover:bg-white/10 transition"><p class="font-bold text-yellow-400 mb-1">${t('msg_new_order')} ${o.productName} ${t('msg_with_amount')} ${displayTotal} ${t('currency')}</p><p class="text-[8px] text-gray-500">${o.date}</p></div>`; notifCount++; }
                 if(o.status === 'completed') { notificationsHtml += `<div class="bg-white/5 p-3 rounded-xl border border-white/5 mb-2 hover:bg-white/10 transition"><p class="font-bold text-blue-400 mb-1">${t('msg_profit_added')} ${o.productName}</p><p class="text-[8px] text-gray-500">${o.date}</p></div>`; notifCount++; }
 
@@ -154,7 +198,12 @@ function loadOrders(role) {
                     succ++;
                     if(!dailyRevData[dateStr]) dailyRevData[dateStr] = 0;
                     dailyRevData[dateStr] += displayTotal;
-                } else if(o.status === 'failed') { fail++; }
+                    
+                    successHtml += `<div class="bg-white/5 p-3 rounded-xl border border-white/5 flex justify-between items-center"><p class="text-[10px] font-bold text-white">${o.productName}</p><p class="text-xs font-black text-green-400">${displayTotal} ${t('currency')}</p></div>`;
+                } else if(o.status === 'failed') { 
+                    fail++; 
+                    failedHtml += `<div class="bg-white/5 p-3 rounded-xl border border-white/5 flex justify-between items-center"><p class="text-[10px] font-bold text-white">${o.productName}</p><p class="text-xs font-black text-red-400">${displayTotal} ${t('currency')}</p></div>`;
+                }
 
                 if(!o.status || o.status === 'pending') {
                     if(['admin', 'merchant'].includes(role)) {
@@ -167,7 +216,6 @@ function loadOrders(role) {
                                 </div>
                                 <div class="flex flex-col gap-2">
                                     <button onclick="viewOrderDetails('${key}')" class="bg-blue-600/20 text-blue-400 px-3 py-1.5 rounded-lg text-[9px] font-black hover:bg-blue-600 hover:text-white transition">${t('btn_order_details')}</button>
-                                    <a href="details.html?id=${o.productId || o.id || ''}" class="text-center bg-white/10 text-white px-3 py-1.5 rounded-lg text-[9px] font-black hover:bg-white/20 transition">${t('btn_view_product')}</a>
                                 </div>
                             </div>
                             <div class="flex justify-between items-center border-t border-white/5 pt-4">
@@ -182,6 +230,8 @@ function loadOrders(role) {
 
         if(myPurchaseList) myPurchaseList.innerHTML = myPurchaseHtml || `<p class="text-[10px] text-gray-500 text-center py-4">${t('no_my_orders')}</p>`;
         if(incomingList) incomingList.innerHTML = incomingHtml || `<p class="text-[10px] text-gray-500 text-center py-4">${t('no_new_orders')}</p>`;
+        if(successListInner) successListInner.innerHTML = successHtml || `<p class="text-[10px] text-gray-500 text-center py-2">لا توجد طلبات ناجحة</p>`;
+        if(failedListInner) failedListInner.innerHTML = failedHtml || `<p class="text-[10px] text-gray-500 text-center py-2">لا توجد طلبات ملغاة</p>`;
 
         document.getElementById('totalRevenue').innerText = rev.toFixed(2) + " " + t('currency');
         document.getElementById('successOrdersCount').innerText = succ;
@@ -324,14 +374,7 @@ function loadContent(uId, wishlist) {
         let myHtml = '';
         let myCount = 0;
         
-        // الترتيب بالعمولة تنازلياً
-        const sortedKeys = Object.keys(prods).sort((a, b) => {
-            const commA = Number(prods[a].oldPrice) || 0;
-            const commB = Number(prods[b].oldPrice) || 0;
-            return commB - commA; 
-        });
-        
-        sortedKeys.forEach(key => {
+        Object.keys(prods).forEach(key => {
             const p = prods[key];
             if(wishlist.includes(key)) {
                 wishHtml += `<div class="glass p-4 rounded-3xl border border-white/5 flex gap-4 items-center animate-slide list-item-fast"><img src="${p.image}" loading="lazy" class="w-12 h-12 rounded-xl object-cover shadow-lg"><div class="flex-1 font-bold text-[10px]"><h4 class="text-white line-clamp-1">${p.name}</h4><p class="text-blue-400 mt-1">${p.price} ${t('currency')}</p></div><a href="details.html?id=${key}" class="p-2 bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white transition rounded-xl text-[9px] font-black shadow-md">${t('btn_details')}</a></div>`;
@@ -346,7 +389,6 @@ function loadContent(uId, wishlist) {
                     </div>
                     <div class="flex flex-col gap-1">
                         <a href="details.html?id=${key}" class="px-2 py-1 bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white transition rounded-lg text-[9px] font-black shadow-md text-center">${t('btn_details')}</a>
-                        <button onclick="openEditModal('${key}')" class="px-2 py-1 bg-yellow-500/10 text-yellow-500 hover:bg-yellow-500 hover:text-white transition rounded-lg text-[9px] font-black shadow-md">${t('btn_edit')}</button>
                         <button onclick="deleteProduct('${key}')" class="px-2 py-1 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition rounded-lg text-[9px] font-black shadow-md">${t('btn_delete')}</button>
                     </div>
                 </div>`;
@@ -362,70 +404,7 @@ function loadContent(uId, wishlist) {
     });
 }
 
-// === أكواد التعديل الشامل للمنتج ===
-window.openEditModal = (id) => {
-    const p = allProducts[id];
-    if(!p) return;
-    currentEditId = id;
-    document.getElementById('eName').value = p.name || '';
-    document.getElementById('eCategory').value = p.category || 'الكل';
-    document.getElementById('eSubCategory').value = p.subCategory || 'عام';
-    document.getElementById('ePrice').value = p.price || '';
-    document.getElementById('eOldPrice').value = p.oldPrice || '';
-    document.getElementById('eModel').value = p.model || '';
-    document.getElementById('eMaterial').value = p.material || '';
-    document.getElementById('eColors').value = p.colors || '';
-    document.getElementById('eSizes').value = p.sizes || '';
-    document.getElementById('eImage').value = p.image || '';
-    document.getElementById('eExtraImages').value = p.extraImages || '';
-    document.getElementById('eDesc').value = p.desc || '';
-    
-    document.getElementById('editProductModal').classList.remove('hidden');
-};
-
-window.closeEditModal = () => document.getElementById('editProductModal').classList.add('hidden');
-
-window.saveEditedProduct = async () => {
-    if(!currentEditId) return;
-    const updatedData = {
-        name: document.getElementById('eName').value,
-        category: document.getElementById('eCategory').value,
-        subCategory: document.getElementById('eSubCategory').value,
-        price: document.getElementById('ePrice').value,
-        oldPrice: document.getElementById('eOldPrice').value,
-        model: document.getElementById('eModel').value,
-        material: document.getElementById('eMaterial').value,
-        colors: document.getElementById('eColors').value,
-        sizes: document.getElementById('eSizes').value,
-        image: document.getElementById('eImage').value,
-        extraImages: document.getElementById('eExtraImages').value,
-        desc: document.getElementById('eDesc').value
-    };
-    
-    try {
-        await update(ref(db, 'products/' + currentEditId), updatedData);
-        showToast(t('msg_update_success'));
-        closeEditModal();
-    } catch (e) {
-        showToast(t('msg_error_conn'));
-    }
-};
-
 window.deleteProduct = (id) => confirm(t('msg_delete_confirm')) && remove(ref(db, 'products/' + id)) && showToast(t('msg_delete_success'));
-
-window.openOrderArchive = (status) => {
-    const sect = document.getElementById('orderArchiveSection');
-    const list = document.getElementById('archiveList');
-    sect.classList.remove('hidden'); 
-    let archiveHtml = '';
-    Object.keys(currentOrdersData).forEach(key => {
-        const o = currentOrdersData[key];
-        if(o.status === status && (myRole === 'admin' || o.marketerId === myUid || o.ownerId === myUid)) {
-            archiveHtml += `<div class="bg-white/5 p-4 rounded-2xl flex justify-between items-center text-[10px] mb-2 animate-slide border border-white/5 list-item-fast"><div><p class="text-blue-400 font-black">${o.productName || t('order_product')}</p><p class="text-gray-500 mt-1">${o.customerName || t('lbl_unknown')}</p></div><span class="font-bold text-white text-xs">${o.total || o.totalPrice} ${t('currency')}</span></div>`;
-        }
-    });
-    list.innerHTML = archiveHtml || `<p class="text-[10px] text-gray-500 text-center py-4">${t('no_archive_records')}</p>`;
-};
 
 window.showJoinForm = () => { document.getElementById('requestStatic').classList.add('hidden'); document.getElementById('joinForm').classList.remove('hidden'); };
 
@@ -448,8 +427,8 @@ async function checkIfRequestActive() {
 window.updateProfile = async () => {
     const u = {};
     if(document.getElementById('newName').value) u.name = document.getElementById('newName').value;
-    if(document.getElementById('newImg').value) u.photo = document.getElementById('newImg').value;
     if(document.getElementById('newPhone').value) u.phone = document.getElementById('newPhone').value; 
+    if(window.newProfileBase64) u.photo = window.newProfileBase64; 
     
     if(Object.keys(u).length > 0) {
         await update(ref(db, 'users/' + myUid), u); 
@@ -460,13 +439,16 @@ window.updateProfile = async () => {
 
 window.viewReceipt = (v) => { 
     if(!v) return showToast(t('msg_no_receipt'));
-    if(v.startsWith('http')) window.open(v, '_blank'); 
+    if(v.startsWith('http') || v.startsWith('data:image')) {
+        const w = window.open("");
+        w.document.write(`<img src="${v}" style="width:100%;max-width:600px;margin:auto;display:block;">`);
+    } 
     else { document.getElementById('receiptContent').innerText = v; document.getElementById('receiptModal').classList.remove('hidden'); } 
 };
 
 window.setLanguage = (lang) => { localStorage.setItem('lang', lang); location.reload(); };
 window.closeOrderModal = () => document.getElementById('orderFullDetailsModal').classList.add('hidden');
 window.closeReceipt = () => document.getElementById('receiptModal').classList.add('hidden');
-window.toggleSettings = () => document.getElementById('settingsPanel').classList.toggle('hidden');
+window.toggleSettingsModal = () => document.getElementById('settingsModal').classList.toggle('hidden');
 window.showToast = (m) => { const t = document.getElementById('toast'); t.innerText = m; t.style.opacity = '1'; setTimeout(() => t.style.opacity = '0', 3000); };
 window.logout = () => confirm(t('msg_logout_confirm')) && signOut(auth).then(() => window.location.href = "login.html");

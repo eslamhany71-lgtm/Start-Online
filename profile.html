@@ -54,7 +54,7 @@
             </div>
 
             <button onclick="setLanguage(localStorage.getItem('lang') === 'en' ? 'ar' : 'en')" class="flex text-[9px] md:text-[10px] font-black text-gray-400 hover:text-white transition items-center gap-1 md:gap-2 bg-white/5 px-2 md:px-4 py-2 rounded-lg md:rounded-xl border border-white/10 hover:bg-white/10">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="md:w-3 md:h-3"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="md:w-3 md:h-3"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
                 <span id="langLabel">English</span>
             </button>
             <button onclick="logout()" data-key="logout" class="bg-red-600/20 text-red-500 px-4 py-2 md:py-3 rounded-xl md:rounded-2xl text-[10px] md:text-xs font-black hover:bg-red-600 hover:text-white transition border border-red-500/30 hidden md:block">خروج</button>
@@ -246,6 +246,47 @@
                 <button onclick="updateProfile()" class="bg-blue-600 text-white px-10 py-3 rounded-2xl font-black text-xs shadow-lg hover:bg-blue-500 transition" data-key="btn_save_data">حفظ البيانات</button>
             </section>
         </div>
+    </div>
+</div>
+
+<div id="editProductModal" class="fixed inset-0 bg-black/95 z-[300] hidden flex items-center justify-center p-4 overflow-y-auto">
+    <div class="glass max-w-3xl w-full p-8 rounded-[40px] border border-blue-500/20 shadow-2xl relative my-8 animate-slide text-right">
+        <button onclick="closeEditModal()" class="absolute top-6 left-6 text-gray-500 hover:text-white font-black text-xl transition-colors">✕</button>
+        <h2 class="text-2xl font-black mb-8 text-blue-400 italic underline decoration-blue-500/30" data-key="edit_product_title">تعديل بيانات المنتج</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6">
+            <input type="text" id="eName" data-key="p_name" placeholder="اسم المنتج" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white focus:border-blue-500">
+            <select id="eCategory" class="bg-slate-800 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
+                <option value="الكل" data-key="cat_all">النوع الأساسي</option>
+                <option value="ملابس" data-key="cat_clothes">ملابس</option>
+                <option value="إكسسوارات" data-key="cat_acc">إكسسوارات</option>
+                <option value="عطور" data-key="cat_perfume">عطور</option>
+                <option value="صحة وجمال" data-key="cat_beauty">صحة وجمال</option>
+                <option value="إلكترونيات" data-key="cat_electronics">إلكترونيات</option>
+            </select>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <select id="eSubCategory" class="bg-slate-800 border border-white/10 p-4 rounded-2xl outline-none text-[10px] text-white">
+                <option value="عام" data-key="sub_general">عام</option>
+                <option value="رجالي" data-key="sub_men">رجالي</option>
+                <option value="حريمي" data-key="sub_women">حريمي</option>
+            </select>
+            <input type="number" id="ePrice" data-key="p_price" placeholder="السعر النهائي" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
+            <input type="number" id="eOldPrice" data-key="p_commission" placeholder="عمولتك" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
+            <input type="text" id="eModel" data-key="p_model" placeholder="الموديل" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <input type="text" id="eColors" data-key="p_colors" placeholder="الألوان المتاحة" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
+            <input type="text" id="eSizes" data-key="p_sizes" placeholder="المقاسات" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <input type="text" id="eImage" data-key="p_image" placeholder="رابط الصورة الأساسية" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
+            <input type="text" id="eMaterial" data-key="p_material" placeholder="الماتريال" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
+        </div>
+        <input type="text" id="eExtraImages" data-key="p_extra_images" placeholder="روابط صور الألوان (افصل بفاصلة , )" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white mb-6">
+        <textarea id="eDesc" data-key="p_desc" placeholder="الوصف الكامل للمنتج..." class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl h-32 mb-6 text-white text-xs resize-none"></textarea>
+        
+        <button onclick="saveEditedProduct()" data-key="btn_save_changes" class="w-full bg-green-600 hover:bg-green-500 text-white font-black py-5 rounded-3xl shadow-xl transition-all uppercase tracking-widest italic active:scale-95 btn-glow">حفظ التعديلات</button>
     </div>
 </div>
 

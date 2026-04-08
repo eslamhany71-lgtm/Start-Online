@@ -171,3 +171,25 @@ window.showToast = (m) => {
 
 // تشغيل العداد الوهمي للمشاهدات
 setInterval(() => { document.getElementById('live-viewers').innerText = Math.floor(Math.random() * 40) + 60; }, 3000);
+
+// ==========================================
+// سحر إغلاق النوافذ عند الضغط في أي مكان فاضي
+// ==========================================
+window.addEventListener('click', (e) => {
+    // 1. إغلاق النوافذ المنبثقة (Modals)
+    // الكود بيتعرف على الخلفية السودة من خلال كلاسات التيلويند (fixed inset-0)
+    if (e.target.classList.contains('fixed') && e.target.classList.contains('inset-0')) {
+        e.target.classList.add('hidden');
+    }
+    
+    // 2. إغلاق قائمة الإشعارات لو ضغطت براها (بونص شياكة)
+    const notifDropdown = document.getElementById('notifDropdown');
+    const clickedOnNotifBtn = e.target.closest('button[onclick="toggleNotif()"]');
+    
+    if (notifDropdown && !notifDropdown.classList.contains('hidden')) {
+        // لو الضغطة مكانتش جوه القائمة، ومكانتش على زرار الجرس نفسه.. اخفي القائمة
+        if (!notifDropdown.contains(e.target) && !clickedOnNotifBtn) {
+            notifDropdown.classList.add('hidden');
+        }
+    }
+});

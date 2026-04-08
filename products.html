@@ -7,15 +7,12 @@
     <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js">
     <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js">
     <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js">
-
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='25' fill='%23020617'/%3E%3Cpath d='M50 20v35m0-35L35 35m15-15l15 15M30 75a30 30 0 0 0 40 0' stroke='%233b82f6' stroke-width='8' stroke-linecap='round' fill='none'/%3E%3C/svg%3E">
     <script src="translations.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title data-key="shop_title">المتجر الذكي | Start Online</title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='25' fill='%23020617'/%3E%3Cpath d='M50 20v35m0-35L35 35m15-15l15 15M30 75a30 30 0 0 0 40 0' stroke='%233b82f6' stroke-width='8' stroke-linecap='round' fill='none'/%3E%3C/svg%3E">
-    
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/products.css">
 </head>
@@ -70,19 +67,18 @@
                         <h4 class="text-xs font-black text-blue-400 border-b border-white/10 pb-3 mb-2 flex justify-between items-center">
                             <span data-key="notif_title">الإشعارات الحديثة</span>
                             <div class="flex gap-3">
-                                <button onclick="clearNotifs()" data-key="btn_clear_notifs" class="text-red-400 hover:text-red-300 text-[9px] font-bold transition">مسح الكل</button>
+                                <button onclick="clearNotifs()" data-key="clear_all" class="text-red-400 hover:text-red-300 text-[9px] font-bold transition">مسح الكل</button>
                                 <button onclick="toggleNotif()" class="text-gray-500 hover:text-white">✕</button>
                             </div>
                         </h4>
                         <div id="notifList" class="space-y-2 text-[10px] text-gray-300"></div>
                     </div>
                 </div>
-
                 <button onclick="setLanguage(localStorage.getItem('lang') === 'en' ? 'ar' : 'en')" class="flex text-[9px] md:text-[10px] font-black text-gray-400 hover:text-white transition items-center gap-1 md:gap-2 bg-white/5 px-2 md:px-4 py-2 rounded-lg md:rounded-xl border border-white/10 hover:bg-white/10">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="md:w-3 md:h-3"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
                     <span id="langLabel">English</span>
                 </button>
-                <div id="userInfo" data-key="loading_user" class="hidden lg:block text-[10px] font-bold text-gray-300 bg-white/5 px-3 py-1.5 rounded-full italic tracking-widest text-center uppercase border border-white/5">تحقق...</div>
+                <div id="userInfo" data-key="checking" class="hidden lg:block text-[10px] font-bold text-gray-300 bg-white/5 px-3 py-1.5 rounded-full italic tracking-widest text-center uppercase border border-white/5">تحقق...</div>
                 <button onclick="logout()" data-key="logout" class="bg-red-600/20 text-red-500 px-4 py-2 md:py-3 rounded-xl md:rounded-2xl text-[10px] md:text-xs font-black hover:bg-red-600 hover:text-white transition border border-red-500/30 hidden md:block">خروج</button>
             </div>
         </div>
@@ -114,6 +110,7 @@
             <div class="category-item" data-cat="إكسسوارات" onclick="showSubCats('acc', this)"><img src="https://jlood.com/cdn/shop/files/Men_Accessories_in_Egypt2_large.jpg" loading="lazy"><span data-key="cat_acc">إكسسوارات</span></div>
             <div class="category-item" data-cat="عطور" onclick="showSubCats('perfume', this)"><img src="https://images.unsplash.com/photo-1541643600914-78b084683601?w=200" loading="lazy"><span data-key="cat_perfume">عطور</span></div>
             <div class="category-item" data-cat="صحة وجمال" onclick="showSubCats('beauty', this)"><img src="https://cdn.youcan.shop/stores/0dc0cbcb1b32177428c303a8e891bc1e/products/ekcrAIzCdbM7DYOPYwqrxERfMKBM01UitNaY2FfO_md.png" loading="lazy"><span data-key="cat_beauty">صحة وجمال</span></div>
+            <div class="category-item" data-cat="إلكترونيات" onclick="showSubCats('electronics', this)"><img src="https://images.unsplash.com/photo-1498049794561-7780e7231661?w=200" loading="lazy"><span data-key="cat_electronics">إلكترونيات</span></div>
             <div class="category-item" data-cat="أكثر مبيعاً" onclick="showSubCats('best', this)"><img src="https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?w=200" loading="lazy"><span data-key="cat_best">أكثر مبيعاً</span></div>
         </div>
         <div id="subCatsArea" class="sub-cats-area glass p-4 rounded-3xl border border-white/5"></div>
@@ -157,7 +154,7 @@
             
             <div id="lockMessage" class="hidden glass p-8 rounded-[40px] border border-red-500/30 text-center mb-8">
                 <p class="text-red-500 font-black text-lg" data-key="lock_message">🚫 عذراً، خاصية النشر معطلة حالياً بسبب ارتفاع المديونية.</p>
-                <p class="text-gray-400 text-xs mt-2 italic">يرجى تسوية الحساب مع الإدارة لتفعيل النشر مجدداً.</p>
+                <p class="text-gray-400 text-xs mt-2 italic" data-key="lock_sub">يرجى تسوية الحساب مع الإدارة لتفعيل النشر مجدداً.</p>
             </div>
 
             <div id="publishForm">
@@ -165,11 +162,19 @@
                     <input type="text" id="pName" data-key="p_name" placeholder="اسم المنتج" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white focus:border-blue-500 transition-all">
                     <select id="pCategory" class="bg-slate-800 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white cursor-pointer">
                         <option value="الكل" data-key="cat_all">النوع الأساسي</option>
-                        <option value="ملابس" data-key="cat_clothes">ملابس</option><option value="إكسسوارات" data-key="cat_acc">إكسسوارات</option><option value="عطور" data-key="cat_perfume">عطور</option><option value="صحة وجمال" data-key="cat_beauty">صحة وجمال</option>
+                        <option value="ملابس" data-key="cat_clothes">ملابس</option>
+                        <option value="إكسسوارات" data-key="cat_acc">إكسسوارات</option>
+                        <option value="عطور" data-key="cat_perfume">عطور</option>
+                        <option value="صحة وجمال" data-key="cat_beauty">صحة وجمال</option>
+                        <option value="إلكترونيات" data-key="cat_electronics">إلكترونيات</option>
                     </select>
                 </div>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                    <select id="pSubCategory" class="bg-slate-800 border border-white/10 p-4 rounded-2xl outline-none text-[10px] text-white"><option value="عام">عام</option><option value="رجالي">رجالي</option><option value="حريمي">حريمي</option></select>
+                    <select id="pSubCategory" class="bg-slate-800 border border-white/10 p-4 rounded-2xl outline-none text-[10px] text-white">
+                        <option value="عام" data-key="sub_general">عام</option>
+                        <option value="رجالي" data-key="sub_men">رجالي</option>
+                        <option value="حريمي" data-key="sub_women">حريمي</option>
+                    </select>
                     <input type="number" id="pPrice" data-key="p_price" placeholder="السعر النهائي" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
                     <input type="number" id="pOldPrice" data-key="p_commission" placeholder="عمولتك" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
                     <input type="text" id="pModel" data-key="p_model" placeholder="الموديل" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
@@ -189,10 +194,51 @@
         </div>
     </section>
 
+    <div id="editProductModal" class="fixed inset-0 bg-black/95 z-[300] hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div class="glass max-w-3xl w-full p-8 rounded-[40px] border border-blue-500/20 shadow-2xl relative my-8 animate-slide text-right">
+            <button onclick="closeEditModal()" class="absolute top-6 left-6 text-gray-500 hover:text-white font-black text-xl transition-colors">✕</button>
+            <h2 class="text-2xl font-black mb-8 text-blue-400 italic underline decoration-blue-500/30" data-key="edit_product_title">تعديل بيانات المنتج</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6">
+                <input type="text" id="eName" data-key="p_name" placeholder="اسم المنتج" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white focus:border-blue-500">
+                <select id="eCategory" class="bg-slate-800 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
+                    <option value="الكل" data-key="cat_all">النوع الأساسي</option>
+                    <option value="ملابس" data-key="cat_clothes">ملابس</option>
+                    <option value="إكسسوارات" data-key="cat_acc">إكسسوارات</option>
+                    <option value="عطور" data-key="cat_perfume">عطور</option>
+                    <option value="صحة وجمال" data-key="cat_beauty">صحة وجمال</option>
+                    <option value="إلكترونيات" data-key="cat_electronics">إلكترونيات</option>
+                </select>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <select id="eSubCategory" class="bg-slate-800 border border-white/10 p-4 rounded-2xl outline-none text-[10px] text-white">
+                    <option value="عام" data-key="sub_general">عام</option>
+                    <option value="رجالي" data-key="sub_men">رجالي</option>
+                    <option value="حريمي" data-key="sub_women">حريمي</option>
+                </select>
+                <input type="number" id="ePrice" data-key="p_price" placeholder="السعر النهائي" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
+                <input type="number" id="eOldPrice" data-key="p_commission" placeholder="عمولتك" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
+                <input type="text" id="eModel" data-key="p_model" placeholder="الموديل" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <input type="text" id="eColors" data-key="p_colors" placeholder="الألوان المتاحة" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
+                <input type="text" id="eSizes" data-key="p_sizes" placeholder="المقاسات" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <input type="text" id="eImage" data-key="p_image" placeholder="رابط الصورة الأساسية" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
+                <input type="text" id="eMaterial" data-key="p_material" placeholder="الماتريال" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
+            </div>
+            <input type="text" id="eExtraImages" data-key="p_extra_images" placeholder="روابط صور الألوان (افصل بفاصلة , )" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white mb-6">
+            <textarea id="eDesc" data-key="p_desc" placeholder="الوصف الكامل للمنتج..." class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl h-32 mb-6 text-white text-xs resize-none"></textarea>
+            
+            <button onclick="saveEditedProduct()" data-key="btn_save_changes" class="w-full bg-green-600 hover:bg-green-500 text-white font-black py-5 rounded-3xl shadow-xl transition-all uppercase tracking-widest italic active:scale-95 btn-glow">حفظ التعديلات</button>
+        </div>
+    </div>
+
     <div id="requestDetailsModal" class="fixed inset-0 bg-black/95 z-[300] hidden flex items-center justify-center p-4 text-right transition-all">
         <div class="glass max-w-lg w-full p-8 rounded-[40px] border border-blue-500/20 shadow-2xl relative animate-slide">
             <button onclick="document.getElementById('requestDetailsModal').classList.add('hidden')" class="absolute top-6 left-6 text-gray-500 hover:text-white font-black text-xl transition-colors">✕</button>
-            <h2 class="text-xl font-black mb-6 text-blue-400 italic underline decoration-blue-500/30" data-key="modal_req_title">تفاصيل طلب الانضمام</h2>
+            <h2 class="text-xl font-black mb-6 text-blue-400 italic underline decoration-blue-500/30" data-key="req_details_title">تفاصيل طلب الانضمام</h2>
             <div id="reqModalBody" class="space-y-4 mb-6"></div>
             <div id="reqModalActions" class="flex gap-2 border-t border-white/10 pt-6"></div>
         </div>
@@ -201,7 +247,7 @@
     <div id="usersModal" class="fixed inset-0 bg-black/95 z-[100] hidden items-center justify-center p-6 text-right transition-all">
         <div class="glass w-full max-w-2xl p-8 rounded-[40px] border border-white/10 shadow-2xl relative animate-slide">
             <button onclick="closeUsersModal()" class="absolute top-6 left-6 text-gray-500 hover:text-white font-black text-xl transition-colors">✕</button>
-            <h2 id="modalTitle" class="text-2xl font-black mb-6 text-blue-400 italic underline decoration-blue-500/30 uppercase tracking-tighter" data-key="stat_users">قائمة الأعضاء</h2>
+            <h2 id="modalTitle" class="text-2xl font-black mb-6 text-blue-400 italic underline decoration-blue-500/30 uppercase tracking-tighter" data-key="users_list_title">قائمة الأعضاء</h2>
             <div id="modalList" class="space-y-3 max-h-[400px] overflow-y-auto no-scrollbar pr-2"></div>
         </div>
     </div>
@@ -210,7 +256,7 @@
         <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 md:gap-10"></div>
         <div id="noResults" class="hidden text-center py-20 animate-fade-in">
             <div class="text-6xl mb-4">🔍</div>
-            <p class="text-gray-500 font-bold italic" data-key="no_results_text">عذراً، لم نجد ما تبحث عنه حالياً.</p>
+            <p class="text-gray-500 font-bold italic" data-key="no_search_results">عذراً، لم نجد ما تبحث عنه حالياً.</p>
         </div>
     </main>
 

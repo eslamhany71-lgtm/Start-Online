@@ -4,6 +4,8 @@ import { ref, get, set, update, onValue, push, remove } from "https://www.gstati
 
 let myUid = null; let myRole = 'user'; let currentOrdersData = {};
 let salesChartInstance = null; 
+let allProducts = {}; // لتخزين المنتجات والتعديل عليها
+let currentEditId = null;
 
 onAuthStateChanged(auth, async (user) => {
     if (user) {
@@ -25,7 +27,6 @@ onAuthStateChanged(auth, async (user) => {
             document.getElementById('userEmail').innerText = u.email;
             document.getElementById('userRoleBadge').innerText = t('btn_role_' + myRole) || myRole.toUpperCase();
             document.getElementById('userImg').src = u.photo || `https://ui-avatars.com/api/?name=${u.name}&background=3b82f6&color=fff`;
-            // استخدام القاموس للترجمة
             document.getElementById('userPhoneDisplay').innerText = u.phone || t('no_phone_registered');
             
             if(myRole === 'admin') {
@@ -315,6 +316,7 @@ window.viewOrderDetails = (id) => {
 function loadContent(uId, wishlist) {
     onValue(ref(db, 'products'), (snap) => {
         const prods = snap.val() || {};
+        allProducts = prods;
         const wishGrid = document.getElementById('wishlistGrid');
         const myGrid = document.getElementById('myProductsGrid');
         
@@ -322,7 +324,14 @@ function loadContent(uId, wishlist) {
         let myHtml = '';
         let myCount = 0;
         
-        Object.keys(prods).forEach(key => {
+        // الترتيب بالعمولة تنازلياً
+        const sortedKeys = Object.keys(prods).sort((a, b) => {
+            const commA = Number(prods[a].oldPrice) || 0;
+            const commB = Number(prods[b].oldPrice) || 0;
+            return commB - commA; 
+        });
+        
+        sortedKeys.forEach(key => {
             const p = prods[key];
             if(wishlist.includes(key)) {
                 wishHtml += `<div class="glass p-4 rounded-3xl border border-white/5 flex gap-4 items-center animate-slide list-item-fast"><img src="${p.image}" loading="lazy" class="w-12 h-12 rounded-xl object-cover shadow-lg"><div class="flex-1 font-bold text-[10px]"><h4 class="text-white line-clamp-1">${p.name}</h4><p class="text-blue-400 mt-1">${p.price} ${t('currency')}</p></div><a href="details.html?id=${key}" class="p-2 bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white transition rounded-xl text-[9px] font-black shadow-md">${t('btn_details')}</a></div>`;
@@ -333,11 +342,11 @@ function loadContent(uId, wishlist) {
                     <div class="flex-1 font-bold text-[10px]">
                         <h4 class="text-white line-clamp-1">${p.name}</h4>
                         <p class="text-blue-400 mt-1">${p.price} ${t('currency')}</p>
-                        ${p.oldPrice ? `<p class="text-green-400 mt-1">${t('p_commission')}: ${p.oldPrice} ${t('currency')}</p>` : ''}
+                        ${p.oldPrice ? `<p class="text-green-400 mt-1">${t('p_commission')} ${p.oldPrice} ${t('currency')}</p>` : ''}
                     </div>
                     <div class="flex flex-col gap-1">
                         <a href="details.html?id=${key}" class="px-2 py-1 bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white transition rounded-lg text-[9px] font-black shadow-md text-center">${t('btn_details')}</a>
-                        <button onclick="editProduct('${key}', '${p.name.replace(/'/g, "\\'")}', '${p.price}', '${p.image}', '${p.oldPrice || ''}')" class="px-2 py-1 bg-yellow-500/10 text-yellow-500 hover:bg-yellow-500 hover:text-white transition rounded-lg text-[9px] font-black shadow-md">${t('btn_edit')}</button>
+                        <button onclick="openEditModal('${key}')" class="px-2 py-1 bg-yellow-500/10 text-yellow-500 hover:bg-yellow-500 hover:text-white transition rounded-lg text-[9px] font-black shadow-md">${t('btn_edit')}</button>
                         <button onclick="deleteProduct('${key}')" class="px-2 py-1 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition rounded-lg text-[9px] font-black shadow-md">${t('btn_delete')}</button>
                     </div>
                 </div>`;
@@ -353,15 +362,53 @@ function loadContent(uId, wishlist) {
     });
 }
 
-window.editProduct = async (id, oldN, oldP, oldI, oldComm) => { 
-    const nn = prompt(t('prompt_new_name'), oldN); 
-    const np = prompt(t('prompt_new_price'), oldP); 
-    const nComm = prompt(t('prompt_new_comm'), oldComm !== 'undefined' && oldComm !== 'null' ? oldComm : '');
-    const ni = prompt(t('prompt_new_img'), oldI); 
-    if(nn && np) { 
-        await update(ref(db, 'products/' + id), { name: nn, price: np, oldPrice: nComm, image: ni }); 
-        showToast(t('msg_update_success')); 
-    } 
+// === أكواد التعديل الشامل للمنتج ===
+window.openEditModal = (id) => {
+    const p = allProducts[id];
+    if(!p) return;
+    currentEditId = id;
+    document.getElementById('eName').value = p.name || '';
+    document.getElementById('eCategory').value = p.category || 'الكل';
+    document.getElementById('eSubCategory').value = p.subCategory || 'عام';
+    document.getElementById('ePrice').value = p.price || '';
+    document.getElementById('eOldPrice').value = p.oldPrice || '';
+    document.getElementById('eModel').value = p.model || '';
+    document.getElementById('eMaterial').value = p.material || '';
+    document.getElementById('eColors').value = p.colors || '';
+    document.getElementById('eSizes').value = p.sizes || '';
+    document.getElementById('eImage').value = p.image || '';
+    document.getElementById('eExtraImages').value = p.extraImages || '';
+    document.getElementById('eDesc').value = p.desc || '';
+    
+    document.getElementById('editProductModal').classList.remove('hidden');
+};
+
+window.closeEditModal = () => document.getElementById('editProductModal').classList.add('hidden');
+
+window.saveEditedProduct = async () => {
+    if(!currentEditId) return;
+    const updatedData = {
+        name: document.getElementById('eName').value,
+        category: document.getElementById('eCategory').value,
+        subCategory: document.getElementById('eSubCategory').value,
+        price: document.getElementById('ePrice').value,
+        oldPrice: document.getElementById('eOldPrice').value,
+        model: document.getElementById('eModel').value,
+        material: document.getElementById('eMaterial').value,
+        colors: document.getElementById('eColors').value,
+        sizes: document.getElementById('eSizes').value,
+        image: document.getElementById('eImage').value,
+        extraImages: document.getElementById('eExtraImages').value,
+        desc: document.getElementById('eDesc').value
+    };
+    
+    try {
+        await update(ref(db, 'products/' + currentEditId), updatedData);
+        showToast(t('msg_update_success'));
+        closeEditModal();
+    } catch (e) {
+        showToast(t('msg_error_conn'));
+    }
 };
 
 window.deleteProduct = (id) => confirm(t('msg_delete_confirm')) && remove(ref(db, 'products/' + id)) && showToast(t('msg_delete_success'));

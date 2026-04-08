@@ -2,12 +2,15 @@ import { auth, db } from "./firebase-config.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { ref, get, set, update, onValue, push, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-let myUid = null; let myRole = 'user'; let currentOrdersData = {};
+// === هنا صلحنا المشكلة! عرفنا كل المتغيرات صح عشان ميضربش إيرور ===
+let myUid = null; 
+let myRole = 'user'; 
+let currentOrdersData = {};
 let salesChartInstance = null; 
+let allProducts = {}; // المتغير اللي كان ناقص وعمل المشكلة
 
 window.newProfileBase64 = null;
 
-// دالة ضغط الصورة للبروفايل
 window.processImageUpload = (event, previewId, callback) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -37,7 +40,6 @@ window.processImageUpload = (event, previewId, callback) => {
     };
 };
 
-// وظيفة الأكورديون للداش بورد
 window.toggleDashboardTab = (tabId) => {
     ['salesChartContainer', 'successOrdersContainer', 'failedOrdersContainer'].forEach(id => {
         const el = document.getElementById(id);
@@ -374,7 +376,13 @@ function loadContent(uId, wishlist) {
         let myHtml = '';
         let myCount = 0;
         
-        Object.keys(prods).forEach(key => {
+        const sortedKeys = Object.keys(prods).sort((a, b) => {
+            const commA = Number(prods[a].oldPrice) || 0;
+            const commB = Number(prods[b].oldPrice) || 0;
+            return commB - commA; 
+        });
+        
+        sortedKeys.forEach(key => {
             const p = prods[key];
             if(wishlist.includes(key)) {
                 wishHtml += `<div class="glass p-4 rounded-3xl border border-white/5 flex gap-4 items-center animate-slide list-item-fast"><img src="${p.image}" loading="lazy" class="w-12 h-12 rounded-xl object-cover shadow-lg"><div class="flex-1 font-bold text-[10px]"><h4 class="text-white line-clamp-1">${p.name}</h4><p class="text-blue-400 mt-1">${p.price} ${t('currency')}</p></div><a href="details.html?id=${key}" class="p-2 bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white transition rounded-xl text-[9px] font-black shadow-md">${t('btn_details')}</a></div>`;
@@ -405,6 +413,20 @@ function loadContent(uId, wishlist) {
 }
 
 window.deleteProduct = (id) => confirm(t('msg_delete_confirm')) && remove(ref(db, 'products/' + id)) && showToast(t('msg_delete_success'));
+
+window.openOrderArchive = (status) => {
+    const sect = document.getElementById('orderArchiveSection');
+    const list = document.getElementById('archiveList');
+    sect.classList.remove('hidden'); 
+    let archiveHtml = '';
+    Object.keys(currentOrdersData).forEach(key => {
+        const o = currentOrdersData[key];
+        if(o.status === status && (myRole === 'admin' || o.marketerId === myUid || o.ownerId === myUid)) {
+            archiveHtml += `<div class="bg-white/5 p-4 rounded-2xl flex justify-between items-center text-[10px] mb-2 animate-slide border border-white/5 list-item-fast"><div><p class="text-blue-400 font-black">${o.productName || t('order_product')}</p><p class="text-gray-500 mt-1">${o.customerName || t('lbl_unknown')}</p></div><span class="font-bold text-white text-xs">${o.total || o.totalPrice} ${t('currency')}</span></div>`;
+        }
+    });
+    list.innerHTML = archiveHtml || `<p class="text-[10px] text-gray-500 text-center py-4">${t('no_archive_records')}</p>`;
+};
 
 window.showJoinForm = () => { document.getElementById('requestStatic').classList.add('hidden'); document.getElementById('joinForm').classList.remove('hidden'); };
 

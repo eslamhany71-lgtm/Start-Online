@@ -6,14 +6,12 @@ let currentUser = null, userRole = 'user', allProducts = {}, allUsers = {}, user
 let selectedMainCat = 'الكل', selectedSubCat = 'الكل';
 let currentEditId = null; 
 const DEBT_LIMIT = 500;
-
 let currentNotifLength = 0;
 let userClearedNotifs = false;
 
 window.newPublishBase64 = null;
 window.newEditBase64 = null;
 
-// دالة ضغط الصورة السحرية للمنتجات
 window.processImageUpload = (event, previewId, callback) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -25,10 +23,8 @@ window.processImageUpload = (event, previewId, callback) => {
         img.src = e.target.result;
         img.onload = () => {
             const canvas = document.createElement('canvas');
-            const MAX_WIDTH = 600; 
-            const MAX_HEIGHT = 600;
-            let width = img.width;
-            let height = img.height;
+            const MAX_WIDTH = 600; const MAX_HEIGHT = 600;
+            let width = img.width; let height = img.height;
 
             if (width > height) { if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } } 
             else { if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; } }
@@ -73,7 +69,6 @@ onAuthStateChanged(auth, async (user) => {
                     document.getElementById('lockMessage').classList.remove('hidden');
                 }
             }
-            
             loadNotifications(userRole, user.uid);
         }
         loadProducts(); updateCartUI();
@@ -176,7 +171,6 @@ window.updateCartUI = () => {
 window.removeFromCart = (key) => { if(confirm(t('msg_delete_cart'))) remove(ref(db, `carts/${currentUser.uid}/${key}`)); };
 
 const dbCategories = { 'all': 'الكل', 'clothes': 'ملابس', 'acc': 'إكسسوارات', 'perfume': 'عطور', 'beauty': 'صحة وجمال', 'best': 'أكثر مبيعاً', 'electronics': 'إلكترونيات' };
-
 const subData = {
     clothes: [{dbVal:'رجالي', tKey:'sub_men', i:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcq8MbpMpYi4h72YsWLGOu8L2bU7lNdq-3ZQ&s'}, {dbVal:'حريمي', tKey:'sub_women', i:'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=100'}],
     acc: [{dbVal:'رجالي', tKey:'sub_men', i:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHE6nx5A79B-M8Ptx1axoKtJyh__8fFnVf9Q&s'}, {dbVal:'حريمي', tKey:'sub_women', i:'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg_2PO3OsO5EeG2It9AcKvUkfcraT1AzfcbFuB4c_RxtgsYzAPBUico99Z2PlxYnTKx4Rd0WlhLqoI6QpHR-IVSZsEXDQPij6CZY0eaoQ-tWvUO4PQrNOyYD_9CgZpLx6kUDFLBSBlP-f97/s1600/%D8%A7%D9%83%D8%B3%D8%B3%D9%88%D8%A7%D8%B1%D8%A7%D8%AA+%D9%85%D8%B3%D8%AA%D9%88%D8%B1%D8%AF%D8%A9+%D9%85%D9%86+%D8%A7%D9%84%D8%B5%D9%8A%D9%86.jpg'}],
@@ -321,7 +315,7 @@ window.rejectMarketer = async (uid) => {
 window.saveProduct = () => {
     const name = document.getElementById('pName').value, price = document.getElementById('pPrice').value;
     const defaultImg = 'https://placehold.co/400x400/1e293b/3b82f6?text=Start+Online';
-    const finalImage = window.newPublishBase64 || document.getElementById('eImage')?.value || defaultImg;
+    const finalImage = window.newPublishBase64 || defaultImg; // سحب الصورة من المتصفح
 
     if(name && price) { 
         push(ref(db, 'products'), { 
@@ -415,11 +409,9 @@ window.openEditModal = (id) => {
     document.getElementById('eExtraImages').value = p.extraImages || '';
     document.getElementById('eDesc').value = p.desc || '';
     
-    // صورة القديمة للمنتج
     const editImgPreview = document.getElementById('editImgPreview');
     editImgPreview.src = p.image || 'https://via.placeholder.com/150';
-    editImgPreview.classList.remove('hidden');
-    window.newEditBase64 = null; // تصفير عشان لو معدلش الصورة تفضل القديمة
+    window.newEditBase64 = null; 
     
     document.getElementById('editProductModal').classList.remove('hidden');
 };
@@ -440,7 +432,7 @@ window.saveEditedProduct = async () => {
         material: document.getElementById('eMaterial').value,
         colors: document.getElementById('eColors').value,
         sizes: document.getElementById('eSizes').value,
-        image: window.newEditBase64 || p.image, // لو اختار صورة جديدة ارفعها، لو لأ سيب القديمة
+        image: window.newEditBase64 || p.image, // لو رفع جديدة هياخدها، غير كده يفضل بالقديمة
         extraImages: document.getElementById('eExtraImages').value,
         desc: document.getElementById('eDesc').value
     };
@@ -449,9 +441,7 @@ window.saveEditedProduct = async () => {
         await update(ref(db, 'products/' + currentEditId), updatedData);
         showToast(t('msg_update_success'));
         closeEditModal();
-    } catch (e) {
-        showToast(t('msg_error_conn'));
-    }
+    } catch (e) { showToast(t('msg_error_conn')); }
 };
 
 window.loadUsers = function() { 

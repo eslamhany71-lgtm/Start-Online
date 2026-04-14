@@ -60,9 +60,9 @@ onAuthStateChanged(auth, async (user) => {
             const userInfoEl = document.getElementById('userInfo');
             if (userInfoEl) userInfoEl.innerText = `${u.name} | ${t('btn_role_'+userRole) || userRole.toUpperCase()}`;
             
+            // هنا تم مسح السطر اللي كان بيعمل الإيرور!
             if (userRole === 'admin') {
                 document.getElementById('adminStats').classList.remove('hidden');
-                document.getElementById('adminUsersPanel').classList.remove('hidden');
                 loadAdminDashboard(); 
                 loadMarketerRequests(); 
             }
@@ -240,6 +240,8 @@ function loadAdminDashboard() {
         allUsers = snap.val() || {}; const uArr = Object.values(allUsers);
         document.getElementById('totalUsers').innerText = uArr.length;
         document.getElementById('totalMerchants').innerText = uArr.filter(u => u.role === 'merchant').length;
+        document.getElementById('totalMarketers').innerText = uArr.filter(u => u.role === 'marketer').length;
+        document.getElementById('totalNormalUsers').innerText = uArr.filter(u => u.role === 'user' || u.role === 'customer').length;
     });
     onValue(ref(db, 'products'), (s) => document.getElementById('totalProducts').innerText = Object.keys(s.val() || {}).length);
     onValue(ref(db, 'reviews'), (s) => { let c = 0; const data = s.val() || {}; Object.values(data).forEach(r => c += Object.keys(r).length); document.getElementById('totalReviews').innerText = c; });
@@ -291,8 +293,6 @@ window.openUsersModal = (role) => {
     });
     l.innerHTML = modalHtml;
 };
-
-window.closeUsersModal = () => document.getElementById('usersModal').classList.add('hidden');
 
 // ==========================================
 // 7. طلبات الانضمام

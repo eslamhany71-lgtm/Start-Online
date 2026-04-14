@@ -12,6 +12,9 @@ let userClearedNotifs = false;
 window.newPublishBase64 = null;
 window.newEditBase64 = null;
 
+// ==========================================
+// 1. دالة ضغط الصور السحرية
+// ==========================================
 window.processImageUpload = (event, previewId, callback) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -41,6 +44,9 @@ window.processImageUpload = (event, previewId, callback) => {
     };
 };
 
+// ==========================================
+// 2. حالة تسجيل الدخول والصلاحيات
+// ==========================================
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         currentUser = user;
@@ -57,8 +63,8 @@ onAuthStateChanged(auth, async (user) => {
             if (userRole === 'admin') {
                 document.getElementById('adminStats').classList.remove('hidden');
                 document.getElementById('adminUsersPanel').classList.remove('hidden');
-                document.getElementById('marketerRequestsPanel').classList.remove('hidden');
-                loadAdminDashboard(); loadMarketerRequests(); window.loadUsers();
+                loadAdminDashboard(); 
+                loadMarketerRequests(); 
             }
 
             if (userRole === 'merchant' || userRole === 'admin') { 
@@ -75,6 +81,9 @@ onAuthStateChanged(auth, async (user) => {
     } else { window.location.href = "login.html"; }
 });
 
+// ==========================================
+// 3. نظام الإشعارات
+// ==========================================
 window.clearNotifs = () => {
     userClearedNotifs = true;
     document.getElementById('notifList').innerHTML = `<p class="text-[10px] text-gray-500 text-center py-4">${t('notifs_cleared')}</p>`;
@@ -133,6 +142,9 @@ window.toggleNotif = () => {
     if(!drop.classList.contains('hidden')) document.getElementById('notifBadge').classList.add('hidden');
 };
 
+// ==========================================
+// 4. سلة المشتريات
+// ==========================================
 window.toggleCart = () => document.getElementById('cartDrawer').classList.toggle('open');
 window.updateCartUI = () => {
     if(!currentUser) return;
@@ -170,6 +182,9 @@ window.updateCartUI = () => {
 
 window.removeFromCart = (key) => { if(confirm(t('msg_delete_cart'))) remove(ref(db, `carts/${currentUser.uid}/${key}`)); };
 
+// ==========================================
+// 5. الفلاتر والأقسام
+// ==========================================
 const dbCategories = { 'all': 'الكل', 'clothes': 'ملابس', 'acc': 'إكسسوارات', 'perfume': 'عطور', 'beauty': 'صحة وجمال', 'best': 'أكثر مبيعاً', 'electronics': 'إلكترونيات' };
 const subData = {
     clothes: [{dbVal:'رجالي', tKey:'sub_men', i:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcq8MbpMpYi4h72YsWLGOu8L2bU7lNdq-3ZQ&s'}, {dbVal:'حريمي', tKey:'sub_women', i:'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=100'}],
@@ -217,57 +232,91 @@ window.resetAllFilters = () => {
     renderGrid(allProducts);
 };
 
+// ==========================================
+// 6. لوحة الإدارة وتحميل الإكسيل
+// ==========================================
 function loadAdminDashboard() {
     onValue(ref(db, 'users'), (snap) => {
         allUsers = snap.val() || {}; const uArr = Object.values(allUsers);
         document.getElementById('totalUsers').innerText = uArr.length;
         document.getElementById('totalMerchants').innerText = uArr.filter(u => u.role === 'merchant').length;
-        document.getElementById('totalMarketers').innerText = uArr.filter(u => u.role === 'marketer').length;
-        document.getElementById('totalNormalUsers').innerText = uArr.filter(u => u.role === 'user' || u.role === 'customer').length;
     });
     onValue(ref(db, 'products'), (s) => document.getElementById('totalProducts').innerText = Object.keys(s.val() || {}).length);
     onValue(ref(db, 'reviews'), (s) => { let c = 0; const data = s.val() || {}; Object.values(data).forEach(r => c += Object.keys(r).length); document.getElementById('totalReviews').innerText = c; });
 }
 
+window.exportUsersToExcel = () => {
+    if (Object.keys(allUsers).length === 0) {
+        showToast(t('no_users_to_export') || 'لا يوجد مستخدمين لتحميلهم');
+        return;
+    }
+    
+    const dataToExport = Object.values(allUsers).map(u => ({
+        'الاسم': u.name || 'غير محدد',
+        'البريد الإلكتروني': u.email || 'غير محدد',
+        'رقم الموبايل': u.phone || u.phoneNumber || 'غير مسجل',
+        'الرتبة': t('btn_role_' + u.role) || u.role || 'user'
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "المستخدمين");
+    
+    XLSX.writeFile(workbook, "StartOnline_Users.xlsx");
+    showToast(t('msg_excel_downloaded') || 'تم تحميل ملف الإكسيل بنجاح!');
+};
+
 window.openUsersModal = (role) => {
     const m = document.getElementById('usersModal'); const l = document.getElementById('modalList');
-    m.style.display = 'flex'; 
+    m.classList.remove('hidden'); 
     let modalHtml = '';
     Object.keys(allUsers).forEach(uid => { 
         const u = allUsers[uid];
         if(role === 'all' || u.role === role || (role === 'user' && u.role === 'customer')) {
-            modalHtml += `<div class="bg-white/5 p-4 rounded-2xl border border-white/5 flex justify-between items-center text-right font-bold hover:bg-white/10 transition-colors mb-2">
-                <div>
-                    <p class="text-white text-xs uppercase tracking-tighter">${u.name} <span class="text-[9px] text-blue-400">(${u.role})</span></p>
-                    <p class="text-[10px] text-gray-500 mt-1 italic">${u.email}</p>
+            modalHtml += `<div class="bg-white/5 p-4 rounded-2xl border border-white/5 flex flex-col gap-3 font-bold text-right">
+                <div class="flex justify-between items-start">
+                    <p class="text-sm text-white">${u.name}</p>
+                    <span class="text-[8px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 font-black uppercase border border-blue-500/20">${t('btn_role_'+u.role) || u.role}</span>
                 </div>
-                <button onclick="visitAccount('${uid}')" class="bg-blue-600/20 text-blue-400 px-4 py-2 rounded-xl text-[10px] font-black border border-blue-400/30 hover:bg-blue-600 hover:text-white transition-all">${t('btn_visit')}</button>
+                <p class="text-[10px] text-gray-500 font-mono">${u.phone || 'بدون رقم'}</p>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-2">
+                    <button onclick="changeRole('${uid}', 'merchant')" class="w-full text-[8px] border border-green-500/20 rounded-lg p-2 hover:bg-green-500 hover:text-white text-green-400 transition-all font-black uppercase">تاجر</button>
+                    <button onclick="changeRole('${uid}', 'marketer')" class="w-full text-[8px] border border-blue-500/20 rounded-lg p-2 hover:bg-blue-500 hover:text-white text-blue-400 transition-all font-black uppercase">${t('btn_role_marketer')}</button>
+                    <button onclick="changeRole('${uid}', 'admin')" class="w-full text-[8px] border border-yellow-500/20 rounded-lg p-2 hover:bg-yellow-500 hover:text-white text-yellow-500 transition-all font-black uppercase">${t('btn_role_admin')}</button>
+                    <button onclick="changeRole('${uid}', 'user')" class="w-full text-[8px] bg-white/5 rounded-lg p-2 text-white hover:bg-white/20 transition-all font-black uppercase">${t('guest')}</button>
+                </div>
+                <button onclick="visitAccount('${uid}')" class="w-full bg-blue-600/20 text-blue-400 py-2 rounded-xl text-[10px] font-black border border-blue-400/30 hover:bg-blue-600 hover:text-white transition-all shadow-xl">${t('btn_visit')}</button>
             </div>`; 
         }
     });
     l.innerHTML = modalHtml;
 };
 
-window.closeUsersModal = () => document.getElementById('usersModal').style.display = 'none';
+window.closeUsersModal = () => document.getElementById('usersModal').classList.add('hidden');
 
+// ==========================================
+// 7. طلبات الانضمام
+// ==========================================
 function loadMarketerRequests() { 
     onValue(ref(db, 'marketer_requests'), (snap) => { 
         const list = document.getElementById('requestsList'); 
+        const counter = document.getElementById('requestsCount');
         const data = snap.val(); 
         if(data) {
+            const reqKeys = Object.keys(data);
+            if(counter) counter.innerText = reqKeys.length;
             let reqHtml = '';
-            Object.keys(data).forEach(uid => { 
+            reqKeys.forEach(uid => { 
                 const r = data[uid]; 
-                reqHtml += `<div class="glass p-5 rounded-3xl flex flex-col md:flex-row justify-between items-center text-right font-bold animate-fade-in shadow-xl border border-white/5 gap-4">
-                    <div><p class="text-sm text-white underline decoration-blue-500/30 tracking-widest">${r.name}</p><p class="text-[10px] text-gray-500">${r.email}</p></div>
-                    <div class="flex gap-2 w-full md:w-auto">
-                        <button onclick="viewRequestDetails('${uid}')" class="flex-1 bg-blue-600/20 text-blue-400 px-4 py-2 rounded-xl text-[10px] font-black shadow-lg hover:bg-blue-600 hover:text-white transition-colors">${t('btn_req_details')}</button>
-                    </div>
+                reqHtml += `<div class="glass p-5 rounded-3xl flex flex-col md:flex-row justify-between items-center text-right font-bold border border-white/5 gap-4 mb-2">
+                    <div><p class="text-sm text-white">${r.name}</p><p class="text-[10px] text-gray-500">${r.email}</p></div>
+                    <button onclick="viewRequestDetails('${uid}')" class="bg-blue-600/20 text-blue-400 px-4 py-2 rounded-xl text-[10px] font-black shadow-lg hover:bg-blue-600 hover:text-white transition-colors">${t('btn_req_details')}</button>
                 </div>`; 
             });
             list.innerHTML = reqHtml;
         } else {
-            list.innerHTML = `<p class="text-[10px] text-gray-500">${t('no_requests')}</p>`;
+            if(counter) counter.innerText = "0";
+            list.innerHTML = `<p class="text-[10px] text-gray-500 text-center">${t('no_requests')}</p>`;
         }
     }); 
 }
@@ -291,7 +340,6 @@ window.viewRequestDetails = async (uid) => {
         document.getElementById('reqModalActions').innerHTML = `
             <button onclick="approveMarketer('${uid}')" class="flex-1 bg-green-600 text-white py-3 rounded-xl text-[10px] font-black hover:bg-green-500 transition-colors shadow-lg btn-glow">${t('btn_accept_req')}</button>
             <button onclick="rejectMarketer('${uid}')" class="flex-1 bg-red-600/20 text-red-500 py-3 rounded-xl text-[10px] font-black hover:bg-red-600 hover:text-white transition-colors">${t('btn_reject_req')}</button>
-            <button onclick="visitAccount('${uid}')" class="flex-1 bg-white/10 text-white py-3 rounded-xl text-[10px] font-black hover:bg-white/20 transition-colors">${t('btn_visit_profile')}</button>
         `;
         document.getElementById('requestDetailsModal').classList.remove('hidden');
     }
@@ -312,10 +360,13 @@ window.rejectMarketer = async (uid) => {
     }
 };
 
+// ==========================================
+// 8. إدارة المنتجات (نشر، عرض، تعديل، حذف)
+// ==========================================
 window.saveProduct = () => {
     const name = document.getElementById('pName').value, price = document.getElementById('pPrice').value;
     const defaultImg = 'https://placehold.co/400x400/1e293b/3b82f6?text=Start+Online';
-    const finalImage = window.newPublishBase64 || defaultImg; // سحب الصورة من المتصفح
+    const finalImage = window.newPublishBase64 || defaultImg; 
 
     if(name && price) { 
         push(ref(db, 'products'), { 
@@ -432,7 +483,7 @@ window.saveEditedProduct = async () => {
         material: document.getElementById('eMaterial').value,
         colors: document.getElementById('eColors').value,
         sizes: document.getElementById('eSizes').value,
-        image: window.newEditBase64 || p.image, // لو رفع جديدة هياخدها، غير كده يفضل بالقديمة
+        image: window.newEditBase64 || p.image, 
         extraImages: document.getElementById('eExtraImages').value,
         desc: document.getElementById('eDesc').value
     };
@@ -444,31 +495,11 @@ window.saveEditedProduct = async () => {
     } catch (e) { showToast(t('msg_error_conn')); }
 };
 
-window.loadUsers = function() { 
-    onValue(ref(db, 'users'), (snapshot) => { 
-        const users = snapshot.val(); const list = document.getElementById('usersList'); 
-        if(!list) return;
-        let usersHtml = ''; 
-        if(users) Object.keys(users).forEach(uid => { 
-            const u = users[uid]; 
-            usersHtml += `<div class="bg-white/5 p-4 rounded-2xl border border-white/5 flex flex-col gap-3 font-bold text-right animate-slide">
-                <div class="flex justify-between items-start">
-                    <p class="text-sm text-white">${u.name}</p>
-                    <span class="text-[8px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 font-black uppercase border border-blue-500/20">${u.role}</span>
-                </div>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-2">
-                    <button onclick="changeRole('${uid}', 'merchant')" class="w-full text-[8px] border border-green-500/20 rounded-lg p-2 hover:bg-green-500 hover:text-white text-green-400 transition-all font-black uppercase">تاجر</button>
-                    <button onclick="changeRole('${uid}', 'marketer')" class="w-full text-[8px] border border-blue-500/20 rounded-lg p-2 hover:bg-blue-500 hover:text-white text-blue-400 transition-all font-black uppercase">${t('btn_role_marketer')}</button>
-                    <button onclick="changeRole('${uid}', 'admin')" class="w-full text-[8px] border border-yellow-500/20 rounded-lg p-2 hover:bg-yellow-500 hover:text-white text-yellow-500 transition-all font-black uppercase">${t('btn_role_admin')}</button>
-                    <button onclick="changeRole('${uid}', 'user')" class="w-full text-[8px] bg-white/5 rounded-lg p-2 text-white hover:bg-white/20 transition-all font-black uppercase">${t('guest')}</button>
-                </div>
-                <button onclick="visitAccount('${uid}')" class="w-full bg-blue-600/20 text-blue-400 py-2 rounded-xl text-[10px] font-black border border-blue-400/30 hover:bg-blue-600 hover:text-white transition-all shadow-xl">${t('btn_visit_user')}</button>
-            </div>`; 
-        }); 
-        list.innerHTML = usersHtml;
-    }); 
-}
+window.deleteProduct = (id) => confirm(t('msg_delete_confirm')) && remove(ref(db, 'products/' + id)) && showToast(t('msg_delete_success'));
 
+// ==========================================
+// 9. وظائف عامة
+// ==========================================
 window.setLanguage = (lang) => { localStorage.setItem('lang', lang); location.reload(); };
 window.changeRole = (uid, r) => { if(confirm(t('msg_role_confirm'))) { update(ref(db, 'users/' + uid), { role: r }); showToast(t('msg_role_success')); } };
 
@@ -486,33 +517,22 @@ window.toggleWishlist = async (id) => {
     await update(ref(db, 'users/' + currentUser.uid), { wishlist: userWishlist }); 
 };
 
-window.visitAccount = (uid) => {
-    showToast(t('msg_redirect_profile'));
-    window.location.href = `profile.html?uid=${uid}`; 
-};
-
-window.deleteProduct = (id) => confirm(t('msg_delete_confirm')) && remove(ref(db, 'products/' + id)) && showToast(t('msg_delete_success'));
-window.viewDetails = (id, n, p, i) => window.location.href = `details.html?id=${id}&name=${encodeURIComponent(n)}&price=${p}&image=${encodeURIComponent(i)}`;
+window.visitAccount = (uid) => { showToast(t('msg_redirect_profile')); window.location.href = `profile.html?uid=${uid}`; };
 window.loadWishlistOnly = () => { const f = {}; Object.keys(allProducts).forEach(k => { if(userWishlist.includes(k)) f[k] = allProducts[k]; }); renderGrid(f); };
 window.showToast = (m) => { const tst = document.getElementById('toast'); tst.innerText = m; tst.style.opacity = '1'; setTimeout(() => tst.style.opacity = '0', 3000); };
 window.logout = () => confirm(t('msg_logout_confirm')) && signOut(auth).then(() => window.location.href = "login.html");
 
 // ==========================================
-// سحر إغلاق النوافذ عند الضغط في أي مكان فاضي
+// 10. الإغلاق الذكي للنوافذ عند النقر خارجها
 // ==========================================
 window.addEventListener('click', (e) => {
-    // 1. إغلاق النوافذ المنبثقة (Modals)
-    // الكود بيتعرف على الخلفية السودة من خلال كلاسات التيلويند (fixed inset-0)
-    if (e.target.classList.contains('fixed') && e.target.classList.contains('inset-0')) {
+    if (e.target.classList.contains('modal-overlay')) {
         e.target.classList.add('hidden');
     }
     
-    // 2. إغلاق قائمة الإشعارات لو ضغطت براها (بونص شياكة)
     const notifDropdown = document.getElementById('notifDropdown');
     const clickedOnNotifBtn = e.target.closest('button[onclick="toggleNotif()"]');
-    
     if (notifDropdown && !notifDropdown.classList.contains('hidden')) {
-        // لو الضغطة مكانتش جوه القائمة، ومكانتش على زرار الجرس نفسه.. اخفي القائمة
         if (!notifDropdown.contains(e.target) && !clickedOnNotifBtn) {
             notifDropdown.classList.add('hidden');
         }

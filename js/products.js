@@ -13,7 +13,7 @@ window.newPublishBase64 = null;
 window.newEditBase64 = null;
 
 // ==========================================
-// 1. دالة ضغط الصور السحرية
+// 1. دالة ضغط الصور 
 // ==========================================
 window.processImageUpload = (event, previewId, callback) => {
     const file = event.target.files[0];
@@ -45,7 +45,7 @@ window.processImageUpload = (event, previewId, callback) => {
 };
 
 // ==========================================
-// 2. حالة تسجيل الدخول والصلاحيات
+// 2. حالة الدخول
 // ==========================================
 onAuthStateChanged(auth, async (user) => {
     if (user) {
@@ -60,7 +60,6 @@ onAuthStateChanged(auth, async (user) => {
             const userInfoEl = document.getElementById('userInfo');
             if (userInfoEl) userInfoEl.innerText = `${u.name} | ${t('btn_role_'+userRole) || userRole.toUpperCase()}`;
             
-            // هنا تم مسح السطر اللي كان بيعمل الإيرور!
             if (userRole === 'admin') {
                 document.getElementById('adminStats').classList.remove('hidden');
                 loadAdminDashboard(); 
@@ -82,7 +81,7 @@ onAuthStateChanged(auth, async (user) => {
 });
 
 // ==========================================
-// 3. نظام الإشعارات
+// 3. الإشعارات
 // ==========================================
 window.clearNotifs = () => {
     userClearedNotifs = true;
@@ -143,7 +142,7 @@ window.toggleNotif = () => {
 };
 
 // ==========================================
-// 4. سلة المشتريات
+// 4. السلة
 // ==========================================
 window.toggleCart = () => document.getElementById('cartDrawer').classList.toggle('open');
 window.updateCartUI = () => {
@@ -183,7 +182,7 @@ window.updateCartUI = () => {
 window.removeFromCart = (key) => { if(confirm(t('msg_delete_cart'))) remove(ref(db, `carts/${currentUser.uid}/${key}`)); };
 
 // ==========================================
-// 5. الفلاتر والأقسام
+// 5. الفلاتر
 // ==========================================
 const dbCategories = { 'all': 'الكل', 'clothes': 'ملابس', 'acc': 'إكسسوارات', 'perfume': 'عطور', 'beauty': 'صحة وجمال', 'best': 'أكثر مبيعاً', 'electronics': 'إلكترونيات' };
 const subData = {
@@ -233,7 +232,7 @@ window.resetAllFilters = () => {
 };
 
 // ==========================================
-// 6. لوحة الإدارة وتحميل الإكسيل
+// 6. لوحة الإدارة (الأعضاء، التقييمات، الإكسيل)
 // ==========================================
 function loadAdminDashboard() {
     onValue(ref(db, 'users'), (snap) => {
@@ -241,11 +240,67 @@ function loadAdminDashboard() {
         document.getElementById('totalUsers').innerText = uArr.length;
         document.getElementById('totalMerchants').innerText = uArr.filter(u => u.role === 'merchant').length;
         document.getElementById('totalMarketers').innerText = uArr.filter(u => u.role === 'marketer').length;
-        document.getElementById('totalNormalUsers').innerText = uArr.filter(u => u.role === 'user' || u.role === 'customer').length;
     });
-    onValue(ref(db, 'products'), (s) => document.getElementById('totalProducts').innerText = Object.keys(s.val() || {}).length);
-    onValue(ref(db, 'reviews'), (s) => { let c = 0; const data = s.val() || {}; Object.values(data).forEach(r => c += Object.keys(r).length); document.getElementById('totalReviews').innerText = c; });
+    onValue(ref(db, 'products'), (s) => {
+        allProducts = s.val() || {};
+        document.getElementById('totalProducts').innerText = Object.keys(allProducts).length;
+    });
+    // عداد التقييمات
+    onValue(ref(db, 'reviews'), (s) => { 
+        let c = 0; const data = s.val() || {}; 
+        Object.values(data).forEach(r => c += Object.keys(r).length); 
+        document.getElementById('totalReviews').innerText = c; 
+    });
 }
+
+// عرض التقييمات في النافذة
+window.openReviewsModal = async () => {
+    const m = document.getElementById('reviewsModal');
+    const l = document.getElementById('reviewsListInner');
+    m.classList.remove('hidden');
+    l.innerHTML = `<p class="text-gray-500 text-[10px] text-center col-span-full">جاري التحميل...</p>`;
+
+    const snap = await get(ref(db, 'reviews'));
+    const reviewsData = snap.val();
+    
+    if(!reviewsData) {
+        l.innerHTML = `<p class="text-gray-500 text-[10px] text-center col-span-full">لا توجد تقييمات حتى الآن</p>`;
+        return;
+    }
+
+    let allRevArray = [];
+    for(let pId in reviewsData) {
+        const pName = allProducts[pId] ? allProducts[pId].name : 'منتج محذوف';
+        for(let rId in reviewsData[pId]) {
+            const r = reviewsData[pId][rId];
+            allRevArray.push({...r, productName: pName});
+        }
+    }
+    
+    allRevArray.reverse();
+
+    if(allRevArray.length === 0) {
+         l.innerHTML = `<p class="text-gray-500 text-[10px] text-center col-span-full">لا توجد تقييمات حتى الآن</p>`;
+         return;
+    }
+
+    let html = '';
+    allRevArray.forEach(r => {
+        const stars = "★".repeat(r.rating) + `<span class="text-gray-600/50">${"★".repeat(5-r.rating)}</span>`;
+        html += `<div class="bg-white/5 p-4 rounded-2xl border border-white/5 flex flex-col gap-2 text-right">
+            <div class="flex justify-between items-start">
+                <span class="text-[10px] font-black text-white bg-blue-500/20 px-2 py-1 rounded-full">${r.userName || 'مجهول'}</span>
+                <span class="text-yellow-400 text-xs drop-shadow-md">${stars}</span>
+            </div>
+            <p class="text-gray-300 text-[10px] italic bg-black/20 p-2 rounded-xl mt-1">"${r.comment}"</p>
+            <div class="flex justify-between items-center mt-2 border-t border-white/5 pt-2">
+                <span class="text-[9px] text-blue-400 font-bold line-clamp-1 flex-1">${r.productName}</span>
+                <span class="text-[8px] text-gray-500 font-mono">${r.date}</span>
+            </div>
+        </div>`;
+    });
+    l.innerHTML = html;
+};
 
 window.exportUsersToExcel = () => {
     if (Object.keys(allUsers).length === 0) {
@@ -294,9 +349,8 @@ window.openUsersModal = (role) => {
     l.innerHTML = modalHtml;
 };
 
-// ==========================================
-// 7. طلبات الانضمام
-// ==========================================
+window.closeUsersModal = () => document.getElementById('usersModal').classList.add('hidden');
+
 function loadMarketerRequests() { 
     onValue(ref(db, 'marketer_requests'), (snap) => { 
         const list = document.getElementById('requestsList'); 
@@ -360,9 +414,6 @@ window.rejectMarketer = async (uid) => {
     }
 };
 
-// ==========================================
-// 8. إدارة المنتجات (نشر، عرض، تعديل، حذف)
-// ==========================================
 window.saveProduct = () => {
     const name = document.getElementById('pName').value, price = document.getElementById('pPrice').value;
     const defaultImg = 'https://placehold.co/400x400/1e293b/3b82f6?text=Start+Online';
@@ -523,7 +574,7 @@ window.showToast = (m) => { const tst = document.getElementById('toast'); tst.in
 window.logout = () => confirm(t('msg_logout_confirm')) && signOut(auth).then(() => window.location.href = "login.html");
 
 // ==========================================
-// 10. الإغلاق الذكي للنوافذ عند النقر خارجها
+// 10. الإغلاق السحري
 // ==========================================
 window.addEventListener('click', (e) => {
     if (e.target.classList.contains('modal-overlay')) {

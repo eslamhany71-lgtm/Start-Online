@@ -7,12 +7,13 @@
     <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js">
     <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js">
     <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js">
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>دخول | Start Online</title>
+    
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='25' fill='%23020617'/%3E%3Cpath d='M50 20v35m0-35L35 35m15-15l15 15M30 75a30 30 0 0 0 40 0' stroke='%233b82f6' stroke-width='8' stroke-linecap='round' fill='none'/%3E%3C/svg%3E">
+    
     <script src="translations.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>دخول | Start Online</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -25,40 +26,40 @@
     <div class="bg-animate"></div>
     <div class="glow-overlay"></div>
 
-    <div class="w-full max-w-md p-10 glass rounded-[45px] shadow-2xl mx-4 relative z-10 border border-white/5">
+    <div class="w-full max-w-md p-10 glass rounded-[45px] shadow-2xl mx-4 relative z-10 border border-white/5 animate-fade-in">
         
         <div class="flex justify-center gap-4 mb-8">
-            <button onclick="setLanguage('ar')" class="text-[11px] font-bold text-gray-400 hover:text-white transition-all bg-white/5 px-3 py-1.5 rounded-full border border-white/5">العربية</button>
-            <button onclick="setLanguage('en')" class="text-[11px] font-bold text-gray-400 hover:text-white transition-all bg-white/5 px-3 py-1.5 rounded-full border border-white/5">English</button>
+            <button onclick="setLanguage('ar')" class="text-[11px] font-bold text-gray-400 hover:text-white transition-all bg-white/5 px-4 py-2 rounded-full border border-white/5 shadow-inner">العربية</button>
+            <button onclick="setLanguage('en')" class="text-[11px] font-bold text-gray-400 hover:text-white transition-all bg-white/5 px-4 py-2 rounded-full border border-white/5 shadow-inner">English</button>
         </div>
 
-        <h1 class="text-4xl font-black text-center mb-10 text-white tracking-tighter">START<span class="text-blue-500">ONLINE</span></h1>
+        <h1 class="text-4xl font-black text-center mb-10 text-white tracking-tighter italic">START<span class="text-blue-500">ONLINE</span></h1>
         
         <form id="authForm" class="space-y-5">
-            <div id="registerFields" class="hidden">
+            <div id="registerFields" class="hidden space-y-5 mb-5">
                 <input type="text" id="userName" data-key="name_placeholder" placeholder="الاسم الكامل" 
-                class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-sm text-white transition-all input-focus">
-                <input type="tel" id="userPhoneReg" data-key="phone_placeholder" placeholder="رقم الموبايل (إجباري للتواصل)"
-                class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-sm text-white transition-all input-focus">
+                class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-sm text-white transition-all input-focus shadow-inner">
+                
+                <input type="tel" id="userPhoneReg" data-key="phone_placeholder" placeholder="رقم الموبايل (إجباري للتواصل)" 
+                class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-sm text-white transition-all input-focus shadow-inner">
             </div>
-            
 
             <input type="email" id="userEmail" required data-key="email_placeholder" placeholder="البريد الإلكتروني" 
-            class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-sm text-white transition-all input-focus">
+            class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-sm text-white transition-all input-focus shadow-inner">
             
             <div class="relative">
                 <input type="password" id="userPass" required data-key="pass_placeholder" placeholder="كلمة المرور" 
-                class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-sm text-white transition-all input-focus">
-                <button type="button" onclick="togglePassword()" class="absolute left-4 top-4 text-gray-500 hover:text-white transition-colors">
+                class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-sm text-white transition-all input-focus shadow-inner">
+                <button type="button" onclick="togglePassword()" class="absolute left-4 top-4 text-gray-500 hover:text-white transition-colors p-1">
                     <i id="eyeIcon" class="fas fa-eye text-sm"></i>
                 </button>
             </div>
 
-            <div id="forgotPasswordContainer" class="text-left">
-                <button type="button" onclick="handleForgotPassword()" data-key="forgot_pass" class="text-xs text-blue-400 hover:text-blue-300 transition-colors">نسيت كلمة المرور؟</button>
+            <div id="forgotPasswordContainer" class="text-right">
+                <button type="button" onclick="handleForgotPassword()" data-key="forgot_pass" class="text-xs text-blue-400 hover:text-blue-300 transition-colors font-bold">نسيت كلمة المرور؟</button>
             </div>
 
-            <button type="submit" id="mainBtn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-2xl transition-all shadow-lg hover:shadow-blue-500/20 flex items-center justify-center gap-2 mt-4">
+            <button type="submit" id="mainBtn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-2xl transition-all shadow-lg hover:shadow-blue-500/20 flex items-center justify-center gap-2 mt-4 active:scale-95 btn-glow">
                 <span id="btnText" data-key="login_btn">دخول</span>
                 <div id="btnLoader" class="hidden w-5 h-5 border-2 border-white border-t-transparent rounded-full loader"></div>
             </button>
@@ -69,16 +70,18 @@
             <span class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#0f172a] px-4 text-[10px] text-gray-500 font-bold uppercase tracking-widest" data-key="or_via">أو عبر</span>
         </div>
 
-        <button onclick="loginWithGoogle()" class="w-full bg-white/5 border border-white/10 hover:bg-white/10 text-white py-4 rounded-2xl transition-all flex items-center justify-center gap-3 text-sm font-bold">
+        <button onclick="loginWithGoogle()" class="w-full bg-white/5 border border-white/10 hover:bg-white/10 text-white py-4 rounded-2xl transition-all flex items-center justify-center gap-3 text-sm font-bold shadow-md active:scale-95">
             <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" loading="lazy" class="w-5 h-5" alt="Google">
             <span data-key="google_btn">سجل بواسطة جوجل</span>
         </button>
 
         <p class="mt-10 text-center text-sm text-gray-400">
             <span id="toggleText" data-key="no_account">ليس لديك حساب؟</span> 
-            <button onclick="toggleAuth()" id="toggleBtn" data-key="signup_link" class="text-blue-400 font-black hover:text-blue-300 ml-1 transition-colors">إنشاء حساب</button>
+            <button onclick="toggleAuth()" id="toggleBtn" data-key="signup_link" class="text-blue-400 font-black hover:text-blue-300 ml-1 transition-colors underline decoration-blue-500/30">إنشاء حساب</button>
         </p>
     </div>
+
+    <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 glass px-10 py-5 rounded-full text-white font-black shadow-2xl opacity-0 transition-all pointer-events-none z-[500] border-blue-500 border text-xs tracking-widest uppercase italic text-center"></div>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script type="module" src="js/login.js"></script>

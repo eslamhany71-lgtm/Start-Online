@@ -74,6 +74,8 @@ window.loginWithGoogle = async () => {
     } catch (err) { alert(t('msg_google_fail') + err.message); }
 };
 
+import { ref, set, get, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"; // تأكد إن get و remove موجودين فوق
+
 document.getElementById('authForm').onsubmit = async (e) => {
     e.preventDefault();
     const email = document.getElementById('userEmail').value;
@@ -86,9 +88,27 @@ document.getElementById('authForm').onsubmit = async (e) => {
 
     try {
         if (!isLogin) {
-            const res = await createUserWithEmailAndPassword(auth, email, pass);
             const name = document.getElementById('userName').value;
-            await set(ref(db, 'users/' + res.user.uid), { name, email, role: 'user' });
+            const phone = document.getElementById('userPhoneReg').value;
+            
+            if (!name || !phone) {
+                alert("يرجى إدخال الاسم ورقم الموبايل");
+                throw new Error("missing_data");
+            }
+
+            const res = await createUserWithEmailAndPassword(auth, email, pass);
+            
+            // فحص هل الإيميل ده مرفوع من شيت الإكسيل؟
+            let userRole = 'user';
+            const emailKey = email.replace(/\./g, ','); // عشان فايربيز مبيقبلش النقطة في المفتاح
+            const preInvitedSnap = await get(ref(db, 'invited_users/' + emailKey));
+            
+            if(preInvitedSnap.exists()) {
+                userRole = preInvitedSnap.val().role || 'user';
+                await remove(ref(db, 'invited_users/' + emailKey)); // نمسحه من الدعوات بعد ما سجل
+            }
+
+            await set(ref(db, 'users/' + res.user.uid), { name, email, phone, role: userRole });
         } else {
             await signInWithEmailAndPassword(auth, email, pass);
         }
@@ -96,6 +116,7 @@ document.getElementById('authForm').onsubmit = async (e) => {
     } catch (err) {
         btnText.classList.remove('hidden');
         btnLoader.classList.add('hidden');
+        if (err.message === "missing_data") return;
         let errorMsg = err.message;
         if (err.code === 'auth/wrong-password') errorMsg = t('msg_invalid_pass');
         else if (err.code === 'auth/user-not-found') errorMsg = t('msg_user_not_found');

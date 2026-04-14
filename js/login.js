@@ -1,9 +1,22 @@
 import { auth, db } from "./firebase-config.js";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { ref, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+// لاحظ هنا إحنا ضفنا get و remove عشان نقرأ من دعوات الإكسيل ونمسحها
+import { ref, set, get, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 const googleProvider = new GoogleAuthProvider();
 let isLogin = true;
+
+// دالة التنبيهات عشان الإيرورات تطلع بشكل شيك
+window.showToast = (m) => { 
+    const tst = document.getElementById('toast'); 
+    tst.innerText = m; 
+    tst.style.opacity = '1'; 
+    tst.style.transform = 'translate(-50%, -10px)';
+    setTimeout(() => { 
+        tst.style.opacity = '0'; 
+        tst.style.transform = 'translate(-50%, 0)';
+    }, 3000); 
+};
 
 // دالة لتغيير اللغة من صفحة الدخول
 window.setLanguage = (lang) => {
@@ -46,7 +59,6 @@ window.toggleAuth = () => {
         toggleBtn.setAttribute('data-key', 'login_link');
     }
     
-    // إعادة تطبيق الترجمة فوراً عند التبديل
     if(window.applyLanguage) {
         const currentLang = localStorage.getItem('lang') || 'ar';
         window.applyLanguage(currentLang);
@@ -55,26 +67,38 @@ window.toggleAuth = () => {
 
 window.handleForgotPassword = async () => {
     const email = document.getElementById('userEmail').value;
-    if (!email) { alert(t('msg_enter_email_first')); return; }
+    if (!email) { showToast(t('msg_enter_email_first')); return; }
     try {
         await sendPasswordResetEmail(auth, email);
-        alert(t('msg_reset_sent'));
-    } catch (err) { alert("Error: " + err.message); }
+        showToast(t('msg_reset_sent'));
+    } catch (err) { showToast("Error: " + err.message); }
 };
 
 window.loginWithGoogle = async () => {
     try {
         const result = await signInWithPopup(auth, googleProvider);
+        const email = result.user.email;
+        let userRole = 'user';
+        
+        // فحص هل إيميل جوجل ده مرفوع من شيت الإكسيل كدعوة؟
+        const emailKey = email.replace(/\./g, ','); 
+        const preInvitedSnap = await get(ref(db, 'invited_users/' + emailKey));
+        
+        if(preInvitedSnap.exists()) {
+            userRole = preInvitedSnap.val().role || 'user';
+            await remove(ref(db, 'invited_users/' + emailKey)); // نمسح الدعوة
+        }
+
+        // تسجيل الداتا (بناءً على جوجل، الموبايل ممكن يكون مش موجود فهنحط فاضي مؤقتاً)
         await set(ref(db, 'users/' + result.user.uid), { 
             name: result.user.displayName, 
-            email: result.user.email, 
-            role: 'user' 
+            email: email,
+            phone: result.user.phoneNumber || '', 
+            role: userRole 
         });
         window.location.href = "index.html";
-    } catch (err) { alert(t('msg_google_fail') + err.message); }
+    } catch (err) { showToast(t('msg_google_fail') + err.message); }
 };
-
-import { ref, set, get, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"; // تأكد إن get و remove موجودين فوق
 
 document.getElementById('authForm').onsubmit = async (e) => {
     e.preventDefault();
@@ -88,60 +112,42 @@ document.getElementById('authForm').onsubmit = async (e) => {
 
     try {
         if (!isLogin) {
+            // --- في حالة التسجيل الجديد ---
             const name = document.getElementById('userName').value;
             const phone = document.getElementById('userPhoneReg').value;
             
             if (!name || !phone) {
-                alert("يرجى إدخال الاسم ورقم الموبايل");
+                showToast("يرجى إدخال الاسم ورقم الموبايل");
                 throw new Error("missing_data");
             }
 
             const res = await createUserWithEmailAndPassword(auth, email, pass);
             
-            // فحص هل الإيميل ده مرفوع من شيت الإكسيل؟
+            // فحص هل الإيميل ده مرفوع من الإكسيل؟
             let userRole = 'user';
-            const emailKey = email.replace(/\./g, ','); // عشان فايربيز مبيقبلش النقطة في المفتاح
+            const emailKey = email.replace(/\./g, ',');
             const preInvitedSnap = await get(ref(db, 'invited_users/' + emailKey));
             
             if(preInvitedSnap.exists()) {
                 userRole = preInvitedSnap.val().role || 'user';
-                await remove(ref(db, 'invited_users/' + emailKey)); // نمسحه من الدعوات بعد ما سجل
+                await remove(ref(db, 'invited_users/' + emailKey)); // نمسح الدعوة
             }
 
             await set(ref(db, 'users/' + res.user.uid), { name, email, phone, role: userRole });
         } else {
+            // --- في حالة الدخول العادي ---
             await signInWithEmailAndPassword(auth, email, pass);
         }
         window.location.href = "index.html";
     } catch (err) {
         btnText.classList.remove('hidden');
         btnLoader.classList.add('hidden');
+        
         if (err.message === "missing_data") return;
+        
         let errorMsg = err.message;
         if (err.code === 'auth/wrong-password') errorMsg = t('msg_invalid_pass');
         else if (err.code === 'auth/user-not-found') errorMsg = t('msg_user_not_found');
-        alert(errorMsg);
+        showToast(errorMsg);
     }
 };
-
-// ==========================================
-// سحر إغلاق النوافذ عند الضغط في أي مكان فاضي
-// ==========================================
-window.addEventListener('click', (e) => {
-    // 1. إغلاق النوافذ المنبثقة (Modals)
-    // الكود بيتعرف على الخلفية السودة من خلال كلاسات التيلويند (fixed inset-0)
-    if (e.target.classList.contains('fixed') && e.target.classList.contains('inset-0')) {
-        e.target.classList.add('hidden');
-    }
-    
-    // 2. إغلاق قائمة الإشعارات لو ضغطت براها (بونص شياكة)
-    const notifDropdown = document.getElementById('notifDropdown');
-    const clickedOnNotifBtn = e.target.closest('button[onclick="toggleNotif()"]');
-    
-    if (notifDropdown && !notifDropdown.classList.contains('hidden')) {
-        // لو الضغطة مكانتش جوه القائمة، ومكانتش على زرار الجرس نفسه.. اخفي القائمة
-        if (!notifDropdown.contains(e.target) && !clickedOnNotifBtn) {
-            notifDropdown.classList.add('hidden');
-        }
-    }
-});

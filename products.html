@@ -9,6 +9,8 @@
     <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='25' fill='%23020617'/%3E%3Cpath d='M50 20v35m0-35L35 35m15-15l15 15M30 75a30 30 0 0 0 40 0' stroke='%233b82f6' stroke-width='8' stroke-linecap='round' fill='none'/%3E%3C/svg%3E">
     <script src="translations.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title data-key="shop_title">المتجر الذكي | Start Online</title>
@@ -95,25 +97,46 @@
     </section>
 
     <section id="adminStats" class="max-w-7xl mx-auto px-4 mb-10 hidden grid grid-cols-2 md:grid-cols-6 gap-4 animate-fade-in">
-        <div class="stat-card p-5 rounded-3xl text-center shadow-lg" onclick="openUsersModal('all')"><p class="text-[9px] text-gray-500 uppercase font-black" data-key="stat_users">الكل</p><h3 id="totalUsers" class="text-xl font-black text-blue-400 italic">0</h3></div>
+        <div class="stat-card p-5 rounded-3xl text-center shadow-lg cursor-pointer hover:bg-white/5 transition" onclick="openUsersModal('all')"><p class="text-[9px] text-gray-500 uppercase font-black" data-key="stat_users">الأعضاء</p><h3 id="totalUsers" class="text-xl font-black text-blue-400 italic">0</h3></div>
         <div class="stat-card p-5 rounded-3xl text-center shadow-lg"><p class="text-[9px] text-gray-500 uppercase font-black" data-key="stat_prods">المنتجات</p><h3 id="totalProducts" class="text-xl font-black text-green-400 italic">0</h3></div>
+        
+        <div class="stat-card p-5 rounded-3xl text-center shadow-lg cursor-pointer hover:bg-white/5 transition flex flex-col justify-center items-center" onclick="exportUsersToExcel()">
+            <p class="text-[9px] text-green-400 uppercase font-black" data-key="download_excel">تحميل الإكسيل</p>
+            <span class="text-xl mt-1">📥</span>
+        </div>
+
+        <div class="stat-card p-5 rounded-3xl text-center shadow-lg cursor-pointer hover:bg-white/5 transition" onclick="document.getElementById('marketerRequestsModal').classList.remove('hidden')">
+            <p class="text-[9px] text-red-400 uppercase font-black" data-key="marketer_requests_title">طلبات الانضمام</p>
+            <h3 id="requestsCount" class="text-xl font-black text-red-500 italic">0</h3>
+        </div>
         <div class="stat-card p-5 rounded-3xl text-center shadow-lg" onclick="openUsersModal('merchant')"><p class="text-[9px] text-gray-500 uppercase font-black">التجار</p><h3 id="totalMerchants" class="text-xl font-black text-orange-400 italic">0</h3></div>
         <div class="stat-card p-5 rounded-3xl text-center shadow-lg" onclick="openUsersModal('marketer')"><p class="text-[9px] text-gray-500 uppercase font-black" data-key="stat_marketers">المسوقين</p><h3 id="totalMarketers" class="text-xl font-black text-purple-400 italic">0</h3></div>
-        <div class="stat-card p-5 rounded-3xl text-center shadow-lg" onclick="openUsersModal('user')"><p class="text-[9px] text-gray-500 uppercase font-black">الزوار</p><h3 id="totalNormalUsers" class="text-xl font-black text-pink-400 italic">0</h3></div>
-        <div class="stat-card p-5 rounded-3xl text-center shadow-lg"><p class="text-[9px] text-gray-500 uppercase font-black" data-key="stat_reviews">التقييمات</p><h3 id="totalReviews" class="text-xl font-black text-yellow-400 italic">0</h3></div>
     </section>
 
-    <section id="adminUsersPanel" class="max-w-7xl mx-auto mb-10 px-4 hidden glass rounded-[35px] p-6 border border-white/10 shadow-2xl animate-fade-in text-right">
-        <h2 class="text-xl font-black mb-6 text-gray-400 italic flex items-center gap-2" data-key="admin_panel_members">إدارة كافة الأعضاء <span class="text-[8px] bg-white/5 px-2 py-1 rounded-full uppercase italic border border-white/5">Super Admin</span></h2>
-        <div id="usersList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-    </section>
-
-    <section id="marketerRequestsPanel" class="max-w-7xl mx-auto mb-10 px-4 hidden animate-fade-in text-right">
-        <div class="glass p-6 md:p-8 rounded-[35px] border border-blue-500/20 shadow-2xl">
-            <h2 class="text-lg md:text-xl font-black mb-6 text-blue-400 italic underline decoration-blue-500/30" data-key="marketer_requests_title">طلبات انضمام مسوقين جدد</h2>
-            <div id="requestsList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+    <div id="usersModal" class="modal-overlay fixed inset-0 bg-black/95 z-[300] hidden flex items-center justify-center p-6 text-right transition-all">
+        <div class="glass w-full max-w-4xl p-8 rounded-[40px] border border-white/10 shadow-2xl relative animate-slide max-h-[85vh] overflow-hidden flex flex-col">
+            <button onclick="closeUsersModal()" class="absolute top-6 left-6 text-gray-500 hover:text-white font-black text-xl transition-colors z-10">✕</button>
+            <h2 id="modalTitle" class="text-2xl font-black mb-6 text-blue-400 italic underline decoration-blue-500/30 uppercase tracking-tighter" data-key="users_list_title">قائمة الأعضاء</h2>
+            <div id="modalList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-auto no-scrollbar pr-2 pb-4"></div>
         </div>
-    </section>
+    </div>
+
+    <div id="marketerRequestsModal" class="modal-overlay fixed inset-0 bg-black/95 z-[300] hidden flex items-center justify-center p-6 text-right transition-all">
+        <div class="glass w-full max-w-2xl p-8 rounded-[40px] border border-blue-500/20 shadow-2xl relative animate-slide max-h-[85vh] overflow-hidden flex flex-col">
+            <button onclick="document.getElementById('marketerRequestsModal').classList.add('hidden')" class="absolute top-6 left-6 text-gray-500 hover:text-white font-black text-xl transition-colors">✕</button>
+            <h2 class="text-xl font-black mb-6 text-red-400 italic underline decoration-red-500/30" data-key="marketer_requests_title">طلبات انضمام مسوقين جدد</h2>
+            <div id="requestsList" class="space-y-4 overflow-y-auto no-scrollbar pr-2 pb-4"></div>
+        </div>
+    </div>
+
+    <div id="requestDetailsModal" class="modal-overlay fixed inset-0 bg-black/95 z-[400] hidden flex items-center justify-center p-4 text-right transition-all">
+        <div class="glass max-w-lg w-full p-8 rounded-[40px] border border-blue-500/20 shadow-2xl relative animate-slide">
+            <button onclick="document.getElementById('requestDetailsModal').classList.add('hidden')" class="absolute top-6 left-6 text-gray-500 hover:text-white font-black text-xl transition-colors">✕</button>
+            <h2 class="text-xl font-black mb-6 text-blue-400 italic underline decoration-blue-500/30" data-key="req_details_title">تفاصيل طلب الانضمام</h2>
+            <div id="reqModalBody" class="space-y-4 mb-6"></div>
+            <div id="reqModalActions" class="flex gap-2 border-t border-white/10 pt-6"></div>
+        </div>
+    </div>
 
     <section class="max-w-7xl mx-auto px-4 mb-10 flex flex-col md:flex-row gap-4 animate-fade-in text-right">
         <div class="relative flex-1">
@@ -179,7 +202,7 @@
         </div>
     </section>
 
-    <div id="editProductModal" class="fixed inset-0 bg-black/95 z-[300] hidden flex items-center justify-center p-4 overflow-y-auto">
+    <div id="editProductModal" class="modal-overlay fixed inset-0 bg-black/95 z-[300] hidden flex items-center justify-center p-4 overflow-y-auto">
         <div class="glass max-w-3xl w-full p-8 rounded-[40px] border border-blue-500/20 shadow-2xl relative my-8 animate-slide text-right">
             <button onclick="closeEditModal()" class="absolute top-6 left-6 text-gray-500 hover:text-white font-black text-xl transition-colors">✕</button>
             <h2 class="text-2xl font-black mb-8 text-blue-400 italic underline decoration-blue-500/30" data-key="edit_product_title">تعديل بيانات المنتج</h2>
@@ -224,23 +247,6 @@
             <textarea id="eDesc" data-key="p_desc" placeholder="الوصف الكامل للمنتج..." class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl h-32 mb-6 text-white text-xs resize-none"></textarea>
             
             <button onclick="saveEditedProduct()" data-key="btn_save_changes" class="w-full bg-green-600 hover:bg-green-500 text-white font-black py-5 rounded-3xl shadow-xl transition-all uppercase tracking-widest italic active:scale-95 btn-glow">حفظ التعديلات</button>
-        </div>
-    </div>
-
-    <div id="requestDetailsModal" class="fixed inset-0 bg-black/95 z-[300] hidden flex items-center justify-center p-4 text-right transition-all">
-        <div class="glass max-w-lg w-full p-8 rounded-[40px] border border-blue-500/20 shadow-2xl relative animate-slide">
-            <button onclick="document.getElementById('requestDetailsModal').classList.add('hidden')" class="absolute top-6 left-6 text-gray-500 hover:text-white font-black text-xl transition-colors">✕</button>
-            <h2 class="text-xl font-black mb-6 text-blue-400 italic underline decoration-blue-500/30" data-key="req_details_title">تفاصيل طلب الانضمام</h2>
-            <div id="reqModalBody" class="space-y-4 mb-6"></div>
-            <div id="reqModalActions" class="flex gap-2 border-t border-white/10 pt-6"></div>
-        </div>
-    </div>
-
-    <div id="usersModal" class="fixed inset-0 bg-black/95 z-[100] hidden items-center justify-center p-6 text-right transition-all">
-        <div class="glass w-full max-w-2xl p-8 rounded-[40px] border border-white/10 shadow-2xl relative animate-slide">
-            <button onclick="closeUsersModal()" class="absolute top-6 left-6 text-gray-500 hover:text-white font-black text-xl transition-colors">✕</button>
-            <h2 id="modalTitle" class="text-2xl font-black mb-6 text-blue-400 italic underline decoration-blue-500/30 uppercase tracking-tighter" data-key="users_list_title">قائمة الأعضاء</h2>
-            <div id="modalList" class="space-y-3 max-h-[400px] overflow-y-auto no-scrollbar pr-2"></div>
         </div>
     </div>
 

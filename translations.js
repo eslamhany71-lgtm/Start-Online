@@ -15,6 +15,9 @@ const translations = {
         upload_excel: "رفع مستخدمين بـ Excel",
         msg_excel_success: "تم رفع المستخدمين بنجاح! يمكنهم الآن التسجيل بنفس الإيميل.",
         msg_excel_error: "حدث خطأ في قراءة ملف الإكسيل.",
+        download_excel: "تحميل الإكسيل",
+        no_users_to_export: "لا يوجد مستخدمين لتحميلهم",
+        msg_excel_downloaded: "تم تحميل ملف الإكسيل بنجاح!",
     },
     en: {
         index_title: "Start Online | Start Your Digital World", nav_start: "Start Now", dashboard: "Dashboard", nav_home: "Home", nav_store: "Store", nav_profile: "Profile", logout: "Logout", lang_btn: "العربية", dir: "ltr", font: "'Inter', sans-serif", search_placeholder: "Search your favorite product...", currency: "EGP", recent_notifs: "Recent Notifications", clear_all: "Clear All", checking: "Checking...", guest: "Guest",
@@ -31,7 +34,10 @@ const translations = {
         phone_placeholder: "Mobile Number (Required)",
         upload_excel: "Upload Users (Excel)",
         msg_excel_success: "Users uploaded successfully! They can sign up now.",
-        msg_excel_error: "Error parsing Excel file."
+        msg_excel_error: "Error parsing Excel file.",
+        download_excel: "Download Excel",
+        no_users_to_export: "No users to export",
+        msg_excel_downloaded: "Excel file downloaded successfully!",
     }
 };
 

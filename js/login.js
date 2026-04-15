@@ -121,16 +121,16 @@ document.getElementById('authForm').onsubmit = async (e) => {
                 throw new Error("missing_data");
             }
 
+            // هنا فايربيز بيحاول يعمل الحساب
             const res = await createUserWithEmailAndPassword(auth, email, pass);
             
-            // فحص هل الإيميل ده مرفوع من الإكسيل؟
             let userRole = 'user';
             const emailKey = email.replace(/\./g, ',');
             const preInvitedSnap = await get(ref(db, 'invited_users/' + emailKey));
             
             if(preInvitedSnap.exists()) {
                 userRole = preInvitedSnap.val().role || 'user';
-                await remove(ref(db, 'invited_users/' + emailKey)); // نمسح الدعوة
+                await remove(ref(db, 'invited_users/' + emailKey)); 
             }
 
             await set(ref(db, 'users/' + res.user.uid), { name, email, phone, role: userRole });
@@ -140,14 +140,28 @@ document.getElementById('authForm').onsubmit = async (e) => {
         }
         window.location.href = "index.html";
     } catch (err) {
+        // إخفاء اللودر وإرجاع زرار الدخول
         btnText.classList.remove('hidden');
         btnLoader.classList.add('hidden');
         
         if (err.message === "missing_data") return;
         
-        let errorMsg = err.message;
-        if (err.code === 'auth/wrong-password') errorMsg = t('msg_invalid_pass');
-        else if (err.code === 'auth/user-not-found') errorMsg = t('msg_user_not_found');
+        // === هنا سحر ترجمة أخطاء فايربيز للعربي للزبون ===
+        let errorMsg = "حدث خطأ، يرجى المحاولة مرة أخرى."; 
+        
+        if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
+            errorMsg = "بيانات الدخول (الإيميل أو كلمة المرور) غير صحيحة ❌";
+        } else if (err.code === 'auth/user-not-found') {
+            errorMsg = "هذا الحساب غير موجود لدينا 🔍";
+        } else if (err.code === 'auth/email-already-in-use') {
+            errorMsg = "هذا الإيميل مسجل به حساب بالفعل! ⚠️";
+        } else if (err.code === 'auth/weak-password') {
+            errorMsg = "كلمة المرور ضعيفة! (يجب أن تكون 6 أحرف أو أرقام على الأقل) 🔒";
+        } else if (err.code === 'auth/invalid-email') {
+            errorMsg = "صيغة البريد الإلكتروني غير صحيحة! (يجب أن يحتوي على @) 📧";
+        }
+
+        // عرض الخطأ للزبون
         showToast(errorMsg);
     }
 };

@@ -19,57 +19,52 @@ onAuthStateChanged(auth, async (user) => {
     }
 });
 
-// فتح نافذة الطلب وتحديد نوع الطلب (تاجر/مسوق)
 window.openJoinModal = async (type) => {
     if (!auth.currentUser) {
-        alert("يجب تسجيل الدخول أو إنشاء حساب أولاً لتقديم الطلب!");
+        alert(t('msg_must_login'));
         window.location.href = "login.html";
         return;
     }
     
-    // التأكد إن مفيش طلب قيد المراجعة
     const snap = await get(ref(db, 'marketer_requests/' + auth.currentUser.uid));
     if(snap.exists()){
-        alert("لديك طلب قيد المراجعة بالفعل! يرجى انتظار رد الإدارة.");
+        alert(t('msg_req_pending'));
         return;
     }
 
-    // التأكد إنه مش واخد رتبة أصلاً
     const userSnap = await get(ref(db, 'users/' + auth.currentUser.uid));
     if(userSnap.exists()){
         const role = userSnap.val().role;
         if(role === 'merchant' || role === 'marketer' || role === 'admin'){
-            alert("أنت بالفعل تمتلك صلاحيات في المنصة!");
+            alert(t('msg_already_role'));
             return;
         }
     }
 
     window.currentJoinType = type;
-    const title = type === 'merchant' ? 'طلب انضمام كـ تاجر 🏪' : 'طلب انضمام كـ مسوق 🚀';
+    const title = type === 'merchant' ? t('title_join_merchant') : t('title_join_marketer');
     document.getElementById('joinModalTitle').innerText = title;
     document.getElementById('joinModal').classList.remove('hidden');
 };
 
-// إرسال الطلب لقاعدة البيانات
 window.submitJoinRequest = async () => {
     const phone = document.getElementById('reqPhone').value;
     const address = document.getElementById('reqAddress').value;
     const bio = document.getElementById('reqBio').value;
 
     if(!phone || !address) {
-        alert("يرجى إدخال رقم الموبايل والعنوان بالتفصيل");
+        alert(t('msg_missing_name_phone'));
         return;
     }
 
     const btn = document.getElementById('submitReqBtn');
-    btn.innerText = "جاري الإرسال...";
+    btn.innerText = t('msg_sending');
     btn.disabled = true;
 
     const uid = auth.currentUser.uid;
     const userSnap = await get(ref(db, 'users/' + uid));
-    const userData = userSnap.exists() ? userSnap.val() : { name: 'مجهول', email: auth.currentUser.email };
+    const userData = userSnap.exists() ? userSnap.val() : { name: t('guest'), email: auth.currentUser.email };
 
-    // تخزين الطلب بنوعه
     const requestData = {
         uid: uid,
         name: userData.name,
@@ -77,19 +72,19 @@ window.submitJoinRequest = async () => {
         phone: phone,
         address: address,
         bio: bio,
-        requestType: window.currentJoinType, // 'marketer' or 'merchant'
+        requestType: window.currentJoinType, 
         date: new Date().toLocaleString('ar-EG')
     };
 
     try {
         await set(ref(db, 'marketer_requests/' + uid), requestData);
-        await update(ref(db, 'users/' + uid), { phone: phone }); // تحديث رقم الموبايل في حسابه عشان ميبقاش فاضي
-        alert("تم إرسال طلبك بنجاح! سيتم مراجعته من قبل الإدارة قريباً.");
+        await update(ref(db, 'users/' + uid), { phone: phone }); 
+        alert(t('msg_req_success'));
         document.getElementById('joinModal').classList.add('hidden');
     } catch (error) {
-        alert("حدث خطأ أثناء الإرسال: " + error.message);
+        alert(t('msg_send_error') + error.message);
     } finally {
-        btn.innerText = "إرسال الطلب الآن";
+        btn.innerText = t('btn_send_now');
         btn.disabled = false;
     }
 };
@@ -99,7 +94,6 @@ window.setLanguage = (lang) => {
     location.reload(); 
 };
 
-// حركة توهج الماوس
 const glow = document.getElementById('mouseGlow');
 window.addEventListener('mousemove', (e) => {
     requestAnimationFrame(() => {
@@ -108,7 +102,6 @@ window.addEventListener('mousemove', (e) => {
     });
 });
 
-// كود الإغلاق الذكي الموحد
 window.addEventListener('click', (e) => {
     if (e.target.classList.contains('modal-overlay')) {
         e.target.classList.add('hidden');

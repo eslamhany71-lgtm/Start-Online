@@ -1,12 +1,10 @@
 import { auth, db } from "./firebase-config.js";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-// لاحظ هنا إحنا ضفنا get و remove عشان نقرأ من دعوات الإكسيل ونمسحها
 import { ref, set, get, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 const googleProvider = new GoogleAuthProvider();
 let isLogin = true;
 
-// دالة التنبيهات عشان الإيرورات تطلع بشكل شيك
 window.showToast = (m) => { 
     const tst = document.getElementById('toast'); 
     tst.innerText = m; 
@@ -18,7 +16,6 @@ window.showToast = (m) => {
     }, 3000); 
 };
 
-// دالة لتغيير اللغة من صفحة الدخول
 window.setLanguage = (lang) => {
     localStorage.setItem('lang', lang);
     if(window.applyLanguage) window.applyLanguage(lang);
@@ -80,16 +77,14 @@ window.loginWithGoogle = async () => {
         const email = result.user.email;
         let userRole = 'user';
         
-        // فحص هل إيميل جوجل ده مرفوع من شيت الإكسيل كدعوة؟
         const emailKey = email.replace(/\./g, ','); 
         const preInvitedSnap = await get(ref(db, 'invited_users/' + emailKey));
         
         if(preInvitedSnap.exists()) {
             userRole = preInvitedSnap.val().role || 'user';
-            await remove(ref(db, 'invited_users/' + emailKey)); // نمسح الدعوة
+            await remove(ref(db, 'invited_users/' + emailKey)); 
         }
 
-        // تسجيل الداتا (بناءً على جوجل، الموبايل ممكن يكون مش موجود فهنحط فاضي مؤقتاً)
         await set(ref(db, 'users/' + result.user.uid), { 
             name: result.user.displayName, 
             email: email,
@@ -112,16 +107,14 @@ document.getElementById('authForm').onsubmit = async (e) => {
 
     try {
         if (!isLogin) {
-            // --- في حالة التسجيل الجديد ---
             const name = document.getElementById('userName').value;
             const phone = document.getElementById('userPhoneReg').value;
             
             if (!name || !phone) {
-                showToast("يرجى إدخال الاسم ورقم الموبايل");
+                showToast(t('msg_missing_name_phone'));
                 throw new Error("missing_data");
             }
 
-            // هنا فايربيز بيحاول يعمل الحساب
             const res = await createUserWithEmailAndPassword(auth, email, pass);
             
             let userRole = 'user';
@@ -135,33 +128,29 @@ document.getElementById('authForm').onsubmit = async (e) => {
 
             await set(ref(db, 'users/' + res.user.uid), { name, email, phone, role: userRole });
         } else {
-            // --- في حالة الدخول العادي ---
             await signInWithEmailAndPassword(auth, email, pass);
         }
         window.location.href = "index.html";
     } catch (err) {
-        // إخفاء اللودر وإرجاع زرار الدخول
         btnText.classList.remove('hidden');
         btnLoader.classList.add('hidden');
         
         if (err.message === "missing_data") return;
         
-        // === هنا سحر ترجمة أخطاء فايربيز للعربي للزبون ===
-        let errorMsg = "حدث خطأ، يرجى المحاولة مرة أخرى."; 
+        let errorMsg = t('msg_order_error') || "حدث خطأ، يرجى المحاولة مرة أخرى."; 
         
         if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
-            errorMsg = "بيانات الدخول (الإيميل أو كلمة المرور) غير صحيحة ❌";
+            errorMsg = t('msg_invalid_login');
         } else if (err.code === 'auth/user-not-found') {
-            errorMsg = "هذا الحساب غير موجود لدينا 🔍";
+            errorMsg = t('msg_user_not_found');
         } else if (err.code === 'auth/email-already-in-use') {
-            errorMsg = "هذا الإيميل مسجل به حساب بالفعل! ⚠️";
+            errorMsg = t('msg_email_in_use');
         } else if (err.code === 'auth/weak-password') {
-            errorMsg = "كلمة المرور ضعيفة! (يجب أن تكون 6 أحرف أو أرقام على الأقل) 🔒";
+            errorMsg = t('msg_weak_password');
         } else if (err.code === 'auth/invalid-email') {
-            errorMsg = "صيغة البريد الإلكتروني غير صحيحة! (يجب أن يحتوي على @) 📧";
+            errorMsg = t('msg_invalid_email');
         }
 
-        // عرض الخطأ للزبون
         showToast(errorMsg);
     }
 };

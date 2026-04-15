@@ -375,17 +375,16 @@ function loadMarketerRequests() {
     }); 
 }
 
-// دالة عرض التفاصيل للأدمن
 window.viewRequestDetails = async (uid) => {
     const snap = await get(ref(db, 'marketer_requests/' + uid));
     if(snap.exists()) {
         const r = snap.val();
-        const reqTypeAr = r.requestType === 'merchant' ? 'تاجر 🏪' : 'مسوق 🚀';
+        const reqTypeAr = r.requestType === 'merchant' ? t('type_merchant') : t('type_marketer');
         const reqColor = r.requestType === 'merchant' ? 'text-orange-400' : 'text-purple-400';
 
         document.getElementById('reqModalBody').innerHTML = `
             <div class="bg-white/5 p-4 rounded-2xl border border-white/10 text-xs text-gray-300 space-y-3">
-                <p><strong class="text-blue-400">نوع الطلب:</strong> <span class="${reqColor} font-black text-sm">${reqTypeAr}</span></p>
+                <p><strong class="text-blue-400">${t('lbl_req_type')}</strong> <span class="${reqColor} font-black text-sm">${reqTypeAr}</span></p>
                 <p><strong class="text-blue-400">${t('lbl_name')}</strong> ${r.name}</p>
                 <p><strong class="text-blue-400">${t('lbl_email')}</strong> ${r.email}</p>
                 <p><strong class="text-blue-400">${t('lbl_phone')}</strong> <span class="font-mono">${r.phone || t('not_registered')}</span></p>
@@ -397,7 +396,7 @@ window.viewRequestDetails = async (uid) => {
             </div>
         `;
         document.getElementById('reqModalActions').innerHTML = `
-            <button onclick="approveMarketer('${uid}', '${r.requestType || 'marketer'}')" class="flex-1 bg-green-600 text-white py-3 rounded-xl text-[10px] font-black hover:bg-green-500 transition-colors shadow-lg btn-glow">قبول الطلب</button>
+            <button onclick="approveMarketer('${uid}', '${r.requestType || 'marketer'}')" class="flex-1 bg-green-600 text-white py-3 rounded-xl text-[10px] font-black hover:bg-green-500 transition-colors shadow-lg btn-glow">${t('btn_accept_req_only')}</button>
             <button onclick="rejectMarketer('${uid}')" class="flex-1 bg-red-600/20 text-red-500 py-3 rounded-xl text-[10px] font-black hover:bg-red-600 hover:text-white transition-colors">${t('btn_reject_req')}</button>
         `;
         document.getElementById('requestDetailsModal').classList.remove('hidden');

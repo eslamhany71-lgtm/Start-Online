@@ -343,7 +343,9 @@ window.openUsersModal = (role) => {
                     <button onclick="changeRole('${uid}', 'user')" class="w-full text-[8px] bg-white/5 rounded-lg p-2 text-white hover:bg-white/20 transition-all font-black uppercase">${t('guest')}</button>
                 </div>
                 <button onclick="visitAccount('${uid}')" class="w-full bg-blue-600/20 text-blue-400 py-2 rounded-xl text-[10px] font-black border border-blue-400/30 hover:bg-blue-600 hover:text-white transition-all shadow-xl">${t('btn_visit')}</button>
-            </div>`; 
+                <button onclick="deleteUserRecord('${uid}')" class="flex-1 bg-red-600/20 text-red-500 py-2 rounded-xl text-[10px] font-black border border-red-500/30 hover:bg-red-600 hover:text-white transition-all shadow-xl">حذف 🗑️</button>  
+            </div>`;
+        
         }
     });
     l.innerHTML = modalHtml;
@@ -571,6 +573,17 @@ window.toggleWishlist = async (id) => {
         runTransaction(rp, (c) => (c || 0) + 1); 
     } 
     await update(ref(db, 'users/' + currentUser.uid), { wishlist: userWishlist }); 
+};
+window.deleteUserRecord = async (uid) => {
+    if(confirm('هل أنت متأكد من حذف هذا المستخدم نهائياً؟ سيتم مسح كافة بياناته.')) {
+        try {
+            await remove(ref(db, 'users/' + uid));
+            showToast('تم حذف المستخدم بنجاح! 🗑️');
+            openUsersModal('all'); // تحديث النافذة فوراً عشان يختفي من قدامك
+        } catch(e) {
+            showToast('حدث خطأ أثناء الحذف!');
+        }
+    }
 };
 
 window.visitAccount = (uid) => { showToast(t('msg_redirect_profile')); window.location.href = `profile.html?uid=${uid}`; };

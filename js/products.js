@@ -558,7 +558,7 @@ window.deleteProduct = (id) => confirm(t('msg_delete_confirm')) && remove(ref(db
 // ==========================================
 window.setLanguage = (lang) => { localStorage.setItem('lang', lang); location.reload(); };
 window.changeRole = (uid, r) => { if(confirm(t('msg_role_confirm'))) { update(ref(db, 'users/' + uid), { role: r }); showToast(t('msg_role_success')); } };
-
+window.viewDetails = (id, n, p, i) => window.location.href = `details.html?id=${id}&name=${encodeURIComponent(n)}&price=${p}&image=${encodeURIComponent(i)}`;
 window.toggleWishlist = async (id) => { 
     if(!currentUser) return;
     const idx = userWishlist.indexOf(id); 

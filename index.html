@@ -7,93 +7,87 @@
     <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js">
     <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js">
     <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js">
-
-    <script src="translations.js"></script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-key="index_title">Start Online | ابدأ عالمك الرقمي</title>
+    
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='25' fill='%23020617'/%3E%3Cpath d='M50 20v35m0-35L35 35m15-15l15 15M30 75a30 30 0 0 0 40 0' stroke='%233b82f6' stroke-width='8' stroke-linecap='round' fill='none'/%3E%3C/svg%3E">
+    <script src="translations.js"></script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title data-key="index_title">Start Online | ابدأ عالمك الرقمي</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/index.css">
 </head>
-<body>
+<body class="overflow-x-hidden">
 
-    <div class="bg-image-layer"></div>
-    <div class="bg-grid"></div>
-    <div class="orb-1"></div>
-    <div class="orb-2"></div>
-    <div id="mouseGlow"></div>
+    <div class="bg-animate"></div>
+    <div id="mouseGlow" class="mouse-glow"></div>
 
-    <nav class="fixed top-0 left-0 right-0 z-50 p-3 md:p-6">
-        <div class="max-w-7xl mx-auto glass rounded-[20px] md:rounded-[35px] px-4 md:px-8 py-3 md:py-4 flex justify-between items-center shadow-2xl">
-            
-            <div class="logo-brand text-lg md:text-2xl font-black italic tracking-tighter hover:scale-105 transition-transform">
-                <a href="index.html" class="flex items-center gap-1" dir="ltr">
-                    <span class="text-white">START</span>
-                    <span class="logo-box">ONLINE</span>
-                </a>
+    <nav class="fixed top-0 left-0 right-0 z-50 p-6">
+        <div class="max-w-7xl mx-auto glass rounded-[35px] px-8 py-4 flex justify-between items-center animate-slide-down border border-white/10 shadow-[0_0_40px_rgba(59,130,246,0.15)]">
+            <div class="logo-brand text-2xl font-black italic tracking-tighter hover:scale-105 transition-transform cursor-pointer">
+                <span class="text-white">START</span><span class="logo-box shadow-[0_0_15px_rgba(59,130,246,0.5)]">ONLINE</span>
             </div>
-
-            <ul class="hidden md:flex gap-10 font-bold text-xs text-gray-400">
-                <li><a href="index.html" data-key="nav_home" class="text-blue-400 hover:text-white transition drop-shadow-[0_0_8px_rgba(59,130,246,0.8)]">الرئيسية</a></li>
-                <li><a href="products.html" data-key="nav_store" class="hover:text-white transition">المتجر</a></li>
-                <li><a href="profile.html" data-key="nav_profile" class="hover:text-white transition">حسابي</a></li>
-            </ul>
-
-            <div class="flex items-center gap-2 md:gap-4">
-                <button onclick="setLanguage(localStorage.getItem('lang') === 'en' ? 'ar' : 'en')" class="flex text-[9px] md:text-[10px] font-black text-gray-400 hover:text-white transition items-center gap-1 md:gap-2 bg-white/5 px-2 md:px-4 py-2 rounded-lg md:rounded-xl border border-white/10 hover:bg-white/10">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="md:w-3 md:h-3"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            
+            <div class="flex items-center gap-4">
+                <button onclick="setLanguage(localStorage.getItem('lang') === 'en' ? 'ar' : 'en')" class="text-xs font-bold text-gray-400 hover:text-white transition-all bg-white/5 px-4 py-2 rounded-xl border border-white/5 hover:bg-white/10">
                     <span id="langLabel">English</span>
                 </button>
-
-                <a href="login.html" id="navBtn" class="bg-blue-600 text-white px-4 md:px-8 py-2 md:py-3 rounded-xl md:rounded-2xl text-[10px] md:text-xs font-black btn-glow transition-all relative overflow-hidden group">
+                <a id="navBtn" href="login.html" class="bg-blue-600 hover:bg-blue-500 text-white px-8 py-3 rounded-2xl font-black transition-all shadow-[0_0_20px_rgba(59,130,246,0.4)] hover:shadow-[0_0_30px_rgba(59,130,246,0.6)] btn-glow relative overflow-hidden group">
                     <span class="relative z-10" data-key="nav_start">ابدأ الآن</span>
-                    <div class="absolute inset-0 h-full w-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
+                    <div class="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-500"></div>
                 </a>
             </div>
         </div>
     </nav>
 
-    <nav class="fixed bottom-6 left-6 right-6 z-50 md:hidden">
-        <div class="glass rounded-[30px] p-3 flex justify-around items-center border border-white/10 shadow-[0_10px_40px_rgba(0,0,0,0.8)]">
-            <a href="index.html" class="flex flex-col items-center gap-1 text-[10px] text-blue-400 p-2">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-                <span data-key="nav_home" class="font-black drop-shadow-[0_0_5px_rgba(59,130,246,0.5)]">الرئيسية</span>
-            </a>
-            <a href="products.html" class="flex flex-col items-center gap-1 text-[10px] text-gray-500 p-2 hover:text-white transition">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-                <span data-key="nav_store" class="font-black">المتجر</span>
-            </a>
-            <a href="profile.html" class="flex flex-col items-center gap-1 text-[10px] text-gray-500 p-2 hover:text-white transition">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                <span data-key="nav_profile" class="font-black">حسابي</span>
-            </a>
-        </div>
-    </nav>
-
-    <section class="min-h-screen flex flex-col justify-center items-center text-center px-6 md:px-8 pt-20 relative z-10">
-        <div class="animate-[fadeIn_1s_ease-out]">
-            <h1 class="text-6xl md:text-9xl font-black mb-6 md:mb-8 leading-[1.1] tracking-tighter hero-gradient-text">
-                <span data-key="hero_title_1">مستقبلك الرقمي</span> <br> 
-                <span class="italic text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500" data-key="hero_title_2">يبدأ بلمسة</span>
+    <main class="min-h-screen flex items-center justify-center relative z-10 px-4 pt-32 pb-20">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="inline-block mb-6 px-4 py-1.5 rounded-full border border-blue-500/30 bg-blue-500/10 text-blue-400 text-xs font-bold tracking-widest uppercase animate-fade-in shadow-[0_0_20px_rgba(59,130,246,0.2)]">
+                المنصة رقم #1 للتجارة الإلكترونية
+            </div>
+            
+            <h1 class="text-5xl md:text-8xl font-black mb-6 leading-tight animate-slide-up drop-shadow-2xl">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400" data-key="hero_title_1">مستقبلك الرقمي</span><br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-600 italic" data-key="hero_title_2">يبدأ بلمسة</span>
             </h1>
-            <p data-key="hero_desc" class="text-gray-300 text-sm md:text-xl max-w-2xl mx-auto mb-10 md:mb-14 leading-relaxed font-bold opacity-90 drop-shadow-md">
-                انضم لأكبر منصة عربية لعرض وبيع المنتجات الرقمية. نحن نوفر لك البيئة المثالية للإبداع والربح من أول يوم.
+            
+            <p class="text-gray-400 text-sm md:text-lg mb-12 max-w-2xl mx-auto leading-relaxed animate-fade-in" data-key="hero_desc">
+                انضم لأكبر منصة عربية لعرض وبيع المنتجات الرقمية والملموسة. نحن نوفر لك البيئة المثالية للإبداع والربح من أول يوم.
             </p>
             
-            <div class="flex flex-col md:flex-row justify-center gap-4 md:gap-6 w-full md:w-auto">
-                <a href="products.html" class="bg-white text-slate-950 px-10 md:px-14 py-4 md:py-5 rounded-[20px] md:rounded-[22px] font-black btn-glow text-sm md:text-lg transition-all flex items-center justify-center gap-2">
-                    <span>🛍️</span> <span data-key="btn_browse">تصفح المتجر</span>
-                </a>
-                <a href="login.html" id="marketerBtn" class="glass text-white px-10 md:px-14 py-4 md:py-5 rounded-[20px] md:rounded-[22px] font-bold text-sm md:text-lg hover:bg-white/10 transition-all border border-white/10 hover:border-blue-500/50 hover:shadow-[0_0_20px_rgba(59,130,246,0.3)] flex items-center justify-center gap-2">
-                    <span>🚀</span> <span data-key="btn_community">انضم لمجتمعنا</span>
-                </a>
+            <div class="flex flex-wrap justify-center gap-4 animate-slide-up">
+                <a href="products.html" class="w-full sm:w-auto bg-white text-black px-10 py-4 rounded-2xl font-black transition-all hover:bg-gray-200 hover:scale-105 shadow-[0_0_30px_rgba(255,255,255,0.2)]" data-key="btn_browse">تصفح المتجر</a>
+                
+                <button onclick="openJoinModal('marketer')" class="w-full sm:w-auto bg-blue-600/20 text-blue-400 border border-blue-500/30 px-10 py-4 rounded-2xl font-black transition-all hover:bg-blue-600 hover:text-white hover:scale-105 shadow-lg">سجل كمسوق 🚀</button>
+                
+                <button onclick="openJoinModal('merchant')" class="w-full sm:w-auto bg-purple-600/20 text-purple-400 border border-purple-500/30 px-10 py-4 rounded-2xl font-black transition-all hover:bg-purple-600 hover:text-white hover:scale-105 shadow-lg">سجل كتاجر 🏪</button>
+            </div>
+
+            <div class="mt-20 grid grid-cols-2 md:grid-cols-4 gap-6 opacity-70 animate-fade-in">
+                <div class="glass p-4 rounded-2xl border border-white/5"><h3 class="text-2xl font-black text-white">50K+</h3><p class="text-[10px] text-gray-500">مستخدم نشط</p></div>
+                <div class="glass p-4 rounded-2xl border border-white/5"><h3 class="text-2xl font-black text-blue-400">100K+</h3><p class="text-[10px] text-gray-500">عملية ناجحة</p></div>
+                <div class="glass p-4 rounded-2xl border border-white/5"><h3 class="text-2xl font-black text-purple-400">99%</h3><p class="text-[10px] text-gray-500">نسبة الرضا</p></div>
+                <div class="glass p-4 rounded-2xl border border-white/5"><h3 class="text-2xl font-black text-green-400">24/7</h3><p class="text-[10px] text-gray-500">دعم فني</p></div>
             </div>
         </div>
-    </section>
+    </main>
+
+    <div id="joinModal" class="modal-overlay fixed inset-0 bg-black/95 z-[300] hidden flex items-center justify-center p-4">
+        <div class="glass max-w-md w-full p-8 rounded-[40px] border border-blue-500/20 shadow-2xl relative animate-slide text-right">
+            <button onclick="document.getElementById('joinModal').classList.add('hidden')" class="absolute top-6 left-6 text-gray-500 hover:text-white font-black text-xl transition-colors">✕</button>
+            <h3 id="joinModalTitle" class="text-2xl font-black mb-2 italic text-white">طلب انضمام</h3>
+            <p class="text-gray-400 text-[10px] mb-6">يرجى استكمال البيانات التالية لإرسال طلبك للإدارة.</p>
+            
+            <div class="space-y-4">
+                <input type="text" id="reqPhone" placeholder="رقم الموبايل للتواصل" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl text-white outline-none focus:border-blue-500 transition-colors text-xs font-bold">
+                <input type="text" id="reqAddress" placeholder="العنوان بالتفصيل" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl text-white outline-none focus:border-blue-500 transition-colors text-xs font-bold">
+                <textarea id="reqBio" placeholder="خبراتك السابقة (إن وجد) ومجال عملك..." class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl h-24 text-white outline-none focus:border-blue-500 transition-colors text-xs resize-none"></textarea>
+                <button id="submitReqBtn" onclick="submitJoinRequest()" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-black text-sm shadow-xl hover:bg-blue-500 transition-all active:scale-95 btn-glow mt-4">إرسال الطلب الآن</button>
+            </div>
+        </div>
+    </div>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script type="module" src="js/index.js"></script>

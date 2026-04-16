@@ -13,7 +13,7 @@ window.newPublishBase64 = null;
 window.newEditBase64 = null;
 
 // ==========================================
-// 1. دالة ضغط الصور 
+// 1. دالة ضغط الصور
 // ==========================================
 window.processImageUpload = (event, previewId, callback) => {
     const file = event.target.files[0];
@@ -45,7 +45,7 @@ window.processImageUpload = (event, previewId, callback) => {
 };
 
 // ==========================================
-// 2. حالة الدخول
+// 2. حالة تسجيل الدخول والصلاحيات
 // ==========================================
 onAuthStateChanged(auth, async (user) => {
     if (user) {
@@ -81,7 +81,7 @@ onAuthStateChanged(auth, async (user) => {
 });
 
 // ==========================================
-// 3. الإشعارات
+// 3. نظام الإشعارات
 // ==========================================
 window.clearNotifs = () => {
     userClearedNotifs = true;
@@ -142,7 +142,7 @@ window.toggleNotif = () => {
 };
 
 // ==========================================
-// 4. السلة
+// 4. سلة المشتريات
 // ==========================================
 window.toggleCart = () => document.getElementById('cartDrawer').classList.toggle('open');
 window.updateCartUI = () => {
@@ -182,7 +182,7 @@ window.updateCartUI = () => {
 window.removeFromCart = (key) => { if(confirm(t('msg_delete_cart'))) remove(ref(db, `carts/${currentUser.uid}/${key}`)); };
 
 // ==========================================
-// 5. الفلاتر
+// 5. الفلاتر والأقسام
 // ==========================================
 const dbCategories = { 'all': 'الكل', 'clothes': 'ملابس', 'acc': 'إكسسوارات', 'perfume': 'عطور', 'beauty': 'صحة وجمال', 'best': 'أكثر مبيعاً', 'electronics': 'إلكترونيات' };
 const subData = {
@@ -232,7 +232,7 @@ window.resetAllFilters = () => {
 };
 
 // ==========================================
-// 6. لوحة الإدارة (الأعضاء، التقييمات، الإكسيل)
+// 6. لوحة الإدارة وتحميل الإكسيل
 // ==========================================
 function loadAdminDashboard() {
     onValue(ref(db, 'users'), (snap) => {
@@ -245,7 +245,6 @@ function loadAdminDashboard() {
         allProducts = s.val() || {};
         document.getElementById('totalProducts').innerText = Object.keys(allProducts).length;
     });
-    // عداد التقييمات
     onValue(ref(db, 'reviews'), (s) => { 
         let c = 0; const data = s.val() || {}; 
         Object.values(data).forEach(r => c += Object.keys(r).length); 
@@ -253,7 +252,27 @@ function loadAdminDashboard() {
     });
 }
 
-// عرض التقييمات في النافذة
+window.exportUsersToExcel = () => {
+    if (Object.keys(allUsers).length === 0) {
+        showToast(t('no_users_to_export') || 'لا يوجد مستخدمين لتحميلهم');
+        return;
+    }
+    
+    const dataToExport = Object.values(allUsers).map(u => ({
+        'الاسم': u.name || 'غير محدد',
+        'البريد الإلكتروني': u.email || 'غير محدد',
+        'رقم الموبايل': u.phone || u.phoneNumber || 'غير مسجل',
+        'الرتبة': t('btn_role_' + u.role) || u.role || 'user'
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "المستخدمين");
+    
+    XLSX.writeFile(workbook, "StartOnline_Users.xlsx");
+    showToast(t('msg_excel_downloaded') || 'تم تحميل ملف الإكسيل بنجاح!');
+};
+
 window.openReviewsModal = async () => {
     const m = document.getElementById('reviewsModal');
     const l = document.getElementById('reviewsListInner');
@@ -302,27 +321,6 @@ window.openReviewsModal = async () => {
     l.innerHTML = html;
 };
 
-window.exportUsersToExcel = () => {
-    if (Object.keys(allUsers).length === 0) {
-        showToast(t('no_users_to_export') || 'لا يوجد مستخدمين لتحميلهم');
-        return;
-    }
-    
-    const dataToExport = Object.values(allUsers).map(u => ({
-        'الاسم': u.name || 'غير محدد',
-        'البريد الإلكتروني': u.email || 'غير محدد',
-        'رقم الموبايل': u.phone || u.phoneNumber || 'غير مسجل',
-        'الرتبة': t('btn_role_' + u.role) || u.role || 'user'
-    }));
-
-    const worksheet = XLSX.utils.json_to_sheet(dataToExport);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "المستخدمين");
-    
-    XLSX.writeFile(workbook, "StartOnline_Users.xlsx");
-    showToast(t('msg_excel_downloaded') || 'تم تحميل ملف الإكسيل بنجاح!');
-};
-
 window.openUsersModal = (role) => {
     const m = document.getElementById('usersModal'); const l = document.getElementById('modalList');
     m.classList.remove('hidden'); 
@@ -342,10 +340,11 @@ window.openUsersModal = (role) => {
                     <button onclick="changeRole('${uid}', 'admin')" class="w-full text-[8px] border border-yellow-500/20 rounded-lg p-2 hover:bg-yellow-500 hover:text-white text-yellow-500 transition-all font-black uppercase">${t('btn_role_admin')}</button>
                     <button onclick="changeRole('${uid}', 'user')" class="w-full text-[8px] bg-white/5 rounded-lg p-2 text-white hover:bg-white/20 transition-all font-black uppercase">${t('guest')}</button>
                 </div>
-                <button onclick="visitAccount('${uid}')" class="w-full bg-blue-600/20 text-blue-400 py-2 rounded-xl text-[10px] font-black border border-blue-400/30 hover:bg-blue-600 hover:text-white transition-all shadow-xl">${t('btn_visit')}</button>
-                <button onclick="deleteUserRecord('${uid}')" class="flex-1 bg-red-600/20 text-red-500 py-2 rounded-xl text-[10px] font-black border border-red-500/30 hover:bg-red-600 hover:text-white transition-all shadow-xl">حذف 🗑️</button>  
-            </div>`;
-        
+                <div class="flex gap-2">
+                    <button onclick="visitAccount('${uid}')" class="flex-1 bg-blue-600/20 text-blue-400 py-2 rounded-xl text-[10px] font-black border border-blue-400/30 hover:bg-blue-600 hover:text-white transition-all shadow-xl">${t('btn_visit') || 'زيارة'}</button>
+                    <button onclick="deleteUserRecord('${uid}')" class="flex-1 bg-red-600/20 text-red-500 py-2 rounded-xl text-[10px] font-black border border-red-500/30 hover:bg-red-600 hover:text-white transition-all shadow-xl">حذف 🗑️</button>
+                </div>
+            </div>`; 
         }
     });
     l.innerHTML = modalHtml;
@@ -353,6 +352,21 @@ window.openUsersModal = (role) => {
 
 window.closeUsersModal = () => document.getElementById('usersModal').classList.add('hidden');
 
+window.deleteUserRecord = async (uid) => {
+    if(confirm('هل أنت متأكد من حذف هذا المستخدم نهائياً؟ سيتم مسح كافة بياناته.')) {
+        try {
+            await remove(ref(db, 'users/' + uid));
+            showToast('تم حذف المستخدم بنجاح! 🗑️');
+            openUsersModal('all'); 
+        } catch(e) {
+            showToast('حدث خطأ أثناء الحذف!');
+        }
+    }
+};
+
+// ==========================================
+// 7. طلبات الانضمام
+// ==========================================
 function loadMarketerRequests() { 
     onValue(ref(db, 'marketer_requests'), (snap) => { 
         const list = document.getElementById('requestsList'); 
@@ -365,8 +379,10 @@ function loadMarketerRequests() {
             reqKeys.forEach(uid => { 
                 const r = data[uid]; 
                 reqHtml += `<div class="glass p-5 rounded-3xl flex flex-col md:flex-row justify-between items-center text-right font-bold border border-white/5 gap-4 mb-2">
-                    <div><p class="text-sm text-white">${r.name}</p><p class="text-[10px] text-gray-500">${r.email}</p></div>
-                    <button onclick="viewRequestDetails('${uid}')" class="bg-blue-600/20 text-blue-400 px-4 py-2 rounded-xl text-[10px] font-black shadow-lg hover:bg-blue-600 hover:text-white transition-colors">${t('btn_req_details')}</button>
+                    <div><p class="text-sm text-white underline decoration-blue-500/30 tracking-widest">${r.name}</p><p class="text-[10px] text-gray-500">${r.email}</p></div>
+                    <div class="flex gap-2 w-full md:w-auto">
+                        <button onclick="viewRequestDetails('${uid}')" class="flex-1 bg-blue-600/20 text-blue-400 px-4 py-2 rounded-xl text-[10px] font-black shadow-lg hover:bg-blue-600 hover:text-white transition-colors">${t('btn_req_details')}</button>
+                    </div>
                 </div>`; 
             });
             list.innerHTML = reqHtml;
@@ -405,7 +421,6 @@ window.viewRequestDetails = async (uid) => {
     }
 };
 
-// دالة القبول بتدي الرتبة أوتوماتيك حسب الطلب
 window.approveMarketer = async (uid, requestedType) => { 
     const newRole = requestedType === 'merchant' ? 'merchant' : 'marketer';
     await update(ref(db, 'users/' + uid), { role: newRole }); 
@@ -413,6 +428,7 @@ window.approveMarketer = async (uid, requestedType) => {
     document.getElementById('requestDetailsModal').classList.add('hidden');
     showToast(t('msg_accept_success') || 'تم قبول الطلب وتفعيل الحساب بنجاح!'); 
 };
+
 window.rejectMarketer = async (uid) => {
     if(confirm(t('msg_reject_confirm'))) {
         await remove(ref(db, 'marketer_requests/' + uid));
@@ -421,6 +437,9 @@ window.rejectMarketer = async (uid) => {
     }
 };
 
+// ==========================================
+// 8. إدارة المنتجات
+// ==========================================
 window.saveProduct = () => {
     const name = document.getElementById('pName').value, price = document.getElementById('pPrice').value;
     const defaultImg = 'https://placehold.co/400x400/1e293b/3b82f6?text=Start+Online';
@@ -560,7 +579,9 @@ window.deleteProduct = (id) => confirm(t('msg_delete_confirm')) && remove(ref(db
 // ==========================================
 window.setLanguage = (lang) => { localStorage.setItem('lang', lang); location.reload(); };
 window.changeRole = (uid, r) => { if(confirm(t('msg_role_confirm'))) { update(ref(db, 'users/' + uid), { role: r }); showToast(t('msg_role_success')); } };
+
 window.viewDetails = (id, n, p, i) => window.location.href = `details.html?id=${id}&name=${encodeURIComponent(n)}&price=${p}&image=${encodeURIComponent(i)}`;
+
 window.toggleWishlist = async (id) => { 
     if(!currentUser) return;
     const idx = userWishlist.indexOf(id); 
@@ -573,17 +594,6 @@ window.toggleWishlist = async (id) => {
         runTransaction(rp, (c) => (c || 0) + 1); 
     } 
     await update(ref(db, 'users/' + currentUser.uid), { wishlist: userWishlist }); 
-};
-window.deleteUserRecord = async (uid) => {
-    if(confirm('هل أنت متأكد من حذف هذا المستخدم نهائياً؟ سيتم مسح كافة بياناته.')) {
-        try {
-            await remove(ref(db, 'users/' + uid));
-            showToast('تم حذف المستخدم بنجاح! 🗑️');
-            openUsersModal('all'); // تحديث النافذة فوراً عشان يختفي من قدامك
-        } catch(e) {
-            showToast('حدث خطأ أثناء الحذف!');
-        }
-    }
 };
 
 window.visitAccount = (uid) => { showToast(t('msg_redirect_profile')); window.location.href = `profile.html?uid=${uid}`; };

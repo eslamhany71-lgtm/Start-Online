@@ -169,8 +169,7 @@ window.updateCartUI = () => {
                 </div>
                 <div class="flex flex-col gap-2">
                     <button onclick="removeFromCart('${key}')" class="text-red-500 hover:text-red-400 text-xs font-bold">✕</button>
-                    <a href="order.html?id=${item.id}&name=${encodeURIComponent(item.name)}&price=${item.price}&qty=${item.qty}&color=${encodeURIComponent(item.color || '')}&size=${encodeURIComponent(item.size || '')}&image=${encodeURIComponent(item.image)}&owner=${item.owner || 'null'}" class="text-[8px] bg-blue-600 text-white p-1 rounded-lg text-center font-black hover:bg-blue-500 transition-colors">${t('btn_order')}</a>
-                </div>
+                    <button onclick="goToOrder('${item.id}', '${item.name}', '${item.price}', '${item.qty}', '${item.color || ''}', '${item.size || ''}', '${item.image}', '${item.owner || 'null'}')" class="text-[8px] bg-blue-600 text-white p-1 rounded-lg text-center font-black hover:bg-blue-500 transition-colors">${t('btn_order') || 'طلب'}</button>                </div>
             </div>`;
         });
         if(list) list.innerHTML = cartHtml;
@@ -178,7 +177,10 @@ window.updateCartUI = () => {
         if(keys.length === 0 && list) list.innerHTML = `<div class="flex flex-col items-center justify-center h-40 opacity-50"><span class="text-4xl mb-2">🛒</span><p class="text-[10px]">${t('cart_empty')}</p></div>`;
     });
 };
-
+window.goToOrder = (id, n, p, q, c, s, i, o) => {
+    localStorage.setItem('temp_prod_image', i);
+    window.location.href = `order.html?id=${id}&name=${encodeURIComponent(n)}&price=${p}&qty=${q}&color=${encodeURIComponent(c)}&size=${encodeURIComponent(s)}&owner=${o}`;
+};
 window.removeFromCart = (key) => { if(confirm(t('msg_delete_cart'))) remove(ref(db, `carts/${currentUser.uid}/${key}`)); };
 
 // ==========================================
@@ -580,8 +582,10 @@ window.deleteProduct = (id) => confirm(t('msg_delete_confirm')) && remove(ref(db
 window.setLanguage = (lang) => { localStorage.setItem('lang', lang); location.reload(); };
 window.changeRole = (uid, r) => { if(confirm(t('msg_role_confirm'))) { update(ref(db, 'users/' + uid), { role: r }); showToast(t('msg_role_success')); } };
 
-window.viewDetails = (id, n, p, i) => window.location.href = `details.html?id=${id}&name=${encodeURIComponent(n)}&price=${p}&image=${encodeURIComponent(i)}`;
-
+window.viewDetails = (id, n, p, i) => {
+    localStorage.setItem('temp_prod_image', i); // بنحفظ الصورة في الذاكرة
+    window.location.href = `details.html?id=${id}&name=${encodeURIComponent(n)}&price=${p}`; // شيلنا الصورة من الرابط عشان ميضربش
+};
 window.toggleWishlist = async (id) => { 
     if(!currentUser) return;
     const idx = userWishlist.indexOf(id); 

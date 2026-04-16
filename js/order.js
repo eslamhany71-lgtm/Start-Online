@@ -8,14 +8,18 @@ const qty = parseInt(params.get('qty')) || 1;
 const shipping = parseFloat(params.get('shipping')) || 0;
 const marketerId = params.get('owner');
 
-const color = params.get('color') && params.get('color') !== 'null' ? params.get('color') : t('sub_general');
-const size = params.get('size') && params.get('size') !== 'null' ? params.get('size') : t('sub_general');
-const gov = params.get('gov') || t('not_specified');
+// جلب الصورة (من الرابط أو من الذاكرة لو الرابط مفيهوش)
+const paramImage = params.get('image');
+const storedImage = localStorage.getItem('temp_prod_image');
+const finalImage = paramImage ? decodeURIComponent(paramImage) : (storedImage || '');
+
+const color = params.get('color') && params.get('color') !== 'null' ? decodeURIComponent(params.get('color')) : t('sub_general');
+const size = params.get('size') && params.get('size') !== 'null' ? decodeURIComponent(params.get('size')) : t('sub_general');
+const gov = params.get('gov') ? decodeURIComponent(params.get('gov')) : t('not_specified');
 
 let selectedPayMethod = 'cod';
 let buyerUid = null;
 
-// دالة تغيير اللغة
 window.setLanguage = (lang) => { 
     localStorage.setItem('lang', lang); 
     location.reload(); 
@@ -23,8 +27,9 @@ window.setLanguage = (lang) => {
 
 onAuthStateChanged(auth, (user) => { if(user) buyerUid = user.uid; });
 
-document.getElementById('invName').innerText = params.get('name');
-document.getElementById('invImg').src = params.get('image');
+// تعبئة البيانات في الفاتورة
+document.getElementById('invName').innerText = params.get('name') ? decodeURIComponent(params.get('name')) : '...';
+document.getElementById('invImg').src = finalImage;
 document.getElementById('invGov').innerText = `${t('gov_shipping')} ${gov}`;
 document.getElementById('invSpecs').innerText = `${t('lbl_color')}: ${color} | ${t('lbl_size')}: ${size}`;
 
@@ -33,75 +38,95 @@ document.getElementById('pQty').innerText = qty + " " + (t('piece') || 'قطعة
 document.getElementById('pShipping').innerText = shipping + " " + t('currency');
 document.getElementById('totalPrice').innerText = (unitPrice * qty + shipping) + " " + t('currency');
 
+// اختيار طريقة الدفع
 window.selectPay = (method) => {
     selectedPayMethod = method;
-    document.querySelectorAll('.pay-card').forEach(c => c.classList.remove('active'));
-    document.getElementById('btn-' + method).classList.add('active');
     
+    // تصفير كل الكروت
+    document.querySelectorAll('.pay-card').forEach(c => {
+        c.classList.remove('border-2', 'border-blue-500', 'shadow-[0_0_15px_rgba(59,130,246,0.3)]', 'bg-blue-600/10', 'active');
+        c.classList.add('border', 'border-white/5', 'bg-white/5');
+        const icon = c.querySelector('.check-icon');
+        if(icon) icon.classList.replace('flex', 'hidden');
+    });
+    
+    // تفعيل الكارت المختار
+    const activeCard = document.getElementById('btn-' + method);
+    activeCard.classList.remove('border', 'border-white/5', 'bg-white/5');
+    activeCard.classList.add('border-2', 'border-blue-500', 'shadow-[0_0_15px_rgba(59,130,246,0.3)]', 'bg-blue-600/10', 'active');
+    const activeIcon = activeCard.querySelector('.check-icon');
+    if(activeIcon) activeIcon.classList.replace('hidden', 'flex');
+    
+    // إظهار أو إخفاء بيانات التحويل
     const prepaidInfo = document.getElementById('prepaidInfo');
-    if(method === 'cod') { prepaidInfo.classList.add('hidden'); } 
-    else { prepaidInfo.classList.remove('hidden'); fetchMarketerDetails(); }
+    if(method === 'cod') { 
+        prepaidInfo.classList.add('hidden'); 
+    } else { 
+        prepaidInfo.classList.remove('hidden'); 
+        fetchMarketerDetails(); 
+    }
 };
 
 async function fetchMarketerDetails() {
     const displayElem = document.getElementById('payNumDisplay');
     displayElem.innerText = "...";
     if(!marketerId || marketerId === 'null') return;
-    const snap = await get(ref(db, `users/${marketerId}/paymentMethods`));
-    if(snap.exists()) {
-        const methods = snap.val();
-        let num = t('val_unavailable');
-        if(selectedPayMethod === 'vodafone' && methods.vodafone) num = methods.vodafone;
-        if(selectedPayMethod === 'etisalat' && methods.etisalat) num = methods.etisalat;
-        if(selectedPayMethod === 'orange' && methods.orange) num = methods.orange;
-        if(selectedPayMethod === 'instapay' && methods.instapay) num = methods.instapay;
-        displayElem.innerText = num;
+    
+    try {
+        const snap = await get(ref(db, `users/${marketerId}/paymentMethods`));
+        if(snap.exists()) {
+            const methods = snap.val();
+            let num = t('val_unavailable') || 'غير متاح';
+            if(selectedPayMethod === 'vodafone' && methods.vodafone) num = methods.vodafone;
+            if(selectedPayMethod === 'etisalat' && methods.etisalat) num = methods.etisalat;
+            if(selectedPayMethod === 'orange' && methods.orange) num = methods.orange;
+            if(selectedPayMethod === 'instapay' && methods.instapay) num = methods.instapay;
+            displayElem.innerText = num;
+        }
+    } catch (e) {
+        displayElem.innerText = "خطأ في التحميل";
     }
 }
 
 document.getElementById('orderForm').onsubmit = async (e) => {
     e.preventDefault();
     const submitBtn = e.target.querySelector('button[type="submit"]');
-    submitBtn.innerHTML = t('msg_order_confirming');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = t('msg_order_confirming') || 'جاري تأكيد الطلب... ⏳';
     submitBtn.disabled = true;
 
     const orderData = {
-        productName: params.get('name'), marketerId: marketerId, customerUid: buyerUid || 'guest', 
-        customerName: document.getElementById('custName').value, phone: document.getElementById('custPhone1').value,
+        productName: params.get('name') ? decodeURIComponent(params.get('name')) : 'منتج', 
+        marketerId: marketerId, 
+        customerUid: buyerUid || 'guest', 
+        customerName: document.getElementById('custName').value, 
+        phone: document.getElementById('custPhone1').value,
         address: `${gov} - ${document.getElementById('custAddress').value}`,
-        total: (unitPrice * qty + shipping), payMethod: selectedPayMethod,
+        total: (unitPrice * qty + shipping), 
+        payMethod: selectedPayMethod,
         receipt: document.getElementById('receiptLink') ? document.getElementById('receiptLink').value || 'N/A' : 'N/A',
-        color: color, size: size, qty: qty, status: 'pending', date: new Date().toLocaleString('ar-EG')
+        color: color, 
+        size: size, 
+        qty: qty, 
+        status: 'pending', 
+        date: new Date().toLocaleString('ar-EG')
     };
     
     try {
         await set(push(ref(db, 'orders')), orderData);
         document.getElementById('successBox').classList.remove('hidden');
     } catch (error) {
-        alert(t('msg_order_error'));
-        submitBtn.innerHTML = t('confirm_order'); 
+        alert(t('msg_order_error') || 'حدث خطأ أثناء الطلب');
+        submitBtn.innerHTML = originalText; 
         submitBtn.disabled = false;
     }
 };
 
 // ==========================================
-// سحر إغلاق النوافذ عند الضغط في أي مكان فاضي
+// إغلاق النوافذ المنبثقة
 // ==========================================
 window.addEventListener('click', (e) => {
-    // 1. إغلاق النوافذ المنبثقة (Modals)
-    // الكود بيتعرف على الخلفية السودة من خلال كلاسات التيلويند (fixed inset-0)
-    if (e.target.classList.contains('fixed') && e.target.classList.contains('inset-0')) {
+    if (e.target.classList.contains('modal-overlay')) {
         e.target.classList.add('hidden');
-    }
-    
-    // 2. إغلاق قائمة الإشعارات لو ضغطت براها (بونص شياكة)
-    const notifDropdown = document.getElementById('notifDropdown');
-    const clickedOnNotifBtn = e.target.closest('button[onclick="toggleNotif()"]');
-    
-    if (notifDropdown && !notifDropdown.classList.contains('hidden')) {
-        // لو الضغطة مكانتش جوه القائمة، ومكانتش على زرار الجرس نفسه.. اخفي القائمة
-        if (!notifDropdown.contains(e.target) && !clickedOnNotifBtn) {
-            notifDropdown.classList.add('hidden');
-        }
     }
 });

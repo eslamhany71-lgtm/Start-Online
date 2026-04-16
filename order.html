@@ -15,10 +15,12 @@
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='25' fill='%23020617'/%3E%3Cpath d='M50 20v35m0-35L35 35m15-15l15 15M30 75a30 30 0 0 0 40 0' stroke='%233b82f6' stroke-width='8' stroke-linecap='round' fill='none'/%3E%3C/svg%3E">
     
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
-    
+    <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/order.css">
 </head>
-<body>
+<body class="bg-slate-950 pb-20">
+
+<div class="bg-animate"></div>
 
 <button onclick="setLanguage(localStorage.getItem('lang') === 'en' ? 'ar' : 'en')" class="fixed top-4 left-4 z-[100] bg-black/40 hover:bg-black/60 text-white px-4 py-2 rounded-xl border border-white/20 backdrop-blur-xl font-black text-xs transition-colors flex items-center gap-2 shadow-lg">
     🌐 <span id="langLabel">English</span>
@@ -27,7 +29,7 @@
 <div class="max-w-6xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 gap-8 relative z-10 pt-10">
     
     <div class="lg:col-span-4 space-y-6 order-2 lg:order-1 animate-slide">
-        <div class="glass p-8 rounded-[40px] border-t-4 border-t-blue-500 relative overflow-hidden">
+        <div class="glass p-8 rounded-[40px] border-t-4 border-t-blue-500 relative overflow-hidden shadow-2xl">
             <h2 class="text-2xl font-black mb-8 text-white flex items-center gap-3 drop-shadow-md">
                 <span class="text-3xl">🧾</span> <span data-key="invoice_title">فاتورة الطلب</span>
             </h2>
@@ -44,14 +46,14 @@
             <div class="space-y-4 text-sm font-bold text-gray-300">
                 <div class="flex justify-between items-center hover:text-white transition-colors">
                     <span class="text-xs uppercase tracking-widest" data-key="piece_price">سعر القطعة</span>
-                    <span id="pPrice" class="font-black text-white">0</span>
+                    <span id="pPrice" class="font-black text-white drop-shadow-md">0</span>
                 </div>
-                <div class="receipt-line"></div>
+                <div class="w-full h-px bg-white/10 my-2 border-b border-dashed border-white/5"></div>
                 <div class="flex justify-between items-center hover:text-white transition-colors">
                     <span class="text-xs uppercase tracking-widest" data-key="req_qty">الكمية المطلوبة</span>
-                    <span id="pQty" class="font-black text-white bg-white/10 px-3 py-0.5 rounded-lg border border-white/10">1</span>
+                    <span id="pQty" class="font-black text-white bg-white/10 px-3 py-0.5 rounded-lg border border-white/10 shadow-inner">1</span>
                 </div>
-                <div class="receipt-line"></div>
+                <div class="w-full h-px bg-white/10 my-2 border-b border-dashed border-white/5"></div>
                 <div class="flex justify-between items-center hover:text-white transition-colors">
                     <span class="text-xs uppercase tracking-widest" data-key="shipping_cost">تكلفة الشحن</span>
                     <span id="pShipping" class="text-green-400 font-black drop-shadow-[0_0_5px_rgba(34,197,94,0.4)]">0</span>
@@ -64,7 +66,7 @@
             </div>
         </div>
 
-        <div class="glass p-6 rounded-[30px] border border-green-500/20 text-center bg-gradient-to-b from-green-900/40 to-transparent">
+        <div class="glass p-6 rounded-[30px] border border-green-500/20 text-center bg-gradient-to-b from-green-900/40 to-transparent shadow-xl">
             <div class="text-3xl mb-2 drop-shadow-md">🚚</div>
             <p class="text-xs text-white font-black mb-1 uppercase tracking-widest drop-shadow-md" data-key="fast_shipping">شحن سريع ومؤمن</p>
             <p class="text-[10px] text-gray-400 font-bold" data-key="shipping_desc">يصلك الطلب أينما كنت خلال 48 لـ 72 ساعة عمل</p>
@@ -72,7 +74,7 @@
     </div>
 
     <div class="lg:col-span-8 space-y-6 order-1 lg:order-2 animate-slide" style="animation-delay: 0.1s;">
-        <div class="glass p-8 md:p-10 rounded-[40px] shadow-2xl relative overflow-hidden">
+        <div class="glass p-8 md:p-10 rounded-[40px] shadow-2xl relative overflow-hidden border border-white/10">
             <h2 class="text-3xl font-black mb-10 italic text-white flex items-center gap-4 drop-shadow-lg">
                 <span class="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-400 rounded-2xl flex items-center justify-center text-xl not-italic shadow-[0_0_20px_rgba(59,130,246,0.4)] border border-blue-400/50">1</span>
                 <span data-key="delivery_data">بيانات الاستلام</span>
@@ -82,17 +84,17 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="space-y-3">
                         <label class="text-[11px] font-black text-gray-400 mr-2 uppercase tracking-widest flex items-center gap-2" data-key="full_name"><span class="text-blue-400">👤</span> الاسم بالكامل للمستلم</label>
-                        <input type="text" id="custName" required placeholder="مثال: محمد أحمد علي" class="w-full border border-white/20 p-4 md:p-5 rounded-2xl text-white text-sm shadow-inner placeholder-gray-600">
+                        <input type="text" id="custName" required placeholder="مثال: محمد أحمد علي" class="w-full bg-black/40 border border-white/10 p-4 md:p-5 rounded-2xl text-white text-sm shadow-inner placeholder-gray-600 focus:border-blue-400 outline-none transition-colors">
                     </div>
                     <div class="space-y-3">
                         <label class="text-[11px] font-black text-gray-400 mr-2 uppercase tracking-widest flex items-center gap-2" data-key="phone_num"><span class="text-green-400">📱</span> رقم الموبايل للتواصل</label>
-                        <input type="tel" id="custPhone1" required placeholder="01xxxxxxxxx" class="w-full border border-white/20 p-4 md:p-5 rounded-2xl text-white text-sm shadow-inner placeholder-gray-600 text-left" dir="ltr">
+                        <input type="tel" id="custPhone1" required placeholder="01xxxxxxxxx" class="w-full bg-black/40 border border-white/10 p-4 md:p-5 rounded-2xl text-white text-sm shadow-inner placeholder-gray-600 text-left focus:border-blue-400 outline-none transition-colors" dir="ltr">
                     </div>
                 </div>
 
                 <div class="space-y-3">
                     <label class="text-[11px] font-black text-gray-400 mr-2 uppercase tracking-widest flex items-center gap-2" data-key="full_address"><span class="text-yellow-400">📍</span> العنوان التفصيلي</label>
-                    <input type="text" id="custAddress" required placeholder="المحافظة، المركز، اسم الشارع، رقم العمارة/المنزل" class="w-full border border-white/20 p-4 md:p-5 rounded-2xl text-white text-sm shadow-inner placeholder-gray-600">
+                    <input type="text" id="custAddress" required placeholder="المحافظة، المركز، اسم الشارع، رقم العمارة/المنزل" class="w-full bg-black/40 border border-white/10 p-4 md:p-5 rounded-2xl text-white text-sm shadow-inner placeholder-gray-600 focus:border-blue-400 outline-none transition-colors">
                 </div>
 
                 <div class="w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent my-10"></div>
@@ -103,30 +105,30 @@
                 </h2>
 
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                    <div onclick="selectPay('vodafone')" class="pay-card p-5 rounded-3xl text-center flex flex-col items-center gap-3" id="btn-vodafone">
-                        <div class="check-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4"><polyline points="20 6 9 17 4 12"/></svg></div>
-                        <img src="https://www.clipartmax.com/png/small/151-1517812_vodafone-logo-vodafone-group-plc.png" loading="lazy" class="h-10 object-contain drop-shadow-md">
+                    <div onclick="selectPay('vodafone')" class="pay-card p-5 rounded-3xl text-center flex flex-col items-center gap-3 border border-white/5 hover:border-white/20 transition-all cursor-pointer bg-white/5" id="btn-vodafone">
+                        <div class="check-icon hidden bg-blue-500 text-white rounded-full p-1 w-6 h-6 items-center justify-center absolute top-2 right-2"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4"><polyline points="20 6 9 17 4 12"/></svg></div>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a6/Vodafone_icon.svg" loading="lazy" class="h-10 object-contain drop-shadow-md">
                         <span class="text-[11px] font-black text-gray-300" data-key="vodafone_cash">فودافون كاش</span>
                     </div>
-                    <div onclick="selectPay('instapay')" class="pay-card p-5 rounded-3xl text-center flex flex-col items-center gap-3" id="btn-instapay">
-                        <div class="check-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4"><polyline points="20 6 9 17 4 12"/></svg></div>
+                    <div onclick="selectPay('instapay')" class="pay-card p-5 rounded-3xl text-center flex flex-col items-center gap-3 border border-white/5 hover:border-white/20 transition-all cursor-pointer bg-white/5" id="btn-instapay">
+                        <div class="check-icon hidden bg-blue-500 text-white rounded-full p-1 w-6 h-6 items-center justify-center absolute top-2 right-2"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4"><polyline points="20 6 9 17 4 12"/></svg></div>
                         <img src="https://upload.wikimedia.org/wikipedia/commons/2/20/InstaPay_Logo.png" loading="lazy" class="h-10 object-contain drop-shadow-md">
                         <span class="text-[11px] font-black text-gray-300" data-key="instapay">انستا باي</span>
                     </div>
-                    <div onclick="selectPay('orange')" class="pay-card p-5 rounded-3xl text-center flex flex-col items-center gap-3" id="btn-orange">
-                        <div class="check-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4"><polyline points="20 6 9 17 4 12"/></svg></div>
-                        <img src="https://media.egyin.com//ArticleUpload/2025/8/27/d348ecefc59798c34d2b_1816_120113.jpg" loading="lazy" class="h-10 object-contain drop-shadow-md">
+                    <div onclick="selectPay('orange')" class="pay-card p-5 rounded-3xl text-center flex flex-col items-center gap-3 border border-white/5 hover:border-white/20 transition-all cursor-pointer bg-white/5" id="btn-orange">
+                        <div class="check-icon hidden bg-blue-500 text-white rounded-full p-1 w-6 h-6 items-center justify-center absolute top-2 right-2"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4"><polyline points="20 6 9 17 4 12"/></svg></div>
+                        <img src="https://media.egyin.com//ArticleUpload/2025/8/27/d348ecefc59798c34d2b_1816_120113.jpg" loading="lazy" class="h-10 object-contain drop-shadow-md rounded-xl">
                         <span class="text-[11px] font-black text-gray-300" data-key="orange_cash">أورانج كاش</span>
                     </div>
-                    <div onclick="selectPay('etisalat')" class="pay-card p-5 rounded-3xl text-center flex flex-col items-center gap-3" id="btn-etisalat">
-                        <div class="check-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4"><polyline points="20 6 9 17 4 12"/></svg></div>
-                        <img src="https://khwarizmiworld.com/img/payment/etisalat.png" loading="lazy" class="h-10 object-contain drop-shadow-md">
+                    <div onclick="selectPay('etisalat')" class="pay-card p-5 rounded-3xl text-center flex flex-col items-center gap-3 border border-white/5 hover:border-white/20 transition-all cursor-pointer bg-white/5" id="btn-etisalat">
+                        <div class="check-icon hidden bg-blue-500 text-white rounded-full p-1 w-6 h-6 items-center justify-center absolute top-2 right-2"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4"><polyline points="20 6 9 17 4 12"/></svg></div>
+                        <img src="https://khwarizmiworld.com/img/payment/etisalat.png" loading="lazy" class="h-10 object-contain drop-shadow-md rounded-xl">
                         <span class="text-[11px] font-black text-gray-300" data-key="etisalat_cash">اتصالات كاش</span>
                     </div>
-                    <div onclick="selectPay('cod')" class="pay-card p-5 rounded-3xl text-center flex flex-col items-center gap-3 active" id="btn-cod">
-                        <div class="check-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4"><polyline points="20 6 9 17 4 12"/></svg></div>
+                    <div onclick="selectPay('cod')" class="pay-card p-5 rounded-3xl text-center flex flex-col items-center gap-3 border-2 border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.3)] cursor-pointer bg-blue-600/10 active" id="btn-cod">
+                        <div class="check-icon flex bg-blue-500 text-white rounded-full p-1 w-6 h-6 items-center justify-center absolute top-2 right-2"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4"><polyline points="20 6 9 17 4 12"/></svg></div>
                         <span class="text-4xl drop-shadow-md">💵</span>
-                        <span class="text-[10px] font-black text-white bg-blue-600/50 px-3 py-1 rounded-full border border-blue-500/50 shadow-inner" data-key="cod">الدفع عند الاستلام</span>
+                        <span class="text-[10px] font-black text-white bg-blue-600/50 px-3 py-1 rounded-full border border-blue-500/50 shadow-inner mt-1" data-key="cod">الدفع عند الاستلام</span>
                     </div>
                 </div>
 
@@ -134,17 +136,17 @@
                     <p class="text-blue-300 text-xs font-black mb-3 uppercase tracking-widest drop-shadow-md flex items-center gap-2"><span data-key="transfer_to">يجب التحويل على هذا الرقم:</span></p>
                     <div class="bg-black/50 p-4 rounded-2xl border border-white/10 mb-6 flex justify-between items-center group">
                         <div id="payNumDisplay" class="text-2xl md:text-3xl font-black text-white tracking-widest font-mono" dir="ltr">...</div>
-                        <button type="button" onclick="navigator.clipboard.writeText(document.getElementById('payNumDisplay').innerText); alert('تم النسخ');" class="bg-white/10 hover:bg-white/20 text-white p-3 rounded-xl transition-colors border border-white/5 opacity-50 group-hover:opacity-100" data-key="copy">📋 نسخ</button>
+                        <button type="button" onclick="navigator.clipboard.writeText(document.getElementById('payNumDisplay').innerText); alert('تم النسخ');" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-xl transition-colors border border-white/5 opacity-50 group-hover:opacity-100 text-xs font-bold" data-key="copy">📋 نسخ</button>
                     </div>
                     <p class="text-gray-400 text-[10px] font-bold mb-2 ml-2" data-key="attach_receipt">رقم عملية التحويل لتأكيد دفعك:</p>
-                    <input type="text" id="receiptLink" placeholder="Transaction ID..." class="w-full border border-white/20 p-4 rounded-2xl outline-none text-sm text-white font-mono placeholder-gray-600">
+                    <input type="text" id="receiptLink" placeholder="Transaction ID..." class="w-full bg-black/40 border border-white/20 p-4 rounded-2xl outline-none text-sm text-white font-mono placeholder-gray-600 focus:border-blue-400 transition-colors shadow-inner">
                 </div>
 
-                <button type="submit" class="w-full bg-gradient-to-l from-blue-600 to-blue-500 text-white font-black py-6 rounded-3xl shadow-[0_15px_30px_rgba(37,99,235,0.4)] transition-all mt-10 text-xl tracking-widest btn-glow border border-blue-400/50">
+                <button type="submit" class="w-full bg-gradient-to-l from-blue-600 to-blue-500 text-white font-black py-5 md:py-6 rounded-3xl shadow-[0_15px_30px_rgba(37,99,235,0.4)] transition-all mt-10 text-lg md:text-xl tracking-widest btn-glow border border-blue-400/50 hover:scale-[1.02]">
                     <span data-key="confirm_order">تأكيد الطلب وإتمام الشراء 🔒</span>
                 </button>
                 
-                <p class="text-center text-[10px] text-gray-400 mt-4 font-bold flex items-center justify-center gap-1">
+                <p class="text-center text-[10px] text-gray-400 mt-6 font-bold flex items-center justify-center gap-1">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> 
                     <span data-key="secure_data">بياناتك مشفرة ومحمية بالكامل</span>
                 </p>
@@ -153,8 +155,8 @@
     </div>
 </div>
 
-<div id="successBox" class="fixed inset-0 bg-black/95 backdrop-blur-xl z-[200] flex items-center justify-center hidden transition-all">
-    <div class="glass max-w-lg w-full p-10 rounded-[40px] border border-blue-500/30 text-center animate-slide shadow-[0_0_100px_rgba(59,130,246,0.3)] relative overflow-hidden">
+<div id="successBox" class="modal-overlay fixed inset-0 bg-black/95 backdrop-blur-xl z-[200] flex items-center justify-center hidden transition-all">
+    <div class="glass max-w-lg w-full p-10 rounded-[40px] border border-blue-500/30 text-center animate-slide shadow-[0_0_100px_rgba(59,130,246,0.3)] relative overflow-hidden mx-4">
         <div class="w-28 h-28 bg-gradient-to-br from-green-500 to-green-400 rounded-full mx-auto mb-8 flex items-center justify-center shadow-[0_0_40px_rgba(34,197,94,0.5)] border-4 border-black relative z-10 animate-bounce">
             <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
         </div>

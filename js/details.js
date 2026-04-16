@@ -41,7 +41,7 @@ async function init() {
         document.getElementById('detMod').innerText = p.model || "2024";
 
         const thumbs = document.getElementById('thumbList');
-        const images = [p.image]; if(p.extraImages) images.push(...p.extraImages.split(','));
+        const image = urlParams.get('image') || localStorage.getItem('temp_prod_image');
         images.forEach((url, i) => {
             if(!url.trim()) return;
             const img = document.createElement('img'); img.src = url.trim();

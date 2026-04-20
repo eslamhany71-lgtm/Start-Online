@@ -1,14 +1,12 @@
 import { auth, db } from "./firebase-config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-// تم إصلاح استدعاء onValue هنا
 import { ref, get, push, onValue, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-// قراءة الرابط
 const params = new URLSearchParams(window.location.search);
 const prodId = params.get('id');
-let unitPrice = 0, quantity = 1, productOwnerId = "", selectedColor = t('sub_general'), selectedSize = t('sub_general'), mainImgUrl = "", userData = {};
+// ✅ تم إضافة متغير لحفظ اسم القسم لتمريره لصفحة الطلب
+let unitPrice = 0, quantity = 1, productOwnerId = "", selectedColor = t('sub_general'), selectedSize = t('sub_general'), mainImgUrl = "", userData = {}, productCategory = 'عام';
 
-// قراءة الصورة من الرابط، ولو مش موجودة نجيبها من الذاكرة عشان إيرور الرابط الطويل 414
 const paramImage = params.get('image');
 const storedImage = localStorage.getItem('temp_prod_image');
 const initialImage = paramImage ? decodeURIComponent(paramImage) : (storedImage || '');
@@ -27,7 +25,6 @@ onAuthStateChanged(auth, async (user) => {
     } else { window.location.href = "login.html"; } 
 });
 
-// دالة العداد التنازلي النبضي
 function startCountdown() {
     const timerEl = document.getElementById('countdownTimer');
     let timeInSeconds = (2 * 3600) + (15 * 60) + Math.floor(Math.random() * 60); 
@@ -43,7 +40,6 @@ function startCountdown() {
     }
 }
 
-// دالة العداد الوهمي للزوار
 setInterval(() => { 
     const el = document.getElementById('live-viewers');
     if(el) {
@@ -57,14 +53,17 @@ setInterval(() => {
 }, 4000);
 
 async function init() {
-    // عرض الصورة المؤقتة فوراً عشان السرعة
     if (initialImage) {
         document.getElementById('mainImg').src = initialImage;
     }
 
+    document.getElementById('detName').innerText = params.get('name') ? decodeURIComponent(params.get('name')) : '...';
+    document.getElementById('detPriceView').innerText = params.get('price') ? params.get('price') + " " + t('currency') : '...';
+
     const snap = await get(ref(db, 'products/' + prodId));
     if(snap.exists()) {
         const p = snap.val();
+        productCategory = p.category || 'عام'; // حفظ القسم
         unitPrice = parseFloat(p.price); productOwnerId = p.owner; mainImgUrl = p.image;
         
         document.getElementById('detName').innerText = p.name;
@@ -76,7 +75,6 @@ async function init() {
             document.getElementById('detOldPrice').innerText = p.oldPrice + " " + t('currency');
         }
 
-        // لو مفيش صورة في الذاكرة، حط صورة الداتا بيز
         if(!initialImage && p.image) {
             document.getElementById('mainImg').src = p.image;
         }
@@ -84,13 +82,13 @@ async function init() {
         document.getElementById('detMat').innerText = p.material || t('excellent_material');
         document.getElementById('detMod').innerText = p.model || "2024";
 
-        // الصور المصغرة
         const thumbs = document.getElementById('thumbList');
         let allImages = [p.image];
         if (p.extraImages) {
             allImages = allImages.concat(p.extraImages.split(','));
         }
         
+        // إصلاح خطأ الـ images.forEach القديم
         allImages.forEach((url, i) => {
             if(!url || !url.trim()) return;
             const img = document.createElement('img'); img.src = url.trim();
@@ -196,7 +194,7 @@ window.updateFinalPrice = () => {
 
 window.addToCart = async () => {
     const item = { id: prodId, name: document.getElementById('detName').innerText, price: unitPrice, qty: quantity, color: selectedColor, size: selectedSize, image: mainImgUrl };
-    await set(ref(db, `carts/${auth.currentUser.uid}/${prodId}_${selectedColor}_${selectedSize}`), item); // استبدلنا push بـ set عشان ميكررش نفس المنتج في السلة
+    await set(ref(db, `carts/${auth.currentUser.uid}/${prodId}_${selectedColor}_${selectedSize}`), item);
     showToast(t('msg_added_cart') || 'تمت الإضافة للسلة! 🛒');
 };
 
@@ -206,10 +204,10 @@ window.goToOrder = () => {
     const shipping = document.getElementById('govSelect').options[document.getElementById('govSelect').selectedIndex].getAttribute('data-price');
     const total = document.getElementById('finalPriceView').innerText.replace(` ${t('currency')}`, "");
     
-    // حفظ الصورة في الذاكرة لتفادي إيرور الرابط الطويل 414
     localStorage.setItem('temp_prod_image', mainImgUrl);
 
-    window.location.href = `order.html?id=${prodId}&name=${encodeURIComponent(document.getElementById('detName').innerText)}&price=${unitPrice}&qty=${quantity}&color=${encodeURIComponent(selectedColor)}&size=${encodeURIComponent(selectedSize)}&gov=${encodeURIComponent(gov)}&shipping=${shipping}&total=${total}&owner=${productOwnerId}`;
+    // ✅ التعديل: إرسال اسم القسم (cat) لصفحة الطلب عشان العبايات
+    window.location.href = `order.html?id=${prodId}&name=${encodeURIComponent(document.getElementById('detName').innerText)}&price=${unitPrice}&qty=${quantity}&color=${encodeURIComponent(selectedColor)}&size=${encodeURIComponent(selectedSize)}&gov=${encodeURIComponent(gov)}&shipping=${shipping}&total=${total}&owner=${productOwnerId}&cat=${encodeURIComponent(productCategory)}`;
 };
 
 window.showToast = (m) => { 
@@ -222,3 +220,16 @@ window.showToast = (m) => {
         tst.style.transform = 'translate(-50%, 0)'; 
     }, 3000); 
 };
+
+window.addEventListener('click', (e) => {
+    if (e.target.classList.contains('fixed') && e.target.classList.contains('inset-0')) {
+        e.target.classList.add('hidden');
+    }
+    const notifDropdown = document.getElementById('notifDropdown');
+    const clickedOnNotifBtn = e.target.closest('button[onclick="toggleNotif()"]');
+    if (notifDropdown && !notifDropdown.classList.contains('hidden')) {
+        if (!notifDropdown.contains(e.target) && !clickedOnNotifBtn) {
+            notifDropdown.classList.add('hidden');
+        }
+    }
+});

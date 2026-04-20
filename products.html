@@ -14,7 +14,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title data-key="shop_title">المتجر الذكي | Start Online</title>
-    <link href="https://fonts.googleapis.c[om/css2?family=Cairo:wght@400;700;900&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/products.css">
 </head>
@@ -91,8 +91,10 @@
             <div class="category-item" data-cat="عطور" onclick="showSubCats('perfume', this)"><img src="https://images.unsplash.com/photo-1541643600914-78b084683601?w=200" loading="lazy"><span data-key="cat_perfume">عطور</span></div>
             <div class="category-item" data-cat="صحة وجمال" onclick="showSubCats('beauty', this)"><img src="https://cdn.youcan.shop/stores/0dc0cbcb1b32177428c303a8e891bc1e/products/ekcrAIzCdbM7DYOPYwqrxERfMKBM01UitNaY2FfO_md.png" loading="lazy"><span data-key="cat_beauty">صحة وجمال</span></div>
             <div class="category-item" data-cat="إلكترونيات" onclick="showSubCats('electronics', this)"><img src="https://images.unsplash.com/photo-1498049794561-7780e7231661?w=200" loading="lazy"><span data-key="cat_electronics">إلكترونيات</span></div>
+            
             <div class="category-item" data-cat="عبايات" onclick="showSubCats('abayas', this)"><img src="https://cdn.salla.sa/WlAZpn/0efcc8cd-e9ea-4287-a57d-6f227a468cb5-666.22251832112x1000-dCgL7U7981Q2Op0OlfnzYfd1DCCoTW0B770dvVEG.jpg" loading="lazy"><span>عبايات</span></div>
             <div class="category-item" data-cat="هاند ميد" onclick="showSubCats('handmade', this)"><img src="https://images.unsplash.com/photo-1452860606245-08befc0ff44b?w=200" loading="lazy"><span>هاند ميد</span></div>
+            
             <div class="category-item" data-cat="أكثر مبيعاً" onclick="showSubCats('best', this)"><img src="https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?w=200" loading="lazy"><span data-key="cat_best">أكثر مبيعاً</span></div>
         </div>
         <div id="subCatsArea" class="sub-cats-area glass p-4 rounded-3xl border border-white/5"></div>
@@ -124,6 +126,9 @@
         <div class="glass w-full max-w-4xl p-8 rounded-[40px] border border-white/10 shadow-2xl relative animate-slide max-h-[85vh] overflow-hidden flex flex-col">
             <button onclick="closeUsersModal()" class="absolute top-6 left-6 text-gray-500 hover:text-white font-black text-xl transition-colors z-10">✕</button>
             <h2 id="modalTitle" class="text-2xl font-black mb-6 text-blue-400 italic underline decoration-blue-500/30 uppercase tracking-tighter" data-key="users_list_title">قائمة الأعضاء</h2>
+            
+            <input type="text" id="usersSearchInput" placeholder="بحث بالاسم، الإيميل، الرقم، الرتبة..." oninput="filterUsersModal()" class="w-full bg-black/40 border border-white/10 p-4 rounded-2xl text-white text-xs mb-6 outline-none focus:border-blue-400 transition-colors shadow-inner">
+            
             <div id="modalList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-auto no-scrollbar pr-2 pb-4"></div>
         </div>
     </div>
@@ -191,6 +196,8 @@
                         <option value="عطور" data-key="cat_perfume">عطور</option>
                         <option value="صحة وجمال" data-key="cat_beauty">صحة وجمال</option>
                         <option value="إلكترونيات" data-key="cat_electronics">إلكترونيات</option>
+                        <option value="عبايات">عبايات</option>
+                        <option value="هاند ميد">هاند ميد</option>
                     </select>
                 </div>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
@@ -239,6 +246,8 @@
                     <option value="عطور" data-key="cat_perfume">عطور</option>
                     <option value="صحة وجمال" data-key="cat_beauty">صحة وجمال</option>
                     <option value="إلكترونيات" data-key="cat_electronics">إلكترونيات</option>
+                    <option value="عبايات">عبايات</option>
+                    <option value="هاند ميد">هاند ميد</option>
                 </select>
             </div>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">

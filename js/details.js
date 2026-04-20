@@ -4,12 +4,17 @@ import { ref, get, push, onValue, set } from "https://www.gstatic.com/firebasejs
 
 const params = new URLSearchParams(window.location.search);
 const prodId = params.get('id');
-// ✅ تم إضافة متغير لحفظ اسم القسم لتمريره لصفحة الطلب
 let unitPrice = 0, quantity = 1, productOwnerId = "", selectedColor = t('sub_general'), selectedSize = t('sub_general'), mainImgUrl = "", userData = {}, productCategory = 'عام';
 
 const paramImage = params.get('image');
 const storedImage = localStorage.getItem('temp_prod_image');
 const initialImage = paramImage ? decodeURIComponent(paramImage) : (storedImage || '');
+
+// دالة تفاصيل المنتجات للعمل داخل هذه الصفحة
+window.viewDetails = (id, n, p, i) => {
+    localStorage.setItem('temp_prod_image', i); 
+    window.location.href = `details.html?id=${id}&name=${encodeURIComponent(n)}&price=${p}`; 
+};
 
 window.setLanguage = (lang) => { 
     localStorage.setItem('lang', lang); 
@@ -52,6 +57,49 @@ setInterval(() => {
     }
 }, 4000);
 
+// ظهور واختفاء زر الصعود للأعلى
+window.addEventListener('scroll', () => {
+    const btn = document.getElementById('scrollTopBtn');
+    if (window.scrollY > 400) {
+        btn.classList.remove('opacity-0', 'translate-y-10', 'pointer-events-none');
+        btn.classList.add('opacity-100', 'translate-y-0');
+    } else {
+        btn.classList.add('opacity-0', 'translate-y-10', 'pointer-events-none');
+        btn.classList.remove('opacity-100', 'translate-y-0');
+    }
+});
+
+async function loadRelatedProducts(category) {
+    const snap = await get(ref(db, 'products'));
+    if(snap.exists()) {
+        const allP = snap.val();
+        // جلب 4 منتجات عشوائية من نفس القسم ما عدا المنتج الحالي
+        const related = Object.keys(allP).filter(k => k !== prodId && allP[k].category === category).slice(0, 4);
+        const grid = document.getElementById('relatedProductsGrid');
+        
+        if(related.length === 0) {
+            grid.parentElement.classList.add('hidden');
+            return;
+        }
+        
+        let html = '';
+        related.forEach(k => {
+            const p = allP[k];
+            const safeName = (p.name || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+            html += `
+            <div class="glass p-4 rounded-[25px] border border-white/5 text-right flex flex-col justify-between shadow-lg hover:shadow-[0_0_15px_rgba(59,130,246,0.2)] transition-shadow">
+                <img src="${p.image}" class="w-full h-32 md:h-40 object-cover rounded-2xl mb-3 cursor-pointer hover:scale-[1.02] transition-transform" onclick="viewDetails('${k}', '${safeName}', '${p.price}', '${p.image}')">
+                <h4 class="text-white font-bold text-[10px] md:text-xs line-clamp-1 mb-2">${p.name}</h4>
+                <div class="flex justify-between items-center">
+                    <span class="text-blue-400 font-black text-sm md:text-base">${p.price} ${t('currency')}</span>
+                    <button onclick="viewDetails('${k}', '${safeName}', '${p.price}', '${p.image}')" class="bg-white/10 hover:bg-blue-600 text-white px-3 py-2 rounded-xl text-[9px] font-black transition">التفاصيل</button>
+                </div>
+            </div>`;
+        });
+        grid.innerHTML = html;
+    }
+}
+
 async function init() {
     if (initialImage) {
         document.getElementById('mainImg').src = initialImage;
@@ -63,12 +111,20 @@ async function init() {
     const snap = await get(ref(db, 'products/' + prodId));
     if(snap.exists()) {
         const p = snap.val();
-        productCategory = p.category || 'عام'; // حفظ القسم
+        productCategory = p.category || 'عام';
+        
+        // تحديث مسار التنقل
+        document.getElementById('breadcrumbCat').innerText = productCategory;
+
         unitPrice = parseFloat(p.price); productOwnerId = p.owner; mainImgUrl = p.image;
         
         document.getElementById('detName').innerText = p.name;
         document.getElementById('detPriceView').innerText = unitPrice + " " + t('currency');
         document.getElementById('detDesc').innerText = p.desc || t('no_extra_desc');
+        
+        // تجهيز رابط الواتساب بالرسالة
+        const waMsg = `أهلاً، كنت حابب أستفسر عن المنتج: ${p.name} %0Aالرابط: ${window.location.href}`;
+        document.getElementById('whatsappBtn').href = `https://wa.me/201000000000?text=${waMsg}`; // حط رقمك الحقيقي هنا بدل الأصفار
         
         if(p.oldPrice && p.oldPrice.trim() !== '') {
             document.getElementById('detOldPriceContainer').classList.remove('hidden');
@@ -88,7 +144,6 @@ async function init() {
             allImages = allImages.concat(p.extraImages.split(','));
         }
         
-        // إصلاح خطأ الـ images.forEach القديم
         allImages.forEach((url, i) => {
             if(!url || !url.trim()) return;
             const img = document.createElement('img'); img.src = url.trim();
@@ -108,6 +163,9 @@ async function init() {
 
         updateFinalPrice();
         startCountdown();
+        
+        // تحميل المنتجات ذات الصلة
+        loadRelatedProducts(productCategory);
     }
 }
 
@@ -206,7 +264,6 @@ window.goToOrder = () => {
     
     localStorage.setItem('temp_prod_image', mainImgUrl);
 
-    // ✅ التعديل: إرسال اسم القسم (cat) لصفحة الطلب عشان العبايات
     window.location.href = `order.html?id=${prodId}&name=${encodeURIComponent(document.getElementById('detName').innerText)}&price=${unitPrice}&qty=${quantity}&color=${encodeURIComponent(selectedColor)}&size=${encodeURIComponent(selectedSize)}&gov=${encodeURIComponent(gov)}&shipping=${shipping}&total=${total}&owner=${productOwnerId}&cat=${encodeURIComponent(productCategory)}`;
 };
 

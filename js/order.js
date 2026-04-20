@@ -8,7 +8,9 @@ const qty = parseInt(params.get('qty')) || 1;
 const shipping = parseFloat(params.get('shipping')) || 0;
 const marketerId = params.get('owner');
 
-// جلب الصورة (من الرابط أو من الذاكرة لو الرابط مفيهوش)
+// ✅ الإضافة: قراءة اسم القسم عشان نعرف لو عبايات
+const cat = params.get('cat') ? decodeURIComponent(params.get('cat')) : '';
+
 const paramImage = params.get('image');
 const storedImage = localStorage.getItem('temp_prod_image');
 const finalImage = paramImage ? decodeURIComponent(paramImage) : (storedImage || '');
@@ -27,7 +29,6 @@ window.setLanguage = (lang) => {
 
 onAuthStateChanged(auth, (user) => { if(user) buyerUid = user.uid; });
 
-// تعبئة البيانات في الفاتورة
 document.getElementById('invName').innerText = params.get('name') ? decodeURIComponent(params.get('name')) : '...';
 document.getElementById('invImg').src = finalImage;
 document.getElementById('invGov').innerText = `${t('gov_shipping')} ${gov}`;
@@ -38,11 +39,9 @@ document.getElementById('pQty').innerText = qty + " " + (t('piece') || 'قطعة
 document.getElementById('pShipping').innerText = shipping + " " + t('currency');
 document.getElementById('totalPrice').innerText = (unitPrice * qty + shipping) + " " + t('currency');
 
-// اختيار طريقة الدفع
 window.selectPay = (method) => {
     selectedPayMethod = method;
     
-    // تصفير كل الكروت
     document.querySelectorAll('.pay-card').forEach(c => {
         c.classList.remove('border-2', 'border-blue-500', 'shadow-[0_0_15px_rgba(59,130,246,0.3)]', 'bg-blue-600/10', 'active');
         c.classList.add('border', 'border-white/5', 'bg-white/5');
@@ -50,14 +49,14 @@ window.selectPay = (method) => {
         if(icon) icon.classList.replace('flex', 'hidden');
     });
     
-    // تفعيل الكارت المختار
     const activeCard = document.getElementById('btn-' + method);
-    activeCard.classList.remove('border', 'border-white/5', 'bg-white/5');
-    activeCard.classList.add('border-2', 'border-blue-500', 'shadow-[0_0_15px_rgba(59,130,246,0.3)]', 'bg-blue-600/10', 'active');
-    const activeIcon = activeCard.querySelector('.check-icon');
-    if(activeIcon) activeIcon.classList.replace('hidden', 'flex');
+    if(activeCard) {
+        activeCard.classList.remove('border', 'border-white/5', 'bg-white/5');
+        activeCard.classList.add('border-2', 'border-blue-500', 'shadow-[0_0_15px_rgba(59,130,246,0.3)]', 'bg-blue-600/10', 'active');
+        const activeIcon = activeCard.querySelector('.check-icon');
+        if(activeIcon) activeIcon.classList.replace('hidden', 'flex');
+    }
     
-    // إظهار أو إخفاء بيانات التحويل
     const prepaidInfo = document.getElementById('prepaidInfo');
     if(method === 'cod') { 
         prepaidInfo.classList.add('hidden'); 
@@ -66,6 +65,18 @@ window.selectPay = (method) => {
         fetchMarketerDetails(); 
     }
 };
+
+// ✅ الإضافة: حظر الدفع عند الاستلام لو القسم "عبايات"
+if(cat === 'عبايات') {
+    const codBtn = document.getElementById('btn-cod');
+    if(codBtn) {
+        codBtn.classList.add('hidden'); // إخفاء الكارت تماماً
+        setTimeout(() => {
+            selectPay('vodafone'); // يختار فودافون كاش إجباري
+            alert('تنبيه: قسم العبايات يتطلب دفع مقدم إجباري، ولا يتوفر الدفع عند الاستلام.');
+        }, 400); // تأخير بسيط عشان التنبيه يظهر بعد ما الصفحة تحمل
+    }
+}
 
 async function fetchMarketerDetails() {
     const displayElem = document.getElementById('payNumDisplay');
@@ -122,9 +133,6 @@ document.getElementById('orderForm').onsubmit = async (e) => {
     }
 };
 
-// ==========================================
-// إغلاق النوافذ المنبثقة
-// ==========================================
 window.addEventListener('click', (e) => {
     if (e.target.classList.contains('modal-overlay')) {
         e.target.classList.add('hidden');

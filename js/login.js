@@ -85,11 +85,13 @@ window.loginWithGoogle = async () => {
             await remove(ref(db, 'invited_users/' + emailKey)); 
         }
 
+        // ✅ الإضافة: تسجيل تاريخ الانضمام مع جوجل
         await set(ref(db, 'users/' + result.user.uid), { 
             name: result.user.displayName, 
             email: email,
             phone: result.user.phoneNumber || '', 
-            role: userRole 
+            role: userRole,
+            joinDate: new Date().toLocaleString('ar-EG')
         });
         window.location.href = "index.html";
     } catch (err) { showToast(t('msg_google_fail') + err.message); }
@@ -126,7 +128,14 @@ document.getElementById('authForm').onsubmit = async (e) => {
                 await remove(ref(db, 'invited_users/' + emailKey)); 
             }
 
-            await set(ref(db, 'users/' + res.user.uid), { name, email, phone, role: userRole });
+            // ✅ الإضافة: تسجيل تاريخ الانضمام في التسجيل العادي
+            await set(ref(db, 'users/' + res.user.uid), { 
+                name, 
+                email, 
+                phone, 
+                role: userRole,
+                joinDate: new Date().toLocaleString('ar-EG')
+            });
         } else {
             await signInWithEmailAndPassword(auth, email, pass);
         }

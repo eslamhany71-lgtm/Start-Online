@@ -186,12 +186,15 @@ window.removeFromCart = (key) => { if(confirm(t('msg_delete_cart'))) remove(ref(
 // ==========================================
 // 5. الفلاتر والأقسام
 // ==========================================
-const dbCategories = { 'all': 'الكل', 'clothes': 'ملابس', 'acc': 'إكسسوارات', 'perfume': 'عطور', 'beauty': 'صحة وجمال', 'best': 'أكثر مبيعاً', 'electronics': 'إلكترونيات' };
+// ✅ الإضافة: الأقسام الجديدة في الفلاتر
+const dbCategories = { 'all': 'الكل', 'clothes': 'ملابس', 'acc': 'إكسسوارات', 'perfume': 'عطور', 'beauty': 'صحة وجمال', 'best': 'أكثر مبيعاً', 'electronics': 'إلكترونيات', 'abayas': 'عبايات', 'handmade': 'هاند ميد' };
 const subData = {
     clothes: [{dbVal:'رجالي', tKey:'sub_men', i:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcq8MbpMpYi4h72YsWLGOu8L2bU7lNdq-3ZQ&s'}, {dbVal:'حريمي', tKey:'sub_women', i:'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=100'}],
     acc: [{dbVal:'رجالي', tKey:'sub_men', i:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHE6nx5A79B-M8Ptx1axoKtJyh__8fFnVf9Q&s'}, {dbVal:'حريمي', tKey:'sub_women', i:'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg_2PO3OsO5EeG2It9AcKvUkfcraT1AzfcbFuB4c_RxtgsYzAPBUico99Z2PlxYnTKx4Rd0WlhLqoI6QpHR-IVSZsEXDQPij6CZY0eaoQ-tWvUO4PQrNOyYD_9CgZpLx6kUDFLBSBlP-f97/s1600/%D8%A7%D9%83%D8%B3%D8%B3%D9%88%D8%A7%D8%B1%D8%A7%D8%AA+%D9%85%D8%B3%D8%AA%D9%88%D8%B1%D8%AF%D8%A9+%D9%85%D9%86+%D8%A7%D9%84%D8%B5%D9%8A%D9%86.jpg'}],
     perfume: [{dbVal:'رجالي', tKey:'sub_men', i:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqYTBqAT9RJHsyFI4Pbp1btFlcsx3YVcowXw&s'}, {dbVal:'حريمي', tKey:'sub_women', i:'https://www.faces.eg/dw/image/v2/BJSM_PRD/on/demandware.static/-/Sites-faces-master-catalog/default/dw14914fb4/product/3614270175572/3614270175572.jpg?sw=800&sh=800'}],
-    beauty: [{dbVal:'رجالي', tKey:'sub_men', i:'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=100'}, {dbVal:'حريمي', tKey:'sub_women', i:'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=100'}]
+    beauty: [{dbVal:'رجالي', tKey:'sub_men', i:'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=100'}, {dbVal:'حريمي', tKey:'sub_women', i:'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=100'}],
+    abayas: [{dbVal:'خروج', tKey:'sub_general', i:'https://via.placeholder.com/100'}, {dbVal:'بيتي', tKey:'sub_general', i:'https://via.placeholder.com/100'}],
+    handmade: [{dbVal:'ديكور', tKey:'sub_general', i:'https://via.placeholder.com/100'}, {dbVal:'هدايا', tKey:'sub_general', i:'https://via.placeholder.com/100'}]
 };
 
 window.showSubCats = (key, el) => {
@@ -200,7 +203,7 @@ window.showSubCats = (key, el) => {
     const area = document.getElementById('subCatsArea');
     if(key === 'all' || key === 'best' || key === 'electronics') { area.style.display = 'none'; applyDualFilter(); return; }
     area.style.display = 'flex';
-    area.innerHTML = subData[key].map(s => `<div class="sub-cat-item" onclick="filterBySub('${s.dbVal}', this)"><img src="${s.i}" loading="lazy"><span>${t(s.tKey)}</span></div>`).join('');
+    area.innerHTML = subData[key].map(s => `<div class="sub-cat-item" onclick="filterBySub('${s.dbVal}', this)"><img src="${s.i}" loading="lazy"><span>${t(s.tKey) || s.dbVal}</span></div>`).join('');
     applyDualFilter();
 };
 
@@ -264,7 +267,9 @@ window.exportUsersToExcel = () => {
         'الاسم': u.name || 'غير محدد',
         'البريد الإلكتروني': u.email || 'غير محدد',
         'رقم الموبايل': u.phone || u.phoneNumber || 'غير مسجل',
-        'الرتبة': t('btn_role_' + u.role) || u.role || 'user'
+        'الرتبة': t('btn_role_' + u.role) || u.role || 'user',
+        // ✅ الإضافة: سحب تاريخ الانضمام في الإكسيل
+        'تاريخ الانضمام': u.joinDate || 'غير مسجل'
     }));
 
     const worksheet = XLSX.utils.json_to_sheet(dataToExport);
@@ -323,33 +328,69 @@ window.openReviewsModal = async () => {
     l.innerHTML = html;
 };
 
+// ✅ الإضافة: متغير وحفظ الأعضاء للبحث وترتيبهم
+let currentModalUsers = []; 
+
 window.openUsersModal = (role) => {
-    const m = document.getElementById('usersModal'); const l = document.getElementById('modalList');
+    const m = document.getElementById('usersModal'); 
     m.classList.remove('hidden'); 
-    let modalHtml = '';
-    Object.keys(allUsers).forEach(uid => { 
-        const u = allUsers[uid];
-        if(role === 'all' || u.role === role || (role === 'user' && u.role === 'customer')) {
-            modalHtml += `<div class="bg-white/5 p-4 rounded-2xl border border-white/5 flex flex-col gap-3 font-bold text-right">
-                <div class="flex justify-between items-start">
-                    <p class="text-sm text-white">${u.name}</p>
-                    <span class="text-[8px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 font-black uppercase border border-blue-500/20">${t('btn_role_'+u.role) || u.role}</span>
-                </div>
-                <p class="text-[10px] text-gray-500 font-mono">${u.phone || 'بدون رقم'}</p>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-2">
-                    <button onclick="changeRole('${uid}', 'merchant')" class="w-full text-[8px] border border-green-500/20 rounded-lg p-2 hover:bg-green-500 hover:text-white text-green-400 transition-all font-black uppercase">تاجر</button>
-                    <button onclick="changeRole('${uid}', 'marketer')" class="w-full text-[8px] border border-blue-500/20 rounded-lg p-2 hover:bg-blue-500 hover:text-white text-blue-400 transition-all font-black uppercase">${t('btn_role_marketer')}</button>
-                    <button onclick="changeRole('${uid}', 'admin')" class="w-full text-[8px] border border-yellow-500/20 rounded-lg p-2 hover:bg-yellow-500 hover:text-white text-yellow-500 transition-all font-black uppercase">${t('btn_role_admin')}</button>
-                    <button onclick="changeRole('${uid}', 'user')" class="w-full text-[8px] bg-white/5 rounded-lg p-2 text-white hover:bg-white/20 transition-all font-black uppercase">${t('guest')}</button>
-                </div>
-                <div class="flex gap-2">
-                    <button onclick="visitAccount('${uid}')" class="flex-1 bg-blue-600/20 text-blue-400 py-2 rounded-xl text-[10px] font-black border border-blue-400/30 hover:bg-blue-600 hover:text-white transition-all shadow-xl">${t('btn_visit') || 'زيارة'}</button>
-                    <button onclick="deleteUserRecord('${uid}')" class="flex-1 bg-red-600/20 text-red-500 py-2 rounded-xl text-[10px] font-black border border-red-500/30 hover:bg-red-600 hover:text-white transition-all shadow-xl">حذف 🗑️</button>
-                </div>
-            </div>`; 
-        }
+    document.getElementById('usersSearchInput').value = ""; // تصفير البحث
+    
+    // تحويل الأوبجيكت لمصفوفة
+    currentModalUsers = Object.keys(allUsers).map(uid => ({ uid, ...allUsers[uid] }));
+    
+    // الترتيب (من الأحدث للأقدم بناء على تاريخ الانضمام)
+    currentModalUsers.sort((a, b) => {
+        if(!a.joinDate) return 1; if(!b.joinDate) return -1;
+        return new Date(b.joinDate) - new Date(a.joinDate);
     });
-    l.innerHTML = modalHtml;
+
+    // فلترة مبدئية حسب الرول
+    if(role !== 'all') {
+        currentModalUsers = currentModalUsers.filter(u => u.role === role || (role === 'user' && u.role === 'customer'));
+    }
+
+    renderUsersModalList(currentModalUsers);
+};
+
+window.renderUsersModalList = (usersArray) => {
+    const l = document.getElementById('modalList');
+    let modalHtml = '';
+    usersArray.forEach(u => { 
+        modalHtml += `<div class="bg-white/5 p-4 rounded-2xl border border-white/5 flex flex-col gap-3 font-bold text-right shadow-lg">
+            <div class="flex justify-between items-start">
+                <p class="text-sm text-white">${u.name}</p>
+                <span class="text-[8px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 font-black uppercase border border-blue-500/20">${t('btn_role_'+u.role) || u.role}</span>
+            </div>
+            <div class="text-[9px] text-gray-400 space-y-1">
+                <p>📱 <span class="font-mono">${u.phone || 'بدون رقم'}</span> | 📧 ${u.email}</p>
+                <p>📅 الانضمام: <span class="text-blue-300">${u.joinDate || 'قديم (غير مسجل)'}</span></p>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-1 mt-2">
+                <button onclick="changeRole('${u.uid}', 'merchant')" class="w-full text-[8px] border border-green-500/20 rounded-lg p-2 hover:bg-green-500 hover:text-white text-green-400 transition-all font-black uppercase">تاجر</button>
+                <button onclick="changeRole('${u.uid}', 'marketer')" class="w-full text-[8px] border border-blue-500/20 rounded-lg p-2 hover:bg-blue-500 hover:text-white text-blue-400 transition-all font-black uppercase">${t('btn_role_marketer')}</button>
+                <button onclick="changeRole('${u.uid}', 'admin')" class="w-full text-[8px] border border-yellow-500/20 rounded-lg p-2 hover:bg-yellow-500 hover:text-white text-yellow-500 transition-all font-black uppercase">${t('btn_role_admin')}</button>
+                <button onclick="changeRole('${u.uid}', 'user')" class="w-full text-[8px] bg-white/5 rounded-lg p-2 text-white hover:bg-white/20 transition-all font-black uppercase">${t('guest')}</button>
+            </div>
+            <div class="flex gap-2 mt-1">
+                <button onclick="visitAccount('${u.uid}')" class="flex-1 bg-blue-600/20 text-blue-400 py-2 rounded-xl text-[10px] font-black border border-blue-400/30 hover:bg-blue-600 hover:text-white transition-all shadow-xl">${t('btn_visit') || 'زيارة'}</button>
+                <button onclick="deleteUserRecord('${u.uid}')" class="flex-1 bg-red-600/20 text-red-500 py-2 rounded-xl text-[10px] font-black border border-red-500/30 hover:bg-red-600 hover:text-white transition-all shadow-xl">حذف 🗑️</button>
+            </div>
+        </div>`; 
+    });
+    l.innerHTML = modalHtml || `<p class="text-gray-500 text-xs text-center col-span-full">لا يوجد نتائج للبحث.</p>`;
+};
+
+// ✅ الإضافة: دالة البحث الحية
+window.filterUsersModal = () => {
+    const term = document.getElementById('usersSearchInput').value.toLowerCase();
+    const filtered = currentModalUsers.filter(u => 
+        (u.name && u.name.toLowerCase().includes(term)) ||
+        (u.phone && u.phone.includes(term)) ||
+        (u.email && u.email.toLowerCase().includes(term)) ||
+        (u.role && u.role.toLowerCase().includes(term))
+    );
+    renderUsersModalList(filtered);
 };
 
 window.closeUsersModal = () => document.getElementById('usersModal').classList.add('hidden');
@@ -442,10 +483,15 @@ window.rejectMarketer = async (uid) => {
 // ==========================================
 // 8. إدارة المنتجات
 // ==========================================
-window.saveProduct = () => {
+window.saveProduct = async () => {
     const name = document.getElementById('pName').value, price = document.getElementById('pPrice').value;
     const defaultImg = 'https://placehold.co/400x400/1e293b/3b82f6?text=Start+Online';
     const finalImage = window.newPublishBase64 || defaultImg; 
+
+    // ✅ الإضافة: حفظ اسم الناشر وتاريخ النشر
+    const userSnap = await get(ref(db, 'users/' + currentUser.uid));
+    const uName = userSnap.exists() ? userSnap.val().name : 'مجهول';
+    const now = new Date().toLocaleString('ar-EG');
 
     if(name && price) { 
         push(ref(db, 'products'), { 
@@ -461,7 +507,11 @@ window.saveProduct = () => {
             image: finalImage, 
             extraImages: document.getElementById('pExtraImages').value, 
             owner: currentUser.uid, 
-            likes: 0 
+            likes: 0,
+            createdAt: now,
+            creatorName: uName,
+            updatedAt: '',
+            updaterName: ''
         }); 
         showToast(t('msg_publish_success')); 
         ["pName", "pPrice", "pOldPrice", "pColors", "pSizes", "pDesc", "pExtraImages", "pMaterial", "pModel"].forEach(id => document.getElementById(id).value = ""); 
@@ -516,6 +566,13 @@ function renderGrid(products) {
                         <button onclick="deleteProduct('${key}')" class="text-red-500 text-[10px] font-bold italic border-b border-red-500/30">${t('btn_delete')}</button>
                     </div>` : ''}
                 </div>
+                
+                ${canManage ? `
+                <div class="bg-black/30 p-3 rounded-xl mb-3 text-[9px] text-gray-400 text-right border border-white/5">
+                    <p>📝 نُشر بواسطة: <span class="text-blue-300">${p.creatorName || 'أدمن'}</span> (${p.createdAt || 'قديم'})</p>
+                    ${p.updatedAt ? `<p class="mt-1">🔄 عُدل بواسطة: <span class="text-yellow-500">${p.updaterName}</span> (${p.updatedAt})</p>` : ''}
+                </div>` : ''}
+
                 <button onclick="viewDetails('${key}', '${safeName}', '${p.price}', '${p.image}')" class="w-full bg-white/5 hover:bg-blue-600 hover:text-white py-4 rounded-[20px] text-[10px] font-black uppercase transition-all shadow-xl border border-white/5 tracking-widest active:scale-95">${t('btn_details')}</button>
             </div>
         </div>`;
@@ -552,6 +609,11 @@ window.saveEditedProduct = async () => {
     if(!currentEditId) return;
     const p = allProducts[currentEditId];
     
+    // ✅ الإضافة: حفظ اسم المُعدل وتاريخ التعديل
+    const userSnap = await get(ref(db, 'users/' + currentUser.uid));
+    const uName = userSnap.exists() ? userSnap.val().name : 'مجهول';
+    const now = new Date().toLocaleString('ar-EG');
+
     const updatedData = {
         name: document.getElementById('eName').value,
         category: document.getElementById('eCategory').value,
@@ -564,7 +626,9 @@ window.saveEditedProduct = async () => {
         sizes: document.getElementById('eSizes').value,
         image: window.newEditBase64 || p.image, 
         extraImages: document.getElementById('eExtraImages').value,
-        desc: document.getElementById('eDesc').value
+        desc: document.getElementById('eDesc').value,
+        updatedAt: now,
+        updaterName: uName
     };
     
     try {
@@ -583,8 +647,8 @@ window.setLanguage = (lang) => { localStorage.setItem('lang', lang); location.re
 window.changeRole = (uid, r) => { if(confirm(t('msg_role_confirm'))) { update(ref(db, 'users/' + uid), { role: r }); showToast(t('msg_role_success')); } };
 
 window.viewDetails = (id, n, p, i) => {
-    localStorage.setItem('temp_prod_image', i); // بنحفظ الصورة في الذاكرة
-    window.location.href = `details.html?id=${id}&name=${encodeURIComponent(n)}&price=${p}`; // شيلنا الصورة من الرابط عشان ميضربش
+    localStorage.setItem('temp_prod_image', i); 
+    window.location.href = `details.html?id=${id}&name=${encodeURIComponent(n)}&price=${p}`; 
 };
 window.toggleWishlist = async (id) => { 
     if(!currentUser) return;

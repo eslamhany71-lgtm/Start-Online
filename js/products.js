@@ -53,6 +53,14 @@ onAuthStateChanged(auth, async (user) => {
         const userSnap = await get(ref(db, 'users/' + user.uid));
         if (userSnap.exists()) {
             const u = userSnap.val(); 
+
+            // 🌟 السحر هنا: لو المستخدم قديم وملوش تاريخ، هنسحب تاريخه الحقيقي من فايربيز ونحدثه!
+            if (!u.joinDate && user.metadata && user.metadata.creationTime) {
+                const realJoinDate = new Date(user.metadata.creationTime).toLocaleString('ar-EG');
+                await update(ref(db, 'users/' + user.uid), { joinDate: realJoinDate });
+                u.joinDate = realJoinDate; // عشان يظهر قدامك فوراً من غير ريفريش
+            }
+
             userRole = u.role || 'user'; 
             userWishlist = u.wishlist || [];
             const debt = (u.wallet && u.wallet.debt) ? Number(u.wallet.debt) : 0;
@@ -79,7 +87,6 @@ onAuthStateChanged(auth, async (user) => {
         loadProducts(); updateCartUI();
     } else { window.location.href = "login.html"; }
 });
-
 // ==========================================
 // 3. نظام الإشعارات
 // ==========================================

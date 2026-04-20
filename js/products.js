@@ -200,8 +200,8 @@ const subData = {
     acc: [{dbVal:'رجالي', tKey:'sub_men', i:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHE6nx5A79B-M8Ptx1axoKtJyh__8fFnVf9Q&s'}, {dbVal:'حريمي', tKey:'sub_women', i:'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg_2PO3OsO5EeG2It9AcKvUkfcraT1AzfcbFuB4c_RxtgsYzAPBUico99Z2PlxYnTKx4Rd0WlhLqoI6QpHR-IVSZsEXDQPij6CZY0eaoQ-tWvUO4PQrNOyYD_9CgZpLx6kUDFLBSBlP-f97/s1600/%D8%A7%D9%83%D8%B3%D8%B3%D9%88%D8%A7%D8%B1%D8%A7%D8%AA+%D9%85%D8%B3%D8%AA%D9%88%D8%B1%D8%AF%D8%A9+%D9%85%D9%86+%D8%A7%D9%84%D8%B5%D9%8A%D9%86.jpg'}],
     perfume: [{dbVal:'رجالي', tKey:'sub_men', i:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqYTBqAT9RJHsyFI4Pbp1btFlcsx3YVcowXw&s'}, {dbVal:'حريمي', tKey:'sub_women', i:'https://www.faces.eg/dw/image/v2/BJSM_PRD/on/demandware.static/-/Sites-faces-master-catalog/default/dw14914fb4/product/3614270175572/3614270175572.jpg?sw=800&sh=800'}],
     beauty: [{dbVal:'رجالي', tKey:'sub_men', i:'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=100'}, {dbVal:'حريمي', tKey:'sub_women', i:'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=100'}],
-    abayas: [{dbVal:'خروج', tKey:'sub_general', i:'https://via.placeholder.com/100'}, {dbVal:'بيتي', tKey:'sub_general', i:'https://via.placeholder.com/100'}],
-    handmade: [{dbVal:'ديكور', tKey:'sub_general', i:'https://via.placeholder.com/100'}, {dbVal:'هدايا', tKey:'sub_general', i:'https://via.placeholder.com/100'}]
+    abayas: [{dbVal:'رجالي', tKey:'sub_men', i:'https://api.cezma.cloud/storage/thumbnails/products/web/176004956321.jpg'}, {dbVal:'حريمي', tKey:'sub_women', i:'https://exemore.com/images/thumbs/0115611_opened-abaya-khaleeji-for-women_510.jpeg'}],
+    handmade: []
 };
 
 window.showSubCats = (key, el) => {

@@ -124,7 +124,7 @@ async function init() {
         
         // تجهيز رابط الواتساب بالرسالة
         const waMsg = `أهلاً، كنت حابب أستفسر عن المنتج: ${p.name} %0Aالرابط: ${window.location.href}`;
-        document.getElementById('whatsappBtn').href = `https://wa.me/201000000000?text=${waMsg}`; // حط رقمك الحقيقي هنا بدل الأصفار
+        document.getElementById('whatsappBtn').href = `https://wa.me/01149079451?text=${waMsg}`; // حط رقمك الحقيقي هنا بدل الأصفار
         
         if(p.oldPrice && p.oldPrice.trim() !== '') {
             document.getElementById('detOldPriceContainer').classList.remove('hidden');

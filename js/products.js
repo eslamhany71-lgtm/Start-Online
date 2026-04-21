@@ -208,7 +208,7 @@ window.showSubCats = (key, el) => {
     document.querySelectorAll('.category-item').forEach(i => i.classList.remove('active')); el.classList.add('active');
     selectedMainCat = dbCategories[key] || 'الكل'; selectedSubCat = 'الكل'; 
     const area = document.getElementById('subCatsArea');
-    if(key === 'all' || key === 'best' || key === 'electronics') { area.style.display = 'none'; applyDualFilter(); return; }
+    if(key === 'all' || key === 'best' || key === 'electronics' || key === 'handmade') { area.style.display = 'none'; applyDualFilter(); return; }
     area.style.display = 'flex';
     area.innerHTML = subData[key].map(s => `<div class="sub-cat-item" onclick="filterBySub('${s.dbVal}', this)"><img src="${s.i}" loading="lazy"><span>${t(s.tKey) || s.dbVal}</span></div>`).join('');
     applyDualFilter();

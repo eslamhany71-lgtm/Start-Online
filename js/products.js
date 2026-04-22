@@ -12,6 +12,12 @@ let userClearedNotifs = false;
 window.newPublishBase64 = null;
 window.publishExtraImagesBase64 = []; // دي اللي هتشيل الصور الإضافية المرفوعة
 window.newEditBase64 = null;
+window.removeMainImage = () => {
+    window.newPublishBase64 = null;
+    document.getElementById('publishImgPreview').src = '';
+    document.getElementById('mainImgPreviewContainer').classList.add('hidden');
+    document.getElementById('mainImageInput').value = ''; // عشان يمسح الذاكرة وتقدر ترفعها تاني لو حبيت
+};
 
 // ==========================================
 // 1. دالة ضغط الصور
@@ -73,18 +79,37 @@ window.processMultipleImages = (event, containerId) => {
                 // نحفظ الصورة المضغوطة في المصفوفة
                 window.publishExtraImagesBase64.push(dataUrl);
 
-                // نعرض الصورة قدام التاجر
+                // نحفظ الصورة المضغوطة في المصفوفة
+                window.publishExtraImagesBase64.push(dataUrl);
+
+                // نعمل حاوية صغيرة (div) تشيل الصورة وزرار المسح
+                const wrapper = document.createElement('div');
+                wrapper.className = 'relative w-16 h-16 animate-fade-in extra-img-wrapper';
+                
                 const previewImg = document.createElement('img');
                 previewImg.src = dataUrl;
-                previewImg.className = 'w-16 h-16 rounded-2xl object-cover shadow-lg border border-blue-500/30 animate-fade-in';
+                previewImg.className = 'w-full h-full rounded-2xl object-cover shadow-lg border border-blue-500/30';
+                
+                // زرار المسح (✕)
+                const delBtn = document.createElement('button');
+                delBtn.innerHTML = '✕';
+                delBtn.className = 'absolute -top-2 -right-2 bg-red-600 text-white w-5 h-5 rounded-full font-black text-[9px] flex items-center justify-center hover:bg-red-500 shadow-md';
+                delBtn.onclick = () => {
+                    // نمسحها من المصفوفة
+                    window.publishExtraImagesBase64 = window.publishExtraImagesBase64.filter(src => src !== dataUrl);
+                    // نمسحها من الشاشة
+                    wrapper.remove();
+                };
+                
+                wrapper.appendChild(previewImg);
+                wrapper.appendChild(delBtn);
                 
                 // نحط الصورة قبل زرار الـ (+)
-                container.insertBefore(previewImg, container.lastElementChild);
+                container.insertBefore(wrapper, container.lastElementChild);
             };
         };
     });
 };
-
 // ==========================================
 // 2. حالة تسجيل الدخول والصلاحيات
 // ==========================================
@@ -564,7 +589,8 @@ window.saveProduct = async () => {
         showToast(t('msg_publish_success')); 
         ["pName", "pPrice", "pOldPrice", "pColors", "pSizes", "pDesc", "pMaterial", "pModel"].forEach(id => document.getElementById(id).value = ""); 
         window.newPublishBase64 = null;
-        document.getElementById('publishImgPreview').classList.add('hidden');
+        document.getElementById('mainImgPreviewContainer').classList.add('hidden');
+        document.querySelectorAll('.extra-img-wrapper').forEach(el => el.remove());
         window.publishExtraImagesBase64 = [];
         document.querySelectorAll('#publishExtraImagesContainer img').forEach(img => img.remove());
     } else {

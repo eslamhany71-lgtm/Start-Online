@@ -180,10 +180,13 @@
 
             <div id="publishForm">
                 <div class="mb-6 bg-white/5 p-6 rounded-3xl border border-white/10 text-center shadow-inner">
-                    <img id="publishImgPreview" src="" class="hidden w-32 h-32 rounded-2xl mx-auto mb-4 object-cover shadow-2xl border border-blue-500/30">
+                 <div id="mainImgPreviewContainer" class="relative w-32 h-32 mx-auto mb-4 hidden">
+                    <img id="publishImgPreview" src="" class="w-full h-full rounded-2xl object-cover shadow-2xl border border-blue-500/30">
+                    <button type="button" onclick="removeMainImage()" class="absolute -top-2 -right-2 bg-red-600 text-white w-6 h-6 rounded-full font-black text-xs flex items-center justify-center hover:bg-red-500 shadow-lg">✕</button>
+            </div>
                     <label class="bg-blue-600/20 text-blue-400 px-8 py-4 rounded-2xl text-[11px] font-black cursor-pointer hover:bg-blue-600 hover:text-white transition shadow-md border border-blue-500/30 border-dashed inline-block">
                         📸 ارفع صورة المنتج الرئيسية
-                        <input type="file" accept="image/*" class="hidden" onchange="processImageUpload(event, 'publishImgPreview', (base64) => window.newPublishBase64 = base64)">
+                        <input type="file" id="mainImageInput" accept="image/*" class="hidden" onchange="processImageUpload(event, 'publishImgPreview', (base64) => { window.newPublishBase64 = base64; document.getElementById('mainImgPreviewContainer').classList.remove('hidden'); })">
                     </label>
                 </div>
 

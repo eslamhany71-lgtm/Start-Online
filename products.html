@@ -217,7 +217,15 @@
                 <div class="grid grid-cols-1 gap-6 mb-6">
                     <input type="text" id="pMaterial" data-key="p_material" placeholder="الماتريال" class="bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white">
                 </div>
-                <input type="text" id="pExtraImages" data-key="p_extra_images" placeholder="روابط صور الألوان (افصل بفاصلة , )" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-xs text-white mb-6">
+                <div class="mb-6 bg-white/5 p-4 rounded-3xl border border-white/10 text-right shadow-inner">
+    <p class="text-[10px] text-gray-400 font-black mb-3 uppercase tracking-widest">🖼️ صور إضافية (ألوان / زوايا أخرى):</p>
+    <div class="flex flex-wrap gap-3 items-center" id="publishExtraImagesContainer">
+        <label class="w-16 h-16 flex items-center justify-center bg-blue-600/20 text-blue-400 rounded-2xl cursor-pointer hover:bg-blue-600 hover:text-white transition border border-blue-500/30 border-dashed text-2xl font-black shadow-md">
+            +
+            <input type="file" accept="image/*" multiple class="hidden" onchange="processMultipleImages(event, 'publishExtraImagesContainer')">
+        </label>
+    </div>
+</div>
                 <textarea id="pDesc" data-key="p_desc" placeholder="الوصف الكامل للمنتج..." class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl h-32 mb-6 text-white text-xs resize-none"></textarea>
                 <button onclick="saveProduct()" data-key="btn_publish" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-5 rounded-3xl shadow-xl transition-all uppercase tracking-widest italic active:scale-95 btn-glow">نشر المنتج الآن</button>
             </div>

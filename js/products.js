@@ -10,6 +10,7 @@ let currentNotifLength = 0;
 let userClearedNotifs = false;
 
 window.newPublishBase64 = null;
+window.publishExtraImagesBase64 = []; // دي اللي هتشيل الصور الإضافية المرفوعة
 window.newEditBase64 = null;
 
 // ==========================================
@@ -42,6 +43,46 @@ window.processImageUpload = (event, previewId, callback) => {
             callback(dataUrl);
         };
     };
+};
+window.processMultipleImages = (event, containerId) => {
+    const files = event.target.files;
+    if (!files) return;
+
+    const container = document.getElementById(containerId);
+
+    Array.from(files).forEach(file => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (e) => {
+            const img = new Image();
+            img.src = e.target.result;
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const MAX_WIDTH = 600; const MAX_HEIGHT = 600;
+                let width = img.width; let height = img.height;
+
+                if (width > height) { if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } } 
+                else { if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; } }
+
+                canvas.width = width; canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+
+                const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+                
+                // نحفظ الصورة المضغوطة في المصفوفة
+                window.publishExtraImagesBase64.push(dataUrl);
+
+                // نعرض الصورة قدام التاجر
+                const previewImg = document.createElement('img');
+                previewImg.src = dataUrl;
+                previewImg.className = 'w-16 h-16 rounded-2xl object-cover shadow-lg border border-blue-500/30 animate-fade-in';
+                
+                // نحط الصورة قبل زرار الـ (+)
+                container.insertBefore(previewImg, container.lastElementChild);
+            };
+        };
+    });
 };
 
 // ==========================================
@@ -512,7 +553,7 @@ window.saveProduct = async () => {
             sizes: document.getElementById('pSizes').value, 
             desc: document.getElementById('pDesc').value, 
             image: finalImage, 
-            extraImages: document.getElementById('pExtraImages').value, 
+            extraImages: window.publishExtraImagesBase64.join(','), 
             owner: currentUser.uid, 
             likes: 0,
             createdAt: now,
@@ -521,9 +562,11 @@ window.saveProduct = async () => {
             updaterName: ''
         }); 
         showToast(t('msg_publish_success')); 
-        ["pName", "pPrice", "pOldPrice", "pColors", "pSizes", "pDesc", "pExtraImages", "pMaterial", "pModel"].forEach(id => document.getElementById(id).value = ""); 
+        ["pName", "pPrice", "pOldPrice", "pColors", "pSizes", "pDesc", "pMaterial", "pModel"].forEach(id => document.getElementById(id).value = ""); 
         window.newPublishBase64 = null;
         document.getElementById('publishImgPreview').classList.add('hidden');
+        window.publishExtraImagesBase64 = [];
+        document.querySelectorAll('#publishExtraImagesContainer img').forEach(img => img.remove());
     } else {
         showToast(t('msg_fill_required'));
     }

@@ -40,7 +40,7 @@
                 <input type="text" id="userName" data-key="name_placeholder" placeholder="الاسم الكامل" 
                 class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-sm text-white transition-all input-focus shadow-inner">
                 
-                <input type="tel" id="userPhoneReg" data-key="phone_placeholder" placeholder="رقم الموبايل (إجباري للتواصل)" 
+                <input type="tel" id="userPhoneReg" maxlength="11" data-key="phone_placeholder" placeholder="رقم الموبايل (إجباري للتواصل)" 
                 class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-sm text-white transition-all input-focus shadow-inner">
             </div>
 
@@ -88,7 +88,7 @@
         <h2 class="text-2xl font-black text-white mb-2">خطوة أخيرة يا بطل!</h2>
         <p class="text-xs text-gray-400 mb-6 font-bold leading-relaxed">عشان نقدر نتواصل معاك ونأكد طلباتك، يرجى إدخال رقم الموبايل الخاص بك لاستكمال التسجيل.</p>
         
-        <input type="tel" id="googlePhoneInput" placeholder="01xxxxxxxxx" class="w-full bg-black/40 border border-white/10 p-4 rounded-2xl text-white text-sm shadow-inner mb-6 text-center focus:border-blue-400 outline-none transition-colors" dir="ltr" required>
+        <input type="tel" id="googlePhoneInput" maxlength="11" placeholder="01xxxxxxxxx" class="w-full bg-black/40 border border-white/10 p-4 rounded-2xl text-white text-sm shadow-inner mb-6 text-center focus:border-blue-400 outline-none transition-colors" dir="ltr" required>
         
         <button id="saveGooglePhoneBtn" onclick="saveGooglePhone()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-2xl shadow-[0_0_15px_rgba(59,130,246,0.4)] transition-all tracking-widest btn-glow">
             تأكيد وحفظ الدخول

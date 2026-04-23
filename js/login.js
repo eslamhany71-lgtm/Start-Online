@@ -119,8 +119,10 @@ window.saveGooglePhone = async () => {
     const phoneInput = document.getElementById('googlePhoneInput').value;
     const btn = document.getElementById('saveGooglePhoneBtn');
 
-    if (!phoneInput || phoneInput.length < 10) {
-        showToast('يرجى إدخال رقم موبايل صحيح!');
+    // التعديل هنا: الفلتر ده بيسمح بـ 11 رقم بس وبيبدأ بـ 01 (010, 011, 012, 015)
+    const phoneRegex = /^01[0125][0-9]{8}$/; 
+    if (!phoneRegex.test(phoneInput)) {
+        showToast('يرجى إدخال رقم موبايل مصري صحيح مكون من 11 رقم 📱');
         return;
     }
 
@@ -163,7 +165,12 @@ document.getElementById('authForm').onsubmit = async (e) => {
                 showToast(t('msg_missing_name_phone') || 'يرجى إدخال الاسم ورقم الموبايل');
                 throw new Error("missing_data");
             }
-
+            // التعديل هنا: فلتر التسجيل العادي
+            const phoneRegex = /^01[0125][0-9]{8}$/; 
+            if (!phoneRegex.test(phone)) {
+                showToast('يرجى إدخال رقم موبايل مصري صحيح مكون من 11 رقم 📱');
+                throw new Error("invalid_phone");
+            }
             const res = await createUserWithEmailAndPassword(auth, email, pass);
             
             let userRole = 'user';

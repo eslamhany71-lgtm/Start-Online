@@ -9,15 +9,28 @@ const DEBT_LIMIT = 500;
 let currentNotifLength = 0;
 let userClearedNotifs = false;
 
-// 🔔 إعدادات الإشعارات والصوت
+// 🔔 إعدادات الإشعارات والصوت (بالخدعة الجديدة)
 let previousNotifCount = -1;
-const notifSound = new Audio('https://actions.google.com/sounds/v1/ui/bell_ping.ogg');
+const notifSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
+notifSound.preload = 'auto';
 let userHasInteracted = false; 
 
 if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
     Notification.requestPermission();
 }
-window.addEventListener('click', () => { userHasInteracted = true; }, { once: true });
+
+// سحر فك حظر الصوت في المتصفحات
+window.addEventListener('click', () => { 
+    if(!userHasInteracted) {
+        notifSound.volume = 0; // نكتم الصوت
+        notifSound.play().then(() => {
+            notifSound.pause();
+            notifSound.currentTime = 0;
+            notifSound.volume = 1; // نرجعه عالي تاني للإشعار الحقيقي
+            userHasInteracted = true;
+        }).catch(e => console.log("الصوت محتاج تفاعل"));
+    }
+}, { once: true });
 
 // 🖼️ إعدادات الصور
 window.newPublishBase64 = null;
@@ -187,7 +200,13 @@ function loadNotifications(role, uid) {
         });
 
         if (previousNotifCount !== -1 && notificationsList.length > previousNotifCount) {
-            if(userHasInteracted) notifSound.play().catch(e => console.log('Sound Blocked by Browser'));
+            
+            // تشغيل الصوت
+            if(userHasInteracted) {
+                notifSound.currentTime = 0;
+                notifSound.play().catch(e => console.log('Sound Blocked:', e));
+            }
+
             if ("Notification" in window && Notification.permission === "granted") {
                 new Notification("إشعار جديد! 🔔", { body: "لديك تحديث جديد بخصوص الطلبات، تفقد قائمة الإشعارات.", icon: "https://cdn-icons-png.flaticon.com/512/3500/3500833.png" });
             }

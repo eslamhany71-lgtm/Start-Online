@@ -8,6 +8,11 @@ let currentEditId = null;
 const DEBT_LIMIT = 500;
 let currentNotifLength = 0;
 let userClearedNotifs = false;
+let previousNotifCount = -1; // عشان نتبع الإشعارات الجديدة
+
+if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
+    Notification.requestPermission();
+}
 
 window.newPublishBase64 = null;
 window.publishExtraImagesBase64 = []; // دي اللي هتشيل الصور الإضافية المرفوعة
@@ -181,7 +186,19 @@ function loadNotifications(role, uid) {
             }
         });
 
-        if(notificationsList.length > currentNotifLength) { userClearedNotifs = false; }
+// ======= سحر الإشعارات المنبثقة =======
+        if (previousNotifCount !== -1 && notificationsList.length > previousNotifCount) {
+            if ("Notification" in window && Notification.permission === "granted") {
+                new Notification("إشعار جديد! 🔔", { 
+                    body: "لديك تحديث جديد بخصوص الطلبات، تفقد قائمة الإشعارات أعلى الشاشة.", 
+                    icon: "https://cdn-icons-png.flaticon.com/512/3500/3500833.png" 
+                });
+            }
+            showToast("إشعار جديد وصلك حالاً! 🔔");
+            userClearedNotifs = false; 
+        }
+        previousNotifCount = notificationsList.length;
+        // ======================================       
         currentNotifLength = notificationsList.length;
 
         if(!userClearedNotifs) {

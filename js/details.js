@@ -119,6 +119,15 @@ async function init() {
         unitPrice = parseFloat(p.price); productOwnerId = p.owner; mainImgUrl = p.image;
         
         document.getElementById('detName').innerText = p.name;
+        // التأكد لو هو أدمن أو صاحب المنتج عشان يشوف بيانات الإنشاء
+        if ((userData.role === 'admin' || p.owner === auth.currentUser.uid) && p.creatorName) {
+            let creatorHtml = `<p>📝 نُشر بواسطة: <span class="text-blue-300 font-bold">${p.creatorName}</span> (${p.createdAt || 'قديم'})</p>`;
+            if (p.updatedAt) {
+                creatorHtml += `<p class="mt-1">🔄 عُدل بواسطة: <span class="text-yellow-500 font-bold">${p.updaterName}</span> (${p.updatedAt})</p>`;
+            }
+            document.getElementById('creatorInfo').innerHTML = creatorHtml;
+            document.getElementById('creatorInfo').classList.remove('hidden');
+        }
         document.getElementById('detPriceView').innerText = unitPrice + " " + t('currency');
         document.getElementById('detDesc').innerText = p.desc || t('no_extra_desc');
         

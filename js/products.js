@@ -690,7 +690,7 @@ window.openEditModal = (id) => {
     document.getElementById('eDesc').value = p.desc || '';
     
     const editImgPreview = document.getElementById('editImgPreview');
-    editImgPreview.src = p.image || 'https://via.placeholder.com/150';
+    editImgPreview.src = p.image || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
     window.newEditBase64 = null; 
     
     document.getElementById('editProductModal').classList.remove('hidden');

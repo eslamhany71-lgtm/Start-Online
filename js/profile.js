@@ -8,6 +8,8 @@ let currentOrdersData = {};
 let salesChartInstance = null; 
 let allProducts = {}; 
 let previousOrderCount = -1; // متغير لتتبع عدد الطلبات للإشعارات
+// تأثير صوتي شيك للإشعارات
+const notifSound = new Audio('https://actions.google.com/sounds/v1/ui/bell_ping.ogg');
 
 window.newProfileBase64 = null;
 
@@ -179,6 +181,8 @@ function loadOrders(role) {
 
         // إرسال إشعار للموبايل/المتصفح لو في أوردر جديد
         if (previousOrderCount !== -1 && keys.length > previousOrderCount) {
+            // 1. تشغيل الصوت (مع حماية بسيطة لو المتصفح عمل بلوك للصوت التلقائي)
+            notifSound.play().catch(e => console.log('الصوت محتاج تفاعل من المستخدم أولاً'));
             if ("Notification" in window && Notification.permission === "granted") {
                 new Notification("طلب جديد! 🚀", { body: "تم استلام طلب جديد على منتجاتك، افتح لوحة التحكم للمراجعة.", icon: "https://cdn-icons-png.flaticon.com/512/3500/3500833.png" });
             }

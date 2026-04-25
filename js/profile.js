@@ -7,16 +7,18 @@ let myRole = 'user';
 let currentOrdersData = {};
 let salesChartInstance = null; 
 let allProducts = {}; 
-let previousOrderCount = -1; // متغير لتتبع عدد الطلبات للإشعارات
-// تأثير صوتي شيك للإشعارات
+
+// 🔔 إعدادات الإشعارات والصوت
+let previousOrderCount = -1;
 const notifSound = new Audio('https://actions.google.com/sounds/v1/ui/bell_ping.ogg');
+let userHasInteracted = false;
 
-window.newProfileBase64 = null;
-
-// طلب صلاحية الإشعارات أول ما يفتح الصفحة
 if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
     Notification.requestPermission();
 }
+window.addEventListener('click', () => { userHasInteracted = true; }, { once: true });
+
+window.newProfileBase64 = null;
 
 window.processImageUpload = (event, previewId, callback) => {
     const file = event.target.files[0];
@@ -74,7 +76,7 @@ onAuthStateChanged(auth, async (user) => {
             document.getElementById('userName').innerText = u.name;
             document.getElementById('userEmail').innerText = u.email;
             document.getElementById('userRoleBadge').innerText = t('btn_role_' + myRole) || myRole.toUpperCase();
-            document.getElementById('userImg').src = u.photo || `https://ui-avatars.com/api/?name=${u.name}&background=3b82f6&color=fff`;
+            document.getElementById('userImg').src = u.photo || `https://placehold.co/150x150/1e293b/3b82f6?text=User`;
             document.getElementById('userPhoneDisplay').innerText = u.phone || t('no_phone_registered');
             
             if(myRole === 'admin') {
@@ -112,7 +114,6 @@ onAuthStateChanged(auth, async (user) => {
                 if(user.uid === myUid) checkIfRequestActive();
             }
             
-            // تحميل المنتجات الأول عشان نحتاجها في جلب رابط المنتج للأوردر
             loadContent(myUid, u.wishlist || []);
             loadOrders(myRole);
         }
@@ -179,10 +180,8 @@ function loadOrders(role) {
         let todayStr = new Date().toLocaleString('ar-EG').split(',')[0];
         const keys = Object.keys(currentOrdersData).reverse();
 
-        // إرسال إشعار للموبايل/المتصفح لو في أوردر جديد
         if (previousOrderCount !== -1 && keys.length > previousOrderCount) {
-            // 1. تشغيل الصوت (مع حماية بسيطة لو المتصفح عمل بلوك للصوت التلقائي)
-            notifSound.play().catch(e => console.log('الصوت محتاج تفاعل من المستخدم أولاً'));
+            if(userHasInteracted) notifSound.play().catch(e => console.log('Sound Blocked by Browser'));
             if ("Notification" in window && Notification.permission === "granted") {
                 new Notification("طلب جديد! 🚀", { body: "تم استلام طلب جديد على منتجاتك، افتح لوحة التحكم للمراجعة.", icon: "https://cdn-icons-png.flaticon.com/512/3500/3500833.png" });
             }
@@ -229,7 +228,6 @@ function loadOrders(role) {
                 if(!o.status || o.status === 'pending') {
                     if(['admin', 'merchant'].includes(role)) {
                         
-                        // زرعنا البحث عن رقم المنتج هنا عشان الزرار الجديد
                         let prodId = Object.keys(allProducts).find(k => allProducts[k].name === o.productName);
                         let viewProdBtn = prodId ? `<button onclick="window.location.href='details.html?id=${prodId}&name=${encodeURIComponent(o.productName)}&price=${displayTotal}'" class="bg-purple-600/20 text-purple-400 px-3 py-1.5 rounded-lg text-[9px] font-black hover:bg-purple-600 hover:text-white transition shadow-md">عرض المنتج</button>` : '';
 

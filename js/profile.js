@@ -384,6 +384,10 @@ window.viewOrderDetails = (id) => {
     const actions = document.getElementById('orderModalActions');
     
     body.innerHTML = `
+    <div class="md:col-span-2 bg-blue-500/10 p-4 rounded-2xl border border-blue-500/30 text-center mb-2 shadow-inner">
+        <p class="text-[10px] text-blue-300 font-bold mb-1 uppercase tracking-widest">📅 تاريخ ووقت الطلب</p>
+        <p class="text-white font-black font-mono text-sm md:text-base drop-shadow-md">${o.date || 'غير مسجل'}</p>
+    </div>
     <div class="space-y-4">
         <div><label class="text-gray-500 text-[10px] block">${t('order_client_name')}</label><p class="text-white font-bold">${o.customerName || t('val_unavailable')}</p></div>
         <div><label class="text-gray-500 text-[10px] block">${t('order_client_phone')}</label><p class="text-white font-bold font-mono">${o.phone || t('val_unavailable')}</p></div>

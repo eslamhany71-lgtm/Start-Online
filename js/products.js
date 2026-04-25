@@ -8,24 +8,31 @@ let currentEditId = null;
 const DEBT_LIMIT = 500;
 let currentNotifLength = 0;
 let userClearedNotifs = false;
-let previousNotifCount = -1; // عشان نتبع الإشعارات الجديدة
+
+// 🔔 إعدادات الإشعارات والصوت
+let previousNotifCount = -1;
+const notifSound = new Audio('https://actions.google.com/sounds/v1/ui/bell_ping.ogg');
+let userHasInteracted = false; 
 
 if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
     Notification.requestPermission();
 }
+window.addEventListener('click', () => { userHasInteracted = true; }, { once: true });
 
+// 🖼️ إعدادات الصور
 window.newPublishBase64 = null;
-window.publishExtraImagesBase64 = []; // دي اللي هتشيل الصور الإضافية المرفوعة
+window.publishExtraImagesBase64 = []; 
 window.newEditBase64 = null;
+
 window.removeMainImage = () => {
     window.newPublishBase64 = null;
     document.getElementById('publishImgPreview').src = '';
     document.getElementById('mainImgPreviewContainer').classList.add('hidden');
-    document.getElementById('mainImageInput').value = ''; // عشان يمسح الذاكرة وتقدر ترفعها تاني لو حبيت
+    document.getElementById('mainImageInput').value = ''; 
 };
 
 // ==========================================
-// 1. دالة ضغط الصور
+// 1. دوال ضغط الصور
 // ==========================================
 window.processImageUpload = (event, previewId, callback) => {
     const file = event.target.files[0];
@@ -55,6 +62,7 @@ window.processImageUpload = (event, previewId, callback) => {
         };
     };
 };
+
 window.processMultipleImages = (event, containerId) => {
     const files = event.target.files;
     if (!files) return;
@@ -81,13 +89,8 @@ window.processMultipleImages = (event, containerId) => {
 
                 const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
                 
-                // نحفظ الصورة المضغوطة في المصفوفة
                 window.publishExtraImagesBase64.push(dataUrl);
 
-                // نحفظ الصورة المضغوطة في المصفوفة
-                window.publishExtraImagesBase64.push(dataUrl);
-
-                // نعمل حاوية صغيرة (div) تشيل الصورة وزرار المسح
                 const wrapper = document.createElement('div');
                 wrapper.className = 'relative w-16 h-16 animate-fade-in extra-img-wrapper';
                 
@@ -95,26 +98,23 @@ window.processMultipleImages = (event, containerId) => {
                 previewImg.src = dataUrl;
                 previewImg.className = 'w-full h-full rounded-2xl object-cover shadow-lg border border-blue-500/30';
                 
-                // زرار المسح (✕)
                 const delBtn = document.createElement('button');
                 delBtn.innerHTML = '✕';
                 delBtn.className = 'absolute -top-2 -right-2 bg-red-600 text-white w-5 h-5 rounded-full font-black text-[9px] flex items-center justify-center hover:bg-red-500 shadow-md';
                 delBtn.onclick = () => {
-                    // نمسحها من المصفوفة
                     window.publishExtraImagesBase64 = window.publishExtraImagesBase64.filter(src => src !== dataUrl);
-                    // نمسحها من الشاشة
                     wrapper.remove();
                 };
                 
                 wrapper.appendChild(previewImg);
                 wrapper.appendChild(delBtn);
                 
-                // نحط الصورة قبل زرار الـ (+)
                 container.insertBefore(wrapper, container.lastElementChild);
             };
         };
     });
 };
+
 // ==========================================
 // 2. حالة تسجيل الدخول والصلاحيات
 // ==========================================
@@ -125,11 +125,10 @@ onAuthStateChanged(auth, async (user) => {
         if (userSnap.exists()) {
             const u = userSnap.val(); 
 
-            // 🌟 السحر هنا: لو المستخدم قديم وملوش تاريخ، هنسحب تاريخه الحقيقي من فايربيز ونحدثه!
             if (!u.joinDate && user.metadata && user.metadata.creationTime) {
                 const realJoinDate = new Date(user.metadata.creationTime).toLocaleString('ar-EG');
                 await update(ref(db, 'users/' + user.uid), { joinDate: realJoinDate });
-                u.joinDate = realJoinDate; // عشان يظهر قدامك فوراً من غير ريفريش
+                u.joinDate = realJoinDate; 
             }
 
             userRole = u.role || 'user'; 
@@ -158,6 +157,7 @@ onAuthStateChanged(auth, async (user) => {
         loadProducts(); updateCartUI();
     } else { window.location.href = "login.html"; }
 });
+
 // ==========================================
 // 3. نظام الإشعارات
 // ==========================================
@@ -186,19 +186,15 @@ function loadNotifications(role, uid) {
             }
         });
 
-// ======= سحر الإشعارات المنبثقة =======
         if (previousNotifCount !== -1 && notificationsList.length > previousNotifCount) {
+            if(userHasInteracted) notifSound.play().catch(e => console.log('Sound Blocked by Browser'));
             if ("Notification" in window && Notification.permission === "granted") {
-                new Notification("إشعار جديد! 🔔", { 
-                    body: "لديك تحديث جديد بخصوص الطلبات، تفقد قائمة الإشعارات أعلى الشاشة.", 
-                    icon: "https://cdn-icons-png.flaticon.com/512/3500/3500833.png" 
-                });
+                new Notification("إشعار جديد! 🔔", { body: "لديك تحديث جديد بخصوص الطلبات، تفقد قائمة الإشعارات.", icon: "https://cdn-icons-png.flaticon.com/512/3500/3500833.png" });
             }
             showToast("إشعار جديد وصلك حالاً! 🔔");
             userClearedNotifs = false; 
         }
         previousNotifCount = notificationsList.length;
-        // ======================================       
         currentNotifLength = notificationsList.length;
 
         if(!userClearedNotifs) {
@@ -276,7 +272,6 @@ window.removeFromCart = (key) => { if(confirm(t('msg_delete_cart'))) remove(ref(
 // ==========================================
 // 5. الفلاتر والأقسام
 // ==========================================
-// ✅ الإضافة: الأقسام الجديدة في الفلاتر
 const dbCategories = { 'all': 'الكل', 'clothes': 'ملابس', 'acc': 'إكسسوارات', 'perfume': 'عطور', 'beauty': 'صحة وجمال', 'best': 'أكثر مبيعاً', 'electronics': 'إلكترونيات', 'abayas': 'عبايات', 'handmade': 'هاند ميد' };
 const subData = {
     clothes: [{dbVal:'رجالي', tKey:'sub_men', i:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcq8MbpMpYi4h72YsWLGOu8L2bU7lNdq-3ZQ&s'}, {dbVal:'حريمي', tKey:'sub_women', i:'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=100'}],
@@ -358,7 +353,6 @@ window.exportUsersToExcel = () => {
         'البريد الإلكتروني': u.email || 'غير محدد',
         'رقم الموبايل': u.phone || u.phoneNumber || 'غير مسجل',
         'الرتبة': t('btn_role_' + u.role) || u.role || 'user',
-        // ✅ الإضافة: سحب تاريخ الانضمام في الإكسيل
         'تاريخ الانضمام': u.joinDate || 'غير مسجل'
     }));
 
@@ -418,24 +412,20 @@ window.openReviewsModal = async () => {
     l.innerHTML = html;
 };
 
-// ✅ الإضافة: متغير وحفظ الأعضاء للبحث وترتيبهم
 let currentModalUsers = []; 
 
 window.openUsersModal = (role) => {
     const m = document.getElementById('usersModal'); 
     m.classList.remove('hidden'); 
-    document.getElementById('usersSearchInput').value = ""; // تصفير البحث
+    document.getElementById('usersSearchInput').value = ""; 
     
-    // تحويل الأوبجيكت لمصفوفة
     currentModalUsers = Object.keys(allUsers).map(uid => ({ uid, ...allUsers[uid] }));
     
-    // الترتيب (من الأحدث للأقدم بناء على تاريخ الانضمام)
     currentModalUsers.sort((a, b) => {
         if(!a.joinDate) return 1; if(!b.joinDate) return -1;
         return new Date(b.joinDate) - new Date(a.joinDate);
     });
 
-    // فلترة مبدئية حسب الرول
     if(role !== 'all') {
         currentModalUsers = currentModalUsers.filter(u => u.role === role || (role === 'user' && u.role === 'customer'));
     }
@@ -471,7 +461,6 @@ window.renderUsersModalList = (usersArray) => {
     l.innerHTML = modalHtml || `<p class="text-gray-500 text-xs text-center col-span-full">لا يوجد نتائج للبحث.</p>`;
 };
 
-// ✅ الإضافة: دالة البحث الحية
 window.filterUsersModal = () => {
     const term = document.getElementById('usersSearchInput').value.toLowerCase();
     const filtered = currentModalUsers.filter(u => 
@@ -578,7 +567,6 @@ window.saveProduct = async () => {
     const defaultImg = 'https://placehold.co/400x400/1e293b/3b82f6?text=Start+Online';
     const finalImage = window.newPublishBase64 || defaultImg; 
 
-    // ✅ الإضافة: حفظ اسم الناشر وتاريخ النشر
     const userSnap = await get(ref(db, 'users/' + currentUser.uid));
     const uName = userSnap.exists() ? userSnap.val().name : 'مجهول';
     const now = new Date().toLocaleString('ar-EG');
@@ -690,7 +678,7 @@ window.openEditModal = (id) => {
     document.getElementById('eDesc').value = p.desc || '';
     
     const editImgPreview = document.getElementById('editImgPreview');
-    editImgPreview.src = p.image || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
+    editImgPreview.src = p.image || 'https://placehold.co/150x150/1e293b/3b82f6?text=Image';
     window.newEditBase64 = null; 
     
     document.getElementById('editProductModal').classList.remove('hidden');
@@ -702,7 +690,6 @@ window.saveEditedProduct = async () => {
     if(!currentEditId) return;
     const p = allProducts[currentEditId];
     
-    // ✅ الإضافة: حفظ اسم المُعدل وتاريخ التعديل
     const userSnap = await get(ref(db, 'users/' + currentUser.uid));
     const uName = userSnap.exists() ? userSnap.val().name : 'مجهول';
     const now = new Date().toLocaleString('ar-EG');

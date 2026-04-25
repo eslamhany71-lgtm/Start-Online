@@ -2,14 +2,19 @@ import { auth, db } from "./firebase-config.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { ref, get, set, update, onValue, push, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-// === هنا صلحنا المشكلة! عرفنا كل المتغيرات صح عشان ميضربش إيرور ===
 let myUid = null; 
 let myRole = 'user'; 
 let currentOrdersData = {};
 let salesChartInstance = null; 
-let allProducts = {}; // المتغير اللي كان ناقص وعمل المشكلة
+let allProducts = {}; 
+let previousOrderCount = -1; // متغير لتتبع عدد الطلبات للإشعارات
 
 window.newProfileBase64 = null;
+
+// طلب صلاحية الإشعارات أول ما يفتح الصفحة
+if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
+    Notification.requestPermission();
+}
 
 window.processImageUpload = (event, previewId, callback) => {
     const file = event.target.files[0];
@@ -105,8 +110,9 @@ onAuthStateChanged(auth, async (user) => {
                 if(user.uid === myUid) checkIfRequestActive();
             }
             
-            loadOrders(myRole);
+            // تحميل المنتجات الأول عشان نحتاجها في جلب رابط المنتج للأوردر
             loadContent(myUid, u.wishlist || []);
+            loadOrders(myRole);
         }
     } else { window.location.href = "login.html"; }
 });
@@ -170,6 +176,15 @@ function loadOrders(role) {
 
         let todayStr = new Date().toLocaleString('ar-EG').split(',')[0];
         const keys = Object.keys(currentOrdersData).reverse();
+
+        // إرسال إشعار للموبايل/المتصفح لو في أوردر جديد
+        if (previousOrderCount !== -1 && keys.length > previousOrderCount) {
+            if ("Notification" in window && Notification.permission === "granted") {
+                new Notification("طلب جديد! 🚀", { body: "تم استلام طلب جديد على منتجاتك، افتح لوحة التحكم للمراجعة.", icon: "https://cdn-icons-png.flaticon.com/512/3500/3500833.png" });
+            }
+            showToast("طلب جديد وصلك حالاً! 🔔");
+        }
+        previousOrderCount = keys.length;
         
         keys.forEach(key => {
             const o = currentOrdersData[key];
@@ -209,15 +224,21 @@ function loadOrders(role) {
 
                 if(!o.status || o.status === 'pending') {
                     if(['admin', 'merchant'].includes(role)) {
+                        
+                        // زرعنا البحث عن رقم المنتج هنا عشان الزرار الجديد
+                        let prodId = Object.keys(allProducts).find(k => allProducts[k].name === o.productName);
+                        let viewProdBtn = prodId ? `<button onclick="window.location.href='details.html?id=${prodId}&name=${encodeURIComponent(o.productName)}&price=${displayTotal}'" class="bg-purple-600/20 text-purple-400 px-3 py-1.5 rounded-lg text-[9px] font-black hover:bg-purple-600 hover:text-white transition shadow-md">عرض المنتج</button>` : '';
+
                         incomingHtml += `
-                        <div class="glass p-6 rounded-3xl border border-white/10 space-y-4 animate-slide mb-3 list-item-fast">
+                        <div class="glass p-6 rounded-3xl border border-white/10 space-y-4 animate-slide mb-3 list-item-fast shadow-lg">
                             <div class="flex justify-between items-start">
                                 <div>
                                     <h4 class="font-black text-blue-400">${o.productName || t('order_product')}</h4>
                                     <p class="text-[10px] text-white mt-1">${t('order_client_name')}: ${o.customerName || t('lbl_unknown')} | ${t('lbl_qty')}: ${o.qty || o.quantity || 1}</p>
                                 </div>
                                 <div class="flex flex-col gap-2">
-                                    <button onclick="viewOrderDetails('${key}')" class="bg-blue-600/20 text-blue-400 px-3 py-1.5 rounded-lg text-[9px] font-black hover:bg-blue-600 hover:text-white transition">${t('btn_order_details')}</button>
+                                    <button onclick="viewOrderDetails('${key}')" class="bg-blue-600/20 text-blue-400 px-3 py-1.5 rounded-lg text-[9px] font-black hover:bg-blue-600 hover:text-white transition shadow-md">${t('btn_order_details')}</button>
+                                    ${viewProdBtn}
                                 </div>
                             </div>
                             <div class="flex justify-between items-center border-t border-white/5 pt-4">
@@ -475,22 +496,15 @@ window.toggleSettingsModal = () => document.getElementById('settingsModal').clas
 window.showToast = (m) => { const t = document.getElementById('toast'); t.innerText = m; t.style.opacity = '1'; setTimeout(() => t.style.opacity = '0', 3000); };
 window.logout = () => confirm(t('msg_logout_confirm')) && signOut(auth).then(() => window.location.href = "login.html");
 
-// ==========================================
-// سحر إغلاق النوافذ عند الضغط في أي مكان فاضي
-// ==========================================
 window.addEventListener('click', (e) => {
-    // 1. إغلاق النوافذ المنبثقة (Modals)
-    // الكود بيتعرف على الخلفية السودة من خلال كلاسات التيلويند (fixed inset-0)
     if (e.target.classList.contains('fixed') && e.target.classList.contains('inset-0')) {
         e.target.classList.add('hidden');
     }
     
-    // 2. إغلاق قائمة الإشعارات لو ضغطت براها (بونص شياكة)
     const notifDropdown = document.getElementById('notifDropdown');
     const clickedOnNotifBtn = e.target.closest('button[onclick="toggleNotif()"]');
     
     if (notifDropdown && !notifDropdown.classList.contains('hidden')) {
-        // لو الضغطة مكانتش جوه القائمة، ومكانتش على زرار الجرس نفسه.. اخفي القائمة
         if (!notifDropdown.contains(e.target) && !clickedOnNotifBtn) {
             notifDropdown.classList.add('hidden');
         }

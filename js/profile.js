@@ -8,8 +8,9 @@ let currentOrdersData = {};
 let salesChartInstance = null; 
 let allProducts = {}; 
 
-// 🔔 إعدادات الإشعارات والصوت
-let previousOrderCount = -1;
+// 🔔 إعدادات الإشعارات والصوت والذاكرة الذكية
+let previousNotifCount = -1;
+window.activeNotifIds = [];
 const notifSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
 notifSound.preload = 'auto';
 let userHasInteracted = false;
@@ -18,18 +19,29 @@ if ("Notification" in window && Notification.permission !== "granted" && Notific
     Notification.requestPermission();
 }
 
-// سحر فك حظر الصوت في المتصفحات
 window.addEventListener('click', () => { 
     if(!userHasInteracted) {
-        notifSound.volume = 0; // نكتم الصوت
+        notifSound.volume = 0;
         notifSound.play().then(() => {
             notifSound.pause();
             notifSound.currentTime = 0;
-            notifSound.volume = 1; // نرجعه عالي تاني للإشعار الحقيقي
+            notifSound.volume = 1;
             userHasInteracted = true;
         }).catch(e => console.log("الصوت محتاج تفاعل"));
     }
 }, { once: true });
+
+// دالة مسح الإشعارات للأبد
+window.clearAllNotifs = () => {
+    const dismissed = JSON.parse(localStorage.getItem('dismissedNotifs') || '[]');
+    const newDismissed = [...new Set([...dismissed, ...window.activeNotifIds])];
+    localStorage.setItem('dismissedNotifs', JSON.stringify(newDismissed));
+    
+    document.getElementById('notifBadge').classList.add('hidden');
+    document.getElementById('notifList').innerHTML = `<p class="text-gray-500 text-center py-4">لا توجد إشعارات جديدة</p>`;
+    previousNotifCount = 0; 
+    window.activeNotifIds = [];
+};
 
 window.newProfileBase64 = null;
 
@@ -182,8 +194,11 @@ function loadOrders(role) {
         let rev = 0, succ = 0, fail = 0;
         let adminPlatformProfit = 0; 
         let dailyRevData = {}; 
-        let notificationsHtml = ''; 
+        
         let notifCount = 0;
+        let notificationsHtml = ''; 
+        window.activeNotifIds = [];
+        const dismissed = JSON.parse(localStorage.getItem('dismissedNotifs') || '[]');
 
         let myPurchaseHtml = '';
         let incomingHtml = '';
@@ -192,18 +207,6 @@ function loadOrders(role) {
 
         let todayStr = new Date().toLocaleString('ar-EG').split(',')[0];
         const keys = Object.keys(currentOrdersData).reverse();
-
-        if (previousOrderCount !== -1 && keys.length > previousOrderCount) {
-            if(userHasInteracted) {
-                notifSound.currentTime = 0;
-                notifSound.play().catch(e => console.log('Sound Blocked:', e));
-            }
-            if ("Notification" in window && Notification.permission === "granted") {
-                new Notification("طلب جديد! 🚀", { body: "تم استلام طلب جديد، تفقد قائمة الطلبات.", icon: "https://cdn-icons-png.flaticon.com/512/3500/3500833.png" });
-            }
-            showToast("طلب جديد وصلك حالاً! 🔔");
-        }
-        previousOrderCount = keys.length;
         
         keys.forEach(key => {
             const o = currentOrdersData[key];
@@ -217,16 +220,32 @@ function loadOrders(role) {
             if(o.status === 'completed') { statusText = t('status_completed'); badgeClass = "status-completed"; }
             else if(o.status === 'failed') { statusText = t('status_failed'); badgeClass = "status-failed"; }
 
-            if(isMyPurchase && o.status === 'completed') { notificationsHtml += `<div class="bg-white/5 p-3 rounded-xl border border-white/5 mb-2 hover:bg-white/10 transition"><p class="font-bold text-green-400 mb-1">${t('msg_order_delivered')} ${o.productName}</p><p class="text-[8px] text-gray-500">${o.date}</p></div>`; notifCount++; }
-            if(isMyPurchase && o.status === 'failed') { notificationsHtml += `<div class="bg-white/5 p-3 rounded-xl border border-white/5 mb-2 hover:bg-white/10 transition"><p class="font-bold text-red-400 mb-1">${t('msg_order_canceled')} ${o.productName}</p><p class="text-[8px] text-gray-500">${o.date}</p></div>`; notifCount++; }
+            const pushNotif = (nId, html) => {
+                if(!dismissed.includes(nId)) {
+                    notificationsHtml += html;
+                    notifCount++;
+                    window.activeNotifIds.push(nId);
+                }
+            };
+
+            if(isMyPurchase && o.status === 'completed') {
+                pushNotif(key+'_pur_comp', `<div class="bg-white/5 p-3 rounded-xl border border-white/5 mb-2 hover:bg-white/10 transition"><p class="font-bold text-green-400 mb-1">${t('msg_order_delivered')} ${o.productName}</p><p class="text-[8px] text-gray-500">${o.date}</p></div>`);
+            }
+            if(isMyPurchase && o.status === 'failed') {
+                pushNotif(key+'_pur_fail', `<div class="bg-white/5 p-3 rounded-xl border border-white/5 mb-2 hover:bg-white/10 transition"><p class="font-bold text-red-400 mb-1">${t('msg_order_canceled')} ${o.productName}</p><p class="text-[8px] text-gray-500">${o.date}</p></div>`);
+            }
 
             if(isMyPurchase) {
                 myPurchaseHtml += `<div class="glass p-5 rounded-2xl flex justify-between items-center border border-white/5 animate-slide mb-2 list-item-fast"><div><h4 class="text-[10px] font-black text-blue-400 uppercase">${o.productName || t('order_product')}</h4><p class="text-[8px] text-gray-500 mt-1">${o.date || ''}</p></div><span class="status-badge ${badgeClass}">${statusText}</span></div>`;
             }
 
             if(isMySale) {
-                if(!o.status || o.status === 'pending') { notificationsHtml += `<div class="bg-white/5 p-3 rounded-xl border border-white/5 mb-2 hover:bg-white/10 transition"><p class="font-bold text-yellow-400 mb-1">${t('msg_new_order')} ${o.productName} ${t('msg_with_amount')} ${displayTotal} ${t('currency')}</p><p class="text-[8px] text-gray-500">${o.date}</p></div>`; notifCount++; }
-                if(o.status === 'completed') { notificationsHtml += `<div class="bg-white/5 p-3 rounded-xl border border-white/5 mb-2 hover:bg-white/10 transition"><p class="font-bold text-blue-400 mb-1">${t('msg_profit_added')} ${o.productName}</p><p class="text-[8px] text-gray-500">${o.date}</p></div>`; notifCount++; }
+                if(!o.status || o.status === 'pending') {
+                    pushNotif(key+'_sale_pend', `<div class="bg-white/5 p-3 rounded-xl border border-white/5 mb-2 hover:bg-white/10 transition"><p class="font-bold text-yellow-400 mb-1">${t('msg_new_order')} ${o.productName} ${t('msg_with_amount')} ${displayTotal} ${t('currency')}</p><p class="text-[8px] text-gray-500">${o.date}</p></div>`);
+                }
+                if(o.status === 'completed') {
+                    pushNotif(key+'_sale_comp', `<div class="bg-white/5 p-3 rounded-xl border border-white/5 mb-2 hover:bg-white/10 transition"><p class="font-bold text-blue-400 mb-1">${t('msg_profit_added')} ${o.productName}</p><p class="text-[8px] text-gray-500">${o.date}</p></div>`);
+                }
 
                 if(o.status === 'completed') {
                     rev += displayTotal;
@@ -269,6 +288,32 @@ function loadOrders(role) {
             }
         });
 
+        // 🔔 تشغيل الصوت والإشعار المنبثق في حالة الجديد فقط
+        if (previousNotifCount !== -1 && window.activeNotifIds.length > previousNotifCount) {
+            if(userHasInteracted) {
+                notifSound.currentTime = 0;
+                notifSound.play().catch(e => console.log('Sound Blocked:', e));
+            }
+            if ("Notification" in window && Notification.permission === "granted") {
+                new Notification("إشعار جديد! 🚀", { body: "تم استلام تحديث جديد، تفقد قائمة الإشعارات.", icon: "https://cdn-icons-png.flaticon.com/512/3500/3500833.png" });
+            }
+            showToast("إشعار جديد وصلك حالاً! 🔔");
+        }
+        previousNotifCount = window.activeNotifIds.length;
+
+        // التحديث في واجهة المستخدم
+        const badge = document.getElementById('notifBadge');
+        const list = document.getElementById('notifList');
+        if(notifCount > 0) {
+            badge.innerText = notifCount;
+            badge.classList.remove('hidden');
+            notificationsHtml += `<button onclick="clearAllNotifs()" class="w-full mt-2 text-center text-[10px] text-red-400 hover:text-red-300 font-black border border-red-500/20 py-2 rounded-xl bg-red-500/10 transition shadow-inner">مسح كل الإشعارات 🗑️</button>`;
+            list.innerHTML = notificationsHtml;
+        } else {
+            badge.classList.add('hidden');
+            list.innerHTML = `<p class="text-gray-500 text-center py-4">لا توجد إشعارات جديدة</p>`;
+        }
+
         if(myPurchaseList) myPurchaseList.innerHTML = myPurchaseHtml || `<p class="text-[10px] text-gray-500 text-center py-4">${t('no_my_orders')}</p>`;
         if(incomingList) incomingList.innerHTML = incomingHtml || `<p class="text-[10px] text-gray-500 text-center py-4">${t('no_new_orders')}</p>`;
         if(successListInner) successListInner.innerHTML = successHtml || `<p class="text-[10px] text-gray-500 text-center py-2">لا توجد طلبات ناجحة</p>`;
@@ -281,17 +326,6 @@ function loadOrders(role) {
         if (role === 'admin') {
             const adminWallet = document.getElementById('walletBalance');
             if(adminWallet) adminWallet.innerText = adminPlatformProfit.toFixed(2) + " " + t('currency');
-        }
-        
-        const badge = document.getElementById('notifBadge');
-        const list = document.getElementById('notifList');
-        if(notifCount > 0) {
-            badge.innerText = notifCount;
-            badge.classList.remove('hidden');
-            list.innerHTML = notificationsHtml;
-        } else {
-            badge.classList.add('hidden');
-            list.innerHTML = `<p class="text-gray-500 text-center py-4">${t('no_notifs')}</p>`;
         }
         
         if(['admin', 'merchant', 'marketer'].includes(role)) {

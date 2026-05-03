@@ -6,11 +6,10 @@ let currentUser = null, userRole = 'user', allProducts = {}, allUsers = {}, user
 let selectedMainCat = 'الكل', selectedSubCat = 'الكل';
 let currentEditId = null; 
 const DEBT_LIMIT = 500;
-let currentNotifLength = 0;
-let userClearedNotifs = false;
 
-// 🔔 إعدادات الإشعارات والصوت (بالخدعة الجديدة)
+// 🔔 إعدادات الإشعارات والصوت والذاكرة الذكية
 let previousNotifCount = -1;
+window.activeNotifIds = []; // لتخزين الإشعارات النشطة حالياً
 const notifSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
 notifSound.preload = 'auto';
 let userHasInteracted = false; 
@@ -19,18 +18,29 @@ if ("Notification" in window && Notification.permission !== "granted" && Notific
     Notification.requestPermission();
 }
 
-// سحر فك حظر الصوت في المتصفحات
 window.addEventListener('click', () => { 
     if(!userHasInteracted) {
-        notifSound.volume = 0; // نكتم الصوت
+        notifSound.volume = 0;
         notifSound.play().then(() => {
             notifSound.pause();
             notifSound.currentTime = 0;
-            notifSound.volume = 1; // نرجعه عالي تاني للإشعار الحقيقي
+            notifSound.volume = 1;
             userHasInteracted = true;
         }).catch(e => console.log("الصوت محتاج تفاعل"));
     }
 }, { once: true });
+
+// دالة مسح الإشعارات للأبد
+window.clearAllNotifs = () => {
+    const dismissed = JSON.parse(localStorage.getItem('dismissedNotifs') || '[]');
+    const newDismissed = [...new Set([...dismissed, ...window.activeNotifIds])];
+    localStorage.setItem('dismissedNotifs', JSON.stringify(newDismissed));
+    
+    document.getElementById('notifBadge').classList.add('hidden');
+    document.getElementById('notifList').innerHTML = `<p class="text-gray-500 text-center py-4">لا توجد إشعارات جديدة</p>`;
+    previousNotifCount = 0; 
+    window.activeNotifIds = [];
+};
 
 // 🖼️ إعدادات الصور
 window.newPublishBase64 = null;
@@ -172,70 +182,68 @@ onAuthStateChanged(auth, async (user) => {
 });
 
 // ==========================================
-// 3. نظام الإشعارات
+// 3. نظام الإشعارات (المُحدث بالذاكرة)
 // ==========================================
-window.clearNotifs = () => {
-    userClearedNotifs = true;
-    document.getElementById('notifList').innerHTML = `<p class="text-[10px] text-gray-500 text-center py-4">${t('notifs_cleared')}</p>`;
-    document.getElementById('notifBadge').classList.add('hidden');
-};
-
 function loadNotifications(role, uid) {
     onValue(ref(db, 'orders'), (snap) => {
         const orders = snap.val() || {};
         let notificationsList = [];
+        window.activeNotifIds = [];
+        const dismissed = JSON.parse(localStorage.getItem('dismissedNotifs') || '[]');
 
         Object.keys(orders).reverse().forEach(key => {
             const o = orders[key];
             const isMyPurchase = (o.customerUid === uid) || (o.customerId === uid) || (o.buyerId === uid);
             const displayTotal = Number(o.total || o.totalPrice || 0);
 
-            if(isMyPurchase && o.status === 'completed') notificationsList.push({text: `${t('msg_order_delivered')} ${o.productName}`, date: o.date, color: 'text-green-400', link: 'profile.html'});
-            if(isMyPurchase && o.status === 'failed') notificationsList.push({text: `${t('msg_order_canceled')} ${o.productName}`, date: o.date, color: 'text-red-400', link: 'profile.html'});
+            const addN = (id, text, color) => {
+                if (!dismissed.includes(id)) {
+                    notificationsList.push({ id, text, date: o.date, color, link: 'profile.html' });
+                    window.activeNotifIds.push(id);
+                }
+            };
+
+            if(isMyPurchase && o.status === 'completed') addN(key+'_pur_comp', `${t('msg_order_delivered')} ${o.productName}`, 'text-green-400');
+            if(isMyPurchase && o.status === 'failed') addN(key+'_pur_fail', `${t('msg_order_canceled')} ${o.productName}`, 'text-red-400');
 
             if(role === 'admin' || o.marketerId === uid) {
-                if(!o.status || o.status === 'pending') notificationsList.push({text: `${t('msg_new_order')} ${o.productName} ${t('msg_with_amount')} ${displayTotal} ${t('currency')}`, date: o.date, color: 'text-yellow-400', link: 'profile.html'});
-                if(o.status === 'completed') notificationsList.push({text: `${t('msg_profit_added')} ${o.productName} ${t('msg_to_wallet')}`, date: o.date, color: 'text-blue-400', link: 'profile.html'});
+                if(!o.status || o.status === 'pending') addN(key+'_sale_pend', `${t('msg_new_order')} ${o.productName} ${t('msg_with_amount')} ${displayTotal} ${t('currency')}`, 'text-yellow-400');
+                if(o.status === 'completed') addN(key+'_sale_comp', `${t('msg_profit_added')} ${o.productName} ${t('msg_to_wallet')}`, 'text-blue-400');
             }
         });
 
-        if (previousNotifCount !== -1 && notificationsList.length > previousNotifCount) {
-            
-            // تشغيل الصوت
+        // تشغيل الصوت والإشعار في حالة وجود جديد فقط
+        if (previousNotifCount !== -1 && window.activeNotifIds.length > previousNotifCount) {
             if(userHasInteracted) {
                 notifSound.currentTime = 0;
                 notifSound.play().catch(e => console.log('Sound Blocked:', e));
             }
-
             if ("Notification" in window && Notification.permission === "granted") {
                 new Notification("إشعار جديد! 🔔", { body: "لديك تحديث جديد بخصوص الطلبات، تفقد قائمة الإشعارات.", icon: "https://cdn-icons-png.flaticon.com/512/3500/3500833.png" });
             }
             showToast("إشعار جديد وصلك حالاً! 🔔");
-            userClearedNotifs = false; 
         }
-        previousNotifCount = notificationsList.length;
-        currentNotifLength = notificationsList.length;
+        previousNotifCount = window.activeNotifIds.length;
 
-        if(!userClearedNotifs) {
-            const badge = document.getElementById('notifBadge');
-            const list = document.getElementById('notifList');
-            
-            if(notificationsList.length > 0) {
-                badge.innerText = notificationsList.length;
-                badge.classList.remove('hidden');
-                let notifsHtml = '';
-                notificationsList.slice(0, 15).forEach(n => {
-                    notifsHtml += `
-                    <a href="${n.link}" class="block bg-white/5 p-3 rounded-xl border border-white/5 mb-2 hover:bg-white/10 hover:border-blue-500/30 transition cursor-pointer">
-                        <p class="font-bold ${n.color} mb-1">${n.text}</p>
-                        <p class="text-[8px] text-gray-500">${n.date}</p>
-                    </a>`;
-                });
-                list.innerHTML = notifsHtml;
-            } else {
-                badge.classList.add('hidden');
-                list.innerHTML = `<p class="text-gray-500 text-center py-4">${t('no_notifs')}</p>`;
-            }
+        const badge = document.getElementById('notifBadge');
+        const list = document.getElementById('notifList');
+        
+        if(notificationsList.length > 0) {
+            badge.innerText = notificationsList.length;
+            badge.classList.remove('hidden');
+            let notifsHtml = '';
+            notificationsList.slice(0, 15).forEach(n => {
+                notifsHtml += `
+                <a href="${n.link}" class="block bg-white/5 p-3 rounded-xl border border-white/5 mb-2 hover:bg-white/10 hover:border-blue-500/30 transition cursor-pointer">
+                    <p class="font-bold ${n.color} mb-1">${n.text}</p>
+                    <p class="text-[8px] text-gray-500">${n.date}</p>
+                </a>`;
+            });
+            notifsHtml += `<button onclick="clearAllNotifs()" class="w-full mt-2 text-center text-[10px] text-red-400 hover:text-red-300 font-black border border-red-500/20 py-2 rounded-xl bg-red-500/10 transition shadow-inner">مسح كل الإشعارات 🗑️</button>`;
+            list.innerHTML = notifsHtml;
+        } else {
+            badge.classList.add('hidden');
+            list.innerHTML = `<p class="text-gray-500 text-center py-4">لا توجد إشعارات جديدة</p>`;
         }
     });
 }
@@ -768,9 +776,6 @@ window.loadWishlistOnly = () => { const f = {}; Object.keys(allProducts).forEach
 window.showToast = (m) => { const tst = document.getElementById('toast'); tst.innerText = m; tst.style.opacity = '1'; setTimeout(() => tst.style.opacity = '0', 3000); };
 window.logout = () => confirm(t('msg_logout_confirm')) && signOut(auth).then(() => window.location.href = "login.html");
 
-// ==========================================
-// 10. الإغلاق السحري
-// ==========================================
 window.addEventListener('click', (e) => {
     if (e.target.classList.contains('modal-overlay')) {
         e.target.classList.add('hidden');
